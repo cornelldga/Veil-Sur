@@ -26,7 +26,7 @@ public class EnemySearchlight : MonoBehaviour
 
     [Header("Visuals")]
     [SerializeField] private Light spotLight;
-    private Color patrolColor = Color.white;
+    private Color patrolColor = Color.green;
     private Color suspiciousColor = new Color(1f, 0.85f, 0f);
     private Color alertColor = Color.red;
 
