@@ -2418,7 +2418,7 @@ PrefabInstance:
       objectReference: {fileID: 1678211621}
     - target: {fileID: 8122762717042905871, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_Name
-      value: Creature
+      value: Mutant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
