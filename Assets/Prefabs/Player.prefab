@@ -236,7 +236,7 @@ MonoBehaviour:
   crouchTransitionSpeed: 15
   ceilingCheckMask:
     serializedVersion: 2
-    m_Bits: 1025
+    m_Bits: 1
 --- !u!114 &3942358293781664924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,9 +254,12 @@ MonoBehaviour:
   normalFOV: 60
   zoomedFOV: 30
   zoomSpeed: 10
+  maxPhotoRange: 10
   photoOcclusionMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  innerRadiusFraction: 0.3
+  outerRadiusFraction: 0.7
   snapOverlay: {fileID: 0}
 --- !u!136 &5570794706041152154
 CapsuleCollider:
