@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 public class PlayerStateController : MonoBehaviour
 {
     [SerializeField] private GameObject notebookMenu;
-
+ 
     private PlayerControls controls;
     private FirstPersonController firstPersonController;
     private PhotoCameraController photoCameraController;

@@ -2166,6 +2166,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1805399525289963691, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2943378182044169310, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: m_Radius
+      value: 9.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 3284144128573982454, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: m_Radius
+      value: 10.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 3284144128573982454, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: cameraUI
       value: 
@@ -2214,6 +2230,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5457027851315915008, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: ceilingCheckMask.m_Bits
       value: 1
@@ -2223,7 +2243,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 538897431}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 208352467851918705, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
