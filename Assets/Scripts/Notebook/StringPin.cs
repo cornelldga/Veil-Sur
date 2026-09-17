@@ -10,21 +10,33 @@ public class StringPin : MonoBehaviour,
     [SerializeField] private RectTransform stringPrefab;
     private StringPin connectedPin;
 
-    private void Awake()
-    {
-    }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (line!=null)
-        {
-            Destroy(line.gameObject);
-            connectedPin = null;
-        }
-        line = Instantiate(stringPrefab, transform.parent);
+        Disconnect();
+        Transform stringLayer = GetComponentInParent<Canvas>()?.transform.Find("Strings")
+            ?? transform.parent;
+        line = Instantiate(stringPrefab, stringLayer);
         line.gameObject.SetActive(true);
         line.SetAsLastSibling();
         UpdateLine(eventData.position);
+    }
+
+    public void Disconnect()
+    {
+        if (line != null)
+        {
+            Destroy(line.gameObject);
+            line = null;
+        }
+        if (connectedPin != null)
+        {
+            StringPin previousPin = connectedPin;
+            connectedPin = null;
+            previousPin.connectedPin = null;
+            previousPin.line = null;
+            previousPin.VerifyQuestion();
+            VerifyQuestion();
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -42,11 +54,11 @@ public class StringPin : MonoBehaviour,
                 connectedPin = pin;
                 connectedPin.SetConnectedPin(this);
                 UpdateLine(pin.transform.position);
+                VerifyQuestion();
                 return;
             }
         }
-        connectedPin = null;
-        line.gameObject.SetActive(false);
+        Disconnect();
     }
 
    void UpdateLine(Vector2 end)
@@ -87,11 +99,23 @@ public class StringPin : MonoBehaviour,
 
     public void SetConnectedPin(StringPin newPin)
     {
+        if (connectedPin != null && connectedPin != newPin)
+        {
+            connectedPin.connectedPin = null;
+            connectedPin.line = null;
+            connectedPin.VerifyQuestion();
+        }
         connectedPin = newPin;
         if (line!=null)
         {
             Destroy(line.gameObject);
         }
         line = newPin.GetLine();
+        VerifyQuestion();
+    }
+
+    private void VerifyQuestion()
+    {
+        GetComponentInParent<QuestionNote>()?.Verify();
     }
 }
