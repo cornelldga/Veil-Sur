@@ -16,8 +16,17 @@ public class PhotoCameraController : MonoBehaviour
     [SerializeField] private float normalFOV = 60f;
     [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 10f;
+    [Tooltip("The maximum range that a subject can be from the camera")]
+    [SerializeField] private float maxPhotoRange = 10f;
     [SerializeField] private LayerMask photoOcclusionMask = ~0;
+    [Tooltip("Radius of the inner ray circle used to determine subject")]
+    [SerializeField] private float innerRadiusFraction = 0.3f;
+    [Tooltip("Radius of the outer ray circle used to determine subject")]
+    [SerializeField] private float outerRadiusFraction = 0.7f;
 
+    // Minimum amount of raycasts needed for subject to be considering in photo
+    private int minRayCasts = 4;
+    private const int RaysPerCircle = 8;
     private PlayerControls controls;
     private PlayerStateController playerStateController;
     private GameObject notebookMenu;
@@ -97,15 +106,11 @@ public class PhotoCameraController : MonoBehaviour
         snapOverlay.canvasRenderer.SetAlpha(.5f);
         snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
 
-        List<string> subjectIds = DetectPhotographedSubjects();
         GameObject photograph = Instantiate(photographPrefab, notebookMenu.transform);
         PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
+        photoNote.SetSubject(DetectPhotographedSubject());
         photoNote.SetBounds(notebookMenu.transform as RectTransform);
         photoNote.LoadImage(photo);
-        foreach (string subjectId in subjectIds)
-        {
-            photoNote.AddSubject(subjectId);
-        }
     }
 
     /// <summary>
@@ -144,95 +149,74 @@ public class PhotoCameraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Finds all PhotographableObjects in the scene that appear, at least
-    /// partially unobstructed, within the cropped area of the last photo.
+    /// Raycasts to find the subject of the most recently taken photo.
+    /// Returns the SubjectId with the most hits, as long as it has at least
+    /// minRayCasts hits. Empty string if no such subject exists.
     /// </summary>
-    private List<string> DetectPhotographedSubjects()
+    private string DetectPhotographedSubject()
     {
-        var subjectIds = new List<string>();
-        var candidates = FindObjectsByType<PhotographableObject>(FindObjectsInactive.Exclude);
+        var tally = new Dictionary<string, int>();
 
-        foreach (PhotographableObject candidate in candidates)
+        foreach (Vector2 screenPoint in GetPhotoRayScreenPoints())
         {
-            if (IsSubjectInPhoto(candidate) && !subjectIds.Contains(candidate.SubjectId))
+            Ray ray = targetCamera.ScreenPointToRay(screenPoint);
+            if (!Physics.Raycast(ray, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
             {
-                subjectIds.Add(candidate.SubjectId);
+                continue;
+            }
+            // Return parents too in case subject hits a child component of a photographable object (like lightbulb of lamp or smthn)
+            PhotographableObject subject = hit.collider.GetComponentInParent<PhotographableObject>();
+            if (subject == null)
+            {
+                continue;
+            }
+
+            if (tally.ContainsKey(subject.SubjectId))
+            {
+                tally[subject.SubjectId] = tally[subject.SubjectId] + 1;
+            }
+            else
+            {
+                tally[subject.SubjectId] = 1;
             }
         }
 
-        return subjectIds;
+        string bestSubjectId = "";
+        int bestCount = minRayCasts - 1;
+        foreach (var entry in tally)
+        {
+            if (entry.Value > bestCount)
+            {
+                bestSubjectId = entry.Key;
+                bestCount = entry.Value;
+            }
+        }
+
+        return bestSubjectId;
     }
 
     /// <summary>
-    /// Checks whether any representative point of the subject lands inside
-    /// the captured square and has a clear line of sight to the camera.
+    /// Returns 16 screen-space points (2 concentric circles of 8, evenly
+    /// spaced) used to raycast when a photo is taken, centered on the
+    /// cropped square.
     /// </summary>
-    private bool IsSubjectInPhoto(PhotographableObject subject)
+    private IEnumerable<Vector2> GetPhotoRayScreenPoints()
     {
         RectInt captureRect = GetCaptureScreenRect(Screen.width, Screen.height);
-        Renderer subjectRenderer = subject.GetComponentInChildren<Renderer>();
+        Vector2 center = new Vector2(captureRect.x + captureRect.width * 0.5f, captureRect.y + captureRect.height * 0.5f);
+        float halfSize = captureRect.width * 0.5f;
 
-        foreach (Vector3 point in GetTestPoints(subject.transform, subjectRenderer))
+        // Iterate through two circles
+        foreach (float radiusFraction in new[] { innerRadiusFraction, outerRadiusFraction })
         {
-            Vector3 screenPoint = targetCamera.WorldToScreenPoint(point);
-            // In front of (not behind) screen
-            if (screenPoint.z <= 0f)
+            float pixelRadius = radiusFraction * halfSize;
+            // Iterate by points in circle
+            for (int i = 0; i < RaysPerCircle; i++)
             {
-                continue;
-            }
-            // In frame
-            if (!captureRect.Contains(new Vector2Int((int)screenPoint.x, (int)screenPoint.y)))
-            {
-                continue;
-            }
-            // Unblocked
-            if (IsPointVisibleToCamera(point))
-            {
-                return true;
+                float angle = i * Mathf.PI * 2f / RaysPerCircle;
+                yield return center + pixelRadius * new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
             }
         }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Returns an enumerable list of the points at the corners of a bounding
-    /// box around the subject, based on it's renderer and transform.
-    /// </summary>
-    /// TODO: Review in testing whether we need more points or different system
-    private IEnumerable<Vector3> GetTestPoints(Transform subjectTransform, Renderer subjectRenderer)
-    {
-        if (subjectRenderer == null)
-        {
-            yield return subjectTransform.position;
-            yield break;
-        }
-
-        Bounds bounds = subjectRenderer.bounds;
-        yield return bounds.center;
-
-        for (int x = -1; x <= 1; x += 2)
-        {
-            for (int y = -1; y <= 1; y += 2)
-            {
-                for (int z = -1; z <= 1; z += 2)
-                {
-                    yield return bounds.center + Vector3.Scale(bounds.extents, new Vector3(x, y, z));
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Raycasts from the camera to worldPoint; the point is considered
-    /// visible if nothing blocks the line of sight before reaching it.
-    /// </summary>
-    private bool IsPointVisibleToCamera(Vector3 worldPoint)
-    {
-        Vector3 origin = targetCamera.transform.position;
-        Vector3 delta = worldPoint - origin;
-
-        return !Physics.Raycast(origin, delta.normalized, delta.magnitude * 0.98f, photoOcclusionMask, QueryTriggerInteraction.Ignore);
     }
 
     private void Update()
