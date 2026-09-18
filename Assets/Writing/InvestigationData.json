@@ -1,0 +1,65 @@
+{
+    "scrapbook": [
+        {
+            "page": 1,
+            "questions": [
+                {
+                    "questionId": "q1",
+                    "questionText": "Text for the question being asked.",
+                    "defaultFeedback": "Feedback for an incorrect answer.",
+                    "answers": [
+                        {
+                            "subjectId": "sampleSubjectId1",
+                            "isCorrect": true,
+                            "message": "Feedback for this correct answer."
+                        },
+                        {
+                            "subjectId": "sampleSubjectId2",
+                            "isCorrect": false,
+                            "message": "Feedback for this incorrect answer."
+                        }
+                    ]
+                },
+                {
+                    "questionId": "q2",
+                    "questionText": "Text for the question being asked.",
+                    "defaultFeedback": "Feedback for an incorrect answer.",
+                    "answers": [
+                        {
+                            "subjectId": "sampleSubjectId3",
+                            "isCorrect": true,
+                            "message": "Feedback for this correct answer."
+                        },
+                        {
+                            "subjectId": "sampleSubjectId4",
+                            "isCorrect": false,
+                            "message": "Feedback for this incorrect answer."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "page": 2,
+            "questions": [
+                {
+                    "questionId": "q3",
+                    "questionText": "Text for the question being asked.",
+                    "defaultFeedback": "Feedback for an incorrect answer.",
+                    "answers": [
+                        {
+                            "subjectId": "sampleSubjectId5",
+                            "isCorrect": true,
+                            "message": "Feedback for this correct answer."
+                        },
+                        {
+                            "subjectId": "sampleSubjectId6",
+                            "isCorrect": false,
+                            "message": "Feedback for this incorrect answer."
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
