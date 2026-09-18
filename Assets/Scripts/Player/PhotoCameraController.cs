@@ -101,7 +101,7 @@ public class PhotoCameraController : MonoBehaviour
         List<string> subjectIds = DetectPhotographedSubjects();
         GameObject photograph = Instantiate(photographPrefab, notebookMenu.transform);
         PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
-        photoNote.setBounds(notebookMenu.transform as RectTransform);
+        photoNote.SetBounds(notebookMenu.transform as RectTransform);
         photoNote.LoadImage(photo);
         playerStateController.SetTakenPicture(true);
         foreach (string subjectId in subjectIds)
