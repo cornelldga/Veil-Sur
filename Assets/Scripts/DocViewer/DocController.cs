@@ -4,15 +4,46 @@ using System;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 
+[System.Serializable]
+public class DocData
+{
+    public string text;
+}
+
+
 public class DocController : MonoBehaviour
 {
     [Header("UI Features")]
     [SerializeField] private GameObject docCanvas;
+
     [SerializeField] private TMP_Text docTextAreaUI;
 
-    [SerializeField] [TextArea] private string docText;
+    [SerializeField] private string docFile = "File";
+
+    private DocData docData;
 
     private bool isOpen = false;
+
+    /// <summary>
+    /// Awake() loads all of the JSON text into this document to display
+    /// at instantiation.
+    /// </summary>
+    private void Awake()
+    {
+        LoadDocData();
+    }
+
+
+    /// <summary>
+    /// LoadDocData() reads and parses the JSON file. It stores the text
+    /// of the document 
+    /// </summary>
+    private void LoadDocData()
+    {
+        TextAsset jsonFile = Resources.Load<TextAsset>(docFile);
+        docData = JsonUtility.FromJson<DocData>(jsonFile.text);
+    }
+
 
     /// <summary>
     /// ShowDoc() reveals the UI panel of the DocView.
@@ -20,11 +51,15 @@ public class DocController : MonoBehaviour
     /// </summary>
     public void ShowDoc()
     {
-        docTextAreaUI.text = docText;
+        docTextAreaUI.text = docData.text;
         docCanvas.SetActive(true);
         isOpen = true;
     }
 
+
+    /// <summary>
+    /// CloseDoc() hides the DocView canvas and sets isOpen to false.
+    /// </summary>
     public void CloseDoc()
     {
         docCanvas.SetActive(false);
