@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemySearchlight : MonoBehaviour
 {
-    public enum AlertState { Patrol, Suspicious, Alert }
+    public enum AlertState { Patrol, Suspicious, Alert, Reacquire }
 
     [Header("Target")]
     [SerializeField] private Transform player;
@@ -39,17 +39,22 @@ public class EnemySearchlight : MonoBehaviour
 
     private Mesh coneMesh;
 
+    [Header("Public Fields")]
     public AlertState CurrentState { get; private set; } = AlertState.Patrol;
     public Vector3 LastKnownPlayerPosition { get; private set; }
+    public bool canSeePlayer = false;
 
     private float baseFacingAngle;
     private float sweepTimer;
     private float detectionMeter;
     private float lastSeenTimer;
 
+    private Vector3 lastPosition; // Used to determine where to face while moving
+
     private void Start()
     {
         baseFacingAngle = transform.eulerAngles.y;
+        lastPosition = transform.position;
 
         if (showConeMesh && coneMeshFilter != null)
         {
@@ -60,8 +65,9 @@ public class EnemySearchlight : MonoBehaviour
 
     private void Update()
     {
-        SweepSearchlight();
-        bool canSeePlayer = CanSeePlayer();
+        // SweepSearchlight();
+        FaceTowardsMovement();
+        canSeePlayer = CanSeePlayer();
         UpdateAlertState(canSeePlayer);
         UpdateVisual();
         DrawConeMesh();
@@ -88,6 +94,26 @@ public class EnemySearchlight : MonoBehaviour
         float offset = Mathf.PingPong(sweepTimer, sweepAngle * 2f) - sweepAngle;
         Quaternion sweepTargetRot = Quaternion.Euler(0, baseFacingAngle + offset, 0);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, sweepTargetRot, sweepSpeed * 2f * Time.deltaTime);
+    }
+
+    private void FaceTowardsMovement()
+    {
+        // Calculate the movement direction direction vector
+        Vector3 direction = transform.position - lastPosition;
+
+        // Flatten the Y-axis if you don't want the object tilting up/down on slopes
+        // direction.y = 0; 
+
+        if (direction.sqrMagnitude > 0.000001f)
+        {
+            // Smoothly rotate towards the target direction
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            // transform.rotation = targetRotation;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
+        }
+
+        // Store the position for the next frame
+        lastPosition = transform.position;
     }
 
     private bool CanSeePlayer()

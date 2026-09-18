@@ -37,7 +37,8 @@ public class EnemyMover : MonoBehaviour
                 break;
             case EnemySearchlight.AlertState.Alert:
                 agent.speed = chaseSpeed;
-                if (player != null) agent.SetDestination(player.position);
+                if (player != null && searchlight.canSeePlayer) agent.SetDestination(player.position);
+                else agent.SetDestination(searchlight.LastKnownPlayerPosition);
                 break;
         }
     }
