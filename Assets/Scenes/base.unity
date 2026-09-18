@@ -1397,14 +1397,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: cameraUI
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: snapOverlay
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1452,10 +1444,6 @@ PrefabInstance:
     - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: ceilingCheckMask.m_Bits
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6806995806706978375, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: notebookMenu
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
