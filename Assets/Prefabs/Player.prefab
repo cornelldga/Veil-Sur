@@ -256,9 +256,12 @@ MonoBehaviour:
   normalFOV: 60
   zoomedFOV: 30
   zoomSpeed: 10
+  maxPhotoRange: 10
   photoOcclusionMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  innerRadiusFraction: 0.3
+  outerRadiusFraction: 0.7
   snapOverlay: {fileID: 5461335310042730715, guid: d99d2c6f8ffdd45478b41d64613bbb9f, type: 3}
 --- !u!136 &5570794706041152154
 CapsuleCollider:
