@@ -17,6 +17,7 @@ public class PhotoCameraController : MonoBehaviour
     [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 10f;
     [SerializeField] private LayerMask photoOcclusionMask = ~0;
+    
 
     private PlayerControls controls;
     private PlayerStateController playerStateController;
@@ -102,6 +103,7 @@ public class PhotoCameraController : MonoBehaviour
         PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
         photoNote.SetBounds(notebookMenu.transform as RectTransform);
         photoNote.LoadImage(photo);
+        playerStateController.SetTakenPicture(true);
         foreach (string subjectId in subjectIds)
         {
             photoNote.AddSubject(subjectId);
