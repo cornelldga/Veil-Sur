@@ -295,12 +295,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bac42afb8b08a324d8690513d0c89f66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoudnessControl
-  normalLoudnessDetector: {fileID: 0}
-  enhancedLoudnessDetector: {fileID: 0}
+  loudnessDetectorCollider: {fileID: 3284144128573982454}
   crouchRadius: 2
   walkRadius: 5
   runRadius: 10
-  enhancedMultiplier: 2
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0
