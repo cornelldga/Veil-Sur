@@ -208,7 +208,7 @@ public class EnemySearchlight : MonoBehaviour
     {
         if (CurrentState == newState) return;
         CurrentState = newState;
-        Debug.Log(newState);
+        // Debug.Log(newState);
 
         if (newState == AlertState.Patrol) sweepTimer = 0f;
     }
@@ -305,6 +305,6 @@ public class EnemySearchlight : MonoBehaviour
     public void UpdateInvestigateCounter() 
     {
         timesInvestigated++;
-        Debug.Log("Times wandered: " + timesInvestigated);
+        // Debug.Log("Times wandered: " + timesInvestigated);
     }
 }
