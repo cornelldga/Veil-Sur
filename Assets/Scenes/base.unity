@@ -2108,6 +2108,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3284144128573982454, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: cameraUI
       value: 
@@ -2154,6 +2158,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5457027851315915008, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5457027851315915008, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
@@ -2392,6 +2400,18 @@ PrefabInstance:
       propertyPath: spotLight
       value: 
       objectReference: {fileID: 410087040}
+    - target: {fileID: 2144063137804506192, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: sweepAngle
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 2144063137804506192, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: sweepSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2144063137804506192, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.68

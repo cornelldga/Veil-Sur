@@ -1,8 +1,10 @@
 using UnityEngine;
-
+/// <summary>
+/// This class handles state changes for enemy AI.
+/// </summary>
 public class EnemySearchlight : MonoBehaviour
 {
-    public enum AlertState { Patrol, Suspicious, Alert }
+    public enum AlertState { Patrol, Suspicious, Alert, Investigate }
 
     [Header("Target")]
     [SerializeField] private Transform player;
@@ -23,6 +25,10 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] private float timeToAlert = 0.6f;   
     [SerializeField] private float suspicionDecayRate = 1f; 
     [SerializeField] private float loseAlertAfter = 3f; 
+    /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
+    [SerializeField] private int investigateCount = 3; 
+
+
 
     [Header("Visuals")]
     [SerializeField] private Light spotLight;
@@ -39,17 +45,23 @@ public class EnemySearchlight : MonoBehaviour
 
     private Mesh coneMesh;
 
+    [Header("Public Fields")]
     public AlertState CurrentState { get; private set; } = AlertState.Patrol;
     public Vector3 LastKnownPlayerPosition { get; private set; }
+    public bool canSeePlayer = false;
 
     private float baseFacingAngle;
     private float sweepTimer;
     private float detectionMeter;
+    private float timesInvestigated; // How many times the mutant already looked around in investigate state.
     private float lastSeenTimer;
+
+    private Vector3 lastPosition; // Used to determine where to face while moving
 
     private void Start()
     {
         baseFacingAngle = transform.eulerAngles.y;
+        lastPosition = transform.position;
 
         if (showConeMesh && coneMeshFilter != null)
         {
@@ -60,8 +72,9 @@ public class EnemySearchlight : MonoBehaviour
 
     private void Update()
     {
-        SweepSearchlight();
-        bool canSeePlayer = CanSeePlayer();
+        // SweepSearchlight();
+        FaceTowardsMovement();
+        canSeePlayer = CanSeePlayer();
         UpdateAlertState(canSeePlayer);
         UpdateVisual();
         DrawConeMesh();
@@ -69,7 +82,7 @@ public class EnemySearchlight : MonoBehaviour
 
     private Vector3 EyePosition => transform.position + Vector3.up * eyeHeight;
 
-    private void SweepSearchlight()
+    private void SweepSearchlight() // Currently not used
     {
         if (CurrentState == AlertState.Alert)
         {
@@ -88,6 +101,27 @@ public class EnemySearchlight : MonoBehaviour
         float offset = Mathf.PingPong(sweepTimer, sweepAngle * 2f) - sweepAngle;
         Quaternion sweepTargetRot = Quaternion.Euler(0, baseFacingAngle + offset, 0);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, sweepTargetRot, sweepSpeed * 2f * Time.deltaTime);
+    }
+
+    /** When patrolling, search cone is in direction of mutant movement. */
+    private void FaceTowardsMovement()
+    {
+        // Calculate the movement direction direction vector
+        Vector3 direction = transform.position - lastPosition;
+
+        // Flatten the Y-axis if you don't want the object tilting up/down on slopes
+        // direction.y = 0; 
+
+        if (direction.sqrMagnitude > 0.000001f)
+        {
+            // Smoothly rotate towards the target direction
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            // transform.rotation = targetRotation;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
+        }
+
+        // Store the position for the next frame
+        lastPosition = transform.position;
     }
 
     private bool CanSeePlayer()
@@ -122,7 +156,6 @@ public class EnemySearchlight : MonoBehaviour
         return false;
     }
 
-    //FINITE STATE MACHINE YAH
     private void UpdateAlertState(bool canSeePlayer)
     {
         if (canSeePlayer)
@@ -151,7 +184,22 @@ public class EnemySearchlight : MonoBehaviour
 
             case AlertState.Alert:
                 if (!canSeePlayer && lastSeenTimer >= loseAlertAfter)
-                    SetState(AlertState.Suspicious);
+                {
+                    GetComponent<EnemyMover>()
+                        .RegisterDetectionEvent(LastKnownPlayerPosition);
+                }
+                break;
+            case AlertState.Investigate:
+                if (canSeePlayer && detectionMeter >= timeToAlert)
+                {
+                    SetState(AlertState.Alert);
+                }
+                else if (!canSeePlayer &&
+                        timesInvestigated >= investigateCount &&
+                        detectionMeter <= 0f)
+                {
+                    SetState(AlertState.Patrol);
+                }
                 break;
         }
     }
@@ -160,6 +208,7 @@ public class EnemySearchlight : MonoBehaviour
     {
         if (CurrentState == newState) return;
         CurrentState = newState;
+        // Debug.Log(newState);
 
         if (newState == AlertState.Patrol) sweepTimer = 0f;
     }
@@ -167,13 +216,8 @@ public class EnemySearchlight : MonoBehaviour
     private void UpdateVisual()
     {
         if (spotLight == null) return;
-        Color target = CurrentState switch
-        {
-            AlertState.Suspicious => suspiciousColor,
-            AlertState.Alert => alertColor,
-            _ => patrolColor
-        };
-        spotLight.color = Color.Lerp(spotLight.color, target, Time.deltaTime * 5f);
+
+        spotLight.color = GetDetectionColor();
         spotLight.spotAngle = viewAngle;
         spotLight.range = viewDistance;
     }
@@ -219,14 +263,48 @@ public class EnemySearchlight : MonoBehaviour
 
         if (coneMeshRenderer != null)
         {
-            Color c = CurrentState switch
-            {
-                AlertState.Suspicious => suspiciousColor,
-                AlertState.Alert => alertColor,
-                _ => patrolColor
-            };
+            Color c = GetDetectionColor();
             c.a = coneAlpha;
             coneMeshRenderer.material.color = c;
         }
+    }
+
+    // Chat helped make the cone color stuff prettier
+    private Color GetDetectionColor()
+    {
+        if (detectionMeter <= timeToSuspicious)
+        {
+            float t = Mathf.InverseLerp(
+                0f, timeToSuspicious, detectionMeter);
+
+            return Color.Lerp(patrolColor, suspiciousColor, t);
+        }
+
+        float alertProgress = Mathf.InverseLerp(
+            timeToSuspicious, timeToAlert, detectionMeter);
+
+        return Color.Lerp(suspiciousColor, alertColor, alertProgress);
+    }
+
+    // PUBLIC METHODS
+    /** Called by EnemyMover to change state based on enemy position; 
+    possibly consider combining the two files atp? */
+    public void setInvestigate() 
+    {
+        if (CurrentState == AlertState.Alert && canSeePlayer)
+        {
+            return;
+        }
+        SetState(AlertState.Investigate);
+        timesInvestigated = 0;
+        
+    }   
+
+     /** Called by EnemyMover whenever a mutant reaches its wander target and gets
+     a new one */
+    public void UpdateInvestigateCounter() 
+    {
+        timesInvestigated++;
+        // Debug.Log("Times wandered: " + timesInvestigated);
     }
 }
