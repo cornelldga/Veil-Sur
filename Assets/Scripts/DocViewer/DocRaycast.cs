@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class DocRaycast : MonoBehaviour
 {
@@ -10,9 +11,6 @@ public class DocRaycast : MonoBehaviour
     
     private DocController _docController;
 
-    [SerializeField] private KeyCode docInteractKey;
-
-
     void Start()
     {
         _camera = GetComponent<Camera>();
@@ -22,7 +20,8 @@ public class DocRaycast : MonoBehaviour
     /// <summary>
     /// Update() will, once per frame, use Raycast to check if the player is
     /// looking at a valid readable document. If it can find a DocController
-    /// component, the player can then input docInteractKey to open the viewer.
+    /// component, the document opens.
+    /// TBD: Work with Player team to add input.
     /// </summary>
     private void Update()
     {
@@ -31,24 +30,23 @@ public class DocRaycast : MonoBehaviour
             var readableDoc = hit.collider.GetComponent<DocController>();
             if (readableDoc != null)
             {
-                // doccontroller = readabledoc
+                _docController = readableDoc;
                 Debug.Log("Hit!");
             }
             else
             {
-                // clear item
+                ClearDoc();
             }
         }
         else
         {
-            // also clear here!
+            ClearDoc();
         }
         if (_docController != null)
             {
-                if (Input.GetKeyDown(docInteractKey))
-                {
-                    // doccontroller.Show, we put it on the screen
-                }
+                // Here, I want to work with someone on the Player team 
+                // so we can put a conditional on input.
+                _docController.ShowDoc();
             }
     }
 
