@@ -109,7 +109,7 @@ public class PhotoCameraController : MonoBehaviour
         GameObject photograph = Instantiate(photographPrefab, notebookMenu.transform);
         PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
         photoNote.SetSubject(DetectPhotographedSubject());
-        photoNote.setBounds(notebookMenu.transform as RectTransform);
+        photoNote.SetBounds(notebookMenu.transform as RectTransform);
         photoNote.LoadImage(photo);
     }
 
