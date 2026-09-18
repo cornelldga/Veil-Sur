@@ -2157,6 +2157,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5457027851315915008, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5457027851315915008, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -2399,6 +2403,10 @@ PrefabInstance:
     - target: {fileID: 2144063137804506192, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: sweepSpeed
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2144063137804506192, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalPosition.x
