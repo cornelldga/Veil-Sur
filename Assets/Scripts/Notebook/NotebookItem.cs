@@ -6,11 +6,12 @@ using UnityEngine.EventSystems;
 /// item's position within assigned bounds. Concrete note types (e.g.
 /// TextNote, QuestionNote) inherit from this to add their own content.
 /// </summary>
+[RequireComponent(typeof(RectTransform))]
 public abstract class NotebookItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
-    [SerializeField] private RectTransform bounds;
     [SerializeField] private StringPin pin;
     [SerializeField] private float focusScale = 3f;
+    private RectTransform bounds;
     private RectTransform rect;
     private Vector2 mousePosition;
     private bool isFocused;
@@ -22,10 +23,12 @@ public abstract class NotebookItem : MonoBehaviour, IBeginDragHandler, IDragHand
     private void Awake()
     {
         rect = GetComponent<RectTransform>();
+        bounds = rect.parent.GetComponent<RectTransform>();
     }
 
     public void OnBeginDrag(PointerEventData e)
     {
+        pin.Disconnect();
         mousePosition = rect.anchoredPosition;
     }
 
@@ -106,7 +109,7 @@ public abstract class NotebookItem : MonoBehaviour, IBeginDragHandler, IDragHand
         return toClamp;
     }
 
-    public void setBounds(RectTransform newBounds)
+    public void SetBounds(RectTransform newBounds)
     {
         bounds = newBounds;
     }
