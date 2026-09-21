@@ -23,11 +23,15 @@ public class DogSniff : MonoBehaviour
     [SerializeField] private float scentLifetime = 10f;
     [Tooltip("How close the dog must be to a scent point to smell it or count it as reached")]
     [SerializeField] private float sniffRadius = 1.5f;
+    [Tooltip("Seconds on a trail without seeing the player before the dog gives up")]
+    [SerializeField] private float giveUpAfter = 4f;
 
     private EnemySearchlight searchlight;
     private readonly List<ScentPoint> trail = new List<ScentPoint>();
     private int trailIndex = -1;
     private float sampleTimer;
+    private float followTimer;
+    private float ignoreScentBefore = -1f;
 
     private void Start()
     {
@@ -48,6 +52,7 @@ public class DogSniff : MonoBehaviour
         if (trailIndex < 0)
         {
             trailIndex = NewestPointInRange();
+            followTimer = 0f;
         }
 
         if (trailIndex >= 0)
@@ -89,6 +94,7 @@ public class DogSniff : MonoBehaviour
     {
         for (int i = trail.Count - 1; i >= 0; i--)
         {
+            if (trail[i].time <= ignoreScentBefore) break;
             if (IsWithinSniffRadius(trail[i].position)) return i;
         }
         return -1;
@@ -96,10 +102,19 @@ public class DogSniff : MonoBehaviour
 
     /// <summary>
     /// Reports the current trail point to the searchlight, advancing to the next
-    /// point once reached. Ends the trail after the newest point.
+    /// point once reached. Ends the trail after the newest point or after
+    /// giveUpAfter seconds without a sighting.
     /// </summary>
     private void FollowTrail()
     {
+        followTimer = searchlight.canSeePlayer ? 0f : followTimer + Time.deltaTime;
+        if (followTimer >= giveUpAfter)
+        {
+            trailIndex = -1;
+            ignoreScentBefore = Time.time;
+            return;
+        }
+
         if (IsWithinSniffRadius(trail[trailIndex].position))
         {
             trailIndex++;
