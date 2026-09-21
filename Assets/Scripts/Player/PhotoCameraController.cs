@@ -10,7 +10,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(PlayerStateController))]
 public class PhotoCameraController : MonoBehaviour
 {
-    [SerializeField] private Canvas cameraUI;
+    [SerializeField] private GameObject cameraUI;
     [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
     [SerializeField] private float normalFOV = 60f;
@@ -45,7 +45,7 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         targetFOV = normalFOV;
-        cameraUI.gameObject.SetActive(false);
+        cameraUI.SetActive(false);
     }
 
     private void OnEnable()
@@ -74,7 +74,7 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         targetFOV = zoomedFOV;
-        cameraUI.gameObject.SetActive(true);
+        cameraUI.SetActive(true);
         playerStateController.SetPhotoMode(true);
         snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
     }
@@ -87,7 +87,7 @@ public class PhotoCameraController : MonoBehaviour
     public void CancelCamera()
     {
         targetFOV = normalFOV;
-        cameraUI.gameObject.SetActive(false);
+        cameraUI.SetActive(false);
         playerStateController.SetPhotoMode(false);
     }
 
