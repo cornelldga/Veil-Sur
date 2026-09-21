@@ -31,7 +31,6 @@ public class DocRaycast : MonoBehaviour
             if (readableDoc != null)
             {
                 _docController = readableDoc;
-                Debug.Log("Hit!");
             }
             else
             {
