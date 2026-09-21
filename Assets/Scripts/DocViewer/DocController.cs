@@ -14,12 +14,16 @@ public class DocData
 public class DocController : MonoBehaviour
 {
     [Header("UI Features")]
+
+    [Tooltip("The in-scene Document View canvas")]
     [SerializeField] private GameObject docCanvas;
-
+    
+    [Tooltip("The Document View text mesh of the canvas")]
     [SerializeField] private TMP_Text docTextAreaUI;
-
+    
+    [Tooltip("The name of the JSON file in Resources/")]
     [SerializeField] private string docFile = "File";
-
+    
     private DocData docData;
 
     private bool isOpen = false;

@@ -5,7 +5,10 @@ using UnityEngine.InputSystem;
 public class DocRaycast : MonoBehaviour
 {
     [Header("Document Raycast Features")]
+    
+    [Tooltip("The length of the raycast used to find readable documents")]
     [SerializeField] private float rayLength = 5f;
+    
 
     private Camera _camera;
     
