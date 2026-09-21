@@ -1,0 +1,98 @@
+{
+    "levelID": 1,
+    "levelName": "Level 1",
+    "playerPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+    },
+    "photos": [
+        {
+            "ID": "photo1",
+            "filename": "photo1.png",
+            "inAnswer": false
+        },
+        {
+            "ID": "photo2",
+            "filename": "photo2.png",
+            "inAnswer": true
+        }
+    ],
+    "dialogues": [
+        {
+            "dialogueID": 1,
+            "completed": true
+        },
+        {
+            "dialogueID": 2,
+            "completed": false
+        }
+    ],
+    "mutants": [
+        {
+            "mutantID": 1,
+            "mutantName": "Mutant 1",
+            "location": {
+                "x": 10,
+                "y": 0,
+                "z": 5
+            },
+            "rotation": {
+                "x": 0,
+                "y": 90
+            }
+        }
+    ],
+    "puzzles": [
+        {
+            "puzzleID": 1,
+            "puzzleName": "Puzzle 1",
+            "completed": false,
+            "puzzleSections": [
+                {
+                    "sectionID": 1,
+                    "sectionName": "Section 1",
+                    "completed": false
+                }
+            ]
+        }
+    ],
+    "areas": [
+        {
+            "areaID": 1,
+            "areaName": "Area 1",
+            "unlocked": true
+        }
+    ],
+    "evidence": [
+        {
+            "evidenceID": 1,
+            "evidenceName": "Evidence 1",
+            "collected": false
+        }
+    ],
+    "questions": [
+        {
+            "questionID": 1,
+            "questionText": "Question 1",
+            "answered": false,
+            "photos": [
+                {
+                    "photoID": "photo2"
+                }
+            ]
+        },
+        {
+            "questionID": 2,
+            "questionText": "Question 2",
+            "answered": false,
+            "photos": []
+        }
+    ],
+    "progress": {
+        "puzzlesCompleted": 0,
+        "areasUnlocked": 1,
+        "evidenceCollected": 0,
+        "questionsAnswered": 1
+    }
+}
