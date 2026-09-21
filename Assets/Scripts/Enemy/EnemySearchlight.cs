@@ -204,6 +204,20 @@ public class EnemySearchlight : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Lets another sense (scent, hearing) point the searchlight at a position.
+    /// Raises Patrol to Suspicious and pins the meter there. Never escalates to Alert; only sight does.
+    /// </summary>
+    /// <param name="position">World position the player is believed to be at.</param>
+    public void ReportSense(Vector3 position)
+    {
+        if (CurrentState == AlertState.Alert) return;
+
+        LastKnownPlayerPosition = position;
+        detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
+        SetState(AlertState.Suspicious);
+    }
+
     private void SetState(AlertState newState)
     {
         if (CurrentState == newState) return;
