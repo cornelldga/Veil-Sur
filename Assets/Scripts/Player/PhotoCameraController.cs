@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 /// <summary>
@@ -13,16 +15,22 @@ public class PhotoCameraController : MonoBehaviour
     private GameObject cameraUI;
     [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
+    [Header("Camera Settings")]
     [SerializeField] private float normalFOV = 60f;
     [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 10f;
     [Tooltip("The maximum range that a subject can be from the camera")]
+    [Header("Detection")]
     [SerializeField] private float maxPhotoRange = 10f;
     [SerializeField] private LayerMask photoOcclusionMask = ~0;
     [Tooltip("Radius of the inner ray circle used to determine subject")]
     [SerializeField] private float innerRadiusFraction = 0.3f;
     [Tooltip("Radius of the outer ray circle used to determine subject")]
     [SerializeField] private float outerRadiusFraction = 0.7f;
+    [Header("Blur Settings")]
+    [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
+    [SerializeField] private float blurRangePastMax = 2f;
+    [SerializeField] private float blurWeightSpeed = 10f;
 
     // Minimum amount of raycasts needed for subject to be considering in photo
     private int minRayCasts = 4;
@@ -32,6 +40,7 @@ public class PhotoCameraController : MonoBehaviour
     private GameObject notebookMenu;
     private float targetFOV;
     private Image snapOverlay;
+    private Volume blurVolume;
     private void Awake()
     {
         controls = new PlayerControls();
@@ -48,6 +57,35 @@ public class PhotoCameraController : MonoBehaviour
         targetFOV = normalFOV;
         cameraUI = UIManager.Instance.cameraGroup;
         cameraUI.SetActive(false);
+
+        CreateBlurVolume();
+    }
+
+    /// <summary>
+    /// Creates a runtime Volume with a Gaussian Depth of Field override used
+    /// to blur anything past maxPhotoRange - 1.5f while zoomed in
+    /// </summary>
+    private void CreateBlurVolume()
+    {
+        VolumeProfile profile = ScriptableObject.CreateInstance<VolumeProfile>();
+        DepthOfField depthOfField = profile.Add<DepthOfField>(true);
+
+        depthOfField.mode.overrideState = true;
+        depthOfField.mode.value = DepthOfFieldMode.Gaussian;
+
+        depthOfField.gaussianStart.overrideState = true;
+        depthOfField.gaussianStart.value = maxPhotoRange - 1.5f;
+
+        depthOfField.gaussianEnd.overrideState = true;
+        depthOfField.gaussianEnd.value = maxPhotoRange + blurRangePastMax;
+
+        GameObject blurVolumeObject = new GameObject("PhotoBlurVolume");
+        blurVolumeObject.transform.SetParent(transform, false);
+        blurVolume = blurVolumeObject.AddComponent<Volume>();
+        blurVolume.isGlobal = true;
+        blurVolume.priority = 10f;
+        blurVolume.weight = 0f;
+        blurVolume.sharedProfile = profile;
     }
 
     private void OnEnable()
@@ -76,6 +114,7 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         targetFOV = zoomedFOV;
+        blurVolume.weight = 1f;
         cameraUI.SetActive(true);
         playerStateController.SetPhotoMode(true);
         snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
@@ -89,6 +128,7 @@ public class PhotoCameraController : MonoBehaviour
     public void CancelCamera()
     {
         targetFOV = normalFOV;
+        blurVolume.weight = 0f;
         cameraUI.SetActive(false);
         playerStateController.SetPhotoMode(false);
     }
@@ -228,6 +268,7 @@ public class PhotoCameraController : MonoBehaviour
             return;
         }
 
+        // Update FOV change
         targetCamera.fieldOfView = Mathf.Lerp(targetCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
     }
 }
