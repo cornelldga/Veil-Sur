@@ -5,13 +5,15 @@ using UnityEngine;
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(StaminaController))]
 public class FirstPersonController : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float standSpeed = 5f;
     [SerializeField] private float crouchSpeed = 2.5f;
     [SerializeField] private float sprintSpeed = 8f;
-     // 2x normal gravity, snappier feel
+    [SerializeField] private float slowSpeed = 3f;
+    // 2x normal gravity, snappier feel
     [SerializeField] private float gravity = -19.62f;
 
     [Header("View")]
@@ -23,13 +25,14 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float standHeight = 2f;
     [SerializeField] private float crouchHeight = 1f;
     [SerializeField] private float crouchTransitionSpeed = 15f;
-     // What objects block uncrouching
+    // What objects block uncrouching
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
 
     private Camera playerCamera;
     private CharacterController controller;
     private PlayerControls controls;
     private PlayerStateController playerStateController;
+    private StaminaController staminaController;
 
     private float verticalLookClamped;
     private float verticalVelocity;
@@ -42,6 +45,7 @@ public class FirstPersonController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         controls = new PlayerControls();
         playerStateController = GetComponent<PlayerStateController>();
+        staminaController = GetComponent<StaminaController>();
 
         currentHeight = standHeight;
         controller.height = standHeight;
@@ -83,12 +87,32 @@ public class FirstPersonController : MonoBehaviour
     private void HandleMove()
     {
         bool sprintHeld = controls.PlayerMovement.Sprint.IsPressed();
-
-        // Crouch takes precedence over sprinting
-        float speed = sprintHeld ? sprintSpeed : standSpeed;
-        speed = playerStateController.GetCrouching() ? crouchSpeed : speed;
-
         Vector2 moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
+        bool isMoving = moveInput.sqrMagnitude > 0.01f;
+
+        float speed;
+
+        if (playerStateController.GetCrouching())
+        {
+            speed = crouchSpeed;
+            staminaController.RegenerateStamina();
+        }
+        else if (staminaController.IsExhausted)
+        {
+            speed = slowSpeed;
+            staminaController.RegenerateStamina();
+        }
+        else if (sprintHeld && isMoving)
+        {
+            speed = sprintSpeed;
+            staminaController.DrainStamina();
+        }
+        else
+        {
+            speed = standSpeed;
+            staminaController.RegenerateStamina();
+        }
+
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
         move *= speed;
 
@@ -101,6 +125,11 @@ public class FirstPersonController : MonoBehaviour
 
         move.y = verticalVelocity;
         controller.Move(move * Time.deltaTime);
+    }
+
+    public void SetRunSpeed(float speed)
+    {
+        sprintSpeed = speed;
     }
 
     /// <summary>
@@ -147,7 +176,7 @@ public class FirstPersonController : MonoBehaviour
         controller.height = currentHeight;
         controller.center = new Vector3(0f, currentHeight * 0.5f, 0f);
 
-        bool actuallyCrouching = currentHeight < standHeight - 0.01;
+        bool actuallyCrouching = currentHeight < standHeight - 0.01f;
         playerStateController.SetCrouching(actuallyCrouching);
 
         if (playerCamera != null)
