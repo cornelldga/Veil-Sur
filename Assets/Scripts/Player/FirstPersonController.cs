@@ -83,12 +83,22 @@ public class FirstPersonController : MonoBehaviour
     private void HandleMove()
     {
         bool sprintHeld = controls.PlayerMovement.Sprint.IsPressed();
+        playerStateController.SetSprinting(sprintHeld);
 
         // Crouch takes precedence over sprinting
         float speed = sprintHeld ? sprintSpeed : standSpeed;
         speed = playerStateController.GetCrouching() ? crouchSpeed : speed;
 
         Vector2 moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
+        
+        if (moveInput != Vector2.zero)
+        {
+            playerStateController.SetMoving(true);
+        } else
+        {
+            playerStateController.SetMoving(false);
+        }
+
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
         move *= speed;
 
