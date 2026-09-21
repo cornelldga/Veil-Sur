@@ -21,13 +21,4 @@ public class UIManager : MonoBehaviour
         // Keeps this object alive when switching scenes
         DontDestroyOnLoad(gameObject); 
     }
-
-    /// <summary>
-    /// Sets the Film Counter UI to the current film count.
-    /// </summary>
-    public void UpdateFilmCounter()
-    {
-        TMP_Text filmCounter = transform.GetChild(0).GetComponent<TMP_Text>();
-        filmCounter.text = GameManager.Instance.GetFilmCount().ToString();    
-    }
 }
