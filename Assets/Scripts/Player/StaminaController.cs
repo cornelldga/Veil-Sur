@@ -1,50 +1,53 @@
 using UnityEngine;
 
+/// <summary>
+/// Manages player stamina consumption, regeneration, and exhaustion states.
+/// </summary>
 public class StaminaController : MonoBehaviour
 {
-    [Header("Stamina Parameters")]
-    private float playerStamina;
-    public bool isExhausted = false;
-    [SerializeField] private float maxStamina = 100.0f;
+    [Header("Stamina Settings")]
+    private float maxStamina = 100.0f;
+    [SerializeField] private float staminaDrainRate = 25.0f;
+    [SerializeField] private float staminaRegenRate = 30.0f;
 
-    [Header("Stamina Regen Parameters")]
-    private float staminaDrain = 25;
-    private float staminaRegen = 15f;
+    private float currentStamina;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>
+    /// Indicates whether the player is fully exhausted and must recover before sprinting.
+    /// </summary>
+    public bool IsExhausted { get; private set; }
+
+    private void Start()
     {
-        playerStamina = maxStamina;
+        currentStamina = maxStamina;
     }
 
-    void Update()
-    {
-    }
-
-    // Update is called once per frame
+    /// <summary>
+    /// Drains stamina over time based.
+    /// </summary>
     public void DrainStamina()
     {
-        playerStamina -= staminaDrain * Time.deltaTime;
-        playerStamina = Mathf.Clamp(playerStamina, 0f, maxStamina);
+        currentStamina = Mathf.Max(currentStamina - (staminaDrainRate * Time.deltaTime), 0f);
 
-        if (playerStamina <= 0f)
+        if (currentStamina <= 0f)
         {
-            isExhausted = true;
+            IsExhausted = true;
         }
     }
 
+    /// <summary>
+    /// Regenerates stamina over time.
+    /// Clears `IsExhausted` once stamina reaches maxStamina.
+    /// </summary>
     public void RegenerateStamina()
     {
-        if (playerStamina < maxStamina)
-        {
-            playerStamina += staminaRegen * Time.deltaTime;
-            playerStamina = Mathf.Clamp(playerStamina, 0f, maxStamina);
+        if (currentStamina >= maxStamina) return;
 
-            // Once fully recovered, clear the exhausted state
-            if (playerStamina >= maxStamina)
-            {
-                isExhausted = false;
-            }
+        currentStamina = Mathf.Min(currentStamina + (staminaRegenRate * Time.deltaTime), maxStamina);
+
+        if (currentStamina >= maxStamina)
+        {
+            IsExhausted = false;
         }
     }
 }
