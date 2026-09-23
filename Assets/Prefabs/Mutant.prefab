@@ -246,7 +246,7 @@ MonoBehaviour:
   player: {fileID: 0}
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 513
+    m_Bits: 512
   playerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -259,10 +259,12 @@ MonoBehaviour:
   timeToAlert: 1.2
   suspicionDecayRate: 1
   loseAlertAfter: 3
+  investigateCount: 3
   spotLight: {fileID: 0}
   showConeMesh: 1
   coneMeshFilter: {fileID: 1927768490209125107}
   coneMeshRenderer: {fileID: 8898669246296371032}
+  canSeePlayer: 0
 --- !u!114 &7175148255011429168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,6 +289,8 @@ MonoBehaviour:
   suspiciousSpeed: 3
   chaseSpeed: 5
   player: {fileID: 0}
+  waitTime: 2
+  wanderRadius: 5
 --- !u!54 &1305415287986317326
 Rigidbody:
   m_ObjectHideFlags: 0
