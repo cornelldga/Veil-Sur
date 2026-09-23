@@ -150,6 +150,7 @@ public class EnemyMover : MonoBehaviour
         reachedInvestigateTarget = false;
         reachedWanderTarget = false;
         nextWanderTime = 0f;
+        Debug.Log("Now investigating " + pos);
     }
 
    
