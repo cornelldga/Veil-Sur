@@ -1,5 +1,4 @@
 using UnityEngine;
-
 /// <summary>
 /// Drives first-person control through CharacterController
 /// </summary>
@@ -30,6 +29,7 @@ public class FirstPersonController : MonoBehaviour
     private CharacterController controller;
     private PlayerControls controls;
     private PlayerStateController playerStateController;
+    private StaminaController staminaController;
 
     private float verticalLookClamped;
     private float verticalVelocity;
@@ -41,6 +41,7 @@ public class FirstPersonController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         controls = new PlayerControls();
+        staminaController = GetComponent<StaminaController>();
         playerStateController = GetComponent<PlayerStateController>();
 
         currentHeight = standHeight;
@@ -72,6 +73,7 @@ public class FirstPersonController : MonoBehaviour
     private void Update()
     {
         HandleMove();
+
         HandleLook();
         HandleCrouch();
     }
@@ -83,12 +85,37 @@ public class FirstPersonController : MonoBehaviour
     private void HandleMove()
     {
         bool sprintHeld = controls.PlayerMovement.Sprint.IsPressed();
-
-        // Crouch takes precedence over sprinting
-        float speed = sprintHeld ? sprintSpeed : standSpeed;
-        speed = playerStateController.GetCrouching() ? crouchSpeed : speed;
-
         Vector2 moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
+        bool isMoving = moveInput.sqrMagnitude > 0.01f;
+
+        float speed = standSpeed;
+
+        // bool canSprint = sprintHeld && isMoving && !staminaController.isExhausted && !playerStateController.GetCrouching();
+
+        if (playerStateController.GetCrouching())
+        {
+            speed = crouchSpeed;
+        }
+        else if (staminaController.isExhausted)
+        {
+            speed = 1f;
+
+            if (isMoving)
+            {
+                staminaController.RegenerateStamina();
+            }
+        }
+        else if (sprintHeld && isMoving)
+        {
+            speed = sprintSpeed;
+            staminaController.DrainStamina();
+        }
+        else
+        {
+            speed = standSpeed;
+            staminaController.RegenerateStamina();
+        }
+
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
         move *= speed;
 
@@ -101,6 +128,12 @@ public class FirstPersonController : MonoBehaviour
 
         move.y = verticalVelocity;
         controller.Move(move * Time.deltaTime);
+        Debug.Log(speed);
+    }
+
+    public void setRunSpeed(float speed)
+    {
+        sprintSpeed = speed;
     }
 
     /// <summary>
