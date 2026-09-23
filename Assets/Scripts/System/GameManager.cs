@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] AudioManager audioManager;
     [SerializeField] DialogueManager dialogueManager;
     public static GameManager Instance { get; private set; }
+    public static GameObject PlayerInstance { get; set; }
 
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
