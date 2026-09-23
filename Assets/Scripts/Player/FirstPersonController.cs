@@ -10,6 +10,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float standSpeed = 5f;
     [SerializeField] private float crouchSpeed = 2.5f;
     [SerializeField] private float sprintSpeed = 8f;
+    [SerializeField] private float slowSpeed = 3;
      // 2x normal gravity, snappier feel
     [SerializeField] private float gravity = -19.62f;
 
@@ -98,7 +99,7 @@ public class FirstPersonController : MonoBehaviour
         }
         else if (staminaController.isExhausted)
         {
-            speed = 1f;
+            speed = slowSpeed;
 
             if (isMoving)
             {
