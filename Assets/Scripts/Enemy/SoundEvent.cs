@@ -1,3 +1,4 @@
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 /// <summary>
@@ -20,8 +21,10 @@ public class SoundEvent : MonoBehaviour
         {
             if (col.gameObject.CompareTag("Mutant"))
             {
-                EnemyMover mutant = col.GetComponent<EnemyMover>();
-                mutant.RegisterDetectionEvent(pos);
+                // EnemyMover mutant = col.GetComponent<EnemyMover>();
+                //mutant.RegisterDetectionEvent(pos);
+                EnemySearchlight mutant = col.GetComponent<EnemySearchlight>();
+                mutant.ReportSense(pos, Priority.Sound);
             }
         }
     }

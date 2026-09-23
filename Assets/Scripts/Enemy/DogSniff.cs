@@ -124,11 +124,10 @@ public class DogSniff : MonoBehaviour
                 return;
             }
         }
-        if (searchlight.CurrentState != EnemySearchlight.AlertState.Investigate)
-        {
-            searchlight.ReportSense(trail[trailIndex].position);
-            Debug.Log("Sniffing " + trail[trailIndex].position);
-        }
+
+        searchlight.ReportSense(trail[trailIndex].position, Priority.Smell);
+        Debug.Log("Sniffing " + trail[trailIndex].position);
+        
     }
 
     /// <summary>
