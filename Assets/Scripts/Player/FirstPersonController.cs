@@ -97,7 +97,7 @@ public class FirstPersonController : MonoBehaviour
         {
             speed = crouchSpeed;
         }
-        else if (staminaController.isExhausted)
+        else if (staminaController.IsExhausted)
         {
             speed = slowSpeed;
 
