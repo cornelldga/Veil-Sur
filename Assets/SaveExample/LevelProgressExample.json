@@ -1,21 +1,29 @@
 {
     "levelID": 1,
     "levelName": "Level 1",
-    "playerPosition": {
+    "player": {
+        "position": {
         "x": 0,
         "y": 0,
         "z": 0
+        },
+        "rotation": {
+            "x": 0,
+            "y": 0
+        }
     },
     "photos": [
         {
             "ID": "photo1",
             "filename": "photo1.png",
-            "inAnswer": false
+            "inAnswer": false,
+            "subject": "subject1"
         },
         {
             "ID": "photo2",
             "filename": "photo2.png",
-            "inAnswer": true
+            "inAnswer": true,
+            "subject": "subject2"
         }
     ],
     "dialogues": [
@@ -43,6 +51,12 @@
             }
         }
     ],
+     "doors": [
+        {
+            "doorID": 1,
+            "unlocked": true
+        }
+    ],
     "puzzles": [
         {
             "puzzleID": 1,
@@ -57,20 +71,6 @@
             ]
         }
     ],
-    "areas": [
-        {
-            "areaID": 1,
-            "areaName": "Area 1",
-            "unlocked": true
-        }
-    ],
-    "evidence": [
-        {
-            "evidenceID": 1,
-            "evidenceName": "Evidence 1",
-            "collected": false
-        }
-    ],
     "questions": [
         {
             "questionID": 1,
@@ -78,7 +78,8 @@
             "answered": false,
             "photos": [
                 {
-                    "photoID": "photo2"
+                    "photoID": "photo2",
+                    "answerSlot": 1
                 }
             ]
         },
@@ -91,8 +92,6 @@
     ],
     "progress": {
         "puzzlesCompleted": 0,
-        "areasUnlocked": 1,
-        "evidenceCollected": 0,
         "questionsAnswered": 1
     }
 }
