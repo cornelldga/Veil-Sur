@@ -30,7 +30,6 @@ public class PhotoCameraController : MonoBehaviour
     [Header("Blur Settings")]
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
     [SerializeField] private float blurRangePastMax = 2f;
-    [SerializeField] private float blurWeightSpeed = 10f;
 
     // Minimum amount of raycasts needed for subject to be considering in photo
     private int minRayCasts = 4;
