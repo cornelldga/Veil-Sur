@@ -50,7 +50,6 @@ public class AudioManager : MonoBehaviour
         }
 
         instance = this;
-        DontDestroyOnLoad(gameObject);
 
         for (int i = 0; i < initialPoolSize; i++)
         {
