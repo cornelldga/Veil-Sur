@@ -1,9 +1,27 @@
 {
-  "lines": [
-    { "text": "Hello this is Veil Sur." },
-    { "text": "I don't know what to write next." },
-    { "text": "You are an android photographer." },
-    { "text": "This is very long string of letters: sdhlkfjshjfhslkjdfhksjhdfljshlfjsdkfhslkjdfhlkdsjhfkljshldjhkfjlshdljkfhsljdkfhlksjdhfjkshfkljsddhkdjhkldshfjsdhkljfdshlkjfshdlkjfshdljkhsdkfjshldfjdsfjsdjl" },
-    { "text": "Yay!" }
-  ]
+  "levels": {
+    "0": {
+      "welcome": {
+        "puzzle": null,
+        "lines": [
+          "wow i wonder how i got here",
+          "let me look around with my mouse and move with wasd"
+        ]
+      },
+      "elevator": {
+        "puzzle": "elevator",
+        "lines": [
+          "wow i wonder where that goes.",
+          "maybe i should take a look on the desk and see if there's anything interesting."
+        ]
+      },
+      "files": {
+        "puzzle": "files",
+        "lines": [
+          "hmm... i can't see what it says",
+          "maybe i should click on the file and it'll be clearer"
+        ]
+      }
+    }
+  }
 }
