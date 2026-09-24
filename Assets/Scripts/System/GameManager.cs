@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] GameObject canvas;
     [SerializeField] AudioManager audioManager;
     [SerializeField] DialogueManager dialogueManager;
     public static GameManager Instance { get; private set; }

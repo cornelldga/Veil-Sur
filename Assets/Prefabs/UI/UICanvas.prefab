@@ -741,6 +741,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f896404e053c14144a9ddbdbaa5261b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  cameraGroup: {fileID: 4668059035321674044}
+  snapOverlay: {fileID: 3075502025839716129}
+  notebookGroup: {fileID: 4272780009062522192}
 --- !u!1 &6274681145636824339
 GameObject:
   m_ObjectHideFlags: 0

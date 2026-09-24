@@ -7,6 +7,13 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance {get; private set;}
 
+    [Header("Camera UI")]
+    [SerializeField] public GameObject cameraGroup;
+    [SerializeField] public Image snapOverlay;
+
+    [Header("Notebook UI")]
+    [SerializeField] public GameObject notebookGroup;
+ 
 
     private void Awake()
     {
@@ -17,8 +24,5 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
-        
-        // Keeps this object alive when switching scenes
-        DontDestroyOnLoad(gameObject); 
     }
 }
