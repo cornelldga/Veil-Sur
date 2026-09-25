@@ -8,9 +8,9 @@ using System.Collections.Generic;
 /// </summary>
 
 
-public class PhotoManager : MonoBehaviour
+public class PhotoStorage : MonoBehaviour
 {
-   public static PhotoManager Instance { get; private set; }
+   public static PhotoStorage Instance { get; private set; }
    private readonly List<PhotoNote> photos = new List<PhotoNote>();
 
 
