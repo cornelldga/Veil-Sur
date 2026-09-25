@@ -20,5 +20,9 @@ public class DialogueTester : MonoBehaviour {
 
         if (bye.cKey.wasPressedThisFrame) hi.StartDialogue("elevator");
         if (bye.vKey.wasPressedThisFrame) hi.StartDialogue("files");
+        if (bye.bKey.wasPressedThisFrame) hi.StartDialogue("file-read");
+        if (bye.nKey.wasPressedThisFrame) hi.StartDialogue("elevator-open");
+
+
     }
 }

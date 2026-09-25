@@ -4,22 +4,38 @@
       "welcome": {
         "puzzle": null,
         "lines": [
-          "wow i wonder how i got here",
-          "let me look around with my mouse and move with wasd"
+          "aisha? aisha, can you hear me? do a little spin if you can hear me.",
+          "okay, you're in the reception of the veil sur. we have officially trespassed. very exciting. very legal.",
+          "quick systems check before you go anywhere. look around with your mouse, walk with WASD"
         ]
       },
       "elevator": {
         "puzzle": "elevator",
         "lines": [
-          "i wonder where this elevator goes.",
-          "maybe i should take a look on the desk and see if there's anything interesting."
+          "that elevator's might be your only way down, and of course it wants a passcode.",
+          "okay. think like an OYO employee. where would a tired person write down a password they're not allowed to write down?"
         ]
       },
       "files": {
         "puzzle": "files",
         "lines": [
-          "hmm... i can't see what it says",
-          "maybe i should interact with the file and it'll be clearer"
+          "employee files! i can't read a thing from this feed.",
+          "use your file viewer! we spent a pretty penny of our budget on your eyes, use them."
+        ]
+      },
+      "file-read":{
+        "puzzle": "files",
+        "lines": [
+          "haha, they record everyone but they still can't seem to remember their own passwords!",
+          "go into camera mode and take a picture of it for safekeeping!"
+        ]
+      },
+      "elevator-open":{
+        "puzzle": "null",
+        "lines": [
+          "i think this is it. once you're in there's no coming back up.",
+          "remember, you're not equipped to fight. get close, get the shot and get out.",
+          "they're spying on everyone, now it's our turn to spy on them."
         ]
       }
     }
