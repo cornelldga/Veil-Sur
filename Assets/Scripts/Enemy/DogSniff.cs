@@ -118,7 +118,7 @@ public class DogSniff : MonoBehaviour
         if (IsWithinSniffRadius(trail[trailIndex].position))
         {
             trailIndex++;
-            if (trailIndex >= trail.Count)
+            if (trailIndex >= trail.Count)  
             {
                 trailIndex = -1;
                 return;
@@ -126,7 +126,7 @@ public class DogSniff : MonoBehaviour
         }
 
         searchlight.ReportSense(trail[trailIndex].position, Priority.Smell);
-        Debug.Log("Sniffing " + trail[trailIndex].position);
+        // Debug.Log("Sniffing " + trail[trailIndex].position);
         
     }
 

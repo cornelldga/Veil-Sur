@@ -204,6 +204,7 @@ public class EnemySearchlight : MonoBehaviour
                 else if (timesLookedAround >= investigateCount)
                 {
                     SetState(AlertState.Patrol);
+                    Debug.Log("Resuming patrol");
                 }
                 break;
         }
@@ -221,7 +222,8 @@ public class EnemySearchlight : MonoBehaviour
         LastKnownPlayerPosition = position;
         detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
         SetState(AlertState.Suspicious);
-        Debug.Log("Now investigating " + position);
+        currentPriority = priority;
+        Debug.Log("Now investigating " + position + " at priority " + priority);
     }
 
     private void SetState(AlertState newState)
@@ -231,6 +233,7 @@ public class EnemySearchlight : MonoBehaviour
         // Debug.Log(newState);
 
         if (newState == AlertState.Patrol) sweepTimer = 0f;
+        else if (newState == AlertState.LookAround) timesLookedAround = 0;
     }
 
     /// <summary>
