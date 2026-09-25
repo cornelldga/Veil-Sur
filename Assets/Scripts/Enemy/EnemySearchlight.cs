@@ -2,9 +2,11 @@ using UnityEngine;
 /// <summary>
 /// This class handles state changes for enemy AI.
 /// </summary>
+/// 
+public enum Priority {Sight = 0, Sound = 1, Smell = 2, None = 999}
 public class EnemySearchlight : MonoBehaviour
 {
-    public enum AlertState { Patrol, Suspicious, Alert, Investigate }
+    public enum AlertState { Patrol, Suspicious, Alert, LookAround }
 
     [Header("Target")]
     [SerializeField] private Transform player;
@@ -28,8 +30,6 @@ public class EnemySearchlight : MonoBehaviour
     /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
     [SerializeField] private int investigateCount = 3; 
 
-
-
     [Header("Visuals")]
     [SerializeField] private Light spotLight;
     private Color patrolColor = Color.green;
@@ -42,7 +42,6 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] private MeshRenderer coneMeshRenderer;
     private int coneRayCount = 24; // resolution of the cone edge
     private float coneAlpha = 0.35f;
-
     private Mesh coneMesh;
 
     [Header("Public Fields")]
@@ -50,11 +49,13 @@ public class EnemySearchlight : MonoBehaviour
     public Vector3 LastKnownPlayerPosition { get; private set; }
     public bool canSeePlayer = false;
 
+    [Header("Private States")]
     private float baseFacingAngle;
     private float sweepTimer;
     private float detectionMeter;
-    private float timesInvestigated; // How many times the mutant already looked around in investigate state.
+    private float timesLookedAround; // How many times the mutant already looked around in investigate state.
     private float lastSeenTimer;
+    private Priority currentPriority = Priority.None;
 
     private Vector3 lastPosition; // Used to determine where to face while moving
 
@@ -179,26 +180,31 @@ public class EnemySearchlight : MonoBehaviour
 
             case AlertState.Suspicious:
                 if (detectionMeter >= timeToAlert) SetState(AlertState.Alert);
-                else if (detectionMeter <= 0f) SetState(AlertState.Patrol);
+                else if (GetComponent<EnemyMover>().ReachedSuspicionTarget() && detectionMeter <= 0f) {
+                    SetState(AlertState.LookAround);
+                    GetComponent<EnemyMover>().StartLookAround();
+                    ResetSuspicion();
+                }
                 break;
 
             case AlertState.Alert:
                 if (!canSeePlayer && lastSeenTimer >= loseAlertAfter)
                 {
-                    GetComponent<EnemyMover>()
-                        .RegisterDetectionEvent(LastKnownPlayerPosition);
+                    // GetComponent<EnemyMover>()
+                    //     .RegisterDetectionEvent(LastKnownPlayerPosition);
+                    SetState(AlertState.Suspicious);
+                    ReportSense(LastKnownPlayerPosition, Priority.Sight);
                 }
                 break;
-            case AlertState.Investigate:
+            case AlertState.LookAround:
                 if (canSeePlayer && detectionMeter >= timeToAlert)
                 {
                     SetState(AlertState.Alert);
                 }
-                else if (!canSeePlayer &&
-                        timesInvestigated >= investigateCount &&
-                        detectionMeter <= 0f)
+                else if (timesLookedAround >= investigateCount)
                 {
                     SetState(AlertState.Patrol);
+                    Debug.Log("Resuming patrol");
                 }
                 break;
         }
@@ -209,13 +215,15 @@ public class EnemySearchlight : MonoBehaviour
     /// Raises Patrol to Suspicious and pins the meter there. Never escalates to Alert; only sight does.
     /// </summary>
     /// <param name="position">World position the player is believed to be at.</param>
-    public void ReportSense(Vector3 position)
+    public void ReportSense(Vector3 position, Priority priority)
     {
-        if (CurrentState == AlertState.Alert) return;
+        if (CurrentState == AlertState.Alert || priority > currentPriority) return;
 
         LastKnownPlayerPosition = position;
         detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
         SetState(AlertState.Suspicious);
+        currentPriority = priority;
+        Debug.Log("Now investigating " + position + " at priority " + priority);
     }
 
     private void SetState(AlertState newState)
@@ -225,6 +233,15 @@ public class EnemySearchlight : MonoBehaviour
         // Debug.Log(newState);
 
         if (newState == AlertState.Patrol) sweepTimer = 0f;
+        else if (newState == AlertState.LookAround) timesLookedAround = 0;
+    }
+
+    /// <summary>
+    /// Sets currentPriority to Priority.None so any suspicious event will attract the attention of the mutant.
+    /// </summary>
+    private void ResetSuspicion()
+    {
+        currentPriority = Priority.None;   
     }
 
     private void UpdateVisual()
@@ -303,22 +320,22 @@ public class EnemySearchlight : MonoBehaviour
     // PUBLIC METHODS
     /** Called by EnemyMover to change state based on enemy position; 
     possibly consider combining the two files atp? */
-    public void setInvestigate() 
-    {
-        if (CurrentState == AlertState.Alert && canSeePlayer)
-        {
-            return;
-        }
-        SetState(AlertState.Investigate);
-        timesInvestigated = 0;
+    // public void setInvestigate() 
+    // {
+    //     if (CurrentState == AlertState.Alert && canSeePlayer)
+    //     {
+    //         return;
+    //     }
+    //     SetState(AlertState.Investigate);
+    //     timesLookedAround = 0;
         
-    }   
+    // }   
 
      /** Called by EnemyMover whenever a mutant reaches its wander target and gets
      a new one */
-    public void UpdateInvestigateCounter() 
+    public void UpdateLookAroundCounter() 
     {
-        timesInvestigated++;
-        // Debug.Log("Times wandered: " + timesInvestigated);
+        timesLookedAround++;
+        // Debug.Log("Times wandered: " + timesLookedAround);
     }
 }

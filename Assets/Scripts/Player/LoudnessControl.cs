@@ -7,7 +7,7 @@ using System.Collections;
 /// Controls the player's noise radius based on movement state and camera usage.
 /// Updates the loudness detection collider so enemies can react to player-generated sound.
 /// </summary>
-public class LoudnessControl : MonoBehaviour
+public class LoudnessControl : SoundEvent
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private PlayerStateController playerStateController;
@@ -57,6 +57,12 @@ public class LoudnessControl : MonoBehaviour
             loudnessDetectorCollider.radius = cameraRadius;
             cameraAfterNoise = true;
             StartCoroutine(Delay());
+        }
+
+        // Alert mutants
+        if (loudnessDetectorCollider.radius > 0)
+        {
+            RegisterSoundEvent(transform.position, loudnessDetectorCollider.radius);
         }
     }
 

@@ -26,7 +26,7 @@ public class EnemyMover : MonoBehaviour
     private EnemySearchlight searchlight;
     private int currentPatrolIndex;
     private Vector3 investigateTarget;
-    private bool reachedInvestigateTarget;
+    private bool reachedSuspicionTarget;
     private bool reachedWanderTarget;
     private float nextWanderTime = 0f;
 
@@ -57,10 +57,20 @@ public class EnemyMover : MonoBehaviour
                     agent.SetDestination(searchlight.LastKnownPlayerPosition);
 
                 break;
-            case EnemySearchlight.AlertState.Investigate:
+            case EnemySearchlight.AlertState.LookAround:
                 agent.speed = suspiciousSpeed;
-                Investigate();
+                LookAround();
                 break;
+        }
+
+        if (searchlight.CurrentState == EnemySearchlight.AlertState.Suspicious &&
+        !agent.pathPending && agent.remainingDistance <= waypointTolerance)
+        {
+            reachedSuspicionTarget = true;
+        }
+        else
+        {
+            reachedSuspicionTarget = false;
         }
     }
 
@@ -80,43 +90,25 @@ public class EnemyMover : MonoBehaviour
 
     /** Handles enemy movement when investigating either the last known spot of 
     the player, or a sound it heard. */
-    private void Investigate()
+    private void LookAround()
     {
-        if (!reachedInvestigateTarget)
+        if (reachedWanderTarget && Time.time >= nextWanderTime)
         {
-            agent.SetDestination(investigateTarget);
-            if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
+            if (TryGetWanderPosition(out Vector3 newPos))
             {
-                reachedInvestigateTarget = true;
-                if (TryGetWanderPosition(out Vector3 newPos))
+                if (agent.SetDestination(newPos))
                 {
-                    if (agent.SetDestination(newPos))
-                    {
-                        reachedWanderTarget = false;
-                    }
+                    reachedWanderTarget = false;
                 }
             }
         }
-        else
+        else if (!reachedWanderTarget)
         {
-            if (reachedWanderTarget && Time.time >= nextWanderTime)
+            if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
             {
-                if (TryGetWanderPosition(out Vector3 newPos))
-                {
-                    if (agent.SetDestination(newPos))
-                    {
-                        reachedWanderTarget = false;
-                    }
-                }
-            }
-            else if (!reachedWanderTarget)
-            {
-                if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
-                {
-                    reachedWanderTarget = true;
-                    searchlight.UpdateInvestigateCounter();
-                    nextWanderTime = Time.time + waitTime;
-                }
+                reachedWanderTarget = true;
+                searchlight.UpdateLookAroundCounter();
+                nextWanderTime = Time.time + waitTime;
             }
         }
     }
@@ -143,13 +135,26 @@ public class EnemyMover : MonoBehaviour
     // PUBLIC METHODS
     /** Called by EnemySearchlight whenever the mutant enters investigation state;
     necessary because some variables here need to be updated */
-    public void RegisterDetectionEvent(Vector3 pos)
+    // public void RegisterDetectionEvent(Vector3 pos)
+    // {
+    //     investigateTarget = pos;
+    //     searchlight.setInvestigate();
+    //     reachedInvestigateTarget = false;
+    //     reachedWanderTarget = false;
+    //     nextWanderTime = 0f;
+    //     Debug.Log("Now investigating " + pos);
+    // }
+
+    public void StartLookAround()
     {
-        investigateTarget = pos;
-        searchlight.setInvestigate();
-        reachedInvestigateTarget = false;
+        Debug.Log("Beginning to look around");
         reachedWanderTarget = false;
         nextWanderTime = 0f;
+    }
+
+    public bool ReachedSuspicionTarget()
+    {
+        return reachedSuspicionTarget;
     }
 
    
