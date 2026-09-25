@@ -43,6 +43,7 @@ public class FirstPersonController : MonoBehaviour
         controls = new PlayerControls();
         playerStateController = GetComponent<PlayerStateController>();
 
+
         currentHeight = standHeight;
         controller.height = standHeight;
 
@@ -54,6 +55,9 @@ public class FirstPersonController : MonoBehaviour
         {
             playerCamera.transform.localPosition = cameraStandLocalPos;
         }
+
+        //send player instance to GameManager
+        GameManager.PlayerInstance = gameObject;
     }
 
     private void OnEnable()
