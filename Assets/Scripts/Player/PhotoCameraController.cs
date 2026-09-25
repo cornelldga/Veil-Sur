@@ -100,6 +100,11 @@ public class PhotoCameraController : MonoBehaviour
             return;
         }
 
+        if (PhotoStorage.Instance.IsPhotoStorageFull())
+        {
+            return;
+        }
+
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
@@ -113,6 +118,9 @@ public class PhotoCameraController : MonoBehaviour
         photoNote.SetSubject(DetectPhotographedSubject());
         photoNote.SetBounds(notebookMenu.transform as RectTransform);
         photoNote.LoadImage(photo);
+
+        // Add photo to storage
+        PhotoStorage.Instance.AddPhoto(photoNote);
     }
 
     /// <summary>
