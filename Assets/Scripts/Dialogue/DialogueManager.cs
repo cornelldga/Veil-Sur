@@ -1,16 +1,17 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
-[System.Serializable]
-public class DialogueLine {
-    public string text;
+public class DialogueSection {
+    public string puzzle;
+    public string[] lines;
 }
 
-[System.Serializable]
 public class DialogueData {
-    public DialogueLine[] lines;
+    //levels[level #][puzzle name]
+    public Dictionary<string, Dictionary<string, DialogueSection>> levels;
 }
-
 
 /// <summary>
 /// controls dialogue loaded from json files. showing and hiding dialogue box and progressing throughout lines. 
@@ -28,7 +29,16 @@ public class DialogueManager : MonoBehaviour {
     [Tooltip("TextMeshProUGUI component that displays the current line")]
     [SerializeField] private TextMeshProUGUI dialogueText;
 
+    //
     private DialogueData dialogueData;
+    private const string jsonFileName = "Script";
+
+    //sectioned stored so that StartDialogue("name") can directly reference the dialogue in that section
+    private Dictionary<string, DialogueSection> levelSections;
+    private DialogueSection currentSection;
+
+    //set so that there are no duplicates and dialogue doesn't repeat
+    private HashSet<string> played = new HashSet<string>();
     private int currentLine = 0; //index
     private bool isDialogueActive = false;
 
@@ -43,16 +53,34 @@ public class DialogueManager : MonoBehaviour {
             return;
         }
         Instance = this;
+        TextAsset jsonFile = Resources.Load<TextAsset>(jsonFileName);
+        dialogueData = JsonConvert.DeserializeObject<DialogueData>(jsonFile.text);
         HideDialogue();
+    }
+
+    
+    /// <summary>
+    /// loads the levl
+    /// </summary>
+    /// <param name="level"> corresponding lvl</param>
+    public void LoadLevel(string level) {
+        levelSections = dialogueData.levels[level];
+        played.Clear();
+        EndDialogue();
     }
 
     /// <summary>
     ///loads a dialogue JSON file from a Resources folder and displays it
     /// </summary>
     /// <param name="jsonFileName"> json file with dialogue data </param>
-    public void StartDialogue(string jsonFileName) {
-        TextAsset jsonFile = Resources.Load<TextAsset>(jsonFileName);
-        dialogueData = JsonUtility.FromJson<DialogueData>(jsonFile.text);
+    public void StartDialogue(string sectionID) {
+        if (!levelSections.TryGetValue(sectionID, out DialogueSection section)) return;
+        if (isDialogueActive || played.Contains(sectionID)) return; //if played already then fade
+        //add something later about if a puzzle is solved or not, if already solved then don't need to
+        //bring up the dialogue even if the player hasn't seen it before
+        
+        played.Add(sectionID); //add the sectionID to the set of already played
+        currentSection = section;
         currentLine = 0;
         isDialogueActive = true;
 
@@ -64,13 +92,13 @@ public class DialogueManager : MonoBehaviour {
     /// goes to next line of dialogue when box is clicked 
     /// </summary>
     public void NextLine(){
-        if (!isDialogueActive || dialogueData == null){
+        if (!isDialogueActive || currentSection == null){
             return;
         }
 
         currentLine++;
 
-        if (currentLine >= dialogueData.lines.Length){
+        if (currentLine >= currentSection.lines.Length){
             EndDialogue();
             return;
         }
@@ -83,7 +111,7 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void DisplayCurrentLine()
     {
-        dialogueText.text = dialogueData.lines[currentLine].text;
+        dialogueText.text = currentSection.lines[currentLine];
     }
 
     /// <summary>
@@ -92,6 +120,7 @@ public class DialogueManager : MonoBehaviour {
     private void EndDialogue()
     {
         isDialogueActive = false;
+        currentSection = null;
         HideDialogue();
     }
 
