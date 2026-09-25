@@ -98,7 +98,7 @@ public class PhotoCameraController : MonoBehaviour
             return;
         }
 
-        if (PhotoManager.Instance.IsPhotoStorageFull())
+        if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
             return;
         }
@@ -118,7 +118,7 @@ public class PhotoCameraController : MonoBehaviour
         photoNote.LoadImage(photo);
 
         // Add photo to storage
-        PhotoManager.Instance.AddPhoto(photoNote);
+        PhotoStorage.Instance.AddPhoto(photoNote);
     }
 
     /// <summary>
