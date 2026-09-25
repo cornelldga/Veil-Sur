@@ -17,6 +17,7 @@ public class DialogueTester : MonoBehaviour {
         var bye = Keyboard.current;
         if (bye == null) return;
 
+
         if (bye.cKey.wasPressedThisFrame) hi.StartDialogue("elevator");
         if (bye.vKey.wasPressedThisFrame) hi.StartDialogue("files");
     }

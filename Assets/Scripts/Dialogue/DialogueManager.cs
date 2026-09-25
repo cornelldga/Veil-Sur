@@ -16,7 +16,7 @@ public class DialogueData {
 /// <summary>
 /// controls dialogue loaded from json files. showing and hiding dialogue box and progressing throughout lines. 
 /// other scripts can access through DialogueManager.Instance.
-/// <summary>
+/// </summary>
 public class DialogueManager : MonoBehaviour {
     /// <summary>
     /// how other scripts can access the dialogue manager
@@ -55,9 +55,12 @@ public class DialogueManager : MonoBehaviour {
         Instance = this;
         TextAsset jsonFile = Resources.Load<TextAsset>(jsonFileName);
         dialogueData = JsonConvert.DeserializeObject<DialogueData>(jsonFile.text);
-        HideDialogue();
     }
 
+    private void Start()
+    {
+        if(!isDialogueActive) HideDialogue();
+    }
     
     /// <summary>
     /// loads the levl
@@ -70,10 +73,11 @@ public class DialogueManager : MonoBehaviour {
     }
 
     /// <summary>
-    ///loads a dialogue JSON file from a Resources folder and displays it
+    /// plays dialogue of corresponding section IF it hasn't been played yet
     /// </summary>
-    /// <param name="jsonFileName"> json file with dialogue data </param>
+    /// <param name="sectionID"> the corresponding ID for that section of dialogue </param>
     public void StartDialogue(string sectionID) {
+        if (levelSections == null) return;
         if (!levelSections.TryGetValue(sectionID, out DialogueSection section)) return;
         if (isDialogueActive || played.Contains(sectionID)) return; //if played already then fade
         //add something later about if a puzzle is solved or not, if already solved then don't need to

@@ -11,7 +11,7 @@
       "elevator": {
         "puzzle": "elevator",
         "lines": [
-          "wow i wonder where that goes.",
+          "i wonder where this elevator goes.",
           "maybe i should take a look on the desk and see if there's anything interesting."
         ]
       },
@@ -19,7 +19,7 @@
         "puzzle": "files",
         "lines": [
           "hmm... i can't see what it says",
-          "maybe i should click on the file and it'll be clearer"
+          "maybe i should interact with the file and it'll be clearer"
         ]
       }
     }
