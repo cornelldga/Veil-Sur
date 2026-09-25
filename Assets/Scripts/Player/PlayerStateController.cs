@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(FirstPersonController))]
 public class PlayerStateController : MonoBehaviour
 {
-    [SerializeField] private GameObject notebookMenu;
+    private GameObject notebookMenu;
 
     private PlayerControls controls;
     private FirstPersonController firstPersonController;
@@ -27,6 +27,7 @@ public class PlayerStateController : MonoBehaviour
         controls = new PlayerControls();
         firstPersonController = GetComponent<FirstPersonController>();
         photoCameraController = GetComponent<PhotoCameraController>();
+        notebookMenu = UIManager.Instance.notebookGroup;
     }
 
     private void Start()

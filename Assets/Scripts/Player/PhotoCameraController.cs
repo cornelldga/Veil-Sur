@@ -10,7 +10,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(PlayerStateController))]
 public class PhotoCameraController : MonoBehaviour
 {
-    [SerializeField] private GameObject cameraUI;
+    private GameObject cameraUI;
     [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
     [SerializeField] private float normalFOV = 60f;
@@ -31,12 +31,13 @@ public class PhotoCameraController : MonoBehaviour
     private PlayerStateController playerStateController;
     private GameObject notebookMenu;
     private float targetFOV;
-    [SerializeField] private Image snapOverlay;
+    private Image snapOverlay;
     private void Awake()
     {
         controls = new PlayerControls();
         playerStateController = GetComponent<PlayerStateController>();
         notebookMenu = playerStateController.GetNotebookMenu();
+        snapOverlay = UIManager.Instance.snapOverlay;
         snapOverlay.canvasRenderer.SetAlpha(0f);
 
         if (targetCamera == null)
@@ -45,6 +46,7 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         targetFOV = normalFOV;
+        cameraUI = UIManager.Instance.cameraGroup;
         cameraUI.SetActive(false);
     }
 
