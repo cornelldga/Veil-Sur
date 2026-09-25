@@ -26,7 +26,7 @@ public class EnemyMover : MonoBehaviour
     private EnemySearchlight searchlight;
     private int currentPatrolIndex;
     private Vector3 investigateTarget;
-    private bool reachedInvestigateTarget;
+    private bool reachedSuspicionTarget;
     private bool reachedWanderTarget;
     private float nextWanderTime = 0f;
 
@@ -61,6 +61,16 @@ public class EnemyMover : MonoBehaviour
                 agent.speed = suspiciousSpeed;
                 LookAround();
                 break;
+        }
+
+        if (searchlight.CurrentState == EnemySearchlight.AlertState.Suspicious &&
+        !agent.pathPending && agent.remainingDistance <= waypointTolerance)
+        {
+            reachedSuspicionTarget = true;
+        }
+        else
+        {
+            reachedSuspicionTarget = false;
         }
     }
 
@@ -140,6 +150,11 @@ public class EnemyMover : MonoBehaviour
         Debug.Log("Beginning to look around");
         reachedWanderTarget = false;
         nextWanderTime = 0f;
+    }
+
+    public bool ReachedSuspicionTarget()
+    {
+        return reachedSuspicionTarget;
     }
 
    

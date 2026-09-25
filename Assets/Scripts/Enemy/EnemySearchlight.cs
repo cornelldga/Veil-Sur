@@ -180,7 +180,7 @@ public class EnemySearchlight : MonoBehaviour
 
             case AlertState.Suspicious:
                 if (detectionMeter >= timeToAlert) SetState(AlertState.Alert);
-                else if (detectionMeter <= 0f) {
+                else if (GetComponent<EnemyMover>().ReachedSuspicionTarget() && detectionMeter <= 0f) {
                     SetState(AlertState.LookAround);
                     GetComponent<EnemyMover>().StartLookAround();
                     ResetSuspicion();
