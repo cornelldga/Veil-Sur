@@ -19,9 +19,9 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        
+
         // Keeps this object alive when switching scenes
-        DontDestroyOnLoad(gameObject); 
+        DontDestroyOnLoad(gameObject);
 
         InitializeGame();
     }
@@ -30,5 +30,10 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
+    }
+    
+    public async void GoToLevel(string sceneName)
+    {
+        await GameSceneManager.Instance.LoadSceneAsync(sceneName);
     }
 }
