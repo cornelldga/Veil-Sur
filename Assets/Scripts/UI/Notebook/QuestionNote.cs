@@ -8,14 +8,13 @@ using UnityEngine.UI;
 public class QuestionNote : NotebookItem
 {
     [SerializeField] private SolutionRule rule;
+    [SerializeField] private Image image;
     public bool IsCorrect { get; private set; }
-    private Image image;
     private Color originalColor;
 
     private void Start()
     {
         IsCorrect = false;
-        image = GetComponent<Image>();
         originalColor = image.color;
     }
 

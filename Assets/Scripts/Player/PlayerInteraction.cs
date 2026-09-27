@@ -42,18 +42,9 @@ public class PlayerInteraction : MonoBehaviour
         { 
             if (controls.PlayerMovement.Interact.WasPerformedThisFrame())
             {
-                            Debug.Log("within range");
-                Debug.Log($"Hit: {hit.collider.gameObject.name}");
-
-                var doc = hit.collider.gameObject.GetComponent<Document>();
-                Debug.Log($"Document component found: {doc != null}");
-
                 var interactable = hit.collider.gameObject.GetComponent<Interactable>();
-                Debug.Log($"Interactable component found: {interactable != null}");
-                Debug.Log("within range");
                 if (interactable != null)
                 {
-                    Debug.Log("interaction success");
                     interactable.Interact();
                 }
             }

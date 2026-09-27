@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class Puzzle : MonoBehaviour, Interactable
 {
     [HideInInspector] public GameManager.PuzzleState puzzleState;
 
-    [SerializeField] QuestionNote questionNote;
+    [SerializeField] private List<QuestionNote> questionNotes = new List<QuestionNote>();
 
     void Awake() {
         puzzleState = GameManager.PuzzleState.UNSOLVED;
@@ -19,7 +21,14 @@ public abstract class Puzzle : MonoBehaviour, Interactable
 
     public void Interact()
     {
-        if (questionNote.IsCorrect)
+        int current = 0;
+        foreach (QuestionNote each in questionNotes) {
+            if (each.IsCorrect)
+            {
+                current++;
+            }
+        }
+        if (current==questionNotes.Count)
         {
             Solve();
         }

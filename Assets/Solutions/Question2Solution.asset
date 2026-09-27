@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a533aae77d9654c40b2aeb066d0ab98c, type: 3}
-  m_Name: DebugSolution
+  m_Name: Question2Solution
   m_EditorClassIdentifier: Assembly-CSharp::PhotoSolution
-  requiredSubjectId: debug
+  requiredSubjectId: CorrectDate
