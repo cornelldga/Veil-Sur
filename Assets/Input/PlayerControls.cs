@@ -249,8 +249,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""24dd26f1-5ef3-4a10-a534-c83280e4bbca"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""id"": ""693d2381-e971-47ee-8514-7961f3715e0c"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
