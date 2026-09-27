@@ -11,20 +11,16 @@ public class DocData
 }
 
 
-public class DocController : MonoBehaviour
+public class Document : MonoBehaviour
 {
     [Header("UI Features")]
-
-    [Tooltip("The in-scene Document View canvas")]
-    [SerializeField] private GameObject docCanvas;
-    
-    [Tooltip("The Document View text mesh of the canvas")]
-    [SerializeField] private TMP_Text docTextAreaUI;
     
     [Tooltip("The name of the JSON file in Resources/")]
-    [SerializeField] private string docFile = "File";
+    [SerializeField] private TextAsset jsonFile;
     
     private DocData docData;
+    private TMP_Text docTextAreaUI;
+    private GameObject docCanvas;
 
     private bool isOpen = false;
 
@@ -37,6 +33,12 @@ public class DocController : MonoBehaviour
         LoadDocData();
     }
 
+    private void Start()
+    {
+        docTextAreaUI = UIManager.Instance.docViewer;
+        docCanvas = UIManager.Instance.docCanvas;
+    }
+
 
     /// <summary>
     /// LoadDocData() reads and parses the JSON file. It stores the text
@@ -44,7 +46,6 @@ public class DocController : MonoBehaviour
     /// </summary>
     private void LoadDocData()
     {
-        TextAsset jsonFile = Resources.Load<TextAsset>(docFile);
         docData = JsonUtility.FromJson<DocData>(jsonFile.text);
     }
 

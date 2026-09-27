@@ -12,7 +12,7 @@ public class DocRaycast : MonoBehaviour
 
     private Camera _camera;
     
-    private DocController _docController;
+    private Document _docController;
 
     void Start()
     {
@@ -30,7 +30,7 @@ public class DocRaycast : MonoBehaviour
     {
         if (Physics.Raycast(_camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f)), transform.forward, out RaycastHit hit, rayLength))
         { 
-            var readableDoc = hit.collider.GetComponent<DocController>();
+            var readableDoc = hit.collider.GetComponent<Document>();
             if (readableDoc != null)
             {
                 _docController = readableDoc;

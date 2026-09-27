@@ -10,6 +10,11 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
 
+    public enum PuzzleState {
+        SOLVED,
+        UNSOLVED
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)

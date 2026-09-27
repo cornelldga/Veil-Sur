@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject notebookGroup;
 
     [Header("Doc Viewer")]
+    [SerializeField] public GameObject docCanvas;
     [SerializeField] public TMP_Text docViewer;
  
 
