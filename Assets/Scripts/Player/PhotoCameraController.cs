@@ -44,6 +44,10 @@ public class PhotoCameraController : MonoBehaviour
     {
         controls = new PlayerControls();
         playerStateController = GetComponent<PlayerStateController>();
+    }
+
+    private void Start()
+    {
         notebookMenu = playerStateController.GetNotebookMenu();
         snapOverlay = UIManager.Instance.snapOverlay;
         snapOverlay.canvasRenderer.SetAlpha(0f);

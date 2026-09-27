@@ -249,6 +249,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""24dd26f1-5ef3-4a10-a534-c83280e4bbca"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AimCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""3255421d-5519-4007-bf94-5093c160d885"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
