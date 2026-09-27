@@ -26,7 +26,6 @@ public class FirstPersonController : MonoBehaviour
      // What objects block uncrouching
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
 
-    private Camera playerCamera;
     private CharacterController controller;
     private PlayerControls controls;
     private PlayerStateController playerStateController;
@@ -36,6 +35,8 @@ public class FirstPersonController : MonoBehaviour
     private float currentHeight;
     private Vector3 cameraStandLocalPos;
     private Vector3 cameraCrouchLocalPos;
+
+    public Camera playerCamera;
 
     private void Awake()
     {

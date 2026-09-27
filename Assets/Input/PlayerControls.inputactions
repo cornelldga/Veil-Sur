@@ -34,7 +34,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Interact",
+                    "name": "TakePicture",
                     "type": "Button",
                     "id": "c912e68c-8106-49b2-a8d9-ffa2db4005ee",
                     "expectedControlType": "",
@@ -55,6 +55,15 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "c98bb99b-f407-4664-94df-c8dcb300fd42",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "60d885af-fa50-400e-9ade-bcc57bc01ba7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -179,14 +188,14 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Interact",
+                    "action": "TakePicture",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "86afd6e6-02d9-4908-a138-52cecd2f9118",
-                    "path": "<Keyboard>/space",
+                    "id": "55a17557-025e-413d-9045-f4bdc3c1ca21",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

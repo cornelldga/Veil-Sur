@@ -11,7 +11,7 @@ public class DocData
 }
 
 
-public class Document : MonoBehaviour
+public class Document : MonoBehaviour, Interactable
 {
     [Header("UI Features")]
     
@@ -49,40 +49,20 @@ public class Document : MonoBehaviour
         docData = JsonUtility.FromJson<DocData>(jsonFile.text);
     }
 
-
     /// <summary>
-    /// ShowDoc() reveals the UI panel of the DocView.
-    /// It presents the text of the document.
+    /// Opens or closes the doc viewer.
     /// </summary>
-    public void ShowDoc()
+    public void Interact()
     {
-        docTextAreaUI.text = docData.text;
-        docCanvas.SetActive(true);
-        isOpen = true;
-    }
-
-
-    /// <summary>
-    /// CloseDoc() hides the DocView canvas and sets isOpen to false.
-    /// </summary>
-    public void CloseDoc()
-    {
-        docCanvas.SetActive(false);
-        isOpen = false;
-    }
-
-
-    /// <summary>
-    /// Update() checks once per frame for if the document is open.
-    /// If it is open, give the player the opportunity to input the close key
-    /// and close the document.
-    /// </summary>
-    private void Update()
-    {
-        if (isOpen)
+        if (!isOpen)
         {
-            // TBD: Work with player team to close on input
-            CloseDoc();
+            docTextAreaUI.text = docData.text;
+            docCanvas.SetActive(true);
+            isOpen = true;
+        } else
+        {
+            docCanvas.SetActive(false);
+            isOpen = false;
         }
     }
 }

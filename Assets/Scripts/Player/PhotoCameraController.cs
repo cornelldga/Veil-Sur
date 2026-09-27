@@ -97,14 +97,14 @@ public class PhotoCameraController : MonoBehaviour
 
         controls.PlayerMovement.AimCamera.performed += OnAimCameraPerformed;
         controls.PlayerMovement.AimCamera.canceled += OnAimCameraCanceled;
-        controls.PlayerMovement.Interact.performed += OnSnap;
+        controls.PlayerMovement.TakePicture.performed += OnSnap;
     }
 
     private void OnDisable()
     {
         controls.PlayerMovement.AimCamera.performed -= OnAimCameraPerformed;
         controls.PlayerMovement.AimCamera.canceled -= OnAimCameraCanceled;
-        controls.PlayerMovement.Interact.performed -= OnSnap;
+        controls.PlayerMovement.TakePicture.performed -= OnSnap;
 
         controls.PlayerMovement.Disable();
     }
