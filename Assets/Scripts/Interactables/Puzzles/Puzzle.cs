@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class Puzzle : MonoBehaviour, Interactable
+public abstract class Puzzle : MonoBehaviour, Interactable
 {
     [HideInInspector] public GameManager.PuzzleState puzzleState;
 
@@ -10,11 +11,19 @@ public class Puzzle : MonoBehaviour, Interactable
         puzzleState = GameManager.PuzzleState.UNSOLVED;
     }
 
+    public void Solve()
+    {
+        puzzleState = GameManager.PuzzleState.SOLVED;
+        PuzzleSolved();
+    }
+
     public void Interact()
     {
         if (questionNote.IsCorrect)
         {
-            puzzleState = GameManager.PuzzleState.SOLVED;
+            Solve();
         }
     }
+
+    public abstract void PuzzleSolved();
 }

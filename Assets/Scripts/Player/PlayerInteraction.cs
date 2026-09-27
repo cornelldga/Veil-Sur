@@ -9,8 +9,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private Camera camera;
     private PlayerControls controls;
-    
-    private Document _docController;
 
     private void Awake()
     {
@@ -29,7 +27,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Start()
     {
-        camera = gameObject.GetComponent<FirstPersonController>().playerCamera;
+        camera = GameManager.PlayerCamera;
     }
 
 
@@ -40,13 +38,22 @@ public class PlayerInteraction : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (Physics.Raycast(camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f)), transform.forward, out RaycastHit hit, rayLength))
+        if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, rayLength))
         { 
             if (controls.PlayerMovement.Interact.WasPerformedThisFrame())
             {
-                var interactable = hit.collider.GetComponent<Interactable>();
+                            Debug.Log("within range");
+                Debug.Log($"Hit: {hit.collider.gameObject.name}");
+
+                var doc = hit.collider.gameObject.GetComponent<Document>();
+                Debug.Log($"Document component found: {doc != null}");
+
+                var interactable = hit.collider.gameObject.GetComponent<Interactable>();
+                Debug.Log($"Interactable component found: {interactable != null}");
+                Debug.Log("within range");
                 if (interactable != null)
                 {
+                    Debug.Log("interaction success");
                     interactable.Interact();
                 }
             }

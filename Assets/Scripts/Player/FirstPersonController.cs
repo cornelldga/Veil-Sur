@@ -57,8 +57,9 @@ public class FirstPersonController : MonoBehaviour
             playerCamera.transform.localPosition = cameraStandLocalPos;
         }
 
-        //send player instance to GameManager
+        // Send player instance/camera to GameManager
         GameManager.PlayerInstance = gameObject;
+        GameManager.PlayerCamera = playerCamera;
     }
 
     private void OnEnable()
