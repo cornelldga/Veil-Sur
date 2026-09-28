@@ -2,10 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance {get; private set;}
+    public static UIManager Instance { get; private set; }
+    public enum UIGroupId { MainMenu, Settings }
 
     [Header("Camera UI")]
     [SerializeField] public GameObject cameraGroup;
@@ -13,6 +15,20 @@ public class UIManager : MonoBehaviour
 
     [Header("Notebook UI")]
     [SerializeField] public GameObject notebookGroup;
+
+    [Header("Main Menu UI")]
+    [SerializeField] public UIScreen mainMenu;
+
+    [Header("Settings UI")]
+    [SerializeField] public UIScreen settingsMenu;
+
+    private Dictionary<UIGroupId, UIScreen> _groups;
+    private UIScreen _activeGroup;
+
+
+    [Header("Doc Viewer")]
+    [SerializeField] public GameObject docCanvas;
+    [SerializeField] public TMP_Text docViewer;
  
 
     private void Awake()
@@ -25,4 +41,35 @@ public class UIManager : MonoBehaviour
 
         Instance = this;
     }
+
+    private void Start()
+    {
+        _groups = new Dictionary<UIGroupId, UIScreen>
+        {
+            { UIGroupId.MainMenu, mainMenu },
+            { UIGroupId.Settings, settingsMenu }
+        };
+
+        foreach (var group in _groups.Values)
+            group.Hide();
+        Show(UIGroupId.MainMenu);
+    }
+
+    public void Show(UIGroupId id)
+    {
+        if (_activeGroup != null)
+            _activeGroup.Hide();
+
+        _activeGroup = _groups[id];
+        _activeGroup.Show();
+    }
+
+    public void HideAll()
+    {
+        if (_activeGroup != null)
+            _activeGroup.Hide();
+
+        _activeGroup = null;
+    }
+
 }

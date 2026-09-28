@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 3942358293781664924}
   - component: {fileID: 5570794706041152154}
   - component: {fileID: 2431328312245338117}
+  - component: {fileID: 28695803084452280}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -213,7 +214,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d1337db1cab35e48aec927194c80c66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStateController
-  notebookMenu: {fileID: 0}
 --- !u!114 &6391578322636226184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +251,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b8b40fdef4a7084ea8c2a6b1eee8070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotoCameraController
-  cameraUI: {fileID: 0}
   photographPrefab: {fileID: 631139541116336735, guid: 31a5b210db7d2421f99fdda81e988610, type: 3}
   normalFOV: 60
   zoomedFOV: 30
@@ -262,7 +261,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   innerRadiusFraction: 0.3
   outerRadiusFraction: 0.7
-  snapOverlay: {fileID: 0}
+  blurRangePastMax: 2
 --- !u!136 &5570794706041152154
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -303,6 +302,18 @@ MonoBehaviour:
   walkRadius: 5
   runRadius: 10
   cameraRadius: 10
+--- !u!114 &28695803084452280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805399525289963691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eb97cb2b860d49678c659b10d0f0986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0

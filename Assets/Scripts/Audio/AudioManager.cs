@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 /// <summary>
 /// Persistent singleton audio controller that plays 3D positional sound effects 
@@ -39,6 +40,23 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private float minDistance = 1f;
     [SerializeField] private float maxDistance = 25f;
 
+    [Header("Mixer")]
+    [Tooltip("Master audio mixer with exposed SFXVolume and MusicVolume parameters.")]
+    [SerializeField] private AudioMixer audioMixer;
+    [Tooltip("Mixer group all pooled SFX sources route through.")]
+    [SerializeField] private AudioMixerGroup sfxGroup;
+    [Tooltip("Mixer group the music source routes through.")]
+    [SerializeField] private AudioMixerGroup musicGroup;
+
+    [Header("Music")]
+    [Tooltip("Dedicated AudioSource used for background music playback.")]
+    [SerializeField] private AudioSource musicSource;
+    private const string SfxVolumeParam = "SFXVolume";
+    private const string MusicVolumeParam = "MusicVolume";
+
+    private float _currentSfxVolume = 1f;
+    private float _currentMusicVolume = 1f;
+
     private readonly Queue<AudioSource> availableSources = new Queue<AudioSource>();
 
     private void Awake()
@@ -56,6 +74,52 @@ public class AudioManager : MonoBehaviour
             availableSources.Enqueue(CreatePooledSource());
         }
     }
+
+    /// <summary>
+    /// Sets the SFX bus volume. Value is linear (0 = silent, 1 = full volume).
+    /// </summary>
+    public void SetSfxVolume(float linearVolume)
+    {
+        _currentSfxVolume = linearVolume;
+        SetMixerVolume(SfxVolumeParam, linearVolume);
+    }
+
+    /// <summary>
+    /// Sets the music bus volume. Value is linear (0 = silent, 1 = full volume).
+    /// </summary>
+    public void SetMusicVolume(float linearVolume)
+    {
+        _currentMusicVolume = linearVolume;
+        SetMixerVolume(MusicVolumeParam, linearVolume);
+    }
+
+    public float GetSfxVolume() => _currentSfxVolume;
+    public float GetMusicVolume() => _currentMusicVolume;
+
+    private void SetMixerVolume(string exposedParam, float linearVolume)
+    {
+        float dB = linearVolume > 0.0001f ? Mathf.Log10(linearVolume) * 20f : -80f;
+        audioMixer.SetFloat(exposedParam, dB);
+    }
+
+    /// <summary>
+    /// Plays a looping music track through the dedicated music source.
+    /// </summary>
+    public void PlayMusic(AudioClip clip)
+    {
+        if (clip == null || musicSource == null) return;
+
+        musicSource.clip = clip;
+        musicSource.loop = true;
+        musicSource.Play();
+    }
+
+    public void StopMusic()
+    {
+        if (musicSource == null) return;
+        musicSource.Stop();
+    }
+
 
     /// <summary>
     /// Plays a one-shot 3D sound effect at fixed world <paramref name="position"/> using a pooled
@@ -100,6 +164,7 @@ public class AudioManager : MonoBehaviour
         source.rolloffMode = AudioRolloffMode.Logarithmic;
         source.minDistance = minDistance;
         source.maxDistance = maxDistance;
+        source.outputAudioMixerGroup = sfxGroup;
 
         return source;
     }
