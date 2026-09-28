@@ -26,6 +26,10 @@ public class UIManager : MonoBehaviour
     private UIScreen _activeGroup;
 
 
+    [Header("Doc Viewer")]
+    [SerializeField] public GameObject docCanvas;
+    [SerializeField] public TMP_Text docViewer;
+ 
 
     private void Awake()
     {

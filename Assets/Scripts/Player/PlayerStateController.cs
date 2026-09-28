@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(FirstPersonController))]
 public class PlayerStateController : MonoBehaviour
 {
-    private GameObject notebookMenu;
 
     private PlayerControls controls;
     private FirstPersonController firstPersonController;
@@ -27,12 +26,6 @@ public class PlayerStateController : MonoBehaviour
         controls = new PlayerControls();
         firstPersonController = GetComponent<FirstPersonController>();
         photoCameraController = GetComponent<PhotoCameraController>();
-        notebookMenu = UIManager.Instance.notebookGroup;
-    }
-
-    private void Start()
-    {
-        notebookMenu.SetActive(false);
     }
 
     private void OnEnable()
@@ -112,7 +105,7 @@ public class PlayerStateController : MonoBehaviour
 
     public GameObject GetNotebookMenu()
     {
-        return notebookMenu;
+        return UIManager.Instance.notebookGroup;
     }
 
     /// <summary>
@@ -122,7 +115,7 @@ public class PlayerStateController : MonoBehaviour
     private void ToggleNotebook(InputAction.CallbackContext ctx)
     {
         notebookOpen = !notebookOpen;
-        notebookMenu.SetActive(notebookOpen);
+        UIManager.Instance.notebookGroup.SetActive(notebookOpen);
         SetPlayerHasControl(!notebookOpen);
 
         if (notebookOpen)
