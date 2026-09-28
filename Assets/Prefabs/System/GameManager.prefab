@@ -32,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 8630848581752035360}
   - {fileID: 3230844281278831820}
-  - {fileID: 7416259312254893807}
   - {fileID: 8794283785775190480}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -49,8 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   audioManager: {fileID: 1286349556252114741}
-  dialogueManager: {fileID: 602849236750225139}
+  dialogueManager: {fileID: 0}
   isDebugMode: 0
+  UI: {fileID: 0}
 --- !u!1001 &2731780292001827533
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -121,6 +121,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7450253034250995934}
     m_Modifications:
+    - target: {fileID: 5591390306153825740, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5620621341236601761, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -214,79 +218,6 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5620621341236601761, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
   m_PrefabInstance: {fileID: 4163184617104391041}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &5539680649762267821
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 7450253034250995934}
-    m_Modifications:
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -13.654696
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -23.9996
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -12.568867
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5781908069694159774, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_Name
-      value: DialogueManager
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
---- !u!114 &602849236750225139 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4953157069087943774, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-  m_PrefabInstance: {fileID: 5539680649762267821}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae88159f8ad2c64428659a20f4fc91eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
---- !u!4 &7416259312254893807 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-  m_PrefabInstance: {fileID: 5539680649762267821}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8088056294176502225
 PrefabInstance:
