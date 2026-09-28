@@ -1608,6 +1608,10 @@ PrefabInstance:
       propertyPath: spotLight
       value: 
       objectReference: {fileID: 410087040}
+    - target: {fileID: 9001519712609372552, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1621,6 +1625,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1305415287986317326, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2144063137804506192, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: player
       value: 
