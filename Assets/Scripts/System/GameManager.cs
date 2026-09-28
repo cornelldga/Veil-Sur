@@ -1,5 +1,7 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -29,9 +31,9 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        
+
         // Keeps this object alive when switching scenes
-        DontDestroyOnLoad(gameObject); 
+        DontDestroyOnLoad(gameObject);
 
         InitializeGame();
     }
@@ -46,6 +48,23 @@ public class GameManager : MonoBehaviour
         // Setup sound, saving profiles, loading data, etc.
     }
 
+    public async void GoToLevel(string sceneName)
+    {
+        await LoadSceneAsync(sceneName);
+    }
+    
+    public async Task LoadSceneAsync(string sceneName)
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+        if (op == null)
+        {
+            Debug.LogError($"Scene '{sceneName}' could not be loaded. Is it in Build Settings?");
+            return;
+        }
+
+        while (!op.isDone)
+            await Task.Yield();
+    }
     // Temporary method
     public void Win()
     {
