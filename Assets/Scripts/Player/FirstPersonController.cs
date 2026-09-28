@@ -26,7 +26,6 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
 
-    private Camera playerCamera;
     private CharacterController controller;
     private PlayerControls controls;
     private PlayerStateController playerStateController;
@@ -37,6 +36,8 @@ public class FirstPersonController : MonoBehaviour
     private float currentHeight;
     private Vector3 cameraStandLocalPos;
     private Vector3 cameraCrouchLocalPos;
+
+    public Camera playerCamera;
 
     private void Awake()
     {
@@ -56,6 +57,10 @@ public class FirstPersonController : MonoBehaviour
         {
             playerCamera.transform.localPosition = cameraStandLocalPos;
         }
+
+        // Send player instance/camera to GameManager
+        GameManager.PlayerInstance = gameObject;
+        GameManager.PlayerCamera = playerCamera;
     }
 
     private void OnEnable()
