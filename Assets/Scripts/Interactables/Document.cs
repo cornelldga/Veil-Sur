@@ -1,0 +1,83 @@
+using UnityEngine;
+using TMPro;
+using System;
+using System.Runtime.CompilerServices;
+using NUnit.Framework;
+
+[System.Serializable]
+public class DocData
+{
+    public string text;
+}
+
+
+public class Document : MonoBehaviour, Interactable
+{
+    [Header("UI Features")]
+    
+    [Tooltip("The name of the JSON file in Resources/")]
+    [SerializeField] private TextAsset jsonFile;
+    
+    private DocData docData;
+    private TMP_Text docTextAreaUI;
+    private GameObject docCanvas;
+
+    private PlayerStateController playerStateController;
+    private bool isOpen = false;
+
+    /// <summary>
+    /// Awake() loads all of the JSON text into this document to display
+    /// at instantiation.
+    /// </summary>
+    private void Awake()
+    {
+        LoadDocData();
+    }
+
+    private void Start()
+    {
+        docTextAreaUI = UIManager.Instance.docViewer;
+        docCanvas = UIManager.Instance.docCanvas;
+        playerStateController = GameManager.PlayerInstance.GetComponent<PlayerStateController>();
+    }
+
+
+    /// <summary>
+    /// LoadDocData() reads and parses the JSON file. It stores the text
+    /// of the document 
+    /// </summary>
+    private void LoadDocData()
+    {
+        docData = JsonUtility.FromJson<DocData>(jsonFile.text);
+    }
+
+    /// <summary>
+    /// Opens or closes the doc viewer.
+    /// </summary>
+    public void Interact()
+    {
+        if (!isOpen)
+        {
+            docTextAreaUI.text = docData.text;
+            docCanvas.SetActive(true);
+            isOpen = true;
+        } else
+        {
+            CloseDoc();
+        }
+    }
+
+    private void CloseDoc()
+    {
+        docCanvas.SetActive(false);
+        isOpen = false;
+    }
+
+    private void Update()
+    {
+        if (isOpen && playerStateController.GetMoving())
+        {
+            CloseDoc();
+        }
+    }
+}
