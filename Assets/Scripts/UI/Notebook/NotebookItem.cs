@@ -23,7 +23,10 @@ public abstract class NotebookItem : MonoBehaviour, IBeginDragHandler, IDragHand
     private void Awake()
     {
         rect = GetComponent<RectTransform>();
-        bounds = rect.parent.GetComponent<RectTransform>();
+        if (rect.parent != null)
+        {
+            bounds = rect.parent.GetComponent<RectTransform>();
+        }
     }
 
     public void OnBeginDrag(PointerEventData e)
@@ -94,6 +97,10 @@ public abstract class NotebookItem : MonoBehaviour, IBeginDragHandler, IDragHand
 
     private Vector2 ClampToBounds(Vector2 toClamp)
     {
+        if (bounds == null)
+        {
+            return toClamp;
+        }
         // Half-sizes, since anchoredPosition is measured from the pivot
         Vector2 halfSize = rect.rect.size * 0.5f;
         Vector2 boundHalfSize = bounds.rect.size * 0.5f;
