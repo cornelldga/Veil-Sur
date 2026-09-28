@@ -36,6 +36,7 @@ public class FirstPersonController : MonoBehaviour
     private float currentHeight;
     private Vector3 cameraStandLocalPos;
     private Vector3 cameraCrouchLocalPos;
+    private bool isSprinting;
 
     public Camera playerCamera;
 
@@ -88,37 +89,57 @@ public class FirstPersonController : MonoBehaviour
     private void HandleMove()
     {
         bool sprintHeld = controls.PlayerMovement.Sprint.IsPressed();
+        bool sprintPressedThisFrame = controls.PlayerMovement.Sprint.WasPressedThisFrame();
+        
         Vector2 moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
         bool isMoving = moveInput.sqrMagnitude > 0.01f;
 
-        float speed = standSpeed;
+        // Track whether the player released the sprint key
+        if (!sprintHeld)
+        {
+            isSprinting = false;
+        }
+
+        // Can only start sprinting if the key was released first and not exhausted
+        if (sprintPressedThisFrame && isMoving && !staminaController.isExhausted)
+        {
+            isSprinting = true;
+        }
+
+        // Cancel sprinting immediately if stamina hits zero or player stops moving
+        if (staminaController.isExhausted || !isMoving)
+        {
+            isSprinting = false;
+        }
+
+        playerStateController.SetMoving(isMoving);
+        playerStateController.SetSprinting(isSprinting);
+
+        float speed;
 
         if (playerStateController.GetCrouching())
         {
             // 1. Crouch takes top priority
             speed = crouchSpeed;
+            staminaController.RegenerateStamina();
         }
         else if (staminaController.isExhausted)
         {
-            // 2. Out of stamina: stay slow even if walking, and regenerate while moving
+            // 2. Out of stamina penalty: only recovers once sprint is released
             speed = exhaustedSpeed;
-
-            if (isMoving)
-            {
-                staminaController.RegenerateStamina();
-            }
+            staminaController.RegenerateStamina();
         }
-        else if (sprintHeld && isMoving)
+        else if (isSprinting)
         {
-            // 3. Normal sprinting when not exhausted
+            // 3. Actively sprinting
             speed = sprintSpeed;
             staminaController.DrainStamina();
         }
         else
         {
-            // 4. Normal walking/standing: regenerate stamina
+            // 4. Normal walking/standing: only recovers if not holding sprint
             speed = standSpeed;
-            staminaController.RegenerateStamina();
+            if (!sprintHeld) staminaController.RegenerateStamina();
         }
 
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
