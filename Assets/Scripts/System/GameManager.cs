@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -31,9 +33,22 @@ public class GameManager : MonoBehaviour
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
     }
-    
+
     public async void GoToLevel(string sceneName)
     {
-        await GameSceneManager.Instance.LoadSceneAsync(sceneName);
+        await LoadSceneAsync(sceneName);
+    }
+    
+    public async Task LoadSceneAsync(string sceneName)
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+        if (op == null)
+        {
+            Debug.LogError($"Scene '{sceneName}' could not be loaded. Is it in Build Settings?");
+            return;
+        }
+
+        while (!op.isDone)
+            await Task.Yield();
     }
 }
