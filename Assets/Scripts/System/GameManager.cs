@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -10,6 +11,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
+
+    // TEMP, REMOVE LATER
+    [SerializeField] private GameObject UI;
 
     public enum PuzzleState {
         SOLVED,
@@ -34,7 +38,14 @@ public class GameManager : MonoBehaviour
 
     private void InitializeGame()
     {
+        UI.SetActive(false);
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
+    }
+
+    // Temporary method
+    public void Win()
+    {
+        UI.SetActive(true);
     }
 }

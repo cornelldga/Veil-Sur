@@ -6,5 +6,6 @@ public class Elevator : Puzzle, Interactable
     {
        // Elevator opens 
        Debug.Log("YOU WIN");
+       GameManager.Instance.Win();
     }
 }
