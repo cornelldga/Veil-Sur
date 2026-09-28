@@ -1,7 +1,7 @@
 {
-    "scrapbook": [
+    "mentalMap": [
         {
-            "page": 1,
+            "section": 1,
             "questions": [
                 {
                     "questionId": "q1",
@@ -40,7 +40,7 @@
             ]
         },
         {
-            "page": 2,
+            "section": 2,
             "questions": [
                 {
                     "questionId": "q3",

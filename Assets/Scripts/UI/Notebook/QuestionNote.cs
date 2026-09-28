@@ -20,7 +20,7 @@ public class QuestionNote : NotebookItem
     }
 
     [SerializeField] private TextAsset investigationData;
-    [SerializeField] private int page = 1;
+    [SerializeField] private int section = 1;
     [SerializeField] private string questionId;
     private InvestigationData data;
     private InvestigationQuestion question;
@@ -82,14 +82,14 @@ public class QuestionNote : NotebookItem
         }
         data = JsonUtility.FromJson<InvestigationData>(investigationData.text);
 
-        // Search scrapbook pages
-        foreach (InvestigationPage investigationPage in data.scrapbook) {
-            // Pages that do not match QuestionNote's page number
-            if (investigationPage.page != page || investigationPage.questions == null) {
+        // Search mental map sections
+        foreach (InvestigationSection investigationSection in data.mentalMap) {
+            // Sections that do not match QuestionNote's section number
+            if (investigationSection.section != section || investigationSection.questions == null) {
                 continue;
             }
 
-            foreach (InvestigationQuestion investigationQuestion in investigationPage.questions) {
+            foreach (InvestigationQuestion investigationQuestion in investigationSection.questions) {
                 // If id matches, store question & stop search
                 if (investigationQuestion.questionId == questionId) {
                     question = investigationQuestion;
@@ -118,14 +118,14 @@ public class QuestionNote : NotebookItem
     // Loaded investigation data
     [System.Serializable]
     public class InvestigationData {
-        public InvestigationPage[] scrapbook;
+        public InvestigationSection[] mentalMap;
     }
 
-    // One page and questions
+    // One section and questions
     [System.Serializable]
-    public class InvestigationPage
+    public class InvestigationSection
     {
-        public int page;
+        public int section;
         public InvestigationQuestion[] questions;
     }
 
