@@ -38,7 +38,10 @@ public class GameManager : MonoBehaviour
 
     private void InitializeGame()
     {
-        UI.SetActive(false);
+        if (UI!=null)
+        {
+            UI.SetActive(false);
+        }
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
     }
@@ -46,6 +49,9 @@ public class GameManager : MonoBehaviour
     // Temporary method
     public void Win()
     {
-        UI.SetActive(true);
+        if (UI!=null)
+        {
+            UI.SetActive(true);
+        }
     }
 }
