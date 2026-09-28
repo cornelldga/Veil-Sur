@@ -6,12 +6,7 @@ using Newtonsoft.Json;
 public class DialogueSection {
     public string puzzle;
     public string[] lines;
-}
-
-public class DialogueData {
-    //levels[level #][puzzle name]
-    public Dictionary<string, Dictionary<string, DialogueSection>> levels;
-}
+}   
 
 /// <summary>
 /// controls dialogue loaded from json files. showing and hiding dialogue box and progressing throughout lines. 
@@ -29,10 +24,8 @@ public class DialogueManager : MonoBehaviour {
     [Tooltip("TextMeshProUGUI component that displays the current line")]
     [SerializeField] private TextMeshProUGUI dialogueText;
 
-    //
-    private DialogueData dialogueData;
-    private const string jsonFileName = "Script";
-
+    
+    private const string dialogueFolder = "Dialogue/Level ";
     //sectioned stored so that StartDialogue("name") can directly reference the dialogue in that section
     private Dictionary<string, DialogueSection> levelSections;
     private DialogueSection currentSection;
@@ -43,7 +36,7 @@ public class DialogueManager : MonoBehaviour {
     private bool isDialogueActive = false;
 
     /// <summary>
-    /// Sets up the singleton instance and ensures the dialogue box starts hidden.
+    /// Sets up the singleton instance
     /// </summary>
     private void Awake()
     {
@@ -53,8 +46,6 @@ public class DialogueManager : MonoBehaviour {
             return;
         }
         Instance = this;
-        TextAsset jsonFile = Resources.Load<TextAsset>(jsonFileName);
-        dialogueData = JsonConvert.DeserializeObject<DialogueData>(jsonFile.text);
     }
 
     private void Start()
@@ -63,11 +54,13 @@ public class DialogueManager : MonoBehaviour {
     }
     
     /// <summary>
-    /// loads the levl
+    /// loads the levl 
     /// </summary>
     /// <param name="level"> corresponding lvl</param>
     public void LoadLevel(string level) {
-        levelSections = dialogueData.levels[level];
+        TextAsset jsonFile = Resources.Load<TextAsset>(dialogueFolder + level);
+        if (jsonFile == null) return;
+        levelSections = JsonConvert.DeserializeObject<Dictionary<string, DialogueSection>>(jsonFile.text);
         played.Clear();
         EndDialogue();
     }

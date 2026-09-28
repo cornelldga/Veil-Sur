@@ -1,6 +1,4 @@
 {
-  "levels": {
-    "0": {
       "welcome": {
         "puzzle": null,
         "lines": [
@@ -38,6 +36,4 @@
           "they're spying on everyone, now it's our turn to spy on them."
         ]
       }
-    }
-  }
 }
