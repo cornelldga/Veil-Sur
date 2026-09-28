@@ -14,8 +14,8 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] private LayerMask playerMask;
 
     [Header("Vision Cone")]
-    [SerializeField] private float viewDistance = 10f;
-    [SerializeField] private float viewAngle = 60f;      // cone angle
+    [SerializeField] private float viewDistance = 10f; 
+    [SerializeField] private float viewAngle = 60f;      // vision detection cone angle
     [SerializeField] private float eyeHeight;     // raycast origin offset up from pivot
 
     [Header("Sweep (Patrol)")]
@@ -26,6 +26,7 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] private float timeToSuspicious = 0.3f;
     [SerializeField] private float timeToAlert = 0.6f;   
     [SerializeField] private float suspicionDecayRate = 1f; 
+    [SerializeField] private float maxDetectionMultiplier = 3f; // How quickly detection meter increases close-up
     [SerializeField] private float loseAlertAfter = 3f; 
     /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
     [SerializeField] private int investigateCount = 3; 
@@ -52,12 +53,16 @@ public class EnemySearchlight : MonoBehaviour
     [Header("Private States")]
     private float baseFacingAngle;
     private float sweepTimer;
-    private float detectionMeter;
+    private float detectionMeter; // Transitions the mutant's state from Patrol -> Suspicious -> Alert
     private float timesLookedAround; // How many times the mutant already looked around in investigate state.
-    private float lastSeenTimer;
-    private Priority currentPriority = Priority.None;
+    private float lastSeenTimer; // Used to determine
+    private Priority currentPriority = Priority.None; // The priority of the suspicious event the mutant is currently investigating
+    // While the mutant is investigating, it will only switch to investigating another event if it has higher or equal priority.
 
-    private Vector3 lastPosition; // Used to determine where to face while moving
+    private Vector3 lastPosition; // This mutant's position last frame. Used to determine where to face while moving
+    
+    private float distanceToPlayer; // How far the mutant is from the player if within LOS.
+    // Used to determine how quickly the suspicion meter is raised (smaller distance = faster suspicion)
 
     private void Start()
     {
@@ -103,8 +108,10 @@ public class EnemySearchlight : MonoBehaviour
         Quaternion sweepTargetRot = Quaternion.Euler(0, baseFacingAngle + offset, 0);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, sweepTargetRot, sweepSpeed * 2f * Time.deltaTime);
     }
-
-    /** When patrolling, search cone is in direction of mutant movement. */
+    
+    /// <summary>
+    /// Faces mutant's search cone is the direction of its movement while the mutant is patrolling.
+    /// </summary>
     private void FaceTowardsMovement()
     {
         // Calculate the movement direction direction vector
@@ -125,6 +132,9 @@ public class EnemySearchlight : MonoBehaviour
         lastPosition = transform.position;
     }
 
+    /// <summary>
+    /// Updates whether the mutant has LOS to the player and how far away the player is.
+    /// </summary>
     private bool CanSeePlayer()
     {
         if (player == null)
@@ -135,6 +145,7 @@ public class EnemySearchlight : MonoBehaviour
         Vector3 eye = EyePosition;
         Vector3 toPlayer = player.position - eye;
         float distance = toPlayer.magnitude;
+        distanceToPlayer = distance;
         if (distance > viewDistance)
         {
             return false;
@@ -157,12 +168,19 @@ public class EnemySearchlight : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Updates the mutant's current state.
+    /// </summary>
+    /// <param name="canSeePlayer">Whether the mutant sees the player in its vision cone or not.</param>
     private void UpdateAlertState(bool canSeePlayer)
     {
         if (canSeePlayer)
         {
             lastSeenTimer = 0f;
-            detectionMeter += Time.deltaTime;
+            // Detect player faster at closer distances
+            float proximity = Mathf.Clamp01(1f - distanceToPlayer / viewDistance);
+            float multiplier = 1f + proximity * (maxDetectionMultiplier - 1f);
+            detectionMeter += Time.deltaTime * multiplier;
         }
         else
         {
@@ -212,7 +230,7 @@ public class EnemySearchlight : MonoBehaviour
 
     /// <summary>
     /// Lets another sense (scent, hearing) point the searchlight at a position.
-    /// Raises Patrol to Suspicious and pins the meter there. Never escalates to Alert; only sight does.
+    /// Sets state to Suspicious. Never escalates to Alert; only sight does.
     /// </summary>
     /// <param name="position">World position the player is believed to be at.</param>
     public void ReportSense(Vector3 position, Priority priority)
@@ -226,6 +244,10 @@ public class EnemySearchlight : MonoBehaviour
         Debug.Log("Now investigating " + position + " at priority " + priority);
     }
 
+    /// <summary>
+    /// Sets mutant state.
+    /// </summary>
+    /// <param name="newState">State to set the mutant to</param>
     private void SetState(AlertState newState)
     {
         if (CurrentState == newState) return;
@@ -244,6 +266,9 @@ public class EnemySearchlight : MonoBehaviour
         currentPriority = Priority.None;   
     }
 
+    /// <summary>
+    /// Updates the color of the detection cone visual.
+    /// </summary>
     private void UpdateVisual()
     {
         if (spotLight == null) return;
@@ -300,7 +325,9 @@ public class EnemySearchlight : MonoBehaviour
         }
     }
 
-    // Chat helped make the cone color stuff prettier
+    /// <summary>
+    /// Determines the color of the vision cone based on how suspicious the mutant is. Credit to Chat
+    /// </summary>
     private Color GetDetectionColor()
     {
         if (detectionMeter <= timeToSuspicious)
@@ -331,8 +358,10 @@ public class EnemySearchlight : MonoBehaviour
         
     // }   
 
-     /** Called by EnemyMover whenever a mutant reaches its wander target and gets
-     a new one */
+    /// <summary>
+    /// Called by EnemyMover whenever a mutant finishes reaching a patrol point during its LookAround state.
+    /// Used to determine when to return the mutant to the Patrol state.
+    /// </summary>
     public void UpdateLookAroundCounter() 
     {
         timesLookedAround++;
