@@ -12,6 +12,11 @@ using UnityEngine.UI;
 [RequireComponent(typeof(PlayerStateController))]
 public class PhotoCameraController : MonoBehaviour
 {
+    private enum CameraMode
+    {
+        Photo,
+        Document
+    }
     private GameObject cameraUI;
     [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
@@ -40,6 +45,8 @@ public class PhotoCameraController : MonoBehaviour
     private float targetFOV;
     private Image snapOverlay;
     private Volume blurVolume;
+    private CameraMode currentMode = CameraMode.Photo;
+    
     private void Awake()
     {
         controls = new PlayerControls();
