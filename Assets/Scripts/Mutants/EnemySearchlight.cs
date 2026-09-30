@@ -76,6 +76,15 @@ public class EnemySearchlight : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Game over [CHANGE THIS WHEN GAMEMANAGER IS IMPLEMENTED]!");
+            // GameManager.Instance.Lose();
+        }
+    }
+
     private void Update()
     {
         // SweepSearchlight();
