@@ -1507,6 +1507,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8778038784107693722, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -59.99994
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1599,6 +1603,14 @@ PrefabInstance:
     - target: {fileID: 3920839090453783550, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: sniffRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4212406482658420663, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5784243743574498411, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8302148578949936598, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: player
