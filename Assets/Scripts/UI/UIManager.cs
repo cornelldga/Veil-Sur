@@ -17,10 +17,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject notebookGroup;
 
     [Header("Main Menu UI")]
-    [SerializeField] public UIScreen mainMenu;
+    // [SerializeField] public UIScreen mainMenu;
 
     [Header("Settings UI")]
-    [SerializeField] public UIScreen settingsMenu;
+    // [SerializeField] public UIScreen settingsMenu;
 
     private Dictionary<UIGroupId, UIScreen> _groups;
     private UIScreen _activeGroup;
@@ -44,15 +44,15 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        _groups = new Dictionary<UIGroupId, UIScreen>
-        {
-            { UIGroupId.MainMenu, mainMenu },
-            { UIGroupId.Settings, settingsMenu }
-        };
+        // _groups = new Dictionary<UIGroupId, UIScreen>
+        // {
+        //     { UIGroupId.MainMenu, mainMenu },
+        //     { UIGroupId.Settings, settingsMenu }
+        // };
 
-        foreach (var group in _groups.Values)
-            group.Hide();
-        Show(UIGroupId.MainMenu);
+        // foreach (var group in _groups.Values)
+        //     group.Hide();
+        // Show(UIGroupId.MainMenu);
     }
 
     public void Show(UIGroupId id)
