@@ -215,10 +215,12 @@ public class PhotoCameraController : MonoBehaviour
             Ray ray = targetCamera.ScreenPointToRay(screenPoint);
             if (!Physics.Raycast(ray, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
             {
+                Debug.DrawRay(ray.origin, ray.direction * maxPhotoRange, Color.red, 5f, false);
                 continue;
             }
             // Return parents too in case subject hits a child component of a photographable object (like lightbulb of lamp or smthn)
             PhotographableObject subject = hit.collider.GetComponentInParent<PhotographableObject>();
+            Debug.DrawLine(ray.origin, hit.point, subject != null ? Color.green : Color.yellow, 5f, false);
             if (subject == null)
             {
                 continue;
