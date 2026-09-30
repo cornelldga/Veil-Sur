@@ -9,7 +9,7 @@ public class EnemySearchlight : MonoBehaviour
     public enum AlertState { Patrol, Suspicious, Alert, LookAround }
 
     [Header("Target")]
-    [SerializeField] private Transform player;
+    private Transform player;
     [SerializeField] private LayerMask obstacleMask;
     [SerializeField] private LayerMask playerMask;
 
@@ -61,6 +61,7 @@ public class EnemySearchlight : MonoBehaviour
 
     private void Start()
     {
+        player = GameManager.PlayerInstance.transform;
         baseFacingAngle = transform.eulerAngles.y;
         lastPosition = transform.position;
 
