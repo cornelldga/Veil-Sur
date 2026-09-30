@@ -26,10 +26,10 @@ public class OwlSearchlight : EnemySearchlight
     /// <summary>
     /// Owl states are simpler than general mutant states. Suspicious if far from player; alert if close
     /// </summary>
-    /// <param name="canSeePlayer"></param>
+    /// <param name="canSeePlayer">Whether mutant is in LOS of player</param>
     protected override void UpdateAlertState(bool canSeePlayer)
     {
-        if (canSeePlayer && distanceToPlayer <= speedupDist)
+        if (distanceToPlayer <= speedupDist)
         {
             SetState(AlertState.Alert);
         }
@@ -61,6 +61,6 @@ public class OwlSearchlight : EnemySearchlight
     /// <param name="priority"></param>
     public virtual void ReportSense(Vector3 position, Priority priority)
     {
-        
+        return;
     }
 }
