@@ -85,7 +85,7 @@ public class EnemySearchlight : MonoBehaviour
         }
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         // SweepSearchlight();
         FaceTowardsMovement();
@@ -242,7 +242,7 @@ public class EnemySearchlight : MonoBehaviour
     /// Sets state to Suspicious. Never escalates to Alert; only sight does.
     /// </summary>
     /// <param name="position">World position the player is believed to be at.</param>
-    public void ReportSense(Vector3 position, Priority priority)
+    public virtual void ReportSense(Vector3 position, Priority priority)
     {
         if (CurrentState == AlertState.Alert || priority > currentPriority) return;
 

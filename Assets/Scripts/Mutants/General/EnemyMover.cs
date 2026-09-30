@@ -37,7 +37,7 @@ public class EnemyMover : MonoBehaviour
         agent.updateRotation = false;
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         switch (searchlight.CurrentState)
         {
