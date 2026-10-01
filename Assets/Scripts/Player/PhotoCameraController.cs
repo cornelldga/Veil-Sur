@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -46,6 +48,8 @@ public class PhotoCameraController : MonoBehaviour
     private Image snapOverlay;
     private Volume blurVolume;
     private CameraMode currentMode = CameraMode.Photo;
+    private TMP_Text docPreviewText;
+    private GameObject docPreviewCanvas;
     
     private void Awake()
     {
@@ -67,6 +71,9 @@ public class PhotoCameraController : MonoBehaviour
         targetFOV = normalFOV;
         cameraUI = UIManager.Instance.cameraGroup;
         cameraUI.SetActive(false);
+
+        docPreviewText = UIManager.Instance.docViewer;
+        docPreviewCanvas = UIManager.Instance.docCanvas;
 
         CreateBlurVolume();
     }
@@ -105,6 +112,8 @@ public class PhotoCameraController : MonoBehaviour
         controls.PlayerMovement.AimCamera.performed += OnAimCameraPerformed;
         controls.PlayerMovement.AimCamera.canceled += OnAimCameraCanceled;
         controls.PlayerMovement.TakePicture.performed += OnSnap;
+
+        controls.PlayerMovement.SwapCameraMode.performed += OnSwapCameraMode;
     }
 
     private void OnDisable()
@@ -112,6 +121,8 @@ public class PhotoCameraController : MonoBehaviour
         controls.PlayerMovement.AimCamera.performed -= OnAimCameraPerformed;
         controls.PlayerMovement.AimCamera.canceled -= OnAimCameraCanceled;
         controls.PlayerMovement.TakePicture.performed -= OnSnap;
+
+        controls.PlayerMovement.SwapCameraMode.performed -= OnSwapCameraMode;
 
         controls.PlayerMovement.Disable();
     }
@@ -122,12 +133,15 @@ public class PhotoCameraController : MonoBehaviour
         {
             return;
         }
-
         targetFOV = zoomedFOV;
         blurVolume.weight = 1f;
         cameraUI.SetActive(true);
         playerStateController.SetPhotoMode(true);
         snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
+
+        currentMode = CameraMode.Photo; // Always start in Photo mode
+
+        Debug.Log(currentMode);
     }
 
     private void OnAimCameraCanceled(InputAction.CallbackContext ctx)
@@ -143,11 +157,42 @@ public class PhotoCameraController : MonoBehaviour
         playerStateController.SetPhotoMode(false);
     }
 
+    /// <summary>
+    /// Function to swap between Photo and Document modes. 
+    /// Activates only while camera is being aimed, on Q press.
+    /// </summary>
+    private void OnSwapCameraMode(InputAction.CallbackContext ctx)
+    {
+        if (!playerStateController.GetPhotoMode())
+        {
+            return;
+        }
+
+        // Currently, just swap between two modes with Q
+        // In the future with more camera modes,
+        // THIS would need to change ***.
+        currentMode = (currentMode == CameraMode.Photo) ? 
+        CameraMode.Document : CameraMode.Photo;
+
+        if (currentMode == CameraMode.Photo)
+        {
+            HideDocPreview();
+        }
+
+        Debug.Log("Camera mode swapped");
+        Debug.Log(currentMode);
+    }
+
     private void OnSnap(InputAction.CallbackContext ctx)
     {
         if (!playerStateController.GetPhotoMode())
         {
             return;
+        }
+
+        if (currentMode == CameraMode.Document)
+        {
+            return; // Might change to "screenshot" preview here
         }
 
         if (PhotoStorage.Instance.IsPhotoStorageFull())
@@ -195,6 +240,30 @@ public class PhotoCameraController : MonoBehaviour
         RenderTexture.active = null;
         targetCamera.targetTexture = previousTarget;
         return photo;
+    }
+
+    /// <summary>
+    /// Raycasts from the camera while in Document mode (similar to interaction).
+    /// Shows the text if the ray hits one, hides it otherwise.
+    /// </summary>
+    private void UpdateDocPreview()
+    {
+        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
+        {
+            var document = hit.collider.GetComponent<Document>();
+            if (document != null)
+            {
+                docPreviewCanvas.SetActive(true);
+                return;
+            }
+        }
+
+        HideDocPreview();
+    }
+
+    private void HideDocPreview()
+    {
+        docPreviewCanvas.SetActive(false);
     }
 
     /// <summary>
@@ -288,5 +357,10 @@ public class PhotoCameraController : MonoBehaviour
 
         // Update FOV change
         targetCamera.fieldOfView = Mathf.Lerp(targetCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
+
+        if (playerStateController.GetPhotoMode() && currentMode == CameraMode.Document)
+        {
+            UpdateDocPreview();
+        }
     }
 }
