@@ -14,12 +14,19 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
 
-    // TEMP, REMOVE LATER
-    [SerializeField] private GameObject UI;
+    public GameState state {  get; set; }
 
     public enum PuzzleState {
         SOLVED,
         UNSOLVED
+    }
+
+    public enum GameState
+    {
+        PAUSED,
+        DEFAULT,
+        CAMERA,
+        NOTEBOOK
     }
 
     private void Awake()
@@ -40,10 +47,6 @@ public class GameManager : MonoBehaviour
 
     private void InitializeGame()
     {
-        if (UI!=null)
-        {
-            UI.SetActive(false);
-        }
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
     }
@@ -65,12 +68,20 @@ public class GameManager : MonoBehaviour
         while (!op.isDone)
             await Task.Yield();
     }
-    // Temporary method
-    public void Win()
+
+    /// <summary>
+    /// Saves the game to the file name chosen by the player
+    /// </summary>
+    public void SaveGame()
     {
-        if (UI!=null)
-        {
-            UI.SetActive(true);
-        }
+
+    }
+    
+    /// <summary>
+    /// Loads the game from the current save file. If no save exists, creates a new one
+    /// </summary>
+    public void LoadGame()
+    {
+        
     }
 }
