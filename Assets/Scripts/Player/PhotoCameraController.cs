@@ -136,8 +136,6 @@ public class PhotoCameraController : MonoBehaviour
         snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
 
         currentMode = CameraMode.Photo; // Always start in Photo mode
-
-        Debug.Log(currentMode);
     }
 
     private void OnAimCameraCanceled(InputAction.CallbackContext ctx)
@@ -175,9 +173,6 @@ public class PhotoCameraController : MonoBehaviour
         {
             HideDocPreview();
         }
-
-        Debug.Log("Camera mode swapped");
-        Debug.Log(currentMode);
     }
 
     private void OnSnap(InputAction.CallbackContext ctx)
@@ -187,14 +182,16 @@ public class PhotoCameraController : MonoBehaviour
             return;
         }
 
-        if (currentMode == CameraMode.Document)
-        {
-            return; // Might change to "screenshot" preview here
-        }
-
         if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
             return;
+        }
+
+        if (currentMode == CameraMode.Document)
+        {
+            // Currently, just regularly Snap. 
+            // Might add a custom function here to save the Document
+            // so it is readable later.
         }
 
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
