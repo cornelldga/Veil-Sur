@@ -48,8 +48,7 @@ public class PhotoCameraController : MonoBehaviour
     private Image snapOverlay;
     private Volume blurVolume;
     private CameraMode currentMode = CameraMode.Photo;
-    private TMP_Text docPreviewText;
-    private GameObject docPreviewCanvas;
+    private Document hoveredDocument;
     
     private void Awake()
     {
@@ -71,9 +70,6 @@ public class PhotoCameraController : MonoBehaviour
         targetFOV = normalFOV;
         cameraUI = UIManager.Instance.cameraGroup;
         cameraUI.SetActive(false);
-
-        docPreviewText = UIManager.Instance.docViewer;
-        docPreviewCanvas = UIManager.Instance.docCanvas;
 
         CreateBlurVolume();
     }
@@ -155,6 +151,7 @@ public class PhotoCameraController : MonoBehaviour
         blurVolume.weight = 0f;
         cameraUI.SetActive(false);
         playerStateController.SetPhotoMode(false);
+        HideDocPreview();
     }
 
     /// <summary>
@@ -244,26 +241,35 @@ public class PhotoCameraController : MonoBehaviour
 
     /// <summary>
     /// Raycasts from the camera while in Document mode (similar to interaction).
-    /// Shows the text if the ray hits one, hides it otherwise.
+    /// Opens a hovered Document, and will close if the ray moves away.
     /// </summary>
     private void UpdateDocPreview()
-    {
+    { 
+        Document newHoveredDocument = null;
+
         if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
         {
-            var document = hit.collider.GetComponent<Document>();
-            if (document != null)
-            {
-                docPreviewCanvas.SetActive(true);
-                return;
-            }
+            newHoveredDocument = hit.collider.GetComponent<Document>();
         }
+        if (newHoveredDocument != hoveredDocument && hoveredDocument != null)
+        {
+            hoveredDocument.CloseDoc();
+        }
+        hoveredDocument = newHoveredDocument;
 
-        HideDocPreview();
+        if (hoveredDocument != null)
+        {
+            hoveredDocument.OpenDoc();
+        }
     }
 
     private void HideDocPreview()
     {
-        docPreviewCanvas.SetActive(false);
+        if (hoveredDocument != null)
+        {
+            hoveredDocument.CloseDoc();
+            hoveredDocument = null;
+        }
     }
 
     /// <summary>
