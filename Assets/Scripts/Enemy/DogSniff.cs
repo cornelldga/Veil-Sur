@@ -15,8 +15,7 @@ public class DogSniff : MonoBehaviour
         public float time;
     }
 
-    [Tooltip("Player transform the scent trail is sampled from")]
-    [SerializeField] private Transform player;
+     private Transform player;
     [Tooltip("Seconds between scent samples")]
     [SerializeField] private float sampleInterval = 0.5f;
     [Tooltip("Seconds before a scent point fades")]
@@ -35,6 +34,7 @@ public class DogSniff : MonoBehaviour
 
     private void Start()
     {
+        player = GameManager.PlayerInstance.transform;
         searchlight = GetComponent<EnemySearchlight>();
     }
 
