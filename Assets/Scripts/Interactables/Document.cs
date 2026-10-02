@@ -58,16 +58,20 @@ public class Document : MonoBehaviour, Interactable
     {
         if (!isOpen)
         {
-            docTextAreaUI.text = docData.text;
-            docCanvas.SetActive(true);
-            isOpen = true;
+            OpenDoc();
         } else
         {
             CloseDoc();
         }
     }
 
-    private void CloseDoc()
+    public void OpenDoc()
+    {
+        docTextAreaUI.text = docData.text;
+        docCanvas.SetActive(true);
+        isOpen = true;
+    }
+    public void CloseDoc()
     {
         docCanvas.SetActive(false);
         isOpen = false;

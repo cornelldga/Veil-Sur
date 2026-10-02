@@ -4250,6 +4250,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7587091618474890522, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: docPaper
+      value: 
+      objectReference: {fileID: 1233774471}
     - target: {fileID: 8660544988687427974, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_Name
       value: Question1
@@ -9058,6 +9062,11 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3974714574635435488, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
   m_PrefabInstance: {fileID: 3711712310182114867}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1233774471 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 966291400994740576, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+  m_PrefabInstance: {fileID: 250352875}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &1263454179 stripped
 RectTransform:
