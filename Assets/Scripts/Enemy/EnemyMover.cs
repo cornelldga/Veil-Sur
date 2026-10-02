@@ -14,7 +14,7 @@ public class EnemyMover : MonoBehaviour
 
     [Header("Alert")]
     [SerializeField] private float chaseSpeed = 5f;
-    [SerializeField] private Transform player;
+    private Transform player;
 
     [Header("Investigate")]
     /** How long the mutant waits at a wander point before choosing a new one */
@@ -35,6 +35,11 @@ public class EnemyMover : MonoBehaviour
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         searchlight = GetComponent<EnemySearchlight>();
         agent.updateRotation = false;
+    }
+
+    private void Start()
+    {
+        player = GameManager.PlayerInstance.transform;
     }
 
     private void Update()

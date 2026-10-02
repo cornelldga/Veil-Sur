@@ -59,6 +59,12 @@ public class UIManager : MonoBehaviour
 
     private void InitializeScreens()
     {
+        if (mainMenuPrefab == null || settingsMenuPrefab == null || pauseMenuPrefab == null)
+        {
+            Debug.LogError("UIManager: assign all three screen prefabs on the GameManager prefab.", this);
+            _groups = new Dictionary<UIGroupId, UIScreen>();
+            return;
+        }
         Transform parent = screenRoot != null ? screenRoot : transform;
 
         MainMenu = Instantiate(mainMenuPrefab, parent);
@@ -83,6 +89,7 @@ public class UIManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == titleSceneName)
             Show(UIGroupId.MainMenu);
     }
+    
     public void Show(UIGroupId id)
     {
         if (_activeId == id) return;
@@ -114,8 +121,16 @@ public class UIManager : MonoBehaviour
         if (_activeGroup != null)
             _activeGroup.Hide();
 
+        if (_groups == null || !_groups.TryGetValue(id, out var screen))
+        {
+            Debug.LogError($"UIManager: no screen registered for {id}.", this);
+            _activeGroup = null;
+            _activeId = null;
+            return;
+        }
+
         _activeId = id;
-        _activeGroup = _groups[id];
+        _activeGroup = screen;
         _activeGroup.Show();
     }
 
