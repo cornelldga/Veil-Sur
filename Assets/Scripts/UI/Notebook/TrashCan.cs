@@ -10,11 +10,11 @@ public class TrashCan : MonoBehaviour, IDropHandler
 {
     ///<summary>
     /// This is called by the event system when a draggable item is dragged and dropped on this object.
-    /// If the dragged item is a PhotoNote, then it is deleted.
+    /// If the dragged item is a PhotoNote, a confirmation for deletion is displayed.
     /// </summary>
     public void OnDrop(PointerEventData pointer)
     {
-        if (pointer.PointerDrag == null) {
+        if (pointer.pointerDrag == null) {
             return;
         }
 
@@ -24,6 +24,6 @@ public class TrashCan : MonoBehaviour, IDropHandler
             return;
         }
 
-        PhotoStorage.Instance.RemovePhoto(photo);
+        UIManager.Instance.ShowDeleteConfirmation(photo);
     }
 }
