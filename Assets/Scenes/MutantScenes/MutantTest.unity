@@ -1556,6 +1556,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dog Mutant
       objectReference: {fileID: 0}
+    - target: {fileID: 3548959852146656570, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 6748a9d2ee73742daaa789716d38986b, type: 2}
     - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.68
@@ -1604,14 +1608,6 @@ PrefabInstance:
       propertyPath: sniffRadius
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 4212406482658420663, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5784243743574498411, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8302148578949936598, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: player
       value: 
@@ -1620,10 +1616,6 @@ PrefabInstance:
       propertyPath: spotLight
       value: 
       objectReference: {fileID: 410087040}
-    - target: {fileID: 9001519712609372552, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
