@@ -13978,8 +13978,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: minRayCasts
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: snapOverlay
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: innerRayRadius
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: outerRayRadius
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: middleRayRadius
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalPosition.x
