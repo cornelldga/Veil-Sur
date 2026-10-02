@@ -763,6 +763,11 @@ MonoBehaviour:
   cameraGroup: {fileID: 4668059035321674044}
   snapOverlay: {fileID: 3075502025839716129}
   notebookGroup: {fileID: 4272780009062522192}
+  mainMenuPrefab: {fileID: 2481373374358070758, guid: ead5c050e37564970bbfdabb9f5bd3d2, type: 3}
+  settingsMenuPrefab: {fileID: 1181211812633617751, guid: 6a582e03460194cbd810ba9df5e1d35f, type: 3}
+  pauseMenuPrefab: {fileID: -8712468317723249130, guid: 5bd448f493dec46318df0296c93ab9b6, type: 3}
+  screenRoot: {fileID: 5620621341236601761}
+  titleSceneName: TitleScreen
   docCanvas: {fileID: 739846400131215278}
   docViewer: {fileID: 5366750986226141005}
 --- !u!1 &6274681145636824339

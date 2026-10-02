@@ -10,7 +10,7 @@ public class Settings : UIScreen
     [SerializeField] private Slider musicSlider;  
     public void OnBackPressed()
     {
-        UIManager.Instance.Show(UIManager.UIGroupId.MainMenu);
+        UIManager.Instance.Back();
     }
 
     [Header("Test (temporary)")]
