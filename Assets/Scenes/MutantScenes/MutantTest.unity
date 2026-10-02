@@ -1556,10 +1556,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dog Mutant
       objectReference: {fileID: 0}
-    - target: {fileID: 3548959852146656570, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 6748a9d2ee73742daaa789716d38986b, type: 2}
     - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.68
