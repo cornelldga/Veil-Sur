@@ -231,6 +231,7 @@ public class PhotoCameraController : MonoBehaviour
     /// </summary>
     private IEnumerator ScanDocument()
     {
+        cameraUI.SetActive(false);
         yield return new WaitForEndOfFrame();
 
         Vector3[] corners = new Vector3[4];
@@ -241,6 +242,11 @@ public class PhotoCameraController : MonoBehaviour
         
         scan.ReadPixels(paperRect, 0, 0);
         scan.Apply();
+
+        if (playerStateController.GetPhotoMode())
+        {
+            cameraUI.SetActive(true); // if still in aim
+        }  
 
         CreatePhotoNote(scan);
     }
