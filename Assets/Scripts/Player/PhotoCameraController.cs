@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -181,23 +183,32 @@ public class PhotoCameraController : MonoBehaviour
         {
             return;
         }
-
         if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
             return;
         }
 
-        if (currentMode == CameraMode.Document)
+        if (currentMode == CameraMode.Document && hoveredDocument != null)
         {
-            // Currently, just regularly Snap. 
-            // Might add a custom function here to save the Document
-            // so it is readable later.
+            StartCoroutine(ScanDocument());
+            return;
         }
 
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
 
+        CreatePhotoNote(photo);
+    }
+
+    /// <summary>
+    /// Refactored the code for PhotoNote creation from OnSnap to here.
+    /// Creates a PhotoNote given a Texture2D.
+    /// This way, seperate camera modes can produce separate Textures.
+    /// </summary>
+    /// <param name="photo">Texture2D object representing the photo</param>
+    private void CreatePhotoNote(Texture2D photo)
+    {
         //puts white  overlay over and then fades it out to simulate a camera snap
         snapOverlay.canvasRenderer.SetAlpha(.5f);
         snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
@@ -210,6 +221,28 @@ public class PhotoCameraController : MonoBehaviour
 
         // Add photo to storage
         PhotoStorage.Instance.AddPhoto(photoNote);
+    }
+
+    /// <summary>
+    /// Coroutine to manage the document scanner.
+    /// Gets the rectangle/paper of the DocView in coordinates.
+    /// Creates a new texture the size of the paper.
+    /// Finally, copies the paper into the scan, and creates a photo note.
+    /// </summary>
+    private IEnumerator ScanDocument()
+    {
+        yield return new WaitForEndOfFrame();
+
+        Vector3[] corners = new Vector3[4];
+        UIManager.Instance.docPaper.GetWorldCorners(corners);
+        Rect paperRect = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+
+        Texture2D scan = new Texture2D((int)paperRect.width, (int)paperRect.height, TextureFormat.RGB24, false);
+        
+        scan.ReadPixels(paperRect, 0, 0);
+        scan.Apply();
+
+        CreatePhotoNote(scan);
     }
 
     /// <summary>

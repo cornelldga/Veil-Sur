@@ -29,8 +29,8 @@ public class UIManager : MonoBehaviour
     [Header("Doc Viewer")]
     [SerializeField] public GameObject docCanvas;
     [SerializeField] public TMP_Text docViewer;
+    [SerializeField] public RectTransform docPaper;
  
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
