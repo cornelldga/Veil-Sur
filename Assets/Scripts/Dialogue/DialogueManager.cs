@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using UnityEngine.InputSystem;
 
 public class DialogueSection {
     public string puzzle;
@@ -135,5 +136,17 @@ public class DialogueManager : MonoBehaviour {
     public void HideDialogue()
     {
         dialogueBox.SetActive(false);
+    }
+
+    /// <summary>
+    /// allows player to click to progress through dialogue lines
+    /// </summary>
+    private void Update()
+    {
+        if (!isDialogueActive) return;
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            NextLine();
+        }
     }
 }
