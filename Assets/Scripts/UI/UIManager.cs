@@ -30,6 +30,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject docCanvas;
     [SerializeField] public TMP_Text docViewer;
  
+    [Header("Interact Popup")]
+    [SerializeField] public TMP_Text interact;
 
     private void Awake()
     {
@@ -53,6 +55,7 @@ public class UIManager : MonoBehaviour
         // foreach (var group in _groups.Values)
         //     group.Hide();
         // Show(UIGroupId.MainMenu);
+        ShowInteractPrompt(false);
     }
 
     public void Show(UIGroupId id)
@@ -70,6 +73,11 @@ public class UIManager : MonoBehaviour
             _activeGroup.Hide();
 
         _activeGroup = null;
+    }
+
+    public void ShowInteractPrompt(bool visible)
+    {
+        if (interact.gameObject.activeSelf != visible) interact.gameObject.SetActive(visible);
     }
 
 }
