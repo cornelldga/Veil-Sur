@@ -32,10 +32,14 @@ public class EnemyMover : MonoBehaviour
 
     private void Awake()
     {
-        player = GameManager.PlayerInstance.transform;
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         searchlight = GetComponent<EnemySearchlight>();
         agent.updateRotation = false;
+    }
+
+    private void Start()
+    {
+        player = GameManager.PlayerInstance.transform;
     }
 
     private void Update()

@@ -104,7 +104,7 @@ Animator:
   m_GameObject: {fileID: 6906332578438034599}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ba0e0192b57cd4b85ab759aad2d41762, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -217,7 +217,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90b3441ed751f49869557d9b529f6a2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DogSniff
-  player: {fileID: 0}
   sampleInterval: 0.5
   scentLifetime: 10
   sniffRadius: 5
