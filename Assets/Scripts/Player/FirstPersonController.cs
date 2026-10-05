@@ -40,6 +40,12 @@ public class FirstPersonController : MonoBehaviour
 
     public Camera playerCamera;
 
+    private void Start()
+    {
+        // Moved this to a Start() function 
+        Level.current_level.player = gameObject;
+    }
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -61,7 +67,7 @@ public class FirstPersonController : MonoBehaviour
 
         // Send player instance/camera to GameManager
         GameManager.PlayerInstance = gameObject;
-        Level.current_level.player = gameObject;
+        
         GameManager.PlayerCamera = playerCamera;
     }
 
