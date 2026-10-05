@@ -48,7 +48,7 @@ public class EnemySearchlight : MonoBehaviour
     [Header("Public Fields")]
     public AlertState CurrentState { get; protected set; } = AlertState.Patrol;
     public Vector3 LastKnownPlayerPosition { get; protected set; }
-    public bool canSeePlayer = false;
+    public bool canSeePlayer = false; // Whether the mutant can see the player without obstruction
 
     [Header("Protected States")]
     protected float baseFacingAngle;

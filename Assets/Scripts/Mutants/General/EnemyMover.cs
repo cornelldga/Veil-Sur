@@ -37,7 +37,7 @@ public class EnemyMover : MonoBehaviour
         agent.updateRotation = false;
     }
 
-    protected void Start()
+    protected virtual void Start()
     {
         player = GameManager.PlayerInstance.transform;
 
