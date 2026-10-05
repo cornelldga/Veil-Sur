@@ -152,9 +152,8 @@ public class PhotoCameraController : MonoBehaviour
         targetFOV = normalFOV;
         blurVolume.weight = 0f;
         playerState.SetPhotoMode(false);
-        //we should probably move this direct reference to the cameraUI out at some point
-        cameraUI.SetActive(false);
-        playerStateController.SetPhotoMode(false);
+        //cameraUI.SetActive(false); We should not be using direct reference to camera UI anymore. So this needs to change
+        playerState.SetPhotoMode(false);
         HideDocPreview();
     }
 
@@ -164,7 +163,7 @@ public class PhotoCameraController : MonoBehaviour
     /// </summary>
     private void OnSwapCameraMode(InputAction.CallbackContext ctx)
     {
-        if (!playerStateController.GetPhotoMode())
+        if (!playerState.GetPhotoMode())
         {
             return;
         }
@@ -249,7 +248,7 @@ public class PhotoCameraController : MonoBehaviour
         scan.ReadPixels(paperRect, 0, 0);
         scan.Apply();
 
-        if (playerStateController.GetPhotoMode())
+        if (playerState.GetPhotoMode())
         {
             cameraUI.SetActive(true); // if still in aim
         }  
@@ -434,7 +433,7 @@ public class PhotoCameraController : MonoBehaviour
         // Update FOV change
         targetCamera.fieldOfView = Mathf.Lerp(targetCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
 
-        if (playerStateController.GetPhotoMode() && currentMode == CameraMode.Document)
+        if (playerState.GetPhotoMode() && currentMode == CameraMode.Document)
         {
             UpdateDocPreview();
         }

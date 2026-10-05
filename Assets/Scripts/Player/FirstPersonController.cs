@@ -67,14 +67,14 @@ public class FirstPersonController : MonoBehaviour
 
     private void OnEnable()
     {
-        controls.PlayerMovement.Enable();
+        if (controls != null) controls.PlayerMovement.Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     private void OnDisable()
     {
-        controls.PlayerMovement.Disable();
+        if(controls != null) controls.PlayerMovement.Disable();
     }
 
     private void Update()
@@ -219,6 +219,6 @@ public class FirstPersonController : MonoBehaviour
 
     private void OnDestroy()
     {
-        controls?.Dispose();
+       controls?.Dispose();
     }
 }
