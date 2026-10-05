@@ -142,8 +142,6 @@ public class PhotoCameraController : MonoBehaviour
         cameraUI.SetActive(true);
         playerStateController.SetPhotoMode(true);
         snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
-
-        currentMode = CameraMode.Photo; // Always start in Photo mode
     }
 
     private void OnAimCameraCanceled(InputAction.CallbackContext ctx)
