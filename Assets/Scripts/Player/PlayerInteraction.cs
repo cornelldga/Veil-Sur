@@ -13,6 +13,7 @@ public class PlayerInteraction : MonoBehaviour
     private void Awake()
     {
         controls = new PlayerControls();
+        //camera = Camera.main;
     }
 
     private void OnEnable()
@@ -40,7 +41,7 @@ public class PlayerInteraction : MonoBehaviour
     private void Update()
     {
         Interactable interactable = null;
-
+        Debug.Log(camera);
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, rayLength))
         { 
             interactable = hit.collider.GetComponentInParent<Interactable>();

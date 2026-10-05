@@ -9,10 +9,9 @@ using UnityEngine.UI;
 /// Controls camera zoom, UI, and photo capture logic for
 /// the player's photo camera.
 /// </summary>
-[RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(PlayerState))]
 public class PhotoCameraController : MonoBehaviour
 {
-    private GameObject cameraUI;
     [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
     [Header("Camera Settings")]
@@ -36,7 +35,7 @@ public class PhotoCameraController : MonoBehaviour
 
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
-    private PlayerStateController playerStateController;
+    private PlayerState playerState;
     private GameObject notebookMenu;
     private float targetFOV;
     private Image snapOverlay;
@@ -44,12 +43,11 @@ public class PhotoCameraController : MonoBehaviour
     private void Awake()
     {
         controls = new PlayerControls();
-        playerStateController = GetComponent<PlayerStateController>();
+        playerState = GetComponent<PlayerState>();
     }
 
     private void Start()
     {
-        notebookMenu = playerStateController.GetNotebookMenu();
         snapOverlay = UIManager.Instance.snapOverlay;
         snapOverlay.canvasRenderer.SetAlpha(0f);
 
@@ -59,8 +57,6 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         targetFOV = normalFOV;
-        cameraUI = UIManager.Instance.cameraGroup;
-        cameraUI.SetActive(false);
 
         CreateBlurVolume();
     }
@@ -112,20 +108,20 @@ public class PhotoCameraController : MonoBehaviour
 
     private void OnAimCameraPerformed(InputAction.CallbackContext ctx)
     {
-        if (toggleZoom && playerStateController.GetPhotoMode())
+        if (toggleZoom && playerState.GetPhotoMode())
         {
             CancelCamera();
             return;
         }
-        if (!playerStateController.GetPlayerHasControl())
+        if (!playerState.GetPlayerHasControl())
         {
             return;
         }
 
         targetFOV = zoomedFOV;
         blurVolume.weight = 1f;
-        cameraUI.SetActive(true);
-        playerStateController.SetPhotoMode(true);
+        GameManager.Instance.state = GameManager.GameState.CAMERA;
+        playerState.SetPhotoMode(true);
         snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
     }
 
@@ -139,13 +135,12 @@ public class PhotoCameraController : MonoBehaviour
     {
         targetFOV = normalFOV;
         blurVolume.weight = 0f;
-        cameraUI.SetActive(false);
-        playerStateController.SetPhotoMode(false);
+        playerState.SetPhotoMode(false);
     }
 
     private void OnSnap(InputAction.CallbackContext ctx)
     {
-        if (!playerStateController.GetPhotoMode())
+        if (!playerState.GetPhotoMode())
         {
             return;
         }
@@ -163,10 +158,12 @@ public class PhotoCameraController : MonoBehaviour
         snapOverlay.canvasRenderer.SetAlpha(.5f);
         snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
 
+        //TODO: rework PhotoNote to not be a UI object but just something that stores.
+        //Data should not be aware of UI
         GameObject photograph = Instantiate(photographPrefab, notebookMenu.transform);
         PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
         photoNote.SetSubject(DetectPhotographedSubject());
-        photoNote.SetBounds(notebookMenu.transform as RectTransform);
+        //photoNote.SetBounds(notebookMenu.transform as RectTransform);
         photoNote.LoadImage(photo);
 
         // Add photo to storage
@@ -307,6 +304,11 @@ public class PhotoCameraController : MonoBehaviour
         if (targetCamera == null)
         {
             return;
+        }
+
+        if (GameManager.Instance.state != GameManager.GameState.CAMERA)
+        {
+            CancelCamera();
         }
 
         // Update FOV change

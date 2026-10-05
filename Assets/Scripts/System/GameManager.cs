@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     public static GameObject PlayerInstance { get; set; }
     public static Camera PlayerCamera { get; set; }
 
+    
+
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
 

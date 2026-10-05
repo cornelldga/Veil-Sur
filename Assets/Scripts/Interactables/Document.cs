@@ -22,7 +22,7 @@ public class Document : MonoBehaviour, Interactable
     private TMP_Text docTextAreaUI;
     private GameObject docCanvas;
 
-    private PlayerStateController playerStateController;
+    private PlayerState playerStateController;
     private bool isOpen = false;
 
     /// <summary>
@@ -38,7 +38,7 @@ public class Document : MonoBehaviour, Interactable
     {
         docTextAreaUI = UIManager.Instance.docViewer;
         docCanvas = UIManager.Instance.docCanvas;
-        playerStateController = GameManager.PlayerInstance.GetComponent<PlayerStateController>();
+        playerStateController = GameManager.PlayerInstance.GetComponent<PlayerState>();
     }
 
 

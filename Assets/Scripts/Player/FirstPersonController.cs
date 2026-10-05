@@ -4,7 +4,7 @@ using UnityEngine;
 /// Drives first-person control through CharacterController
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(PlayerState))]
 [RequireComponent(typeof(StaminaController))]
 public class FirstPersonController : MonoBehaviour
 {
@@ -28,7 +28,7 @@ public class FirstPersonController : MonoBehaviour
 
     private CharacterController controller;
     private PlayerControls controls;
-    private PlayerStateController playerStateController;
+    private PlayerState playerState;
     private StaminaController staminaController;
 
     private float verticalLookClamped;
@@ -45,7 +45,7 @@ public class FirstPersonController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         controls = new PlayerControls();
         staminaController = GetComponent<StaminaController>();
-        playerStateController = GetComponent<PlayerStateController>();
+        playerState = GetComponent<PlayerState>();
 
         currentHeight = standHeight;
         controller.height = standHeight;
@@ -79,9 +79,12 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-        HandleMove();
-        HandleLook();
-        HandleCrouch();
+        if (playerState.GetPlayerHasControl())
+        {
+            HandleMove();
+            HandleLook();
+            HandleCrouch();
+        }
     }
 
     /// <summary>
@@ -113,12 +116,12 @@ public class FirstPersonController : MonoBehaviour
             isSprinting = false;
         }
 
-        playerStateController.SetMoving(isMoving);
-        playerStateController.SetSprinting(isSprinting);
+        playerState.SetMoving(isMoving);
+        playerState.SetSprinting(isSprinting);
 
         float speed;
 
-        if (playerStateController.GetCrouching())
+        if (playerState.GetCrouching())
         {
             // 1. Crouch takes top priority
             speed = crouchSpeed;
@@ -203,7 +206,7 @@ public class FirstPersonController : MonoBehaviour
         controller.center = new Vector3(0f, currentHeight * 0.5f, 0f);
 
         bool actuallyCrouching = currentHeight < standHeight - 0.01f;
-        playerStateController.SetCrouching(actuallyCrouching);
+        playerState.SetCrouching(actuallyCrouching);
 
         if (playerCamera != null)
         {

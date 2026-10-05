@@ -153,6 +153,8 @@ GameObject:
   - component: {fileID: 5570794706041152154}
   - component: {fileID: 2431328312245338117}
   - component: {fileID: 28695803084452280}
+  - component: {fileID: 7648119910814920436}
+  - component: {fileID: 3314498800505621458}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -229,6 +231,7 @@ MonoBehaviour:
   standSpeed: 5
   crouchSpeed: 2.5
   sprintSpeed: 8
+  exhaustedSpeed: 4
   gravity: -19.62
   mouseSens: 0.15
   minLookDown: -85
@@ -239,6 +242,7 @@ MonoBehaviour:
   ceilingCheckMask:
     serializedVersion: 2
     m_Bits: 1
+  playerCamera: {fileID: 0}
 --- !u!114 &3942358293781664924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,12 +259,14 @@ MonoBehaviour:
   normalFOV: 60
   zoomedFOV: 30
   zoomSpeed: 10
+  toggleZoom: 0
   maxPhotoRange: 10
   photoOcclusionMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  innerRadiusFraction: 0.3
-  outerRadiusFraction: 0.7
+  innerRayRadius: 0.07
+  outerRayRadius: 0.21
+  minRayCasts: 7
   blurRangePastMax: 2
 --- !u!136 &5570794706041152154
 CapsuleCollider:
@@ -314,6 +320,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eb97cb2b860d49678c659b10d0f0986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+  rayLength: 5
+--- !u!114 &7648119910814920436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805399525289963691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7497071b85afc4bf4ade319acb0fd8e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StaminaController
+  isExhausted: 0
+  maxStamina: 100
+  staminaDrain: 25
+  staminaRegen: 45
+--- !u!114 &3314498800505621458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805399525289963691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcfbabe74aedd5b4f81d5d4ce043efb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NotebookController
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0
