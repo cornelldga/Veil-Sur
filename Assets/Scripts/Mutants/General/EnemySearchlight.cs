@@ -9,57 +9,60 @@ public class EnemySearchlight : MonoBehaviour
     public enum AlertState { Patrol, Suspicious, Alert, LookAround }
 
     [Header("Target")]
-    private Transform player;
-    [SerializeField] private LayerMask obstacleMask;
-    [SerializeField] private LayerMask playerMask;
+    protected Transform player;
+    [SerializeField] protected LayerMask obstacleMask;
+    [SerializeField] protected LayerMask playerMask;
 
     [Header("Vision Cone")]
-    [SerializeField] private float viewDistance = 10f;
-    [SerializeField] private float viewAngle = 60f;      // cone angle
-    [SerializeField] private float eyeHeight;     // raycast origin offset up from pivot
+    [SerializeField] protected float viewDistance = 10f;
+    [SerializeField] protected float viewAngle = 60f;      // cone angle
+    [SerializeField] protected float eyeHeight;     // raycast origin offset up from pivot
 
     [Header("Sweep (Patrol)")]
-    [SerializeField] private float sweepAngle = 45f; 
-    [SerializeField] private float sweepSpeed = 30f;
+    [SerializeField] protected float sweepAngle = 45f; 
+    [SerializeField] protected float sweepSpeed = 30f;
 
     [Header("Detection Timing")]
-    [SerializeField] private float timeToSuspicious = 0.3f;
-    [SerializeField] private float timeToAlert = 0.6f;   
-    [SerializeField] private float suspicionDecayRate = 1f; 
-    [SerializeField] private float loseAlertAfter = 3f; 
+    [SerializeField] protected float timeToSuspicious = 0.3f;
+    [SerializeField] protected float timeToAlert = 0.6f;   
+    [SerializeField] protected float suspicionDecayRate = 1f; 
+    [SerializeField] protected float maxDetectionMultiplier = 3f; 
+    [SerializeField] protected float loseAlertAfter = 3f; 
     /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
-    [SerializeField] private int investigateCount = 3; 
+    [SerializeField] protected int investigateCount = 3; 
 
     [Header("Visuals")]
-    [SerializeField] private Light spotLight;
-    private Color patrolColor = Color.green;
-    private Color suspiciousColor = new Color(1f, 0.85f, 0f);
-    private Color alertColor = Color.red;
+    [SerializeField] protected Light spotLight;
+    protected Color patrolColor = Color.green;
+    protected Color suspiciousColor = new Color(1f, 0.85f, 0f);
+    protected Color alertColor = Color.red;
 
     [Header("Cone Mesh (visible in Game view)")]
-    [SerializeField] private bool showConeMesh = true;
-    [SerializeField] private MeshFilter coneMeshFilter;   // child object's MeshFilter
-    [SerializeField] private MeshRenderer coneMeshRenderer;
-    private int coneRayCount = 24; // resolution of the cone edge
-    private float coneAlpha = 0.35f;
-    private Mesh coneMesh;
+    [SerializeField] protected bool showConeMesh = true;
+    [SerializeField] protected MeshFilter coneMeshFilter;   // child object's MeshFilter
+    [SerializeField] protected MeshRenderer coneMeshRenderer;
+    protected int coneRayCount = 24; // resolution of the cone edge
+    protected float coneAlpha = 0.35f;
+    protected Mesh coneMesh;
 
     [Header("Public Fields")]
-    public AlertState CurrentState { get; private set; } = AlertState.Patrol;
-    public Vector3 LastKnownPlayerPosition { get; private set; }
+    public AlertState CurrentState { get; protected set; } = AlertState.Patrol;
+    public Vector3 LastKnownPlayerPosition { get; protected set; }
     public bool canSeePlayer = false;
 
-    [Header("Private States")]
-    private float baseFacingAngle;
-    private float sweepTimer;
-    private float detectionMeter;
-    private float timesLookedAround; // How many times the mutant already looked around in investigate state.
-    private float lastSeenTimer;
-    private Priority currentPriority = Priority.None;
+    [Header("Protected States")]
+    protected float baseFacingAngle;
+    protected float sweepTimer;
+    protected float detectionMeter;
+    protected float timesLookedAround; // How many times the mutant already looked around in investigate state.
+    protected float lastSeenTimer;
+    protected Priority currentPriority = Priority.None;
 
-    private Vector3 lastPosition; // Used to determine where to face while moving
+    protected Vector3 lastPosition; // Used to determine where to face while moving
 
-    private void Start()
+    protected float distanceToPlayer; // Used to increase mutant suspicion gain based on proximity
+
+    protected void Start()
     {
         player = GameManager.PlayerInstance.transform;
         baseFacingAngle = transform.eulerAngles.y;
@@ -72,7 +75,7 @@ public class EnemySearchlight : MonoBehaviour
         }
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         // SweepSearchlight();
         FaceTowardsMovement();
@@ -82,9 +85,9 @@ public class EnemySearchlight : MonoBehaviour
         DrawConeMesh();
     }
 
-    private Vector3 EyePosition => transform.position + Vector3.up * eyeHeight;
+    protected Vector3 EyePosition => transform.position + Vector3.up * eyeHeight;
 
-    private void SweepSearchlight() // Currently not used
+    protected void SweepSearchlight() // Currently not used
     {
         if (CurrentState == AlertState.Alert)
         {
@@ -106,7 +109,7 @@ public class EnemySearchlight : MonoBehaviour
     }
 
     /** When patrolling, search cone is in direction of mutant movement. */
-    private void FaceTowardsMovement()
+    protected void FaceTowardsMovement()
     {
         // Calculate the movement direction direction vector
         Vector3 direction = transform.position - lastPosition;
@@ -126,7 +129,7 @@ public class EnemySearchlight : MonoBehaviour
         lastPosition = transform.position;
     }
 
-    private bool CanSeePlayer()
+    protected bool CanSeePlayer()
     {
         if (player == null)
         {
@@ -158,12 +161,15 @@ public class EnemySearchlight : MonoBehaviour
         return false;
     }
 
-    private void UpdateAlertState(bool canSeePlayer)
+    protected virtual void UpdateAlertState(bool canSeePlayer)
     {
         if (canSeePlayer)
         {
             lastSeenTimer = 0f;
-            detectionMeter += Time.deltaTime;
+            float proximity = Mathf.Clamp01(1f - distanceToPlayer / viewDistance);
+            float multiplier = 1f + proximity * (maxDetectionMultiplier - 1f);
+
+            detectionMeter += Time.deltaTime * multiplier;
         }
         else
         {
@@ -216,7 +222,7 @@ public class EnemySearchlight : MonoBehaviour
     /// Raises Patrol to Suspicious and pins the meter there. Never escalates to Alert; only sight does.
     /// </summary>
     /// <param name="position">World position the player is believed to be at.</param>
-    public void ReportSense(Vector3 position, Priority priority)
+    public virtual void ReportSense(Vector3 position, Priority priority)
     {
         if (CurrentState == AlertState.Alert || priority > currentPriority) return;
 
@@ -227,7 +233,7 @@ public class EnemySearchlight : MonoBehaviour
         Debug.Log("Now investigating " + position + " at priority " + priority);
     }
 
-    private void SetState(AlertState newState)
+    protected void SetState(AlertState newState)
     {
         if (CurrentState == newState) return;
         CurrentState = newState;
@@ -240,12 +246,12 @@ public class EnemySearchlight : MonoBehaviour
     /// <summary>
     /// Sets currentPriority to Priority.None so any suspicious event will attract the attention of the mutant.
     /// </summary>
-    private void ResetSuspicion()
+    protected void ResetSuspicion()
     {
         currentPriority = Priority.None;   
     }
 
-    private void UpdateVisual()
+    protected void UpdateVisual()
     {
         if (spotLight == null) return;
 
@@ -254,7 +260,7 @@ public class EnemySearchlight : MonoBehaviour
         spotLight.range = viewDistance;
     }
 
-    private void DrawConeMesh()
+    protected void DrawConeMesh()
     {
         if (!showConeMesh || coneMesh == null) return;
 
@@ -302,7 +308,7 @@ public class EnemySearchlight : MonoBehaviour
     }
 
     // Chat helped make the cone color stuff prettier
-    private Color GetDetectionColor()
+    protected virtual Color GetDetectionColor()
     {
         if (detectionMeter <= timeToSuspicious)
         {

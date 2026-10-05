@@ -51,18 +51,10 @@
             }
         }
     ],
-    "puzzles": [
+    "doors": [
         {
-            "puzzleID": 1,
-            "puzzleName": "Puzzle 1",
-            "completed": false,
-            "puzzleSections": [
-                {
-                    "sectionID": 1,
-                    "sectionName": "Section 1",
-                    "completed": false
-                }
-            ]
+            "doorID": 1,
+            "opened": false
         }
     ],
     "questions": [
@@ -85,7 +77,6 @@
         }
     ],
     "progress": {
-        "puzzlesCompleted": 0,
-        "questionsAnswered": 1
+        "questionsAnswered": 0
     }
 }
