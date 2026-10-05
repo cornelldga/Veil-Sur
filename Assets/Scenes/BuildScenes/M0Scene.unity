@@ -4234,11 +4234,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7587091618474890522, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: docPaper
+      value: 
+      objectReference: {fileID: 250352876}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+--- !u!224 &250352876 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 966291400994740576, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+  m_PrefabInstance: {fileID: 250352875}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &250668419
 Mesh:
   m_ObjectHideFlags: 0
