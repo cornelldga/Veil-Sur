@@ -9,11 +9,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private Camera camera;
     private PlayerControls controls;
-    private PlayerStateController playerStateController;
+    private PlayerState playerState;
 
     private void Awake()
     {
         controls = new PlayerControls();
+        camera = Camera.main;
     }
 
     private void OnEnable()
@@ -28,8 +29,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Start()
     {
-        camera = GameManager.PlayerCamera;
-        playerStateController = GameManager.PlayerInstance.GetComponent<PlayerStateController>();
+        playerState = GameManager.PlayerInstance.GetComponent<PlayerState>();
     }
 
 
@@ -41,7 +41,7 @@ public class PlayerInteraction : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (playerStateController.GetPhotoMode())
+        if (playerState.GetPhotoMode())
         {
             // Don't show 'E to Interact' when Camera is on
             UIManager.Instance.ShowInteractPrompt(false); 
@@ -49,7 +49,6 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         Interactable interactable = null;
-
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, rayLength))
         { 
             interactable = hit.collider.GetComponentInParent<Interactable>();

@@ -197,4 +197,26 @@ public class UIManager : MonoBehaviour
         if (interact.gameObject.activeSelf != visible) interact.gameObject.SetActive(visible);
     }
 
+    public void FixedUpdate()
+    {
+        //TODO this is janky hiding every time, somebody should be assigned to make this smoother
+        HideAll();
+        switch (GameManager.Instance.state) { 
+            case GameManager.GameState.CAMERA:
+                //TODO move the fade logic from the photo camera controller here...
+                break;
+            case GameManager.GameState.DEFAULT:
+                //no UI
+                break;
+            case GameManager.GameState.NOTEBOOK:
+                //TODO make it show up and make the notebook an official group id
+                break;
+            case GameManager.GameState.PAUSED:
+                //pause menu
+                break;
+        }
+            
+                
+    }
+
 }
