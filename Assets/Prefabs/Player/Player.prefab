@@ -242,7 +242,7 @@ MonoBehaviour:
   ceilingCheckMask:
     serializedVersion: 2
     m_Bits: 1
-  playerCamera: {fileID: 0}
+  playerCamera: {fileID: 827428221439690476}
 --- !u!114 &3942358293781664924
 MonoBehaviour:
   m_ObjectHideFlags: 0
