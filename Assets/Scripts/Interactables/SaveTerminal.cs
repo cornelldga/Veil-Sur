@@ -9,7 +9,6 @@ public class SaveTerminal : MonoBehaviour, Interactable
     public void Interact()
     {
         // Add a save game function to the GameManager and call it here to save the game when the player interacts with a save terminal.
-        // GameManager.Instance.SaveGame();
-        print("Game saved!"); // Placeholder for actual save functionality
+        SaveManager.Instance.SaveGame();
     }
 }

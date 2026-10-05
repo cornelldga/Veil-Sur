@@ -4,8 +4,22 @@ using System.Linq;
 
 public abstract class PuzzleInteractable : MonoBehaviour, Interactable
 {
+    //If you don't like serialized fields, feel free to make the code just register the children questions
     [SerializeField] List<QuestionDefinition> questions;
     [SerializeField] List<PuzzleInteractable> next_puzzles;
+    //True if this PuzzleInteractable is supposed to be the first or part of the set of first puzzles that the player is supposed to solve
+    [SerializeField] bool first;
+
+    public void Awake()
+    {
+        if (first)
+        {
+            foreach (QuestionDefinition q in questions)
+            {
+                InvestigationManager.current_investigation_manager.AddActiveQuestion(q);
+            }
+        }
+    }
 
     public bool IsSolved()
     {
@@ -19,7 +33,10 @@ public abstract class PuzzleInteractable : MonoBehaviour, Interactable
         {
             foreach(PuzzleInteractable puzzle_interactable in next_puzzles)
             {
-
+                foreach(QuestionDefinition q in puzzle_interactable.questions)
+                {
+                    InvestigationManager.current_investigation_manager.AddActiveQuestion(q);
+                }
             }
             //notify investigation manager of new questions
             SuccessBehavior();

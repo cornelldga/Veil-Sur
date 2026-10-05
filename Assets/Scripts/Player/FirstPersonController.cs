@@ -61,6 +61,7 @@ public class FirstPersonController : MonoBehaviour
 
         // Send player instance/camera to GameManager
         GameManager.PlayerInstance = gameObject;
+        Level.current_level.player = gameObject;
         GameManager.PlayerCamera = playerCamera;
     }
 

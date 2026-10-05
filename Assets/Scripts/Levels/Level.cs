@@ -1,15 +1,18 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Level : MonoBehaviour
 {
     // No code, but this is the general idea of the class
-    GameObject player;
+    public GameObject player;
+    List<GameObject> mutants;
+    InvestigationManager investigationManager;
 
+    //current instance of the level
+    public static Level current_level;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-        //get anything I need from the    
+        current_level = this;
     }
 }
