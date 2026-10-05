@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6909270810086939421}
-  - component: {fileID: 5695573212564928181}
+  - component: {fileID: 7197993293499394297}
   m_Layer: 0
   m_Name: InvestigationManager
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5695573212564928181
+--- !u!114 &7197993293499394297
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2798475818535573544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ad931939610d4e2ea1e668a3d9df3ec, type: 3}
+  m_Script: {fileID: 11500000, guid: 3270e1a067cbbd94c906d2b60db2e9a2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PhotoStorage
-  maxCapacity: 5
+  m_EditorClassIdentifier: Assembly-CSharp::InvestigationManager

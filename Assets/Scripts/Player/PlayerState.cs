@@ -6,13 +6,8 @@ using UnityEngine.InputSystem;
 /// and player functions like opening notebook.
 /// </summary>
 [RequireComponent(typeof(FirstPersonController))]
-public class PlayerStateController : MonoBehaviour
+public class PlayerState : MonoBehaviour
 {
-
-    private PlayerControls controls;
-    private FirstPersonController firstPersonController;
-    private PhotoCameraController photoCameraController;
-
     private bool notebookOpen = false;
     private bool isCrouching = false;
     private bool isSprinting = false;
@@ -20,27 +15,6 @@ public class PlayerStateController : MonoBehaviour
     private bool hasTakenPhoto = false;
     private bool inPhotoMode = false;
     private bool playerHasControl = true;
-
-    private void Awake()
-    {
-        controls = new PlayerControls();
-        firstPersonController = GetComponent<FirstPersonController>();
-        photoCameraController = GetComponent<PhotoCameraController>();
-    }
-
-    private void OnEnable()
-    {
-        controls.General.Enable();
-
-        controls.General.Notebook.performed += ToggleNotebook;
-    }
-
-    private void OnDisable()
-    {
-        controls.General.Notebook.performed -= ToggleNotebook;
-
-        controls.General.Disable();
-    }
 
     public bool GetCrouching()
     {
@@ -100,30 +74,10 @@ public class PlayerStateController : MonoBehaviour
     public void SetPlayerHasControl(bool value)
     {
         playerHasControl = value;
-        firstPersonController.enabled = value;
     }
 
-    public GameObject GetNotebookMenu()
+    public bool GetNotebookOpen()
     {
-        return UIManager.Instance.notebookGroup;
-    }
-
-    /// <summary>
-    /// When toggle notebook button is pressed, either open or close the notebook
-    /// depending on if it is already open.
-    /// </summary>
-    private void ToggleNotebook(InputAction.CallbackContext ctx)
-    {
-        notebookOpen = !notebookOpen;
-        UIManager.Instance.notebookGroup.SetActive(notebookOpen);
-        SetPlayerHasControl(!notebookOpen);
-
-        if (notebookOpen)
-        {
-            photoCameraController.CancelCamera();
-        }
-
-        Cursor.lockState = notebookOpen ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = notebookOpen;
+        return GameManager.Instance.state == GameManager.GameState.NOTEBOOK;
     }
 }
