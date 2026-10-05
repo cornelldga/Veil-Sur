@@ -5,40 +5,45 @@ using UnityEngine;
 public class EnemyMover : MonoBehaviour
 {
     [Header("Patrol")]
-    [SerializeField] private Transform[] patrolPoints;
-    [SerializeField] private float patrolSpeed = 2f;
-    [SerializeField] private float waypointTolerance = 0.3f;
+    [SerializeField] protected Transform[] patrolPoints;
+    [SerializeField] protected float patrolSpeed = 2f;
+    [SerializeField] protected float waypointTolerance = 0.3f;
 
     [Header("Suspicious")]
-    [SerializeField] private float suspiciousSpeed = 3f;
+    [SerializeField] protected float suspiciousSpeed = 3f;
 
     [Header("Alert")]
-    [SerializeField] private float chaseSpeed = 5f;
-    private Transform player;
+    [SerializeField] protected float chaseSpeed = 5f;
+    protected Transform player;
 
     [Header("Investigate")]
     /** How long the mutant waits at a wander point before choosing a new one */
-    [SerializeField] private float waitTime = 2f;
+    [SerializeField] protected float waitTime = 2f;
     /** Area around investigation target that the mutant can check */
-    [SerializeField] private float wanderRadius = 5f;
+    [SerializeField] protected float wanderRadius = 5f;
 
-    private UnityEngine.AI.NavMeshAgent agent;
-    private EnemySearchlight searchlight;
-    private int currentPatrolIndex;
-    private Vector3 investigateTarget;
-    private bool reachedSuspicionTarget;
-    private bool reachedWanderTarget;
-    private float nextWanderTime = 0f;
+    protected UnityEngine.AI.NavMeshAgent agent;
+    protected EnemySearchlight searchlight;
+    protected int currentPatrolIndex;
+    protected Vector3 investigateTarget;
+    protected bool reachedSuspicionTarget;
+    protected bool reachedWanderTarget;
+    protected float nextWanderTime = 0f;
 
-    private void Awake()
+    protected void Awake()
     {
-        player = GameManager.PlayerInstance.transform;
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         searchlight = GetComponent<EnemySearchlight>();
         agent.updateRotation = false;
     }
 
-    private void Update()
+    protected void Start()
+    {
+        player = GameManager.PlayerInstance.transform;
+
+    }
+
+    protected virtual void Update()
     {
         switch (searchlight.CurrentState)
         {
@@ -75,7 +80,7 @@ public class EnemyMover : MonoBehaviour
         }
     }
 
-    private void Patrol()
+    protected void Patrol()
     {
         if (patrolPoints == null || patrolPoints.Length == 0) return;
 
@@ -91,7 +96,7 @@ public class EnemyMover : MonoBehaviour
 
     /** Handles enemy movement when investigating either the last known spot of 
     the player, or a sound it heard. */
-    private void LookAround()
+    protected void LookAround()
     {
         if (reachedWanderTarget && Time.time >= nextWanderTime)
         {
@@ -115,7 +120,7 @@ public class EnemyMover : MonoBehaviour
     }
 
     /** Used to randomly generate a valid position to wander to within a radius. */
-    private bool TryGetWanderPosition(out Vector3 position)
+    protected bool TryGetWanderPosition(out Vector3 position)
     {
         Vector3 offset = Random.insideUnitSphere * wanderRadius;
         offset.y = 0f;
