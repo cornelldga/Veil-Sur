@@ -207,7 +207,12 @@ public class UIManager : MonoBehaviour
             case GameManager.GameState.DEFAULT:
                 //no UI
                 break;
-
+            case GameManager.GameState.NOTEBOOK:
+                //TODO make it show up and make the notebook an official group id
+                break;
+            case GameManager.GameState.PAUSED:
+                //pause menu
+                break;
         }
             
                 

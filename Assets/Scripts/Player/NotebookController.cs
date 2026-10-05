@@ -36,7 +36,14 @@ public class NotebookController : MonoBehaviour
     /// </summary>
     private void ToggleNotebook(InputAction.CallbackContext ctx)
     {
-        GameManager.Instance.RequestStateChange(GameManager.GameState.NOTEBOOK);
+        if (playerState.GetNotebookOpen())
+        {
+            GameManager.Instance.RequestStateChange(GameManager.GameState.DEFAULT);
+        } else
+        {
+            GameManager.Instance.RequestStateChange(GameManager.GameState.NOTEBOOK);
+        }
+
         bool notebookOpen = playerState.GetNotebookOpen();
 
         if (notebookOpen)
