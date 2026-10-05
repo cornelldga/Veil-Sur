@@ -70,18 +70,14 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Saves the game to the file name chosen by the player
+    /// Requests the game manager to change the state.
+    /// There is no guarantee that the change actually happens.
     /// </summary>
-    public void SaveGame()
+    /// <param name="state">the state you want to change to</param>
+    public void RequestStateChange(GameState state)
     {
+        this.state = state;
+    }
 
-    }
     
-    /// <summary>
-    /// Loads the game from the current save file. If no save exists, creates a new one
-    /// </summary>
-    public void LoadGame()
-    {
-        
-    }
 }
