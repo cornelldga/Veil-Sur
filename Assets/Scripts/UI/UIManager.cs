@@ -49,6 +49,8 @@ public class UIManager : MonoBehaviour
 
     private PhotoNote pendingDeletion;
  
+    [Header("Interact Popup")]
+    [SerializeField] public TMP_Text interact;
 
     private void Awake()
     {
@@ -91,6 +93,7 @@ public class UIManager : MonoBehaviour
     {
         if (Instance != this) return;   // a duplicate manager is about to be destroyed
 
+        ShowInteractPrompt(false);
         if (SceneManager.GetActiveScene().name == titleSceneName)
             Show(UIGroupId.MainMenu);
     }
@@ -186,6 +189,11 @@ public class UIManager : MonoBehaviour
         {
             deleteConfirmation.SetActive(false);
         }
+    }
+
+    public void ShowInteractPrompt(bool visible)
+    {
+        if (interact.gameObject.activeSelf != visible) interact.gameObject.SetActive(visible);
     }
 
 }
