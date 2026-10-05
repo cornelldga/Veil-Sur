@@ -35,21 +35,23 @@ public class PlayerInteraction : MonoBehaviour
     /// Update() will, once per frame, use Raycast to check if the player is
     /// looking at a valid readable document. If player interacts and the object
     /// has an interactable component, the interact action is successful.
+    /// UI component will popup when looking at an interactable component.
     /// </summary>
     private void Update()
     {
+        Interactable interactable = null;
+
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, rayLength))
         { 
-            if (controls.PlayerMovement.Interact.WasPerformedThisFrame())
-            {
-                var interactable = hit.collider.gameObject.GetComponent<Interactable>();
-                if (interactable != null)
-                {
-                    interactable.Interact();
-                }
-            }
+            interactable = hit.collider.GetComponentInParent<Interactable>();
         }
+            UIManager.Instance.ShowInteractPrompt(interactable != null);
+        if (controls.PlayerMovement.Interact.WasPerformedThisFrame() & interactable!= null) {
+            interactable.Interact();
+        }
+            
     }
+
 
     private void OnDestroy()
     {
