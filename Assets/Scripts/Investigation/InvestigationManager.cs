@@ -1,16 +1,13 @@
+using NUnit.Framework;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class InvestigationManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    List<QuestionDefinition> current_questions;
 
-    // Update is called once per frame
-    void Update()
+    void AddQuestion(QuestionDefinition question)
     {
-        
+        current_questions.Add(question);
     }
 }
