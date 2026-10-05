@@ -16,11 +16,6 @@ public class GameManager : MonoBehaviour
 
     public GameState state {  get; set; }
 
-    public enum PuzzleState {
-        SOLVED,
-        UNSOLVED
-    }
-
     public enum GameState
     {
         PAUSED,
