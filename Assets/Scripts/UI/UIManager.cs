@@ -44,6 +44,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject docCanvas;
     [SerializeField] public TMP_Text docViewer;
 
+    [Header("Delete Confirmation")]
+    [SerializeField] private GameObject deleteConfirmation;
+
+    private PhotoNote pendingDeletion;
+ 
 
     private void Awake()
     {
@@ -138,6 +143,49 @@ public class UIManager : MonoBehaviour
     {
         // if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
         //     UIManager.Instance.Show(UIGroupId.Pause);
+    }
+
+    /// <summary>
+    /// Displays the delete confirmation for the given photo.
+    /// </summary>
+    public void ShowDeleteConfirmation(PhotoNote photo)
+    {
+        pendingDeletion = photo;
+        if (deleteConfirmation != null)
+        {
+            deleteConfirmation.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Called when the player confirms deletion of a photo. Removes the pending
+    /// photo from the storage and hides the confimation pop-up.
+    /// </summary>
+    public void ConfirmDelete()
+    {
+        if (pendingDeletion != null)
+        {
+            PhotoStorage.Instance.RemovePhoto(pendingDeletion);
+            pendingDeletion = null;
+        }
+
+        if (deleteConfirmation != null)
+        {
+            deleteConfirmation.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Called when the player cancels deletion. Does not remove the pending
+    /// photo from the storage and hides the confirmation pop-up.
+    /// </summary>
+    public void CancelDelete()
+    {
+        pendingDeletion = null;
+        if (deleteConfirmation != null)
+        {
+            deleteConfirmation.SetActive(false);
+        }
     }
 
 }
