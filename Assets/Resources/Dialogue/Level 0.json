@@ -2,12 +2,12 @@
       "welcome": {
         "puzzle": null,
         "lines": [
-          "aisha? aisha, can you hear me? move your mouse to do a little spin if you can hear me.",
-          "okay, you're in the reception of the veil sur. we have officially trespassed. very exciting. very legal.",
-          "quick systems check before you go anywhere. walk with WASD and interact with objects by pressing 'e'",
-          "you want to make sure you're sending me important intel so right click or press 'r' to use your camera, and left click to take a picture! pictures will automaticlaly be uploaded onto my cloud!",
-          "your pictures will load onto a notebook -- press tab to open it up. connect any key evidence with its corresponding picture to complete it",
-          "okay, now that you know the basics, let's get to work. we need to find out what veil sur is up to."
+          "Aisha? Aisha, can you hear me? Move your mouse to do a little spin if you can hear me.",
+          "Okay, you're in the reception of OYO HQ. So nothing illegal yet. Very aboveboard.",
+          "Quick systems check before you go anywhere. Walk with WASD and interact with objects by pressing 'E'",
+          "You want to make sure you're sending me important intel so right click or press 'R' to use your camera, and left click to take a picture!",
+          "Your pictures will load onto a notebook -- press tab to open it up. connect any key evidence with its corresponding picture to complete it.",
+          "Now that you know the basics, let's get to work."
         ]
       }
       // "elevator": {
