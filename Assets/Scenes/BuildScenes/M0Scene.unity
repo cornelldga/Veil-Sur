@@ -6245,17 +6245,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!114 &568533645 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6313206252193330793, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
-  m_PrefabInstance: {fileID: 250352875}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1f2f87315d96c140b5c45fcede2d8ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::QuestionNote
 --- !u!1001 &585753825
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13773,10 +13762,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09dbd0c7b42f4bdcabffd2099aa6e21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
-  puzzleState: 0
-  questionNotes:
-  - {fileID: 568533645}
-  - {fileID: 1448414051}
+  questions: []
+  next_puzzles: []
+  first: 0
 --- !u!43 &1408592393
 Mesh:
   m_ObjectHideFlags: 0
@@ -14133,17 +14121,51 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!114 &1448414051 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 110774688948316956, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
-  m_PrefabInstance: {fileID: 250352875}
+--- !u!1 &1514908848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1514908850}
+  - component: {fileID: 1514908849}
+  m_Layer: 0
+  m_Name: Level
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1514908849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514908848}
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1f2f87315d96c140b5c45fcede2d8ba, type: 3}
+  m_Script: {fileID: 11500000, guid: d4e3b396db3d1b14d9091cae7eb70cdc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::QuestionNote
+  m_EditorClassIdentifier: Assembly-CSharp::Level
+  player: {fileID: 0}
+--- !u!4 &1514908850
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514908848}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 107.9327, y: 0.00002, z: 456.07288}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1555351806
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21554,3 +21576,4 @@ SceneRoots:
   - {fileID: 94460080}
   - {fileID: 1159626181}
   - {fileID: 250352875}
+  - {fileID: 1514908850}

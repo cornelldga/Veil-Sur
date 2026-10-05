@@ -10,7 +10,7 @@ using System.Collections;
 public class LoudnessControl : SoundEvent
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private PlayerStateController playerStateController;
+    private PlayerState playerStateController;
     [Tooltip("Collider used to detect the player based on their noise radius")]
     [SerializeField] SphereCollider loudnessDetectorCollider;
     [SerializeField] int crouchRadius = 2;
@@ -25,7 +25,7 @@ public class LoudnessControl : SoundEvent
     /// </summary>
     void Start()
     {
-        playerStateController = GetComponent<PlayerStateController>();
+        playerStateController = GetComponent<PlayerState>();
     }
 
     /// <summary>
