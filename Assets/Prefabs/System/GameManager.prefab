@@ -205,6 +205,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5804112954100723355, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: screenRoot
+      value: 
+      objectReference: {fileID: 8630848581752035360}
+    - target: {fileID: 5804112954100723355, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: mainMenuPrefab
+      value: 
+      objectReference: {fileID: 2481373374358070758, guid: ead5c050e37564970bbfdabb9f5bd3d2, type: 3}
+    - target: {fileID: 5804112954100723355, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: pauseMenuPrefab
+      value: 
+      objectReference: {fileID: -8712468317723249130, guid: 5bd448f493dec46318df0296c93ab9b6, type: 3}
+    - target: {fileID: 5804112954100723355, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: settingsMenuPrefab
+      value: 
+      objectReference: {fileID: 1181211812633617751, guid: 6a582e03460194cbd810ba9df5e1d35f, type: 3}
     - target: {fileID: 6258063981305249245, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
       propertyPath: m_Name
       value: UICanvas

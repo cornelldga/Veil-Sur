@@ -28,20 +28,21 @@ public class PhotoCameraController : MonoBehaviour
     [SerializeField] private float normalFOV = 60f;
     [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 10f;
+    [SerializeField] private bool toggleZoom = false;
     [Tooltip("The maximum range that a subject can be from the camera")]
     [Header("Detection")]
     [SerializeField] private float maxPhotoRange = 10f;
     [SerializeField] private LayerMask photoOcclusionMask = ~0;
-    [Tooltip("Radius of the inner ray circle used to determine subject")]
-    [SerializeField] private float innerRadiusFraction = 0.3f;
-    [Tooltip("Radius of the outer ray circle used to determine subject")]
-    [SerializeField] private float outerRadiusFraction = 0.7f;
+    [Tooltip("Inner circle radius in world units")]
+    [SerializeField] private float innerRayRadius = 0.07f;
+    [Tooltip("Outer circle radius in world units")]
+    [SerializeField] private float outerRayRadius = 0.21f;
+    [Tooltip("Minimum number of raycasts that must hit a subject for it to be considered the subject of the photo")]
+    [SerializeField] private int minRayCasts = 7;
     [Header("Blur Settings")]
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
     [SerializeField] private float blurRangePastMax = 2f;
 
-    // Minimum amount of raycasts needed for subject to be considering in photo
-    private int minRayCasts = 4;
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
     private PlayerStateController playerStateController;
@@ -127,6 +128,11 @@ public class PhotoCameraController : MonoBehaviour
 
     private void OnAimCameraPerformed(InputAction.CallbackContext ctx)
     {
+        if (toggleZoom && playerStateController.GetPhotoMode())
+        {
+            CancelCamera();
+            return;
+        }
         if (!playerStateController.GetPlayerHasControl())
         {
             return;
@@ -142,6 +148,7 @@ public class PhotoCameraController : MonoBehaviour
 
     private void OnAimCameraCanceled(InputAction.CallbackContext ctx)
     {
+        if (toggleZoom) { return; }
         CancelCamera();
     }
 
@@ -327,16 +334,18 @@ public class PhotoCameraController : MonoBehaviour
     private string DetectPhotographedSubject()
     {
         var tally = new Dictionary<string, int>();
+        var tallyInner = new Dictionary<string, bool>();
 
-        foreach (Vector2 screenPoint in GetPhotoRayScreenPoints())
+        foreach (var (ray, isInner) in GetPhotoRays())
         {
-            Ray ray = targetCamera.ScreenPointToRay(screenPoint);
             if (!Physics.Raycast(ray, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
             {
+                Debug.DrawRay(ray.origin, ray.direction * maxPhotoRange, Color.red, 5f, false);
                 continue;
             }
             // Return parents too in case subject hits a child component of a photographable object (like lightbulb of lamp or smthn)
             PhotographableObject subject = hit.collider.GetComponentInParent<PhotographableObject>();
+            Debug.DrawLine(ray.origin, hit.point, subject != null ? Color.green : Color.yellow, 5f, false);
             if (subject == null)
             {
                 continue;
@@ -345,18 +354,41 @@ public class PhotoCameraController : MonoBehaviour
             if (tally.ContainsKey(subject.SubjectId))
             {
                 tally[subject.SubjectId] = tally[subject.SubjectId] + 1;
+                if (isInner)
+                {
+                    tallyInner[subject.SubjectId] = true;
+                }
             }
             else
             {
                 tally[subject.SubjectId] = 1;
+                tallyInner[subject.SubjectId] = isInner;
             }
+        }
+
+        Ray centerRay = new(targetCamera.transform.position, targetCamera.transform.forward);
+
+        if (Physics.Raycast(centerRay, out RaycastHit centerHit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
+        {
+            PhotographableObject centeredSubject = centerHit.collider.GetComponentInParent<PhotographableObject>();
+
+            Debug.DrawLine(centerRay.origin, centerHit.point, Color.cyan, 5f, false);
+
+            if (centeredSubject != null && tally.TryGetValue(centeredSubject.SubjectId, out int hits) && hits >= minRayCasts - 1)
+            {
+                return centeredSubject.SubjectId;
+            }
+        } 
+        else
+        {
+            Debug.DrawRay(centerRay.origin, centerRay.direction * maxPhotoRange, Color.cyan, 5f, false);
         }
 
         string bestSubjectId = "";
         int bestCount = minRayCasts - 1;
         foreach (var entry in tally)
         {
-            if (entry.Value > bestCount)
+            if (tallyInner[entry.Key] && entry.Value > bestCount)
             {
                 bestSubjectId = entry.Key;
                 bestCount = entry.Value;
@@ -367,25 +399,23 @@ public class PhotoCameraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns 16 screen-space points (2 concentric circles of 8, evenly
-    /// spaced) used to raycast when a photo is taken, centered on the
+    /// Returns 16 rays (2 concentric circles of 8, evenly
+    /// spaced) used when a photo is taken, centered on the
     /// cropped square.
     /// </summary>
-    private IEnumerable<Vector2> GetPhotoRayScreenPoints()
+    private IEnumerable<(Ray ray, bool isInner)> GetPhotoRays()
     {
-        RectInt captureRect = GetCaptureScreenRect(Screen.width, Screen.height);
-        Vector2 center = new Vector2(captureRect.x + captureRect.width * 0.5f, captureRect.y + captureRect.height * 0.5f);
-        float halfSize = captureRect.width * 0.5f;
+        Transform cam = targetCamera.transform;
+        float[] radii = { innerRayRadius, outerRayRadius };
 
-        // Iterate through two circles
-        foreach (float radiusFraction in new[] { innerRadiusFraction, outerRadiusFraction })
+        for (int circle = 0; circle < radii.Length; circle++)
         {
-            float pixelRadius = radiusFraction * halfSize;
-            // Iterate by points in circle
             for (int i = 0; i < RaysPerCircle; i++)
             {
                 float angle = i * Mathf.PI * 2f / RaysPerCircle;
-                yield return center + pixelRadius * new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                Vector3 offset = radii[circle] * (cam.right * Mathf.Cos(angle) + cam.up * Mathf.Sin(angle));
+
+                yield return (new Ray(cam.position + offset, cam.forward), circle == 0);
             }
         }
     }
