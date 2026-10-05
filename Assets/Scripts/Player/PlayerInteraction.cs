@@ -9,6 +9,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private Camera camera;
     private PlayerControls controls;
+    private PlayerStateController playerStateController;
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class PlayerInteraction : MonoBehaviour
     void Start()
     {
         camera = GameManager.PlayerCamera;
+        playerStateController = GameManager.PlayerInstance.GetComponent<PlayerStateController>();
     }
 
 
@@ -39,6 +41,13 @@ public class PlayerInteraction : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        if (playerStateController.GetPhotoMode())
+        {
+            // Don't show 'E to Interact' when Camera is on
+            UIManager.Instance.ShowInteractPrompt(false); 
+            return; // Block interaction when Camera is open (Doc mode).
+        }
+
         Interactable interactable = null;
 
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, rayLength))

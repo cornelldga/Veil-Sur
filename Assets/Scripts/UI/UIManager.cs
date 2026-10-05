@@ -43,6 +43,7 @@ public class UIManager : MonoBehaviour
     [Header("Doc Viewer")]
     [SerializeField] public GameObject docCanvas;
     [SerializeField] public TMP_Text docViewer;
+    [SerializeField] public RectTransform docPaper;
 
     [Header("Delete Confirmation")]
     [SerializeField] private GameObject deleteConfirmation;

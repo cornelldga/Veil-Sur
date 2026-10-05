@@ -11,7 +11,7 @@ public class DocData
 }
 
 
-public class Document : MonoBehaviour, Interactable
+public class Document : MonoBehaviour
 {
     [Header("UI Features")]
     
@@ -51,23 +51,13 @@ public class Document : MonoBehaviour, Interactable
         docData = JsonUtility.FromJson<DocData>(jsonFile.text);
     }
 
-    /// <summary>
-    /// Opens or closes the doc viewer.
-    /// </summary>
-    public void Interact()
+    public void OpenDoc()
     {
-        if (!isOpen)
-        {
-            docTextAreaUI.text = docData.text;
-            docCanvas.SetActive(true);
-            isOpen = true;
-        } else
-        {
-            CloseDoc();
-        }
+        docTextAreaUI.text = docData.text;
+        docCanvas.SetActive(true);
+        isOpen = true;
     }
-
-    private void CloseDoc()
+    public void CloseDoc()
     {
         docCanvas.SetActive(false);
         isOpen = false;
