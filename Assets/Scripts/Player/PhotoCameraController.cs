@@ -46,7 +46,6 @@ public class PhotoCameraController : MonoBehaviour
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
     private PlayerState playerState;
-    private GameObject notebookMenu;
     private float targetFOV;
     private Image snapOverlay;
     private Volume blurVolume;
@@ -216,12 +215,8 @@ public class PhotoCameraController : MonoBehaviour
         snapOverlay.canvasRenderer.SetAlpha(.5f);
         snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
 
-        //TODO: rework PhotoNote to not be a UI object but just something that stores.
-        //Data should not be aware of UI
-        GameObject photograph = Instantiate(photographPrefab, notebookMenu.transform);
-        PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
+        PhotoNote photoNote = new PhotoNote();
         photoNote.SetSubject(DetectPhotographedSubject());
-        //photoNote.SetBounds(notebookMenu.transform as RectTransform);
         photoNote.LoadImage(photo);
 
         // Add photo to storage
