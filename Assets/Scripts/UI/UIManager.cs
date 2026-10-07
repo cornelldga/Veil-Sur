@@ -229,7 +229,7 @@ public class UIManager : MonoBehaviour
         if (active)
         {
             snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
-            cameraGroup.SetActive(false);
+            cameraGroup.SetActive(true);
         }
 
     }
