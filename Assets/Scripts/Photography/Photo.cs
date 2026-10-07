@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Notebook item representing a photo.
+/// Captured photo data, independent of its notebook preview.
 /// </summary>
 public class Photo : MonoBehaviour
 {
@@ -9,6 +9,8 @@ public class Photo : MonoBehaviour
 
     //subjectID is empty if there is no subject
     private string subjectId;
+
+    public Texture ImageTexture => image;
 
     public string SubjectId()
     {

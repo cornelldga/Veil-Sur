@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using System;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
 
 [System.Serializable]
 public class DocData

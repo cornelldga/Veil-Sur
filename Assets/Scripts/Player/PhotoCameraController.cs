@@ -21,7 +21,6 @@ public class PhotoCameraController : MonoBehaviour
         Photo,
         Document
     }
-    [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
     [Header("Camera Settings")]
     [SerializeField] private float normalFOV = 60f;
@@ -200,19 +199,22 @@ public class PhotoCameraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Refactored the code for PhotoNote creation from OnSnap to here.
-    /// Creates a PhotoNote given a Texture2D.
+    /// Creates backend Photo data from a captured texture.
     /// This way, seperate camera modes can produce separate Textures.
     /// </summary>
     /// <param name="photo">Texture2D object representing the photo</param>
     private void CreatePhotoNote(Texture2D photo)
     {
-        Photo photoNote = new Photo();
+        Photo photoNote = new GameObject("Photo").AddComponent<Photo>();
         photoNote.SetSubject(DetectPhotographedSubject());
         photoNote.SetImage(photo);
 
         // Add photo to storage
-        PhotoStorage.Instance.AddPhoto(photoNote);
+        if (!PhotoStorage.Instance.AddPhoto(photoNote))
+        {
+            Destroy(photoNote.gameObject);
+            Destroy(photo);
+        }
     }
 
     /// <summary>

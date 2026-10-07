@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7450253034250995934}
   - component: {fileID: 7316898121491863721}
+  - component: {fileID: 7000000000000000001}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -656,7 +657,7 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7754707645870727790, guid: 424d1f91a57a94630b27de911e0175c5, type: 3}
+    - target: {fileID: 7000241390297672936, guid: 424d1f91a57a94630b27de911e0175c5, type: 3}
       propertyPath: rule
       value: 
       objectReference: {fileID: 11400000, guid: c6e39590963e2a149bdf85dc6a90fa20, type: 2}
@@ -843,3 +844,15 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6694829104001887517, guid: 51171e8699a938b4eaef80b7c4531f57, type: 3}
   m_PrefabInstance: {fileID: 8088056294176502225}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7000000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911446516936161387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3270e1a067cbbd94c906d2b60db2e9a2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::InvestigationManager

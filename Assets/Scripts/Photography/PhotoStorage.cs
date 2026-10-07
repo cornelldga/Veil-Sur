@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using TMPro;
-using UnityEditor;
+using System;
 
 
 /// <summary>
@@ -14,6 +13,13 @@ public class PhotoStorage : MonoBehaviour
 {
    public static PhotoStorage Instance { get; private set; }
    private readonly List<Photo> photos = new List<Photo>();
+
+   public IReadOnlyList<Photo> Photos => photos;
+   public event Action PhotosChanged;
+   public bool Contains(Photo photo) => photos.Contains(photo);
+   public int Capacity => maxCapacity;
+
+   public void SetCapacity(int capacity) { maxCapacity = capacity; }
 
    // Can change maxCapacity to any other value depending on gameplay.
    // ( Currently 5 just because that's what was chsoen so far )
@@ -37,10 +43,7 @@ public class PhotoStorage : MonoBehaviour
 
    }
 
-   private void Start()
-    {
 
-    }
 
 
    /// <summary>
@@ -57,7 +60,7 @@ public class PhotoStorage : MonoBehaviour
    /// </summary>
    public bool IsPhotoStorageFull()
    {
-       return photos.Count == maxCapacity;
+       return photos.Count >= maxCapacity;
    }
 
 
@@ -67,13 +70,14 @@ public class PhotoStorage : MonoBehaviour
    /// </summary>
    public bool AddPhoto(Photo photo)
    {
-       if (IsPhotoStorageFull())
+       if (photo == null || photos.Contains(photo) || IsPhotoStorageFull())
        {
            return false;
        }
 
        photos.Add(photo);
-       IncrementCounter();
+       photo.transform.SetParent(transform);
+       PhotosChanged?.Invoke();
        return true;
    }
 
@@ -85,16 +89,13 @@ public class PhotoStorage : MonoBehaviour
    public bool RemovePhoto(Photo photo)
    {
        bool removed = photos.Remove(photo);
-       IncrementCounter();
+       if (removed)
+       {
+           PhotosChanged?.Invoke();
+           Destroy(photo.ImageTexture);
+           Destroy(photo.gameObject);
+       }
        return removed;
    }
-
-   /// <summary>
-   /// Increments the storage counter UI element to the relevant representation. 
-   /// TEMP: text representation, future will be pulse images
-   /// </summary>
-   private void IncrementCounter(){
-   }
-
 
 }

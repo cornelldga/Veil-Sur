@@ -96,6 +96,8 @@ public class UIManager : MonoBehaviour
     {
         if (Instance != this) return;   // a duplicate manager is about to be destroyed
 
+        var photoTab = notebookGroup.GetComponentInChildren<PhotoTabScript>(true);
+        if (photoTab != null && PhotoStorage.Instance != null) PhotoStorage.Instance.SetCapacity(photoTab.SlotCount);
         ShowInteractPrompt(false);
         if (SceneManager.GetActiveScene().name == titleSceneName)
             Show(UIGroupId.MainMenu);
@@ -248,6 +250,8 @@ public class UIManager : MonoBehaviour
     {
         //TODO this is janky hiding every time, somebody should be assigned to make this smoother
         HideAll();
+        bool notebookVisible = GameManager.Instance.state == GameManager.GameState.NOTEBOOK;
+        if (notebookGroup.activeSelf != notebookVisible) notebookGroup.SetActive(notebookVisible);
         switch (GameManager.Instance.state) { 
             case GameManager.GameState.CAMERA:
                 if(cameraMode == PhotoCameraController.CameraMode.Photo)
@@ -262,7 +266,7 @@ public class UIManager : MonoBehaviour
                 //no UI
                 break;
             case GameManager.GameState.NOTEBOOK:
-                //TODO make it show up and make the notebook an official group id
+                // Notebook visibility follows the game state above.
                 break;
             case GameManager.GameState.PAUSED:
                 //pause menu
