@@ -86,6 +86,7 @@ public class GameManager : MonoBehaviour
     {
         losePanel.SetActive(true);
         Time.timeScale = 0f;
+        PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
     }
     
 }
