@@ -76,5 +76,9 @@ public class GameManager : MonoBehaviour
         this.state = state;
     }
 
+    public LoseGame()
+    {
+        
+    }
     
 }
