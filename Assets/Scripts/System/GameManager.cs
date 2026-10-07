@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] AudioManager audioManager;
     [SerializeField] DialogueManager dialogueManager;
     public static GameManager Instance { get; private set; }
     public static GameObject PlayerInstance { get; set; }
     public static Camera PlayerCamera { get; set; }
+
+    [Header("Music")]
+    [SerializeField] private AudioClip lobbyMusic;
 
     
 
@@ -46,6 +48,9 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
+        //HandleSceneMusic("MainMenu");
+        // This is TEMPORARY
+        AudioManager.Instance.PlayMusic(lobbyMusic);
     }
 
     public async void GoToLevel(string sceneName)
@@ -64,6 +69,8 @@ public class GameManager : MonoBehaviour
 
         while (!op.isDone)
             await Task.Yield();
+
+        HandleSceneMusic(sceneName);
     }
 
     /// <summary>
@@ -74,6 +81,24 @@ public class GameManager : MonoBehaviour
     public void RequestStateChange(GameState state)
     {
         this.state = state;
+    }
+
+    /// <summary>
+    /// Plays the correct music clip based on the scene.
+    /// </summary>
+    /// <param name="sceneName">the scene we're transitioning to</param>
+    private void HandleSceneMusic(string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "TutorialLevel":
+                AudioManager.Instance.PlayMusic(lobbyMusic);
+                break;
+
+            default:
+                Debug.LogWarning($"No music assigned for scene: {sceneName}");
+                break;
+        }
     }
 
     

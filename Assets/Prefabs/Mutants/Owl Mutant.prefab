@@ -87,15 +87,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3db8e77ced476438140fdbb411a9ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OwlSearchlight
-  player: {fileID: 0}
   obstacleMask:
     serializedVersion: 2
     m_Bits: 512
   playerMask:
     serializedVersion: 2
     m_Bits: 256
-  viewDistance: 10
-  viewAngle: 60
+  viewDistance: 45
+  viewAngle: 360
   eyeHeight: 0
   sweepAngle: 45
   sweepSpeed: 30
@@ -128,11 +127,12 @@ MonoBehaviour:
   waypointTolerance: 0.3
   suspiciousSpeed: 3
   chaseSpeed: 5
-  player: {fileID: 0}
   waitTime: 2
   wanderRadius: 5
   farSpeed: 1.5
   closeSpeed: 6
+  targetObject: {fileID: 0}
+  viewAngleThreshold: 60
 --- !u!33 &8374119217000137589 stripped
 MeshFilter:
   m_CorrespondingSourceObject: {fileID: 1927768490209125107, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}

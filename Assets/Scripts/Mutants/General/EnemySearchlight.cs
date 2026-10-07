@@ -28,6 +28,9 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected float suspicionDecayRate = 1f; 
     [SerializeField] protected float maxDetectionMultiplier = 3f; 
     [SerializeField] protected float loseAlertAfter = 3f; 
+    
+    [SerializeField] protected float proximityDetection = 2f; // During chase, if player is within this distance, doesn't lose alert
+    
     /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
     [SerializeField] protected int investigateCount = 3; 
 
@@ -48,7 +51,9 @@ public class EnemySearchlight : MonoBehaviour
     [Header("Public Fields")]
     public AlertState CurrentState { get; protected set; } = AlertState.Patrol;
     public Vector3 LastKnownPlayerPosition { get; protected set; }
-    public bool canSeePlayer = false;
+    public bool canSeePlayer = false; // Whether the mutant can see the player without obstruction
+    public float distanceToPlayer; // Used to increase mutant suspicion gain based on proximity
+
 
     [Header("Protected States")]
     protected float baseFacingAngle;
@@ -60,7 +65,6 @@ public class EnemySearchlight : MonoBehaviour
 
     protected Vector3 lastPosition; // Used to determine where to face while moving
 
-    protected float distanceToPlayer; // Used to increase mutant suspicion gain based on proximity
 
     protected void Start()
     {
@@ -138,8 +142,8 @@ public class EnemySearchlight : MonoBehaviour
 
         Vector3 eye = EyePosition;
         Vector3 toPlayer = player.position - eye;
-        float distance = toPlayer.magnitude;
-        if (distance > viewDistance)
+        distanceToPlayer = toPlayer.magnitude;
+        if (distanceToPlayer > viewDistance)
         {
             return false;
         }
@@ -150,7 +154,7 @@ public class EnemySearchlight : MonoBehaviour
             return false;
         }
 
-        if (Physics.Raycast(eye, toPlayer.normalized, out RaycastHit hit, distance, obstacleMask | playerMask))
+        if (Physics.Raycast(eye, toPlayer.normalized, out RaycastHit hit, distanceToPlayer, obstacleMask | playerMask))
         {
             if (((1 << hit.collider.gameObject.layer) & playerMask) != 0)
             {
@@ -163,7 +167,8 @@ public class EnemySearchlight : MonoBehaviour
 
     protected virtual void UpdateAlertState(bool canSeePlayer)
     {
-        if (canSeePlayer)
+        
+        if (canSeePlayer || (CurrentState == AlertState.Alert && IsProximityDetected()))
         {
             lastSeenTimer = 0f;
             float proximity = Mathf.Clamp01(1f - distanceToPlayer / viewDistance);
@@ -344,5 +349,16 @@ public class EnemySearchlight : MonoBehaviour
     {
         timesLookedAround++;
         // Debug.Log("Times wandered: " + timesLookedAround);
+    }
+
+    /// <summary>
+    /// Returns whether the player is within proximityDetection distance from this mutant.
+    /// Suspicion doesn't decay if the mutant is alerted and the player is too close.
+    /// </summary>
+    /// <returns>Whether the player is within proximityDetection distance from this mutant.</returns>
+    public bool IsProximityDetected()
+    {
+        Debug.Log(distanceToPlayer);
+        return distanceToPlayer <= proximityDetection;
     }
 }
