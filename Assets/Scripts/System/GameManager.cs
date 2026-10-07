@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
+    [SerializeField] GameObject losePanel;
 
     public GameState state {  get; set; }
 
@@ -76,9 +77,15 @@ public class GameManager : MonoBehaviour
         this.state = state;
     }
 
-    public LoseGame()
+    /// <summary>
+    /// The temporary lose state for the game. 
+    /// Stops time for the game and enables the lose panel 
+    /// to be seen for the player.
+    /// </summary>
+    public void LoseGame()
     {
-        
+        losePanel.SetActive(true);
+        Time.timeScale = 0f;
     }
     
 }
