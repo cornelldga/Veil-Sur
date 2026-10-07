@@ -131,11 +131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be0dad1d918854f4e99afbd8bff2ab6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestionSlotScript
-  photoTab: {fileID: 0}
   question: {fileID: 7245702035306161035}
-  button: {fileID: 2010407554853209927}
   preview: {fileID: 5403378235437109458}
-  fitter: {fileID: 8028524424619644140}
 --- !u!1 &7371927760877527512
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +186,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7371927760877527512}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 

@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Notebook UI")]
     [SerializeField] public GameObject notebookGroup;
+    public NotebookUIController Notebook => notebookGroup.GetComponent<NotebookUIController>();
 
     [Header("Screen Prefabs (assign from Project folder)")]
     [SerializeField] private UIScreen mainMenuPrefab;
@@ -96,7 +97,7 @@ public class UIManager : MonoBehaviour
     {
         if (Instance != this) return;   // a duplicate manager is about to be destroyed
 
-        var photoTab = notebookGroup.GetComponentInChildren<PhotoTabScript>(true);
+        var photoTab = Notebook != null ? Notebook.PhotoTab : null;
         if (photoTab != null && PhotoStorage.Instance != null) PhotoStorage.Instance.SetCapacity(photoTab.SlotCount);
         ShowInteractPrompt(false);
         if (SceneManager.GetActiveScene().name == titleSceneName)

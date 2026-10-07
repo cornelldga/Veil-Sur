@@ -4,12 +4,22 @@ using UnityEngine.UI;
 /// <summary>Opens the photo tab and fills the assigned slots from storage.</summary>
 public class PhotoTabScript : MonoBehaviour
 {
+    [Header("Tab State")]
+    [Tooltip("Whether the photo tab opens when the notebook first starts.")]
     [SerializeField] private bool startsOpen;
+    [Header("Tab Controls")]
+    [Tooltip("Opened tab graphic within the notebook prefab.")]
     [SerializeField] private Graphic openedImage;
+    [Tooltip("Closed tab graphic within the notebook prefab.")]
     [SerializeField] private Graphic closedImage;
+    [Tooltip("Button that closes the opened tab.")]
     [SerializeField] private Button openedToggle;
+    [Tooltip("Button that opens the closed tab.")]
     [SerializeField] private Button closedToggle;
+    [Header("Photo Slots")]
+    [Tooltip("Panel containing the manually configured photo slots.")]
     [SerializeField] private RectTransform photoPanel;
+    [Tooltip("Slots within this prefab, in storage order. Their count sets photo capacity.")]
     [SerializeField] private PhotoSlotScript[] slots;
     private PhotoStorage storage;
 
@@ -17,16 +27,12 @@ public class PhotoTabScript : MonoBehaviour
     public int SlotCount => slots.Length;
     public Photo SelectedPhoto { get; private set; }
 
-    private void Awake()
+    private void Start()
     {
         openedToggle.onClick.AddListener(Close);
         closedToggle.onClick.AddListener(Open);
         foreach (var slot in slots) slot.Initialize(this);
         SetOpen(startsOpen);
-    }
-
-    private void Start()
-    {
         storage = PhotoStorage.Instance;
         if (storage != null) storage.PhotosChanged += Refresh;
         Refresh();

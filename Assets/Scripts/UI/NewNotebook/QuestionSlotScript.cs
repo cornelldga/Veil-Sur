@@ -3,17 +3,24 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>Receives a photo and displays the question's assigned answer.</summary>
+[RequireComponent(typeof(Button))]
 public class QuestionSlotScript : MonoBehaviour, IDropHandler
 {
-    [SerializeField] private PhotoTabScript photoTab;
+    [Tooltip("Question view owning this slot within the question prefab.")]
     [SerializeField] private QuestionNote question;
-    [SerializeField] private Button button;
+    [Tooltip("Photo preview within this question slot prefab.")]
     [SerializeField] private RawImage preview;
-    [SerializeField] private AspectRatioFitter fitter;
+    private Button button;
+    private AspectRatioFitter fitter;
+    private NotebookUIController notebook;
     public Photo Photo => question.Photo;
 
-    private void Awake()
+    private void Start()
     {
+        button = GetComponent<Button>();
+        fitter = preview.GetComponent<AspectRatioFitter>();
+        notebook = UIManager.Instance.Notebook;
+        notebook.RegisterQuestion(question);
         button.onClick.AddListener(InsertSelectedPhoto);
         question.AnswerChanged += RefreshPreview;
         RefreshPreview();
@@ -21,6 +28,8 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler
 
     private void OnDestroy()
     {
+        if (notebook == null) return;
+        notebook.RemoveQuestion(question);
         question.AnswerChanged -= RefreshPreview;
         button.onClick.RemoveListener(InsertSelectedPhoto);
     }
@@ -34,7 +43,7 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler
 
     public void InsertSelectedPhoto()
     {
-        if (photoTab.SelectedPhoto != null) SetPhoto(photoTab.SelectedPhoto);
+        if (notebook.PhotoTab.SelectedPhoto != null) SetPhoto(notebook.PhotoTab.SelectedPhoto);
     }
 
     public void SetPhoto(Photo photo) { question.SetPhoto(photo); }

@@ -3,23 +3,31 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>Displays, selects, and drags one stored photo.</summary>
+[RequireComponent(typeof(Button))]
+[DefaultExecutionOrder(-10)]
 public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField] private Button button;
+    [Tooltip("Photo preview belonging to this slot prefab.")]
     [SerializeField] private RawImage preview;
-    [SerializeField] private AspectRatioFitter fitter;
-    [SerializeField] private Canvas canvas;
+    private Button button;
+    private AspectRatioFitter fitter;
     private PhotoTabScript photoTab;
     private RawImage dragPreview;
 
     public Photo Photo { get; private set; }
     public Photo DraggedPhoto { get; private set; }
 
+    private void Start()
+    {
+        button = GetComponent<Button>();
+        fitter = preview.GetComponent<AspectRatioFitter>();
+        button.onClick.AddListener(Select);
+        SetPhoto(null);
+    }
+
     public void Initialize(PhotoTabScript tab)
     {
         photoTab = tab;
-        button.onClick.AddListener(Select);
-        SetPhoto(null);
     }
 
     public void SetPhoto(Photo photo)
@@ -42,26 +50,31 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         DraggedPhoto = Photo;
         // A separate preview leaves the source slot in place and lets drops reach the UI below it.
         var ghost = new GameObject("Dragged Photo", typeof(RectTransform), typeof(RawImage));
-        ghost.transform.SetParent(canvas.transform, false);
+        var dragRoot = (RectTransform)UIManager.Instance.notebookGroup.transform;
+        ghost.transform.SetParent(dragRoot, false);
         dragPreview = ghost.GetComponent<RawImage>();
         dragPreview.texture = preview.texture;
         dragPreview.raycastTarget = false;
         dragPreview.rectTransform.sizeDelta = preview.rectTransform.rect.size *
-            (preview.rectTransform.lossyScale.x / canvas.transform.lossyScale.x);
+            (preview.rectTransform.lossyScale.x / dragRoot.lossyScale.x);
         OnDrag(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (dragPreview == null) return;
-        var camera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
         if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
-            (RectTransform)canvas.transform, eventData.position, camera, out var position))
+            (RectTransform)UIManager.Instance.notebookGroup.transform, eventData.position,
+            eventData.pressEventCamera, out var position))
             dragPreview.rectTransform.position = position;
     }
 
     public void OnEndDrag(PointerEventData eventData) { EndDrag(); }
     private void OnDisable() { EndDrag(); }
+    private void OnDestroy()
+    {
+        if (button != null) button.onClick.RemoveListener(Select);
+    }
 
     private void EndDrag()
     {

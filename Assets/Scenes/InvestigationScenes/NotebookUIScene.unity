@@ -533,10 +533,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 13447013}
     m_Modifications:
-    - target: {fileID: 498619459959594557, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: canvas
-      value: 
-      objectReference: {fileID: 13447012}
     - target: {fileID: 822633423366499802, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -573,10 +569,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3189778071946581596, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: canvas
-      value: 
-      objectReference: {fileID: 13447012}
     - target: {fileID: 5427150917054161412, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -709,18 +701,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7218202466934171708, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: canvas
-      value: 
-      objectReference: {fileID: 13447012}
-    - target: {fileID: 7255217699165882837, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: canvas
-      value: 
-      objectReference: {fileID: 13447012}
-    - target: {fileID: 8951561445282479922, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: canvas
-      value: 
-      objectReference: {fileID: 13447012}
     - target: {fileID: 9046182382745127101, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
       propertyPath: m_Name
       value: NotebookUI
@@ -774,10 +754,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3057376583603188249, guid: 1531db795b9a94954bd63b116da9b295, type: 3}
-      propertyPath: photoTab
-      value: 
-      objectReference: {fileID: 833470581909219275}
     - target: {fileID: 5566352540727792864, guid: 1531db795b9a94954bd63b116da9b295, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
