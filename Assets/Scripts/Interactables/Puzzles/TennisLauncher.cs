@@ -21,8 +21,6 @@ public class TennisLauncher : SoundEvent, Interactable
         Vector3 destination = this.transform.position + this.transform.forward * dist;
         RegisterSoundEvent(destination, launchVolume);
 
-        if (tennisBallPrefab == null) Debug.LogError("Tennis ball prefab not assigned.");
-
         GameObject ball = Instantiate(tennisBallPrefab, transform.position, transform.rotation);
         TennisBall ballScript = ball.GetComponent<TennisBall>();
         ballScript.SetDistance(dist);
