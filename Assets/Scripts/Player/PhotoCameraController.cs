@@ -207,9 +207,9 @@ public class PhotoCameraController : MonoBehaviour
     /// <param name="photo">Texture2D object representing the photo</param>
     private void CreatePhotoNote(Texture2D photo)
     {
-        PhotoNote photoNote = new PhotoNote();
+        Photo photoNote = new Photo();
         photoNote.SetSubject(DetectPhotographedSubject());
-        photoNote.LoadImage(photo);
+        photoNote.SetImage(photo);
 
         // Add photo to storage
         PhotoStorage.Instance.AddPhoto(photoNote);

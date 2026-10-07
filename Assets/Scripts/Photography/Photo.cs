@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Notebook item representing a photo.
 /// </summary>
-public class Photo
+public class Photo : MonoBehaviour
 {
     private Texture2D image;
 

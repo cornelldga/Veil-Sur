@@ -15,8 +15,6 @@ public class PhotoStorage : MonoBehaviour
    public static PhotoStorage Instance { get; private set; }
    private readonly List<Photo> photos = new List<Photo>();
 
-   private GameObject storageCounter;
-
    // Can change maxCapacity to any other value depending on gameplay.
    // ( Currently 5 just because that's what was chsoen so far )
    [SerializeField] private int maxCapacity = 5;
@@ -41,7 +39,7 @@ public class PhotoStorage : MonoBehaviour
 
    private void Start()
     {
-        storageCounter = UIManager.Instance.notebookGroup.transform.GetChild(0).gameObject;
+
     }
 
 
@@ -96,9 +94,6 @@ public class PhotoStorage : MonoBehaviour
    /// TEMP: text representation, future will be pulse images
    /// </summary>
    private void IncrementCounter(){
-    if(photos.Count <= maxCapacity/3) storageCounter.GetComponent<TextMeshProUGUI>().text = "full storage";
-    else if (photos.Count <= 2*maxCapacity/3) storageCounter.GetComponent<TextMeshProUGUI>().text = "mid storage";
-    else storageCounter.GetComponent<TextMeshProUGUI>().text = "low storage";
    }
 
 
