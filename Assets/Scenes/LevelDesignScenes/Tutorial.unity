@@ -18723,7 +18723,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3408713188140992447, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_Radius
-      value: 0.1
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 3408713188140992447, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_SkinWidth
