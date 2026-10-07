@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     [Header("Camera UI")]
     [SerializeField] public GameObject cameraGroup;
     [SerializeField] public Image snapOverlay;
+    private PhotoCameraController.CameraMode cameraMode;
 
     [Header("Notebook UI")]
     [SerializeField] public GameObject notebookGroup;
@@ -48,7 +49,7 @@ public class UIManager : MonoBehaviour
     [Header("Delete Confirmation")]
     [SerializeField] private GameObject deleteConfirmation;
 
-    private PhotoNote pendingDeletion;
+    private Photo pendingDeletion;
  
     [Header("Interact Popup")]
     [SerializeField] public TMP_Text interact;
@@ -62,6 +63,7 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
+        snapOverlay.canvasRenderer.SetAlpha(0f);
         InitializeScreens();
     }
 
@@ -123,6 +125,8 @@ public class UIManager : MonoBehaviour
         _activeGroup = null;
         _activeId = null;
         _history.Clear();
+        cameraGroup.SetActive(false);
+        snapOverlay.canvasRenderer.SetAlpha(0f);
     }
 
     private void SwitchTo(UIGroupId id)
@@ -152,7 +156,7 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Displays the delete confirmation for the given photo.
     /// </summary>
-    public void ShowDeleteConfirmation(PhotoNote photo)
+    public void ShowDeleteConfirmation(Photo photo)
     {
         pendingDeletion = photo;
         if (deleteConfirmation != null)
@@ -195,6 +199,77 @@ public class UIManager : MonoBehaviour
     public void ShowInteractPrompt(bool visible)
     {
         if (interact.gameObject.activeSelf != visible) interact.gameObject.SetActive(visible);
+    }
+
+    /// <summary>
+    /// When the camera changes modes or states, this should be called
+    /// </summary>
+    public void SetCameraMode(PhotoCameraController.CameraMode cameraMode)
+    {
+        this.cameraMode = cameraMode;
+    }
+
+    /// <summary>
+    /// Should be called when a photo is taken. Does whatever animation is associated with a photograph being taken
+    /// </summary>
+    public void TakePhoto()
+    {
+        //puts white  overlay over and then fades it out to simulate a camera snap
+        snapOverlay.canvasRenderer.SetAlpha(.5f);
+        snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
+    }
+
+    /// <summary>
+    /// Turns document mode on/off. Only works when the game state is CameraMode
+    /// </summary>
+    private void CameraDocumentMode(bool active)
+    {
+        if (GameManager.Instance.state != GameManager.GameState.CAMERA) { return; }
+        if (active) CameraPictureMode(false);
+        if (active)
+        {
+            snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
+            cameraGroup.SetActive(true);
+        }
+
+    }
+
+    /// <summary>
+    /// Turns camera mode on/off. Only works when game state is CameraMode
+    /// </summary>
+    private void CameraPictureMode(bool active)
+    {
+        if(GameManager.Instance.state != GameManager.GameState.CAMERA) { return; }
+        if(active) CameraDocumentMode(false);
+        cameraGroup.SetActive(active);
+    }
+
+    public void FixedUpdate()
+    {
+        //TODO this is janky hiding every time, somebody should be assigned to make this smoother
+        HideAll();
+        switch (GameManager.Instance.state) { 
+            case GameManager.GameState.CAMERA:
+                if(cameraMode == PhotoCameraController.CameraMode.Photo)
+                {
+                    CameraPictureMode(true);
+                } else
+                {
+                    CameraDocumentMode(true);
+                }
+                break;
+            case GameManager.GameState.DEFAULT:
+                //no UI
+                break;
+            case GameManager.GameState.NOTEBOOK:
+                //TODO make it show up and make the notebook an official group id
+                break;
+            case GameManager.GameState.PAUSED:
+                //pause menu
+                break;
+        }
+            
+                
     }
 
 }

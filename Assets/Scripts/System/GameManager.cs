@@ -11,15 +11,19 @@ public class GameManager : MonoBehaviour
     public static GameObject PlayerInstance { get; set; }
     public static Camera PlayerCamera { get; set; }
 
+    
+
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
 
-    // TEMP, REMOVE LATER
-    [SerializeField] private GameObject UI;
+    public GameState state {  get; set; }
 
-    public enum PuzzleState {
-        SOLVED,
-        UNSOLVED
+    public enum GameState
+    {
+        PAUSED,
+        DEFAULT,
+        CAMERA,
+        NOTEBOOK
     }
 
     private void Awake()
@@ -40,10 +44,6 @@ public class GameManager : MonoBehaviour
 
     private void InitializeGame()
     {
-        if (UI!=null)
-        {
-            UI.SetActive(false);
-        }
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
     }
@@ -65,12 +65,16 @@ public class GameManager : MonoBehaviour
         while (!op.isDone)
             await Task.Yield();
     }
-    // Temporary method
-    public void Win()
+
+    /// <summary>
+    /// Requests the game manager to change the state.
+    /// There is no guarantee that the change actually happens.
+    /// </summary>
+    /// <param name="state">the state you want to change to</param>
+    public void RequestStateChange(GameState state)
     {
-        if (UI!=null)
-        {
-            UI.SetActive(true);
-        }
+        this.state = state;
     }
+
+    
 }
