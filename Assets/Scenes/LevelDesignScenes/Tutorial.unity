@@ -5522,6 +5522,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DESKDRAFT
       objectReference: {fileID: 0}
+    - target: {fileID: 6732398567079961185, guid: c40959468c1f1824d9915b542eb6ef55, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16663,7 +16667,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 17e93cc2bc87aa642b7cce73bff5f257, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.142
+      value: 2.116
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 17e93cc2bc87aa642b7cce73bff5f257, type: 3}
       propertyPath: m_LocalPosition.y
@@ -16671,7 +16675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 17e93cc2bc87aa642b7cce73bff5f257, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.275
+      value: 0.274
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 17e93cc2bc87aa642b7cce73bff5f257, type: 3}
       propertyPath: m_LocalRotation.w
