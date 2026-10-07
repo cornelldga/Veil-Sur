@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 4310334095464661024}
   - component: {fileID: 4759024712261733180}
   - component: {fileID: 7754707645870727790}
+  - component: {fileID: 7000241390297672936}
   m_Layer: 5
   m_Name: QuestionNoteTemplate
   m_TagString: Untagged
@@ -229,11 +230,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestionNote
   pin: {fileID: 9060681743357309608}
   focusScale: 3
-  rule: {fileID: 0}
   image: {fileID: 4759024712261733180}
-  investigationData: {fileID: 0}
-  section: 1
-  questionId: 
+  definition: {fileID: 7000241390297672936}
 --- !u!1 &8111125974432467540
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,3 +321,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StringPin
   stringPrefab: {fileID: 3614998634466560459, guid: 5efa432215d074677a375dc1d2d9a549, type: 3}
+--- !u!114 &7000241390297672936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4914322125644610945}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b13442846c6592645930d44e20f28458, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::QuestionDefinition
+  required_objects: []
+  rule: {fileID: 0}
+  investigationData: {fileID: 0}
+  section: 1
+  questionId:

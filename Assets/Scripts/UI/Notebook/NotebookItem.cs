@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 /// <summary>
 /// Base class for draggable notebook items. Handles drag input and clamps the
 /// item's position within assigned bounds. Concrete note types (e.g.
-/// TextNote, QuestionNote) inherit from this to add their own content.
+/// PhotoNote) inherit from this to add their own content.
 /// </summary>
 [RequireComponent(typeof(RectTransform))]
 public abstract class NotebookItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
