@@ -36,10 +36,16 @@ public class QuestionDefinition : MonoBehaviour
     }
     private void CheckPhotos()
     {
-        if (photos.RemoveAll(photo => photo == null || !storage.Contains(photo)) > 0) ResetResult();
+        if (photos.RemoveAll(photo => photo == null || !storage.Owns(photo)) > 0) ResetResult();
     }
 
     public void SetPhoto(Photo photo)
+    {
+        if (photo != null) PhotoStorage.Instance.MoveToQuestion(photo, this);
+        else if (Photo != null) PhotoStorage.Instance.ReturnPhoto(Photo);
+    }
+
+    internal void AssignPhoto(Photo photo)
     {
         photos.Clear();
         if (photo != null) photos.Add(photo);
@@ -47,13 +53,11 @@ public class QuestionDefinition : MonoBehaviour
     }
     public void AttachPhoto(Photo photo)
     {
-        if (photo == null || photos.Contains(photo)) return;
-        photos.Add(photo);
-        ResetResult();
+        SetPhoto(photo);
     }
     public void RemovePhoto(Photo photo)
     {
-        if (photos.Remove(photo)) ResetResult();
+        if (Photo == photo) SetPhoto(null);
     }
     public SolutionRule Rule() { return rule; }
     public bool isSolved() { return IsCorrect; }
@@ -100,7 +104,7 @@ public class QuestionDefinition : MonoBehaviour
     {
         var answer = Photo != null ? FindAnswer(Photo.SubjectId()) : null;
         bool stored = photos.Count > 0 && PhotoStorage.Instance != null &&
-            photos.All(photo => photo != null && PhotoStorage.Instance.Contains(photo));
+            photos.All(photo => photo != null && PhotoStorage.Instance.Owns(photo));
         if (rule != null) IsCorrect = stored && rule.IsCorrect(Photo);
         else if (required_objects.Count > 0)
             IsCorrect = stored && required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId)));

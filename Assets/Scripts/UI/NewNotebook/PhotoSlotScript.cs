@@ -5,17 +5,18 @@ using UnityEngine.UI;
 /// <summary>Displays, selects, and drags one stored photo.</summary>
 [RequireComponent(typeof(Button))]
 [DefaultExecutionOrder(-10)]
-public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPhotoDragSource
 {
     [Tooltip("Photo preview belonging to this slot prefab.")]
     [SerializeField] private RawImage preview;
     private Button button;
     private AspectRatioFitter fitter;
     private PhotoTabScript photoTab;
-    private RawImage dragPreview;
+    private readonly PhotoDragPreview drag = new();
+    private int storageSlot;
 
     public Photo Photo { get; private set; }
-    public Photo DraggedPhoto { get; private set; }
+    public Photo DraggedPhoto => drag.Photo;
 
     private void Start()
     {
@@ -25,17 +26,19 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         SetPhoto(null);
     }
 
-    public void Initialize(PhotoTabScript tab)
+    public void Initialize(PhotoTabScript tab, int slot)
     {
         photoTab = tab;
+        storageSlot = slot;
     }
 
     public void SetPhoto(Photo photo)
     {
-        if (Photo != photo) EndDrag();
+        if (Photo != photo) drag.End();
         Photo = photo;
-        button.interactable = photo != null;
-        button.targetGraphic.enabled = photo != null;
+        // Keep the transparent background raycastable so empty slots can receive drops.
+        button.targetGraphic.enabled = true;
+        button.targetGraphic.color = Color.clear;
         preview.texture = photo != null ? photo.ImageTexture : null;
         preview.enabled = photo != null;
         if (preview.texture != null) fitter.aspectRatio = (float)preview.texture.width / preview.texture.height;
@@ -47,39 +50,26 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         if (eventData.button != PointerEventData.InputButton.Left || Photo == null) return;
         Select();
-        DraggedPhoto = Photo;
-        // A separate preview leaves the source slot in place and lets drops reach the UI below it.
-        var ghost = new GameObject("Dragged Photo", typeof(RectTransform), typeof(RawImage));
-        var dragRoot = (RectTransform)UIManager.Instance.notebookGroup.transform;
-        ghost.transform.SetParent(dragRoot, false);
-        dragPreview = ghost.GetComponent<RawImage>();
-        dragPreview.texture = preview.texture;
-        dragPreview.raycastTarget = false;
-        dragPreview.rectTransform.sizeDelta = preview.rectTransform.rect.size *
-            (preview.rectTransform.lossyScale.x / dragRoot.lossyScale.x);
-        OnDrag(eventData);
+        drag.Begin(Photo, preview, eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (dragPreview == null) return;
-        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
-            (RectTransform)UIManager.Instance.notebookGroup.transform, eventData.position,
-            eventData.pressEventCamera, out var position))
-            dragPreview.rectTransform.position = position;
+        drag.Drag(eventData);
     }
 
-    public void OnEndDrag(PointerEventData eventData) { EndDrag(); }
-    private void OnDisable() { EndDrag(); }
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (eventData.pointerDrag == null || Photo != null) return;
+        var source = eventData.pointerDrag.GetComponent<IPhotoDragSource>();
+        if (source != null) PhotoStorage.Instance.ReturnPhoto(source.DraggedPhoto, storageSlot);
+    }
+
+    public void OnEndDrag(PointerEventData eventData) { drag.End(); }
+    private void OnDisable() { drag.End(); }
     private void OnDestroy()
     {
         if (button != null) button.onClick.RemoveListener(Select);
     }
 
-    private void EndDrag()
-    {
-        DraggedPhoto = null;
-        if (dragPreview != null) Destroy(dragPreview.gameObject);
-        dragPreview = null;
-    }
 }

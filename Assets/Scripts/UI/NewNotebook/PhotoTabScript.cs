@@ -31,7 +31,7 @@ public class PhotoTabScript : MonoBehaviour
     {
         openedToggle.onClick.AddListener(Close);
         closedToggle.onClick.AddListener(Open);
-        foreach (var slot in slots) slot.Initialize(this);
+        for (int i = 0; i < slots.Length; i++) slots[i].Initialize(this, i);
         SetOpen(startsOpen);
         storage = PhotoStorage.Instance;
         if (storage != null) storage.PhotosChanged += Refresh;

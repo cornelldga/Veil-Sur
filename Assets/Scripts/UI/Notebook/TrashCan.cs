@@ -19,7 +19,7 @@ public class TrashCan : MonoBehaviour, IDropHandler
         }
 
         Photo photo = pointer.pointerDrag.GetComponent<Photo>();
-        if (pointer.pointerDrag.TryGetComponent<PhotoSlotScript>(out var slot))
+        if (pointer.pointerDrag.TryGetComponent<IPhotoDragSource>(out var slot))
         {
             photo = slot.DraggedPhoto;
         }

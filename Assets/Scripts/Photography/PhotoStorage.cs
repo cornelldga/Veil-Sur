@@ -13,16 +13,19 @@ public class PhotoStorage : MonoBehaviour
 {
    public static PhotoStorage Instance { get; private set; }
    private readonly List<Photo> photos = new List<Photo>();
+   private readonly Dictionary<Photo, QuestionDefinition> assignedQuestions = new();
 
    public IReadOnlyList<Photo> Photos => photos;
    public event Action PhotosChanged;
-   public bool Contains(Photo photo) => photos.Contains(photo);
+   public bool Contains(Photo photo) => photo != null && photos.Contains(photo);
+   public bool Owns(Photo photo) => photo != null && (photos.Contains(photo) || assignedQuestions.ContainsKey(photo));
    public int Capacity => maxCapacity;
 
    public void SetCapacity(int capacity) { maxCapacity = capacity; }
 
    // Can change maxCapacity to any other value depending on gameplay.
    // ( Currently 5 just because that's what was chsoen so far )
+   [Tooltip("Maximum number of photos in storage. The notebook sets this from its slot count.")]
    [SerializeField] private int maxCapacity = 5;
 
 
@@ -51,7 +54,9 @@ public class PhotoStorage : MonoBehaviour
    /// </summary>
    public int GetPhotoCount()
    {
-       return photos.Count;
+       int count = 0;
+       foreach (var photo in photos) if (photo != null) count++;
+       return count;
    }
 
 
@@ -60,7 +65,7 @@ public class PhotoStorage : MonoBehaviour
    /// </summary>
    public bool IsPhotoStorageFull()
    {
-       return photos.Count >= maxCapacity;
+       return GetPhotoCount() >= maxCapacity;
    }
 
 
@@ -70,13 +75,63 @@ public class PhotoStorage : MonoBehaviour
    /// </summary>
    public bool AddPhoto(Photo photo)
    {
-       if (photo == null || photos.Contains(photo) || IsPhotoStorageFull())
+       if (photo == null || Owns(photo) || IsPhotoStorageFull())
        {
            return false;
        }
 
-       photos.Add(photo);
+       PutInSlot(photo, FindOpenSlot());
        photo.transform.SetParent(transform);
+       PhotosChanged?.Invoke();
+       return true;
+   }
+
+   private int FindOpenSlot()
+   {
+       for (int i = 0; i < maxCapacity; i++)
+           if (i >= photos.Count || photos[i] == null) return i;
+       return -1;
+   }
+
+   private void PutInSlot(Photo photo, int index)
+   {
+       while (photos.Count <= index) photos.Add(null);
+       photos[index] = photo;
+   }
+
+   /// <summary>Moves a photo into a question, returning displaced evidence to its source.</summary>
+   public bool MoveToQuestion(Photo photo, QuestionDefinition destination)
+   {
+       if (photo == null || destination == null || !Owns(photo)) return false;
+       assignedQuestions.TryGetValue(photo, out var source);
+       if (source == destination) return true;
+       int storageSlot = photos.IndexOf(photo);
+       Photo displaced = destination.Photo;
+
+       if (source != null) source.AssignPhoto(displaced);
+       else photos[storageSlot] = displaced;
+
+       if (displaced != null)
+       {
+           if (source != null) assignedQuestions[displaced] = source;
+           else assignedQuestions.Remove(displaced);
+       }
+       assignedQuestions[photo] = destination;
+       destination.AssignPhoto(photo);
+       PhotosChanged?.Invoke();
+       return true;
+   }
+
+   /// <summary>Returns question evidence to an open storage slot. A full slot leaves it in place.</summary>
+   public bool ReturnPhoto(Photo photo, int slot = -1)
+   {
+       if (photo == null || !assignedQuestions.TryGetValue(photo, out var source)) return false;
+       if (slot < 0) slot = FindOpenSlot();
+       if (slot < 0 || slot >= maxCapacity || (slot < photos.Count && photos[slot] != null)) return false;
+
+       assignedQuestions.Remove(photo);
+       source.AssignPhoto(null);
+       PutInSlot(photo, slot);
        PhotosChanged?.Invoke();
        return true;
    }
@@ -88,7 +143,15 @@ public class PhotoStorage : MonoBehaviour
    /// </summary>
    public bool RemovePhoto(Photo photo)
    {
-       bool removed = photos.Remove(photo);
+       if (photo == null) return false;
+       int slot = photos.IndexOf(photo);
+       bool removed = slot >= 0 || assignedQuestions.ContainsKey(photo);
+       if (slot >= 0) photos[slot] = null;
+       if (assignedQuestions.TryGetValue(photo, out var question))
+       {
+           assignedQuestions.Remove(photo);
+           question.AssignPhoto(null);
+       }
        if (removed)
        {
            PhotosChanged?.Invoke();
