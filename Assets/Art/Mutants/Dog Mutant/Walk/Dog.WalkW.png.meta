@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bb8c4ab18eef44ec4bc4d97b69b66e4c
+guid: a3d2b9810080744628606fd8cd660d23
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Dog.WalkSE_0
+      name: Dog.WalkE_0
       rect:
         serializedVersion: 2
         x: 0
@@ -112,14 +112,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1bdd3c9c5db7f4cbc9337e940b1fe957
-      internalID: 1314343860
+      spriteID: e696d2abc9a154cc3abebd42b7ef886d
+      internalID: -1108890538
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.WalkSE_1
+      name: Dog.WalkE_1
       rect:
         serializedVersion: 2
         x: 1920
@@ -134,14 +134,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 59ef697aadaed4db9853ca44e25e0706
-      internalID: -1579152992
+      spriteID: b5dcc45abba2c4e19a1800435c55a9bc
+      internalID: 559375004
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.WalkSE_2
+      name: Dog.WalkE_2
       rect:
         serializedVersion: 2
         x: 3840
@@ -156,14 +156,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a8234be0e3ae847ffa3f3753ec6a09df
-      internalID: 899292681
+      spriteID: 17fe079b007c049af89c8cb8e61cfc5c
+      internalID: -1616883344
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.WalkSE_3
+      name: Dog.WalkE_3
       rect:
         serializedVersion: 2
         x: 5760
@@ -178,14 +178,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1a83b09eee84e4272a38fd1b0b92a93d
-      internalID: -873371727
+      spriteID: 69db6d855da3b4ef9999832ded18e1d7
+      internalID: 1766665216
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.WalkSE_4
+      name: Dog.WalkE_4
       rect:
         serializedVersion: 2
         x: 7680
@@ -200,14 +200,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2779c2731fba3465fb61880ed8e8f339
-      internalID: 284601421
+      spriteID: ba7f39bd65a00439a959be4157e41331
+      internalID: -183014458
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.WalkSE_5
+      name: Dog.WalkE_5
       rect:
         serializedVersion: 2
         x: 9600
@@ -222,14 +222,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7ab1313d0d4c741e3bc5b8f353ff33c5
-      internalID: -1758174887
+      spriteID: 55d78981ed8ac4495ada64039a0826a9
+      internalID: -1345207801
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.WalkSE_6
+      name: Dog.WalkE_6
       rect:
         serializedVersion: 2
         x: 11520
@@ -244,14 +244,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d55bf53d6facf4133b79c037d67d8c13
-      internalID: -567346019
+      spriteID: e84024c8caeed41949ff77be8aec7db7
+      internalID: -2045258458
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.WalkSE_7
+      name: Dog.WalkE_7
       rect:
         serializedVersion: 2
         x: 13440
@@ -266,8 +266,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 75086ed15ed874adf95754f4dbd45c62
-      internalID: -2065886936
+      spriteID: 84820e0deba8e423eb73ec698052e10a
+      internalID: 1061876008
       vertices: []
       indices: 
       edges: []
@@ -276,7 +276,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5ea0282195a744f4796fef19747e9f90
+    spriteID: 8368b228ddb9c4d1b8d1a75d66e1705b
     internalID: 0
     vertices: []
     indices: 
@@ -288,14 +288,14 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":1920.0,"y":1080.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Dog.WalkSE_0: 1314343860
-      Dog.WalkSE_1: -1579152992
-      Dog.WalkSE_2: 899292681
-      Dog.WalkSE_3: -873371727
-      Dog.WalkSE_4: 284601421
-      Dog.WalkSE_5: -1758174887
-      Dog.WalkSE_6: -567346019
-      Dog.WalkSE_7: -2065886936
+      Dog.WalkE_0: -1108890538
+      Dog.WalkE_1: 559375004
+      Dog.WalkE_2: -1616883344
+      Dog.WalkE_3: 1766665216
+      Dog.WalkE_4: -183014458
+      Dog.WalkE_5: -1345207801
+      Dog.WalkE_6: -2045258458
+      Dog.WalkE_7: 1061876008
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
