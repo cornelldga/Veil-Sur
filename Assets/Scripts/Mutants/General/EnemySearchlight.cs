@@ -28,8 +28,10 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected float suspicionDecayRate = 1f; 
     [SerializeField] protected float maxDetectionMultiplier = 3f; 
     [SerializeField] protected float loseAlertAfter = 3f; 
-    /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
+    
     [SerializeField] protected float proximityDetection = 2f; // During chase, if player is within this distance, doesn't lose alert
+    
+    /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
     [SerializeField] protected int investigateCount = 3; 
 
     [Header("Visuals")]
