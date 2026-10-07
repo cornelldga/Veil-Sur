@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d14d89f7ea8ddc54a8078cfec38141f7
+guid: bc50d5b9db0dd459db411375fe78e611
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -102,8 +102,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 960
-        height: 960
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 80de46bed3cb84a76887ab2a7eb7be6e
-      internalID: -844292852
+      spriteID: 80ba93b52138049a0ac65e561ac8bf03
+      internalID: -782103605
       vertices: []
       indices: 
       edges: []
@@ -122,10 +122,10 @@ TextureImporter:
       name: Dog.WalkS_1
       rect:
         serializedVersion: 2
-        x: 960
+        x: 1920
         y: 0
-        width: 960
-        height: 960
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,8 +134,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 38e0030ae9fc4420f9c085cc923b01bb
-      internalID: 1288783387
+      spriteID: f957f63ac64754f50b6c786c9d3fabaf
+      internalID: 1492636094
       vertices: []
       indices: 
       edges: []
@@ -144,10 +144,10 @@ TextureImporter:
       name: Dog.WalkS_2
       rect:
         serializedVersion: 2
-        x: 1920
+        x: 3840
         y: 0
-        width: 960
-        height: 960
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 24af77a23020949cea8f04c8f92953b7
-      internalID: -1048358992
+      spriteID: 95852a6601f884e55a60e68fb252ced0
+      internalID: 1727035023
       vertices: []
       indices: 
       edges: []
@@ -166,10 +166,10 @@ TextureImporter:
       name: Dog.WalkS_3
       rect:
         serializedVersion: 2
-        x: 2880
+        x: 5760
         y: 0
-        width: 960
-        height: 960
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +178,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 023a467a5f7a749dbab9ec11008cb44c
-      internalID: 1227091506
+      spriteID: b228244c9381749fd9ad1cf82bb81015
+      internalID: -2108958443
       vertices: []
       indices: 
       edges: []
@@ -188,10 +188,10 @@ TextureImporter:
       name: Dog.WalkS_4
       rect:
         serializedVersion: 2
-        x: 3840
+        x: 7680
         y: 0
-        width: 960
-        height: 960
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -200,8 +200,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 39b7b7bd835594a3ca16c7527cf10965
-      internalID: -914241628
+      spriteID: 22ec9085483b64526b9ede61a779a675
+      internalID: -1346130902
       vertices: []
       indices: 
       edges: []
@@ -210,10 +210,10 @@ TextureImporter:
       name: Dog.WalkS_5
       rect:
         serializedVersion: 2
-        x: 4800
+        x: 9600
         y: 0
-        width: 960
-        height: 960
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -222,8 +222,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7776949b287c44d529ac0afbed0e29c8
-      internalID: -1973731739
+      spriteID: d9ceb9691b8fa45e4be7fdacc2c27ef8
+      internalID: -1846499136
       vertices: []
       indices: 
       edges: []
@@ -232,10 +232,10 @@ TextureImporter:
       name: Dog.WalkS_6
       rect:
         serializedVersion: 2
-        x: 5760
+        x: 11520
         y: 0
-        width: 960
-        height: 960
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -244,8 +244,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ec4030a74c2554e539c7269c389d9f4e
-      internalID: -531275834
+      spriteID: 19aca0cbf64374e3c832a8b732e80f88
+      internalID: -753687827
       vertices: []
       indices: 
       edges: []
@@ -254,10 +254,10 @@ TextureImporter:
       name: Dog.WalkS_7
       rect:
         serializedVersion: 2
-        x: 6720
+        x: 13440
         y: 0
-        width: 960
-        height: 960
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -266,8 +266,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ed10edcc0af4940e9849ad596bebe852
-      internalID: -2010113843
+      spriteID: 1a43621acc1fd425db0975bff56ebe93
+      internalID: 197147343
       vertices: []
       indices: 
       edges: []
@@ -276,7 +276,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: fc07e698393b3462ab40d5061bf32998
+    spriteID: 4374f3eccdb1448a9ab85087ddb06cf3
     internalID: 0
     vertices: []
     indices: 
@@ -286,16 +286,16 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":960.0,"y":960.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":1920.0,"y":1080.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Dog.WalkS_0: -844292852
-      Dog.WalkS_1: 1288783387
-      Dog.WalkS_2: -1048358992
-      Dog.WalkS_3: 1227091506
-      Dog.WalkS_4: -914241628
-      Dog.WalkS_5: -1973731739
-      Dog.WalkS_6: -531275834
-      Dog.WalkS_7: -2010113843
+      Dog.WalkS_0: -782103605
+      Dog.WalkS_1: 1492636094
+      Dog.WalkS_2: 1727035023
+      Dog.WalkS_3: -2108958443
+      Dog.WalkS_4: -1346130902
+      Dog.WalkS_5: -1846499136
+      Dog.WalkS_6: -753687827
+      Dog.WalkS_7: 197147343
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
