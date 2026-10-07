@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class QuestionDefinition : MonoBehaviour
 {
     [SerializeField] List<PhotographableObject> required_objects;
-    [SerializeField] List<PhotographableObject> current_objects;
+    List<PhotographableObject> current_objects;
 
     public bool isSolved()
     {

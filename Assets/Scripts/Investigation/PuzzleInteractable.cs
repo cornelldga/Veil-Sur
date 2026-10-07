@@ -31,6 +31,10 @@ public abstract class PuzzleInteractable : MonoBehaviour, Interactable
         //if we got all the questions solved, we can add the questions from all the next interactables
         if (IsSolved())
         {
+            foreach(QuestionDefinition q in questions)
+            {
+                //TODO: remove questions from the list
+            }
             foreach(PuzzleInteractable puzzle_interactable in next_puzzles)
             {
                 foreach(QuestionDefinition q in puzzle_interactable.questions)
