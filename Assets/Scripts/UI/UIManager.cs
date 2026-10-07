@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviour
     [Header("Delete Confirmation")]
     [SerializeField] private GameObject deleteConfirmation;
 
-    private PhotoNote pendingDeletion;
+    private Photo pendingDeletion;
  
     [Header("Interact Popup")]
     [SerializeField] public TMP_Text interact;
@@ -156,7 +156,7 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Displays the delete confirmation for the given photo.
     /// </summary>
-    public void ShowDeleteConfirmation(PhotoNote photo)
+    public void ShowDeleteConfirmation(Photo photo)
     {
         pendingDeletion = photo;
         if (deleteConfirmation != null)
