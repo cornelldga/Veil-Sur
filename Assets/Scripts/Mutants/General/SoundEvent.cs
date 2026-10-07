@@ -6,7 +6,7 @@ using UnityEngine;
 /// a sphere.
 /// </summary>
 public class SoundEvent : MonoBehaviour
-{   
+{
     /// <summary>
     /// Called whenever something makes a sound that a mutant can hear. Notifies mutants in
     /// an area and causes them to begin investigating. 
@@ -15,7 +15,7 @@ public class SoundEvent : MonoBehaviour
     /// <param name="radius">The base radius of the sphere in which mutants detect the sound.</param>
     protected void RegisterSoundEvent(Vector3 pos, float radius)
     {
-        Collider[] collidersInside = Physics.OverlapSphere(transform.position, radius);
+        Collider[] collidersInside = Physics.OverlapSphere(pos, radius);
 
         foreach (Collider col in collidersInside)
         {
@@ -24,7 +24,10 @@ public class SoundEvent : MonoBehaviour
                 // EnemyMover mutant = col.GetComponent<EnemyMover>();
                 //mutant.RegisterDetectionEvent(pos);
                 EnemySearchlight mutant = col.GetComponent<EnemySearchlight>();
-                mutant.ReportSense(pos, Priority.Sound);
+                if (mutant != null)
+                {
+                    mutant.ReportSense(pos, Priority.Sound);
+                }
             }
         }
     }
