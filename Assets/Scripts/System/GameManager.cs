@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
         while (!op.isDone)
             await Task.Yield();
 
-        HandleSceneMusic("TutorialLevel");
+        HandleSceneMusic(sceneName);
     }
 
     /// <summary>
