@@ -37,7 +37,7 @@ public class EnemyMover : MonoBehaviour
         agent.updateRotation = false;
     }
 
-    protected void Start()
+    protected virtual void Start()
     {
         player = GameManager.PlayerInstance.transform;
 
@@ -57,7 +57,7 @@ public class EnemyMover : MonoBehaviour
             case EnemySearchlight.AlertState.Alert:
                 agent.speed = chaseSpeed;
 
-                if (player != null && searchlight.canSeePlayer)
+                if (player != null && (searchlight.canSeePlayer || searchlight.IsProximityDetected()))
                     agent.SetDestination(player.position);
                 else
                     agent.SetDestination(searchlight.LastKnownPlayerPosition);
