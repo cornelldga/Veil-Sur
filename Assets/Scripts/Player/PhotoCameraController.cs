@@ -42,6 +42,10 @@ public class PhotoCameraController : MonoBehaviour
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
     [SerializeField] private float blurRangePastMax = 2f;
     [Header("Storage Full Feedback")]
+    [Tooltip("How long the camera shakes (seconds) when storage is full")]
+    [SerializeField] private float storageFullShakeDuration = 0.25f;
+    [Tooltip("Maximum distance the camera is offset while shaking")]
+    [SerializeField] private float storageFullShakeMagnitude = 0.1f;
 
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
@@ -206,12 +210,10 @@ public class PhotoCameraController : MonoBehaviour
 
     /// <summary>
     /// Called when the player tries to take photo while storage is full.
-    /// Shakes the camera and updates the storage indicator
+    // Shakes camera and brings camera back to origin so it doesn't get offset
     /// </summary>
     private void HandleStorageFull()
     {
-        UIManager.Instance.SetStorageIndicatorFull(true);
-
         if (shakeCoroutine != null)
         {
             StopCoroutine(shakeCoroutine);

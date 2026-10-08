@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
@@ -13,6 +14,7 @@ using UnityEditor;
 public class PhotoStorage : MonoBehaviour
 {
    public static PhotoStorage Instance { get; private set; }
+   public static Action<bool> OnStorageChanged;
    private readonly List<Photo> photos = new List<Photo>();
 
    // Can change maxCapacity to any other value depending on gameplay.
@@ -94,7 +96,7 @@ public class PhotoStorage : MonoBehaviour
    /// TEMP: text representation, future will be pulse images
    /// </summary>
    private void IncrementCounter(){
-       UIManager.Instance.SetStorageIndicatorFull(IsPhotoStorageFull());
+       OnStorageChanged?.Invoke(IsPhotoStorageFull());
    }
 
 
