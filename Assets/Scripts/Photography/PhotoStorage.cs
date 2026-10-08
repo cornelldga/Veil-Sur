@@ -90,10 +90,11 @@ public class PhotoStorage : MonoBehaviour
    }
 
    /// <summary>
-   /// Increments the storage counter UI element to the relevant representation. 
+   /// Increments the storage counter UI element to the relevant representation.
    /// TEMP: text representation, future will be pulse images
    /// </summary>
    private void IncrementCounter(){
+       UIManager.Instance.SetStorageIndicatorFull(IsPhotoStorageFull());
    }
 
 

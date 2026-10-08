@@ -41,6 +41,7 @@ public class PhotoCameraController : MonoBehaviour
     [Header("Blur Settings")]
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
     [SerializeField] private float blurRangePastMax = 2f;
+    [Header("Storage Full Feedback")]
 
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
@@ -49,6 +50,7 @@ public class PhotoCameraController : MonoBehaviour
     private Volume blurVolume;
     private CameraMode currentMode = CameraMode.Photo;
     private Document hoveredDocument;
+    private Coroutine shakeCoroutine;
     
     private void Awake()
     {
@@ -183,6 +185,7 @@ public class PhotoCameraController : MonoBehaviour
         }
         if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
+            HandleStorageFull();
             return;
         }
 
@@ -199,6 +202,41 @@ public class PhotoCameraController : MonoBehaviour
         CreatePhotoNote(photo);
     }
 
+    private Vector3 shakeOrigin = Vector3.zero;
+
+    /// <summary>
+    /// Called when the player tries to take photo while storage is full.
+    /// Shakes the camera and updates the storage indicator
+    /// </summary>
+    private void HandleStorageFull()
+    {
+        UIManager.Instance.SetStorageIndicatorFull(true);
+
+        if (shakeCoroutine != null)
+        {
+            StopCoroutine(shakeCoroutine);
+            targetCamera.transform.localPosition = shakeOrigin;
+        }
+
+        shakeOrigin = targetCamera.transform.localPosition;
+        shakeCoroutine = StartCoroutine(ShakeCamera(storageFullShakeDuration, storageFullShakeMagnitude));
+    }
+
+    /// <summary>
+    /// camera shake
+    /// </summary>
+    private IEnumerator ShakeCamera(float duration, float magnitude)
+    {
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            float fade = 1f - t / duration;
+            targetCamera.transform.localPosition = shakeOrigin + Vector3.right * Mathf.Sin(t * 40f) * magnitude * fade;
+            yield return null;
+        }
+
+        targetCamera.transform.localPosition = shakeOrigin;
+        shakeCoroutine = null;
+    }
     /// <summary>
     /// Refactored the code for PhotoNote creation from OnSnap to here.
     /// Creates a PhotoNote given a Texture2D.
