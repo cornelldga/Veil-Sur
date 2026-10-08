@@ -1,6 +1,8 @@
+using System;
 using System.IO;
 using UnityEditor.Overlays;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SaveManager : MonoBehaviour
 {
@@ -14,9 +16,11 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Instance;
     private void Awake()
     {
+        controls = new PlayerControls();
         Instance = this;
         savePath = Application.persistentDataPath + "/save.json";
-        print(savePath);
+        //uncomment to see where the save file went
+        //print(savePath);
     }
 
     /// <summary>
@@ -24,17 +28,14 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void SaveGame()
     {
+        Debug.Log("load");
         SaveData data = new SaveData();
 
-        data.playerPosition =
-        Level.current_level.player.transform.position;
+        data.playerPosition = Level.current_level.player.transform.position;
 
         string json = JsonUtility.ToJson(data, true);
 
         File.WriteAllText(savePath, json);
-
-        Debug.Log("Game Saved!");
-        Debug.Log(json);
     }
 
     /// <summary>
@@ -44,17 +45,37 @@ public class SaveManager : MonoBehaviour
     {
         if (!File.Exists(savePath))
         {
-            Debug.Log("No save file found.");
             return;
         }
-
         string json = File.ReadAllText(savePath);
 
         SaveData data = JsonUtility.FromJson<SaveData>(json);
+        Debug.Log(Level.current_level.player.transform.position);
+        Debug.Log(data.playerPosition);
 
-        Level.current_level.player.transform.position =
-        data.playerPosition;
+        //disabling is necessary so player controller doesn't override the load location
+        Level.current_level.player.SetActive(false);
+        Level.current_level.player.transform.position = data.playerPosition;
+        Level.current_level.player.SetActive(true);
+    }
 
-        Debug.Log("Game Loaded!");
+    //NOTE: this is all temporary code until GameManager has UI for loading. Just having a temporary binding until
+    private PlayerControls controls;
+
+    private void OnEnable()
+    {
+        controls.General.Enable();
+        controls.General.Load.performed += OnLoad;
+    }
+
+    private void OnDisable()
+    {
+        controls.General.Disable();
+        controls.General.Load.performed -= OnLoad;
+    }
+
+    private void OnLoad(InputAction.CallbackContext ctx)
+    {
+        LoadGame();
     }
 }
