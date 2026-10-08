@@ -1,11 +1,22 @@
+using System.IO;
+using UnityEditor.Overlays;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
+    [System.Serializable]
+    public class SaveData
+    {
+        public Vector3 playerPosition;
+    }
+    string savePath;
+
     public static SaveManager Instance;
     private void Awake()
     {
         Instance = this;
+        savePath = Application.persistentDataPath + "/save.json";
+        print(savePath);
     }
 
     /// <summary>
@@ -13,7 +24,17 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void SaveGame()
     {
-        //get information from the level instance
+        SaveData data = new SaveData();
+
+        data.playerPosition =
+        Level.current_level.player.transform.position;
+
+        string json = JsonUtility.ToJson(data, true);
+
+        File.WriteAllText(savePath, json);
+
+        Debug.Log("Game Saved!");
+        Debug.Log(json);
     }
 
     /// <summary>
@@ -21,6 +42,19 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void LoadGame()
     {
-        //put information into the current level instance
+        if (!File.Exists(savePath))
+        {
+            Debug.Log("No save file found.");
+            return;
+        }
+
+        string json = File.ReadAllText(savePath);
+
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+        Level.current_level.player.transform.position =
+        data.playerPosition;
+
+        Debug.Log("Game Loaded!");
     }
 }
