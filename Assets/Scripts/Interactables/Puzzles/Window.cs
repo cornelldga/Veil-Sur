@@ -44,6 +44,7 @@ public class Window : MonoBehaviour, Interactable
             return;
         }
 
+        // Window guard opens by squishing based on the position of the guard "pivot" object.
         guard.localScale = Vector3.MoveTowards(guard.localScale, openScale, speed * Time.deltaTime);
     }
 }
