@@ -44,6 +44,6 @@ public class StorageIndicator : MonoBehaviour
         image.sprite = isFull ? fullSprite : notFullSprite;
 
         //uncomment if want no image for storage not full
-        // image.color = isFull ? Color.white : Color.clear;
+        image.color = isFull ? Color.white : Color.clear;
     }
 }
