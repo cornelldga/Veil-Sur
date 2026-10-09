@@ -18,7 +18,8 @@ public class TutorialManager : MonoBehaviour
 
     private readonly string[] prompts =
     {
-        "wasd to move, hold shift to sprint",
+        "wasd to move",
+        "hold shift to sprint",
         "take a photo! right click to aim, left click to take a photo!",
         //"press tab to open your notebook",
         //connect photo to question
@@ -80,7 +81,7 @@ public class TutorialManager : MonoBehaviour
         switch (step)
         {
             case 0: return controls.PlayerMovement.Move.ReadValue<Vector2>() != Vector2.zero;
-            case 1: return PhotoStorage.Instance.GetPhotoCount() > photoCountAtStepStart;
+            case 1: return controls.PlayerMovement.Sprint.IsPressed();
             case 2: return PhotoStorage.Instance.GetPhotoCount() > photoCountAtStepStart;
             // case 2: return state == GameManager.GameState.NOTEBOOK;
             case 3: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
