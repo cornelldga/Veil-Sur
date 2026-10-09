@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System;
+using UnityEngine.InputSystem; 
 
 public class GameManager : MonoBehaviour
 {
@@ -13,16 +15,29 @@ public class GameManager : MonoBehaviour
     [Header("Music")]
     [SerializeField] private AudioClip lobbyMusic;
 
-    
+    [Header("Startup")]
+    [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
     [SerializeField] GameObject losePanel;
 
-    public GameState state {  get; set; }
+    /// <summary>
+    /// Fired after every state change as (oldState, newState). UIManager listens to this.
+    /// </summary>
+    public static event Action<GameState, GameState> StateChanged;
+    private GameState _state = GameState.DEFAULT;
+    public GameState state
+    {
+        get => _state;
+        set => RequestStateChange(value);
+    }
+
+    private GameState _stateBeforePause = GameState.DEFAULT;
 
     public enum GameState
     {
+        MAIN_MENU,
         PAUSED,
         DEFAULT,
         CAMERA,
@@ -44,6 +59,34 @@ public class GameManager : MonoBehaviour
 
         InitializeGame();
     }
+    
+    private void OnEnable()
+    {
+        if (Instance != null && Instance != this) return; // duplicate about to be destroyed
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == titleSceneName)
+            SetState(GameState.MAIN_MENU);        // entering the title scene
+        else if (_state == GameState.MAIN_MENU)
+            SetState(GameState.DEFAULT);          // leaving the title scene
+    }
+
+    private void Update()
+    {
+        var kb = Keyboard.current;
+        if (kb == null || _state == GameState.MAIN_MENU) return;
+
+        if (kb.escapeKey.wasPressedThisFrame)
+            TogglePause();
+    }
 
     private void InitializeGame()
     {
@@ -51,7 +94,7 @@ public class GameManager : MonoBehaviour
         // Setup sound, saving profiles, loading data, etc.
         //HandleSceneMusic("MainMenu");
         // This is TEMPORARY
-        AudioManager.Instance.PlayMusic(lobbyMusic);
+        // AudioManager.Instance.PlayMusic(lobbyMusic);
     }
 
     public async void GoToLevel(string sceneName)
@@ -78,10 +121,38 @@ public class GameManager : MonoBehaviour
     /// Requests the game manager to change the state.
     /// There is no guarantee that the change actually happens.
     /// </summary>
-    /// <param name="state">the state you want to change to</param>
-    public void RequestStateChange(GameState state)
+    /// <param name="newState">the state you want to change to</param>
+    public void RequestStateChange(GameState newState)
     {
-        this.state = state;
+        // While paused, only TogglePause can leave the state. This stops things like
+        // releasing right-click (which sets DEFAULT) from silently unpausing the game.
+        if (_state == GameState.PAUSED && newState != GameState.PAUSED) return;
+        SetState(newState);
+    }
+
+     /// <summary>
+     /// Pause/resume. Resume returns to whatever state you paused from.
+     /// </summary>
+    public void TogglePause()
+    {
+        SetState(_state == GameState.PAUSED ? _stateBeforePause : GameState.PAUSED);
+    }
+ 
+    /// <summary>
+    /// The only place _state is actually written.
+    /// </summary>
+    /// <param name="newState"></param>
+    private void SetState(GameState newState)
+    {
+        if (newState == _state) return;
+ 
+        GameState old = _state;
+        if (newState == GameState.PAUSED) _stateBeforePause = old;
+ 
+        _state = newState;
+        Time.timeScale = (newState == GameState.PAUSED) ? 0f : 1f;
+ 
+        StateChanged?.Invoke(old, newState);
     }
 
     /// <summary>
