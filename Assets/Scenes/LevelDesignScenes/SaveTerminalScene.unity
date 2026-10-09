@@ -874,6 +874,10 @@ PrefabInstance:
       propertyPath: maxFilmCount
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7349517058838147832, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7450253034250995934, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
