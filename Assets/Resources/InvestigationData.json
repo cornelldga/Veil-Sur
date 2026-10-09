@@ -43,19 +43,14 @@
             "section": 2,
             "questions": [
                 {
-                    "questionId": "q3",
-                    "questionText": "Text for the question being asked.",
-                    "defaultFeedback": "Feedback for an incorrect answer.",
+                    "questionId": "pawprint",
+                    "questionText": "Which way did the <experiment> go?",
+                    "defaultFeedback": "Hmm, this doesn't tell me where <it> went.",
                     "answers": [
                         {
-                            "subjectId": "sampleSubjectId5",
+                            "subjectId": "pawprints",
                             "isCorrect": true,
-                            "message": "Feedback for this correct answer."
-                        },
-                        {
-                            "subjectId": "sampleSubjectId6",
-                            "isCorrect": false,
-                            "message": "Feedback for this incorrect answer."
+                            "message": "The pawprints lead to this door..."
                         }
                     ]
                 }

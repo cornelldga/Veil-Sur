@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class InvestigationManager : MonoBehaviour
 {
-    List<QuestionDefinition> current_questions;
+    List<QuestionDefinition> current_questions = new List<QuestionDefinition>();
     public static InvestigationManager current_investigation_manager;
 
     private void Awake()
