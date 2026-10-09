@@ -197,8 +197,8 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
+  m_Height: 1.8
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -236,8 +236,8 @@ MonoBehaviour:
   mouseSens: 0.15
   minLookDown: -85
   maxLookUp: 85
-  standHeight: 2
-  crouchHeight: 1
+  standHeight: 1.8
+  crouchHeight: 0.75
   crouchTransitionSpeed: 15
   ceilingCheckMask:
     serializedVersion: 2
