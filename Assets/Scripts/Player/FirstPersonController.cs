@@ -176,8 +176,9 @@ public class FirstPersonController : MonoBehaviour
     private void HandleLook()
     {
         Vector2 lookInput = controls.PlayerMovement.Look.ReadValue<Vector2>();
-        float horizontalLook = lookInput.x * mouseSens;
-        float verticalLook = lookInput.y * mouseSens;
+        float sens = mouseSens * GameManager.Instance.MouseSensitivity;
+        float horizontalLook = lookInput.x * sens;
+        float verticalLook = lookInput.y * sens;
 
         transform.Rotate(Vector3.up * horizontalLook);
 

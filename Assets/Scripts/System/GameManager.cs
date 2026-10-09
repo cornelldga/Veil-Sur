@@ -22,6 +22,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool isDebugMode = false;
     [SerializeField] GameObject losePanel;
 
+    private const string SensitivityKey = "MouseSensitivity";
+    public float MouseSensitivity { get; private set; } = 1f;
+
+    public void SetMouseSensitivity(float value)
+    {
+        MouseSensitivity = value;
+        PlayerPrefs.SetFloat(SensitivityKey, value);
+    }
+
     /// <summary>
     /// Fired after every state change as (oldState, newState). UIManager listens to this.
     /// </summary>
@@ -53,6 +62,8 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
+
+        MouseSensitivity = PlayerPrefs.GetFloat(SensitivityKey, 1f);
 
         // Keeps this object alive when switching scenes
         DontDestroyOnLoad(gameObject);
@@ -94,7 +105,7 @@ public class GameManager : MonoBehaviour
         // Setup sound, saving profiles, loading data, etc.
         //HandleSceneMusic("MainMenu");
         // This is TEMPORARY
-        // AudioManager.Instance.PlayMusic(lobbyMusic);
+        AudioManager.Instance.PlayMusic(lobbyMusic);
     }
 
     public async void GoToLevel(string sceneName)

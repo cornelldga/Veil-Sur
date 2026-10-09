@@ -8,6 +8,7 @@ public class Settings : UIScreen
     [SerializeField] private Slider sfxSlider;
     [Tooltip("Slider controlling music volume.")]
     [SerializeField] private Slider musicSlider;  
+    [SerializeField] private Slider sensitivitySlider;
     public void OnBackPressed()
     {
         UIManager.Instance.Back();
@@ -27,6 +28,7 @@ public class Settings : UIScreen
 
         sfxSlider.value = AudioManager.Instance.GetSfxVolume();
         musicSlider.value = AudioManager.Instance.GetMusicVolume();
+        sensitivitySlider.value = GameManager.Instance.MouseSensitivity;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -34,6 +36,7 @@ public class Settings : UIScreen
     {
         sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSfxVolume);
         musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
+        sensitivitySlider.onValueChanged.AddListener(GameManager.Instance.SetMouseSensitivity);
         
     }
 
