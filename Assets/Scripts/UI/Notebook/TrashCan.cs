@@ -18,7 +18,7 @@ public class TrashCan : MonoBehaviour, IDropHandler
             return;
         }
 
-        PhotoNote photo = pointer.pointerDrag.GetComponent<PhotoNote>();
+        Photo photo = pointer.pointerDrag.GetComponent<Photo>();
         if (photo == null)
         {
             return;

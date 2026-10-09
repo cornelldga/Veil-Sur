@@ -16,12 +16,11 @@ using UnityEngine.UI;
 [RequireComponent(typeof(PlayerState))]
 public class PhotoCameraController : MonoBehaviour
 {
-    private enum CameraMode
+    public enum CameraMode
     {
         Photo,
         Document
     }
-    private GameObject cameraUI;
     [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
     [Header("Camera Settings")]
@@ -46,9 +45,7 @@ public class PhotoCameraController : MonoBehaviour
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
     private PlayerState playerState;
-    private GameObject notebookMenu;
     private float targetFOV;
-    private Image snapOverlay;
     private Volume blurVolume;
     private CameraMode currentMode = CameraMode.Photo;
     private Document hoveredDocument;
@@ -60,10 +57,7 @@ public class PhotoCameraController : MonoBehaviour
     }
 
     private void Start()
-    {
-        snapOverlay = UIManager.Instance.snapOverlay;
-        snapOverlay.canvasRenderer.SetAlpha(0f);
-
+    {        
         if (targetCamera == null)
         {
             targetCamera = Camera.main;
@@ -138,13 +132,13 @@ public class PhotoCameraController : MonoBehaviour
         blurVolume.weight = 1f;
         GameManager.Instance.state = GameManager.GameState.CAMERA;
         playerState.SetPhotoMode(true);
-        snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
     }
 
     private void OnAimCameraCanceled(InputAction.CallbackContext ctx)
     {
         if (toggleZoom) { return; }
         CancelCamera();
+        GameManager.Instance.state = GameManager.GameState.DEFAULT;
     }
 
     public void CancelCamera()
@@ -152,7 +146,6 @@ public class PhotoCameraController : MonoBehaviour
         targetFOV = normalFOV;
         blurVolume.weight = 0f;
         playerState.SetPhotoMode(false);
-        //cameraUI.SetActive(false); We should not be using direct reference to camera UI anymore. So this needs to change
         playerState.SetPhotoMode(false);
         HideDocPreview();
     }
@@ -173,6 +166,8 @@ public class PhotoCameraController : MonoBehaviour
         // THIS would need to change ***.
         currentMode = (currentMode == CameraMode.Photo) ? 
         CameraMode.Document : CameraMode.Photo;
+
+        UIManager.Instance.SetCameraMode(currentMode);
 
         if (currentMode == CameraMode.Photo)
         {
@@ -200,7 +195,7 @@ public class PhotoCameraController : MonoBehaviour
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
-
+        UIManager.Instance.TakePhoto();
         CreatePhotoNote(photo);
     }
 
@@ -212,17 +207,9 @@ public class PhotoCameraController : MonoBehaviour
     /// <param name="photo">Texture2D object representing the photo</param>
     private void CreatePhotoNote(Texture2D photo)
     {
-        //puts white  overlay over and then fades it out to simulate a camera snap
-        snapOverlay.canvasRenderer.SetAlpha(.5f);
-        snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
-
-        //TODO: rework PhotoNote to not be a UI object but just something that stores.
-        //Data should not be aware of UI
-        GameObject photograph = Instantiate(photographPrefab, notebookMenu.transform);
-        PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
+        Photo photoNote = new Photo();
         photoNote.SetSubject(DetectPhotographedSubject());
-        //photoNote.SetBounds(notebookMenu.transform as RectTransform);
-        photoNote.LoadImage(photo);
+        photoNote.SetImage(photo);
 
         // Add photo to storage
         PhotoStorage.Instance.AddPhoto(photoNote);
@@ -236,7 +223,6 @@ public class PhotoCameraController : MonoBehaviour
     /// </summary>
     private IEnumerator ScanDocument()
     {
-        cameraUI.SetActive(false);
         yield return new WaitForEndOfFrame();
 
         Vector3[] corners = new Vector3[4];
@@ -247,11 +233,6 @@ public class PhotoCameraController : MonoBehaviour
         
         scan.ReadPixels(paperRect, 0, 0);
         scan.Apply();
-
-        if (playerState.GetPhotoMode())
-        {
-            cameraUI.SetActive(true); // if still in aim
-        }  
 
         CreatePhotoNote(scan);
     }

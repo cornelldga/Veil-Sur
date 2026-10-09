@@ -10,11 +10,12 @@ public class PhotoSolution : SolutionRule
 
     public override bool IsCorrect(NotebookItem connected)
     {
-        if (connected is not PhotoNote photoNote)
-        {
-            return false;
-        }
+        //if (connected is not PhotoNote photoNote)
+        //{
+        //    return false;
+        //}
 
-        return photoNote.HasSubject(requiredSubjectId);
+        //return photoNote.HasSubject(requiredSubjectId);
+        return true;
     }
 }
