@@ -5,21 +5,28 @@ using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] AudioManager audioManager;
     [SerializeField] DialogueManager dialogueManager;
     public static GameManager Instance { get; private set; }
     public static GameObject PlayerInstance { get; set; }
     public static Camera PlayerCamera { get; set; }
 
+    [Header("Music")]
+    [SerializeField] private AudioClip lobbyMusic;
+
+    
+
     [Header("Game Settings")]
     [SerializeField] private bool isDebugMode = false;
+    [SerializeField] GameObject losePanel;
 
-    // TEMP, REMOVE LATER
-    [SerializeField] private GameObject UI;
+    public GameState state {  get; set; }
 
-    public enum PuzzleState {
-        SOLVED,
-        UNSOLVED
+    public enum GameState
+    {
+        PAUSED,
+        DEFAULT,
+        CAMERA,
+        NOTEBOOK
     }
 
     private void Awake()
@@ -40,12 +47,11 @@ public class GameManager : MonoBehaviour
 
     private void InitializeGame()
     {
-        if (UI!=null)
-        {
-            UI.SetActive(false);
-        }
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
+        //HandleSceneMusic("MainMenu");
+        // This is TEMPORARY
+        AudioManager.Instance.PlayMusic(lobbyMusic);
     }
 
     public async void GoToLevel(string sceneName)
@@ -64,13 +70,49 @@ public class GameManager : MonoBehaviour
 
         while (!op.isDone)
             await Task.Yield();
+
+        HandleSceneMusic(sceneName);
     }
-    // Temporary method
-    public void Win()
+
+    /// <summary>
+    /// Requests the game manager to change the state.
+    /// There is no guarantee that the change actually happens.
+    /// </summary>
+    /// <param name="state">the state you want to change to</param>
+    public void RequestStateChange(GameState state)
     {
-        if (UI!=null)
+        this.state = state;
+    }
+
+    /// <summary>
+    /// The temporary lose state for the game. 
+    /// Stops time for the game and enables the lose panel 
+    /// to be seen for the player.
+    /// </summary>
+    public void LoseGame()
+    {
+        losePanel.SetActive(true);
+        Time.timeScale = 0f;
+        PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
+    }
+
+    /// <summary>
+    /// Plays the correct music clip based on the scene.
+    /// </summary>
+    /// <param name="sceneName">the scene we're transitioning to</param>
+    private void HandleSceneMusic(string sceneName)
+    {
+        switch (sceneName)
         {
-            UI.SetActive(true);
+            case "TutorialLevel":
+                AudioManager.Instance.PlayMusic(lobbyMusic);
+                break;
+
+            default:
+                Debug.LogWarning($"No music assigned for scene: {sceneName}");
+                break;
         }
     }
+
+    
 }

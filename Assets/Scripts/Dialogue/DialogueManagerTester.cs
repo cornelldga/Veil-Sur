@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// tester for dialogue manager 
-/// </summary>
+// </summary>
 public class DialogueTester : MonoBehaviour {
 
     void Start() {
@@ -11,7 +10,8 @@ public class DialogueTester : MonoBehaviour {
         hi.LoadLevel("0");
         hi.StartDialogue("welcome");
     }
-
+// tester for dialogue manager 
+///
     void Update() {
         var hi = DialogueManager.Instance;
         var bye = Keyboard.current;

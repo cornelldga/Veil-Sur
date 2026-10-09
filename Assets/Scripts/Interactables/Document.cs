@@ -11,7 +11,7 @@ public class DocData
 }
 
 
-public class Document : MonoBehaviour, Interactable
+public class Document : MonoBehaviour
 {
     [Header("UI Features")]
     
@@ -22,7 +22,7 @@ public class Document : MonoBehaviour, Interactable
     private TMP_Text docTextAreaUI;
     private GameObject docCanvas;
 
-    private PlayerStateController playerStateController;
+    private PlayerState playerStateController;
     private bool isOpen = false;
 
     /// <summary>
@@ -38,7 +38,7 @@ public class Document : MonoBehaviour, Interactable
     {
         docTextAreaUI = UIManager.Instance.docViewer;
         docCanvas = UIManager.Instance.docCanvas;
-        playerStateController = GameManager.PlayerInstance.GetComponent<PlayerStateController>();
+        playerStateController = GameManager.PlayerInstance.GetComponent<PlayerState>();
     }
 
 
@@ -51,23 +51,13 @@ public class Document : MonoBehaviour, Interactable
         docData = JsonUtility.FromJson<DocData>(jsonFile.text);
     }
 
-    /// <summary>
-    /// Opens or closes the doc viewer.
-    /// </summary>
-    public void Interact()
+    public void OpenDoc()
     {
-        if (!isOpen)
-        {
-            docTextAreaUI.text = docData.text;
-            docCanvas.SetActive(true);
-            isOpen = true;
-        } else
-        {
-            CloseDoc();
-        }
+        docTextAreaUI.text = docData.text;
+        docCanvas.SetActive(true);
+        isOpen = true;
     }
-
-    private void CloseDoc()
+    public void CloseDoc()
     {
         docCanvas.SetActive(false);
         isOpen = false;

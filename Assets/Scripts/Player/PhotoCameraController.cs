@@ -1,4 +1,8 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -9,57 +13,57 @@ using UnityEngine.UI;
 /// Controls camera zoom, UI, and photo capture logic for
 /// the player's photo camera.
 /// </summary>
-[RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(PlayerState))]
 public class PhotoCameraController : MonoBehaviour
 {
-    private GameObject cameraUI;
+    public enum CameraMode
+    {
+        Photo,
+        Document
+    }
     [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
     [Header("Camera Settings")]
     [SerializeField] private float normalFOV = 60f;
     [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 10f;
+    [SerializeField] private bool toggleZoom = false;
     [Tooltip("The maximum range that a subject can be from the camera")]
     [Header("Detection")]
     [SerializeField] private float maxPhotoRange = 10f;
     [SerializeField] private LayerMask photoOcclusionMask = ~0;
-    [Tooltip("Radius of the inner ray circle used to determine subject")]
-    [SerializeField] private float innerRadiusFraction = 0.3f;
-    [Tooltip("Radius of the outer ray circle used to determine subject")]
-    [SerializeField] private float outerRadiusFraction = 0.7f;
+    [Tooltip("Inner circle radius in world units")]
+    [SerializeField] private float innerRayRadius = 0.07f;
+    [Tooltip("Outer circle radius in world units")]
+    [SerializeField] private float outerRayRadius = 0.21f;
+    [Tooltip("Minimum number of raycasts that must hit a subject for it to be considered the subject of the photo")]
+    [SerializeField] private int minRayCasts = 7;
     [Header("Blur Settings")]
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
     [SerializeField] private float blurRangePastMax = 2f;
 
-    // Minimum amount of raycasts needed for subject to be considering in photo
-    private int minRayCasts = 4;
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
-    private PlayerStateController playerStateController;
-    private GameObject notebookMenu;
+    private PlayerState playerState;
     private float targetFOV;
-    private Image snapOverlay;
     private Volume blurVolume;
+    private CameraMode currentMode = CameraMode.Photo;
+    private Document hoveredDocument;
+    
     private void Awake()
     {
         controls = new PlayerControls();
-        playerStateController = GetComponent<PlayerStateController>();
+        playerState = GetComponent<PlayerState>();
     }
 
     private void Start()
-    {
-        notebookMenu = playerStateController.GetNotebookMenu();
-        snapOverlay = UIManager.Instance.snapOverlay;
-        snapOverlay.canvasRenderer.SetAlpha(0f);
-
+    {        
         if (targetCamera == null)
         {
             targetCamera = Camera.main;
         }
 
         targetFOV = normalFOV;
-        cameraUI = UIManager.Instance.cameraGroup;
-        cameraUI.SetActive(false);
 
         CreateBlurVolume();
     }
@@ -98,6 +102,8 @@ public class PhotoCameraController : MonoBehaviour
         controls.PlayerMovement.AimCamera.performed += OnAimCameraPerformed;
         controls.PlayerMovement.AimCamera.canceled += OnAimCameraCanceled;
         controls.PlayerMovement.TakePicture.performed += OnSnap;
+
+        controls.PlayerMovement.SwapCameraMode.performed += OnSwapCameraMode;
     }
 
     private void OnDisable()
@@ -106,64 +112,129 @@ public class PhotoCameraController : MonoBehaviour
         controls.PlayerMovement.AimCamera.canceled -= OnAimCameraCanceled;
         controls.PlayerMovement.TakePicture.performed -= OnSnap;
 
+        controls.PlayerMovement.SwapCameraMode.performed -= OnSwapCameraMode;
+
         controls.PlayerMovement.Disable();
     }
 
     private void OnAimCameraPerformed(InputAction.CallbackContext ctx)
     {
-        if (!playerStateController.GetPlayerHasControl())
+        if (toggleZoom && playerState.GetPhotoMode())
+        {
+            CancelCamera();
+            return;
+        }
+        if (!playerState.GetPlayerHasControl())
         {
             return;
         }
-
         targetFOV = zoomedFOV;
         blurVolume.weight = 1f;
-        cameraUI.SetActive(true);
-        playerStateController.SetPhotoMode(true);
-        snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
+        GameManager.Instance.state = GameManager.GameState.CAMERA;
+        playerState.SetPhotoMode(true);
     }
 
     private void OnAimCameraCanceled(InputAction.CallbackContext ctx)
     {
+        if (toggleZoom) { return; }
         CancelCamera();
+        GameManager.Instance.state = GameManager.GameState.DEFAULT;
     }
 
     public void CancelCamera()
     {
         targetFOV = normalFOV;
         blurVolume.weight = 0f;
-        cameraUI.SetActive(false);
-        playerStateController.SetPhotoMode(false);
+        playerState.SetPhotoMode(false);
+        playerState.SetPhotoMode(false);
+        HideDocPreview();
     }
 
-    private void OnSnap(InputAction.CallbackContext ctx)
+    /// <summary>
+    /// Function to swap between Photo and Document modes. 
+    /// Activates only while camera is being aimed, on Q press.
+    /// </summary>
+    private void OnSwapCameraMode(InputAction.CallbackContext ctx)
     {
-        if (!playerStateController.GetPhotoMode())
+        if (!playerState.GetPhotoMode())
         {
             return;
         }
 
+        // Currently, just swap between two modes with Q
+        // In the future with more camera modes,
+        // THIS would need to change ***.
+        currentMode = (currentMode == CameraMode.Photo) ? 
+        CameraMode.Document : CameraMode.Photo;
+
+        UIManager.Instance.SetCameraMode(currentMode);
+
+        if (currentMode == CameraMode.Photo)
+        {
+            HideDocPreview();
+        }
+    }
+
+    private void OnSnap(InputAction.CallbackContext ctx)
+    {
+        if (!playerState.GetPhotoMode())
+        {
+            return;
+        }
         if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
+            return;
+        }
+
+        if (currentMode == CameraMode.Document && hoveredDocument != null)
+        {
+            StartCoroutine(ScanDocument());
             return;
         }
 
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
+        UIManager.Instance.TakePhoto();
+        CreatePhotoNote(photo);
+    }
 
-        //puts white  overlay over and then fades it out to simulate a camera snap
-        snapOverlay.canvasRenderer.SetAlpha(.5f);
-        snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
-
-        GameObject photograph = Instantiate(photographPrefab, notebookMenu.transform);
-        PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
+    /// <summary>
+    /// Refactored the code for PhotoNote creation from OnSnap to here.
+    /// Creates a PhotoNote given a Texture2D.
+    /// This way, seperate camera modes can produce separate Textures.
+    /// </summary>
+    /// <param name="photo">Texture2D object representing the photo</param>
+    private void CreatePhotoNote(Texture2D photo)
+    {
+        Photo photoNote = new Photo();
         photoNote.SetSubject(DetectPhotographedSubject());
-        photoNote.SetBounds(notebookMenu.transform as RectTransform);
-        photoNote.LoadImage(photo);
+        photoNote.SetImage(photo);
 
         // Add photo to storage
         PhotoStorage.Instance.AddPhoto(photoNote);
+    }
+
+    /// <summary>
+    /// Coroutine to manage the document scanner.
+    /// Gets the rectangle/paper of the DocView in coordinates.
+    /// Creates a new texture the size of the paper.
+    /// Finally, copies the paper into the scan, and creates a photo note.
+    /// </summary>
+    private IEnumerator ScanDocument()
+    {
+        yield return new WaitForEndOfFrame();
+
+        Vector3[] corners = new Vector3[4];
+        UIManager.Instance.docPaper.GetWorldCorners(corners);
+        Rect paperRect = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+
+        Texture2D scan = new Texture2D((int)paperRect.width, (int)paperRect.height, TextureFormat.RGB24, false);
+        
+        scan.ReadPixels(paperRect, 0, 0);
+        scan.Apply();
+
+        CreatePhotoNote(scan);
     }
 
     /// <summary>
@@ -191,6 +262,39 @@ public class PhotoCameraController : MonoBehaviour
     }
 
     /// <summary>
+    /// Raycasts from the camera while in Document mode (similar to interaction).
+    /// Opens a hovered Document, and will close if the ray moves away.
+    /// </summary>
+    private void UpdateDocPreview()
+    { 
+        Document newHoveredDocument = null;
+
+        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
+        {
+            newHoveredDocument = hit.collider.GetComponent<Document>();
+        }
+        if (newHoveredDocument != hoveredDocument && hoveredDocument != null)
+        {
+            hoveredDocument.CloseDoc();
+        }
+        hoveredDocument = newHoveredDocument;
+
+        if (hoveredDocument != null)
+        {
+            hoveredDocument.OpenDoc();
+        }
+    }
+
+    private void HideDocPreview()
+    {
+        if (hoveredDocument != null)
+        {
+            hoveredDocument.CloseDoc();
+            hoveredDocument = null;
+        }
+    }
+
+    /// <summary>
     /// Returns the screen-space rect (in pixels) that gets cropped into the
     /// final photo: full height, centered horizontally.
     /// </summary>
@@ -209,16 +313,18 @@ public class PhotoCameraController : MonoBehaviour
     private string DetectPhotographedSubject()
     {
         var tally = new Dictionary<string, int>();
+        var tallyInner = new Dictionary<string, bool>();
 
-        foreach (Vector2 screenPoint in GetPhotoRayScreenPoints())
+        foreach (var (ray, isInner) in GetPhotoRays())
         {
-            Ray ray = targetCamera.ScreenPointToRay(screenPoint);
             if (!Physics.Raycast(ray, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
             {
+                Debug.DrawRay(ray.origin, ray.direction * maxPhotoRange, Color.red, 5f, false);
                 continue;
             }
             // Return parents too in case subject hits a child component of a photographable object (like lightbulb of lamp or smthn)
             PhotographableObject subject = hit.collider.GetComponentInParent<PhotographableObject>();
+            Debug.DrawLine(ray.origin, hit.point, subject != null ? Color.green : Color.yellow, 5f, false);
             if (subject == null)
             {
                 continue;
@@ -227,18 +333,41 @@ public class PhotoCameraController : MonoBehaviour
             if (tally.ContainsKey(subject.SubjectId))
             {
                 tally[subject.SubjectId] = tally[subject.SubjectId] + 1;
+                if (isInner)
+                {
+                    tallyInner[subject.SubjectId] = true;
+                }
             }
             else
             {
                 tally[subject.SubjectId] = 1;
+                tallyInner[subject.SubjectId] = isInner;
             }
+        }
+
+        Ray centerRay = new(targetCamera.transform.position, targetCamera.transform.forward);
+
+        if (Physics.Raycast(centerRay, out RaycastHit centerHit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
+        {
+            PhotographableObject centeredSubject = centerHit.collider.GetComponentInParent<PhotographableObject>();
+
+            Debug.DrawLine(centerRay.origin, centerHit.point, Color.cyan, 5f, false);
+
+            if (centeredSubject != null && tally.TryGetValue(centeredSubject.SubjectId, out int hits) && hits >= minRayCasts - 1)
+            {
+                return centeredSubject.SubjectId;
+            }
+        } 
+        else
+        {
+            Debug.DrawRay(centerRay.origin, centerRay.direction * maxPhotoRange, Color.cyan, 5f, false);
         }
 
         string bestSubjectId = "";
         int bestCount = minRayCasts - 1;
         foreach (var entry in tally)
         {
-            if (entry.Value > bestCount)
+            if (tallyInner[entry.Key] && entry.Value > bestCount)
             {
                 bestSubjectId = entry.Key;
                 bestCount = entry.Value;
@@ -249,25 +378,23 @@ public class PhotoCameraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns 16 screen-space points (2 concentric circles of 8, evenly
-    /// spaced) used to raycast when a photo is taken, centered on the
+    /// Returns 16 rays (2 concentric circles of 8, evenly
+    /// spaced) used when a photo is taken, centered on the
     /// cropped square.
     /// </summary>
-    private IEnumerable<Vector2> GetPhotoRayScreenPoints()
+    private IEnumerable<(Ray ray, bool isInner)> GetPhotoRays()
     {
-        RectInt captureRect = GetCaptureScreenRect(Screen.width, Screen.height);
-        Vector2 center = new Vector2(captureRect.x + captureRect.width * 0.5f, captureRect.y + captureRect.height * 0.5f);
-        float halfSize = captureRect.width * 0.5f;
+        Transform cam = targetCamera.transform;
+        float[] radii = { innerRayRadius, outerRayRadius };
 
-        // Iterate through two circles
-        foreach (float radiusFraction in new[] { innerRadiusFraction, outerRadiusFraction })
+        for (int circle = 0; circle < radii.Length; circle++)
         {
-            float pixelRadius = radiusFraction * halfSize;
-            // Iterate by points in circle
             for (int i = 0; i < RaysPerCircle; i++)
             {
                 float angle = i * Mathf.PI * 2f / RaysPerCircle;
-                yield return center + pixelRadius * new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                Vector3 offset = radii[circle] * (cam.right * Mathf.Cos(angle) + cam.up * Mathf.Sin(angle));
+
+                yield return (new Ray(cam.position + offset, cam.forward), circle == 0);
             }
         }
     }
@@ -279,7 +406,17 @@ public class PhotoCameraController : MonoBehaviour
             return;
         }
 
+        if (GameManager.Instance.state != GameManager.GameState.CAMERA)
+        {
+            CancelCamera();
+        }
+
         // Update FOV change
         targetCamera.fieldOfView = Mathf.Lerp(targetCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
+
+        if (playerState.GetPhotoMode() && currentMode == CameraMode.Document)
+        {
+            UpdateDocPreview();
+        }
     }
 }
