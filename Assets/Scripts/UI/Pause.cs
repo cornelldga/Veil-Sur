@@ -4,7 +4,7 @@ public class Pause : UIScreen
 {
     public void Resume()
     {
-        UIManager.Instance.HideAll();
+        GameManager.Instance.TogglePause();
     }
 
     public void OpenSettings()

@@ -26,9 +26,6 @@ public class UIManager : MonoBehaviour
     [Tooltip("Assign your Canvas (or a child of it). Screens spawn under this.")]
     [SerializeField] private Transform screenRoot;
 
-    [Header("Startup")]
-    [SerializeField] private string titleSceneName = "TitleScreen";
-
     // Runtime instances, created once and kept for the manager's lifetime
     public UIScreen MainMenu { get; private set; }
     public UIScreen SettingsMenu { get; private set; }
@@ -50,7 +47,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject deleteConfirmation;
 
     private Photo pendingDeletion;
- 
+
     [Header("Interact Popup")]
     [SerializeField] public TMP_Text interact;
 
@@ -65,6 +62,20 @@ public class UIManager : MonoBehaviour
         Instance = this;
         snapOverlay.canvasRenderer.SetAlpha(0f);
         InitializeScreens();
+    }
+
+    /// <summary>
+    /// Subscribe/unsubscribe to GameManager's state event
+    /// </summary>
+    private void OnEnable()
+    {
+        if (Instance != null && Instance != this) return;
+        GameManager.StateChanged += OnGameStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.StateChanged -= OnGameStateChanged;
     }
 
     private void InitializeScreens()
@@ -94,13 +105,55 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        if (Instance != this) return;   // a duplicate manager is about to be destroyed
+        if (Instance != this) return;
 
         ShowInteractPrompt(false);
-        if (SceneManager.GetActiveScene().name == titleSceneName)
-            Show(UIGroupId.MainMenu);
+        ApplyState(GameManager.Instance.state);
     }
-    
+
+    private void OnGameStateChanged(GameManager.GameState oldState, GameManager.GameState newState)
+    {
+        ApplyState(newState);
+    }
+
+    private void ApplyState(GameManager.GameState state)
+    {
+        HideAll();
+
+        switch (state)
+        {
+            case GameManager.GameState.MAIN_MENU:
+                Show(UIGroupId.MainMenu);
+                break;
+
+            case GameManager.GameState.DEFAULT:
+                break; // no UI
+
+            case GameManager.GameState.CAMERA:
+                cameraGroup.SetActive(true);
+                break;
+
+            case GameManager.GameState.NOTEBOOK:
+                notebookGroup.SetActive(true);
+                break;
+
+            case GameManager.GameState.PAUSED:
+                Show(UIGroupId.Pause);
+                break;
+        }
+
+        // Cursor + player control follow the state
+        bool uiOpen = state == GameManager.GameState.MAIN_MENU
+                || state == GameManager.GameState.PAUSED
+                || state == GameManager.GameState.NOTEBOOK;
+
+        Cursor.lockState = uiOpen ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = uiOpen;
+
+        if (GameManager.PlayerInstance != null)
+            GameManager.PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(!uiOpen);
+    }
+
     public void Show(UIGroupId id)
     {
         if (_activeId == id) return;
@@ -113,8 +166,10 @@ public class UIManager : MonoBehaviour
     {
         if (_history.Count > 0)
             SwitchTo(_history.Pop());
+        else if (GameManager.Instance.state == GameManager.GameState.PAUSED)
+            GameManager.Instance.TogglePause();
         else
-            HideAll();                        // nothing to return to, so close the UI
+            HideAll();
     }
 
     public void HideAll()
@@ -126,6 +181,7 @@ public class UIManager : MonoBehaviour
         _activeId = null;
         _history.Clear();
         cameraGroup.SetActive(false);
+        notebookGroup.SetActive(false);
         snapOverlay.canvasRenderer.SetAlpha(0f);
     }
 
@@ -147,11 +203,11 @@ public class UIManager : MonoBehaviour
         _activeGroup.Show();
     }
 
-    private void Update()
-    {
-        // if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
-        //     UIManager.Instance.Show(UIGroupId.Pause);
-    }
+    // private void Update()
+    // {
+    //     if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
+    //         UIManager.Instance.Show(UIGroupId.Pause);
+    // }
 
     /// <summary>
     /// Displays the delete confirmation for the given photo.
@@ -207,6 +263,8 @@ public class UIManager : MonoBehaviour
     public void SetCameraMode(PhotoCameraController.CameraMode cameraMode)
     {
         this.cameraMode = cameraMode;
+        if (GameManager.Instance.state == GameManager.GameState.CAMERA)
+            ApplyState(GameManager.GameState.CAMERA);
     }
 
     /// <summary>
@@ -219,57 +277,66 @@ public class UIManager : MonoBehaviour
         snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
     }
 
-    /// <summary>
-    /// Turns document mode on/off. Only works when the game state is CameraMode
-    /// </summary>
-    private void CameraDocumentMode(bool active)
-    {
-        if (GameManager.Instance.state != GameManager.GameState.CAMERA) { return; }
-        if (active) CameraPictureMode(false);
-        if (active)
-        {
-            snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
-            cameraGroup.SetActive(true);
-        }
+    // /// <summary>
+    // /// Turns document mode on/off. Only works when the game state is CameraMode
+    // /// </summary>
+    // private void CameraDocumentMode(bool active)
+    // {
+    //     if (GameManager.Instance.state != GameManager.GameState.CAMERA) { return; }
+    //     if (active) CameraPictureMode(false);
+    //     if (active)
+    //     {
+    //         snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
+    //         cameraGroup.SetActive(true);
+    //     }
 
-    }
+    // }
 
-    /// <summary>
-    /// Turns camera mode on/off. Only works when game state is CameraMode
-    /// </summary>
-    private void CameraPictureMode(bool active)
-    {
-        if(GameManager.Instance.state != GameManager.GameState.CAMERA) { return; }
-        if(active) CameraDocumentMode(false);
-        cameraGroup.SetActive(active);
-    }
+    // /// <summary>
+    // /// Turns camera mode on/off. Only works when game state is CameraMode
+    // /// </summary>
+    // private void CameraPictureMode(bool active)
+    // {
+    //     if (GameManager.Instance.state != GameManager.GameState.CAMERA) { return; }
+    //     if (active) CameraDocumentMode(false);
+    //     cameraGroup.SetActive(active);
+    // }
 
-    public void FixedUpdate()
+    // public void FixedUpdate()
+    // {
+    //     //TODO this is janky hiding every time, somebody should be assigned to make this smoother
+    //     HideAll();
+    //     switch (GameManager.Instance.state)
+    //     {
+    //         case GameManager.GameState.CAMERA:
+    //             if (cameraMode == PhotoCameraController.CameraMode.Photo)
+    //             {
+    //                 CameraPictureMode(true);
+    //             }
+    //             else
+    //             {
+    //                 CameraDocumentMode(true);
+    //             }
+    //             break;
+    //         case GameManager.GameState.DEFAULT:
+    //             //no UI
+    //             break;
+    //         case GameManager.GameState.NOTEBOOK:
+    //             //TODO make it show up and make the notebook an official group id
+    //             break;
+    //         case GameManager.GameState.PAUSED:
+    //             //pause menu
+    //             break;
+    //     }
+    // }
+    
+    public void OnResumeClicked()   => GameManager.Instance.TogglePause();
+    public void OnSettingsClicked() => Show(UIGroupId.Settings);
+    public void OnBackClicked()     => Back();
+    public void OnPlayClicked()
     {
-        //TODO this is janky hiding every time, somebody should be assigned to make this smoother
-        HideAll();
-        switch (GameManager.Instance.state) { 
-            case GameManager.GameState.CAMERA:
-                if(cameraMode == PhotoCameraController.CameraMode.Photo)
-                {
-                    CameraPictureMode(true);
-                } else
-                {
-                    CameraDocumentMode(true);
-                }
-                break;
-            case GameManager.GameState.DEFAULT:
-                //no UI
-                break;
-            case GameManager.GameState.NOTEBOOK:
-                //TODO make it show up and make the notebook an official group id
-                break;
-            case GameManager.GameState.PAUSED:
-                //pause menu
-                break;
-        }
-            
-                
+        GameManager.Instance.RequestStateChange(GameManager.GameState.DEFAULT);
+        GameManager.Instance.GoToLevel("TutorialLevel");
     }
 
 }

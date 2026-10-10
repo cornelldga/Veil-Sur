@@ -16,7 +16,7 @@ public class MainMenu : UIScreen
     {
         // or alternatively SceneManagement.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
         //change logic so that gamemanger loads levels
-        GameManager.Instance.GoToLevel("SampleScene");
+        GameManager.Instance.GoToLevel("TutorialLevel");
 
     }
     

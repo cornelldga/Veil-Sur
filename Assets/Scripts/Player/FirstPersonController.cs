@@ -49,7 +49,9 @@ public class FirstPersonController : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        controls = new PlayerControls();
+        // controls = new PlayerControls();
+        //switch to this for key binds
+        controls = GameManager.Controls;
         staminaController = GetComponent<StaminaController>();
         playerState = GetComponent<PlayerState>();
 
@@ -176,8 +178,9 @@ public class FirstPersonController : MonoBehaviour
     private void HandleLook()
     {
         Vector2 lookInput = controls.PlayerMovement.Look.ReadValue<Vector2>();
-        float horizontalLook = lookInput.x * mouseSens;
-        float verticalLook = lookInput.y * mouseSens;
+        float sens = mouseSens * GameManager.Instance.MouseSensitivity;
+        float horizontalLook = lookInput.x * sens;
+        float verticalLook = lookInput.y * sens;
 
         transform.Rotate(Vector3.up * horizontalLook);
 
@@ -223,8 +226,8 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-       controls?.Dispose();
-    }
+    // private void OnDestroy()
+    // {
+    //    controls?.Dispose();
+    // }
 }
