@@ -49,7 +49,9 @@ public class FirstPersonController : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        controls = new PlayerControls();
+        // controls = new PlayerControls();
+        //switch to this for key binds
+        controls = GameManager.Controls;
         staminaController = GetComponent<StaminaController>();
         playerState = GetComponent<PlayerState>();
 
@@ -224,8 +226,8 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-       controls?.Dispose();
-    }
+    // private void OnDestroy()
+    // {
+    //    controls?.Dispose();
+    // }
 }

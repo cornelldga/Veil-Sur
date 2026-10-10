@@ -40,6 +40,18 @@ public class Settings : UIScreen
         
     }
 
+    /// <summary>
+    /// resets key bindings to default
+    /// </summary>
+    public void ResetKeyBindings()
+    {
+        GameManager.ResetBindings();
+
+        // Update every row's label to show the default key again
+        foreach (KeyBinding row in GetComponentsInChildren<KeyBinding>())
+            row.RefreshLabel();
+    }
+
     // Update is called once per frame
     void Update()
     {

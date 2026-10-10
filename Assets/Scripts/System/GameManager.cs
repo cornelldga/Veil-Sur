@@ -35,6 +35,42 @@ public class GameManager : MonoBehaviour
     /// Fired after every state change as (oldState, newState). UIManager listens to this.
     /// </summary>
     public static event Action<GameState, GameState> StateChanged;
+
+    private const string RebindsKey = "InputRebinds";
+    private static PlayerControls _controls;
+
+    /// <summary>
+    /// The one shared PlayerControls instance. Created on first use, with any saved
+    /// rebinds applied, so it doesn't matter which script asks for it first.
+    /// </summary>
+    public static PlayerControls Controls
+    {
+        get
+        {
+            if (_controls == null)
+            {
+                _controls = new PlayerControls();
+                string json = PlayerPrefs.GetString(RebindsKey, "");
+                if (!string.IsNullOrEmpty(json))
+                    _controls.asset.LoadBindingOverridesFromJson(json);
+            }
+            return _controls;
+        }
+    }
+
+    public static void SaveBindings()
+    {
+        PlayerPrefs.SetString(RebindsKey, Controls.asset.SaveBindingOverridesAsJson());
+        PlayerPrefs.Save();
+    }
+
+    public static void ResetBindings()
+    {
+        Controls.asset.RemoveAllBindingOverrides();
+        PlayerPrefs.DeleteKey(RebindsKey);
+    }
+
+    public static bool IsRebinding { get; set; }
     private GameState _state = GameState.DEFAULT;
     public GameState state
     {
@@ -93,7 +129,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         var kb = Keyboard.current;
-        if (kb == null || _state == GameState.MAIN_MENU) return;
+        if (kb == null || _state == GameState.MAIN_MENU || IsRebinding) return;
 
         if (kb.escapeKey.wasPressedThisFrame)
             TogglePause();
