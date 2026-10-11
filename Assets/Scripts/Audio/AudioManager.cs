@@ -69,10 +69,24 @@ public class AudioManager : MonoBehaviour
 
         instance = this;
 
+        if (musicSource != null)
+        {
+            musicSource.outputAudioMixerGroup = musicGroup;
+            musicSource.playOnAwake = false;
+        }
+
         for (int i = 0; i < initialPoolSize; i++)
         {
             availableSources.Enqueue(CreatePooledSource());
         }
+    }
+
+    private void Start()
+    {
+        // Values should later be adjusted to depend on saved values from previous gameplay
+        // Else, a default value
+        SetMusicVolume(0.2f);
+        SetSfxVolume(0.2f);
     }
 
     /// <summary>
