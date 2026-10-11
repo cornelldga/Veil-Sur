@@ -18,14 +18,16 @@ public class TutorialManager : MonoBehaviour
 
     private readonly string[] prompts =
     {
-        "wasd to move",
-        "hold shift to sprint",
-        "take a photo! right click to aim, left click to take a photo!",
-        //"press tab to open your notebook",
-        //connect photo to question
-        "aim your camera, then press E to switch to document mode",
-        "aim at a document and left click to scan it",
-        "press e to interact with objects"
+        "Use WASD to move.",
+        "Hold shift to sprint.",
+        "Right click to aim your camera, and eft click to take a photo!",
+        //"Press tab to open your notebook.",
+        // Connect photo to question
+        // Deleting questions ?
+        "Aim your camera at a document, then press E to switch to document mode.",
+        "Left click in document mode to scan it into your notebook.",
+        "Press E to interact with objects that have the interact icon."
+        // Maybe in the above ^ prompt we'll include a picture of the interact icon.
     };
 
     private int step;
