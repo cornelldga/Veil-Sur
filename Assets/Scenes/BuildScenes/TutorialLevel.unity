@@ -15799,9 +15799,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9c63d427b1e20e4c9240fd62ee96c22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialManager
-  promptText: {fileID: 0}
-  promptGroup: {fileID: 0}
+  promptText: {fileID: 1847099677}
   fadeDuration: 0.4
+  amplitude: 10
+  moveSpeed: 1
 --- !u!114 &1847099677
 MonoBehaviour:
   m_ObjectHideFlags: 0
