@@ -468,7 +468,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8447681852531857237
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1295,9 +1295,17 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.85543
       objectReference: {fileID: 0}
+    - target: {fileID: 3272032798394900424, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5781908069694159774, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
       propertyPath: m_Name
       value: DialogueManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781908069694159774, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
