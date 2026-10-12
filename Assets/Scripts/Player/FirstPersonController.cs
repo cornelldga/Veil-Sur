@@ -21,8 +21,8 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float maxLookUp = 85f;
 
     [Header("Crouch")]
-    [SerializeField] private float standHeight = 2f;
-    [SerializeField] private float crouchHeight = 1f;
+    [SerializeField] private float standHeight = 1.8f;
+    [SerializeField] private float crouchHeight = .75f;
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
 
@@ -56,8 +56,8 @@ public class FirstPersonController : MonoBehaviour
         currentHeight = standHeight;
         controller.height = standHeight;
 
-        cameraStandLocalPos = new Vector3(0f, standHeight * 0.5f, 0f);
-        cameraCrouchLocalPos = new Vector3(0f, crouchHeight * 0.5f, 0f);
+        cameraStandLocalPos = new Vector3(0f, standHeight, 0f);
+        cameraCrouchLocalPos = new Vector3(0f, crouchHeight, 0f);
 
         playerCamera = Camera.main;
         if (playerCamera != null)

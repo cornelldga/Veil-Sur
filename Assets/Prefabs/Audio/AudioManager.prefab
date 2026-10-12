@@ -48,9 +48,9 @@ MonoBehaviour:
   initialPoolSize: 8
   minDistance: 1
   maxDistance: 25
-  audioMixer: {fileID: 0}
-  sfxGroup: {fileID: 0}
-  musicGroup: {fileID: 0}
+  audioMixer: {fileID: 24100000, guid: 83cbb7e1951c341dbb969e0123b03033, type: 2}
+  sfxGroup: {fileID: 5276653541828804928, guid: 83cbb7e1951c341dbb969e0123b03033, type: 2}
+  musicGroup: {fileID: -2902087301518376713, guid: 83cbb7e1951c341dbb969e0123b03033, type: 2}
   musicSource: {fileID: 3279323523558400734}
 --- !u!1 &7991245678325937517
 GameObject:
