@@ -7099,7 +7099,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 624e8ce73564c4ceb9ae0374fe0647cb, type: 2}
+  - {fileID: 2100000, guid: bcccd4f9c09624f66a4677e72e37a5eb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19341,15 +19341,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3408713188140992447, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_Height
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3408713188140992447, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_Radius
-      value: 0.4
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3408713188140992447, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_SkinWidth
-      value: 0.05
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: cameraUI
@@ -19365,11 +19365,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.93
+      value: 10.18
       objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalRotation.w
@@ -19401,15 +19401,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: standHeight
-      value: 3
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: crouchHeight
-      value: 1.5
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
+      propertyPath: playerCamera
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: ceilingCheckMask.m_Bits
-      value: 1
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 6806995806706978375, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: notebookMenu
@@ -40065,7 +40069,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 30d88dfe1eb5c44e4abfeea3a8a4c4fc, type: 2}
+  - {fileID: 2100000, guid: f2eb8968e12b9406d97d2edc4bb2be38, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
