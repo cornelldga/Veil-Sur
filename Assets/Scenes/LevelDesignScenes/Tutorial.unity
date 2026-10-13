@@ -18934,18 +18934,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 3408713188140992447, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: m_Height
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3408713188140992447, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: m_Radius
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3408713188140992447, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: m_SkinWidth
-      value: 0.08
-      objectReference: {fileID: 0}
     - target: {fileID: 3942358293781664924, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: cameraUI
       value: 
@@ -18993,22 +18981,6 @@ PrefabInstance:
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: standHeight
-      value: 1.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: crouchHeight
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: playerCamera
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6391578322636226184, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
-      propertyPath: ceilingCheckMask.m_Bits
-      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 6806995806706978375, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: notebookMenu
