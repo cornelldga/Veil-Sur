@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
@@ -13,9 +14,8 @@ using UnityEditor;
 public class PhotoStorage : MonoBehaviour
 {
    public static PhotoStorage Instance { get; private set; }
-   private readonly List<PhotoNote> photos = new List<PhotoNote>();
-
-   private GameObject storageCounter;
+   public static Action<bool> OnStorageChanged;
+   private readonly List<Photo> photos = new List<Photo>();
 
    // Can change maxCapacity to any other value depending on gameplay.
    // ( Currently 5 just because that's what was chsoen so far )
@@ -41,7 +41,7 @@ public class PhotoStorage : MonoBehaviour
 
    private void Start()
     {
-        storageCounter = UIManager.Instance.notebookGroup.transform.GetChild(0).gameObject;
+
     }
 
 
@@ -67,13 +67,12 @@ public class PhotoStorage : MonoBehaviour
    /// Adds a captured photo to the storage.
    /// If the storage is at maximum capacity, returns 'false'.
    /// </summary>
-   public bool AddPhoto(PhotoNote photo)
+   public bool AddPhoto(Photo photo)
    {
        if (IsPhotoStorageFull())
        {
            return false;
        }
-
 
        photos.Add(photo);
        IncrementCounter();
@@ -85,27 +84,19 @@ public class PhotoStorage : MonoBehaviour
    /// Removes a particular photo from the photo storage and deletes its
    /// respective GameObject.
    /// </summary>
-   public bool RemovePhoto(PhotoNote photo)
+   public bool RemovePhoto(Photo photo)
    {
        bool removed = photos.Remove(photo);
-       // If removed, delete the respective GameObject
-       if (removed)
-       {
-           Object.Destroy(photo.gameObject);
-       }
        IncrementCounter();
-
        return removed;
    }
 
    /// <summary>
-   /// Increments the storage counter UI element to the relevant representation. 
+   /// Increments the storage counter UI element to the relevant representation.
    /// TEMP: text representation, future will be pulse images
    /// </summary>
    private void IncrementCounter(){
-    if(photos.Count <= maxCapacity/3) storageCounter.GetComponent<TextMeshProUGUI>().text = "full storage";
-    else if (photos.Count <= 2*maxCapacity/3) storageCounter.GetComponent<TextMeshProUGUI>().text = "mid storage";
-    else storageCounter.GetComponent<TextMeshProUGUI>().text = "low storage";
+       OnStorageChanged?.Invoke(IsPhotoStorageFull());
    }
 
 

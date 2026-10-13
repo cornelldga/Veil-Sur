@@ -4,7 +4,8 @@ using UnityEngine.AI;
 /// <summary>
 /// 8-direction billboard for 2.5D mutants. Goes on a child of the mutant root: the root's
 /// rotation is the mutant's real facing, and this child always turns to face the player camera.
-/// Tells the Animator which of the 8 angles the camera sees and whether the mutant is moving;
+/// Tells the Animator which of the 8 angles the camera sees, whether the mutant is moving,
+/// and whether it is in Alert;
 /// the Animator's blend trees pick and play the clips.
 /// </summary>
 [RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
@@ -15,6 +16,7 @@ public class MutantBillboard : MonoBehaviour
 
     private static readonly int DirectionParam = Animator.StringToHash("Direction");
     private static readonly int IsMovingParam = Animator.StringToHash("IsMoving");
+    private static readonly int IsAlertParam = Animator.StringToHash("IsAlert");
 
     [Tooltip("Agent speed above which the mutant counts as moving")]
     [SerializeField] private float moveThreshold = 0.1f;
@@ -22,15 +24,17 @@ public class MutantBillboard : MonoBehaviour
     private Animator animator;
     private Transform root;
     private NavMeshAgent agent;
+    private EnemySearchlight searchlight;
 
     /// <summary>
-    /// Caches the Animator, the mutant root, and the root's NavMeshAgent.
+    /// Caches the Animator, the mutant root, and the root's NavMeshAgent and EnemySearchlight.
     /// </summary>
     private void Start()
     {
         animator = GetComponent<Animator>();
         root = transform.parent;
         agent = GetComponentInParent<NavMeshAgent>();
+        searchlight = GetComponentInParent<EnemySearchlight>();
     }
 
     /// <summary>
@@ -49,6 +53,7 @@ public class MutantBillboard : MonoBehaviour
 
         animator.SetFloat(DirectionParam, GetDirectionIndex(toCamera));
         animator.SetBool(IsMovingParam, agent.velocity.magnitude > moveThreshold);
+        animator.SetBool(IsAlertParam, searchlight.CurrentState == EnemySearchlight.AlertState.Alert);
     }
 
     /// <summary>

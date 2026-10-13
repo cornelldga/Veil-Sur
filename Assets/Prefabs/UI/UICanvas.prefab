@@ -73,7 +73,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 200}
+  m_SizeDelta: {x: 800, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6347562596069365550
 CanvasRenderer:
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ebc83a13a7cd04547ab1266e41e26721, type: 3}
+  m_Sprite: {fileID: -227097663, guid: 63b56a733ae121144b08a7ef947e337e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -147,8 +147,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -210, y: 0}
-  m_SizeDelta: {x: 420, y: 0}
+  m_AnchoredPosition: {x: -267, y: 0}
+  m_SizeDelta: {x: 535, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8216625401856369013
 CanvasRenderer:
@@ -206,7 +206,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6645097024416385401
 RectTransform:
   m_ObjectHideFlags: 0
@@ -224,7 +224,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -839.3651, y: 0}
+  m_SizeDelta: {x: -1097.8284, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &708746162555794124
 CanvasRenderer:
@@ -468,7 +468,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8447681852531857237
 RectTransform:
   m_ObjectHideFlags: 0
@@ -663,8 +663,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 210, y: 0}
-  m_SizeDelta: {x: 420, y: 0}
+  m_AnchoredPosition: {x: 267, y: 0}
+  m_SizeDelta: {x: 535, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3954227039302802251
 CanvasRenderer:
@@ -908,6 +908,9 @@ MonoBehaviour:
   titleSceneName: TitleScreen
   docCanvas: {fileID: 739846400131215278}
   docViewer: {fileID: 5366750986226141005}
+  docPaper: {fileID: 0}
+  deleteConfirmation: {fileID: 0}
+  interact: {fileID: 0}
 --- !u!1 &6274681145636824339
 GameObject:
   m_ObjectHideFlags: 0

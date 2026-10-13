@@ -13,15 +13,14 @@ using UnityEngine.UI;
 /// Controls camera zoom, UI, and photo capture logic for
 /// the player's photo camera.
 /// </summary>
-[RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(PlayerState))]
 public class PhotoCameraController : MonoBehaviour
 {
-    private enum CameraMode
+    public enum CameraMode
     {
         Photo,
         Document
     }
-    private GameObject cameraUI;
     [SerializeField] private GameObject photographPrefab;
     private Camera targetCamera;
     [Header("Camera Settings")]
@@ -42,37 +41,35 @@ public class PhotoCameraController : MonoBehaviour
     [Header("Blur Settings")]
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
     [SerializeField] private float blurRangePastMax = 2f;
+    [Header("Storage Full Feedback")]
+    [Tooltip("How long the camera shakes (seconds) when storage is full")]
+    [SerializeField] private float storageFullShakeDuration = 0.25f;
+    [Tooltip("Maximum distance the camera is offset while shaking")]
+    [SerializeField] private float storageFullShakeMagnitude = 0.1f;
 
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
-    private PlayerStateController playerStateController;
-    private GameObject notebookMenu;
+    private PlayerState playerState;
     private float targetFOV;
-    private Image snapOverlay;
     private Volume blurVolume;
     private CameraMode currentMode = CameraMode.Photo;
     private Document hoveredDocument;
+    private Coroutine shakeCoroutine;
     
     private void Awake()
     {
         controls = new PlayerControls();
-        playerStateController = GetComponent<PlayerStateController>();
+        playerState = GetComponent<PlayerState>();
     }
 
     private void Start()
-    {
-        notebookMenu = playerStateController.GetNotebookMenu();
-        snapOverlay = UIManager.Instance.snapOverlay;
-        snapOverlay.canvasRenderer.SetAlpha(0f);
-
+    {        
         if (targetCamera == null)
         {
             targetCamera = Camera.main;
         }
 
         targetFOV = normalFOV;
-        cameraUI = UIManager.Instance.cameraGroup;
-        cameraUI.SetActive(false);
 
         CreateBlurVolume();
     }
@@ -128,34 +125,34 @@ public class PhotoCameraController : MonoBehaviour
 
     private void OnAimCameraPerformed(InputAction.CallbackContext ctx)
     {
-        if (toggleZoom && playerStateController.GetPhotoMode())
+        if (toggleZoom && playerState.GetPhotoMode())
         {
             CancelCamera();
             return;
         }
-        if (!playerStateController.GetPlayerHasControl())
+        if (!playerState.GetPlayerHasControl())
         {
             return;
         }
         targetFOV = zoomedFOV;
         blurVolume.weight = 1f;
-        cameraUI.SetActive(true);
-        playerStateController.SetPhotoMode(true);
-        snapOverlay.CrossFadeAlpha(0f, 0f, true); //cancel prev fade if still running
+        GameManager.Instance.state = GameManager.GameState.CAMERA;
+        playerState.SetPhotoMode(true);
     }
 
     private void OnAimCameraCanceled(InputAction.CallbackContext ctx)
     {
         if (toggleZoom) { return; }
         CancelCamera();
+        GameManager.Instance.state = GameManager.GameState.DEFAULT;
     }
 
     public void CancelCamera()
     {
         targetFOV = normalFOV;
         blurVolume.weight = 0f;
-        cameraUI.SetActive(false);
-        playerStateController.SetPhotoMode(false);
+        playerState.SetPhotoMode(false);
+        playerState.SetPhotoMode(false);
         HideDocPreview();
     }
 
@@ -165,7 +162,7 @@ public class PhotoCameraController : MonoBehaviour
     /// </summary>
     private void OnSwapCameraMode(InputAction.CallbackContext ctx)
     {
-        if (!playerStateController.GetPhotoMode())
+        if (!playerState.GetPhotoMode())
         {
             return;
         }
@@ -176,6 +173,8 @@ public class PhotoCameraController : MonoBehaviour
         currentMode = (currentMode == CameraMode.Photo) ? 
         CameraMode.Document : CameraMode.Photo;
 
+        UIManager.Instance.SetCameraMode(currentMode);
+
         if (currentMode == CameraMode.Photo)
         {
             HideDocPreview();
@@ -184,12 +183,13 @@ public class PhotoCameraController : MonoBehaviour
 
     private void OnSnap(InputAction.CallbackContext ctx)
     {
-        if (!playerStateController.GetPhotoMode())
+        if (!playerState.GetPhotoMode())
         {
             return;
         }
         if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
+            HandleStorageFull();
             return;
         }
 
@@ -202,10 +202,43 @@ public class PhotoCameraController : MonoBehaviour
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
-
+        UIManager.Instance.TakePhoto();
         CreatePhotoNote(photo);
     }
 
+    private Vector3 shakeOrigin = Vector3.zero;
+
+    /// <summary>
+    /// Called when the player tries to take photo while storage is full.
+    // Shakes camera and brings camera back to origin so it doesn't get offset
+    /// </summary>
+    private void HandleStorageFull()
+    {
+        if (shakeCoroutine != null)
+        {
+            StopCoroutine(shakeCoroutine);
+            targetCamera.transform.localPosition = shakeOrigin;
+        }
+
+        shakeOrigin = targetCamera.transform.localPosition;
+        shakeCoroutine = StartCoroutine(ShakeCamera(storageFullShakeDuration, storageFullShakeMagnitude));
+    }
+
+    /// <summary>
+    /// camera shake
+    /// </summary>
+    private IEnumerator ShakeCamera(float duration, float magnitude)
+    {
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            float fade = 1f - t / duration;
+            targetCamera.transform.localPosition = shakeOrigin + Vector3.right * Mathf.Sin(t * 40f) * magnitude * fade;
+            yield return null;
+        }
+
+        targetCamera.transform.localPosition = shakeOrigin;
+        shakeCoroutine = null;
+    }
     /// <summary>
     /// Refactored the code for PhotoNote creation from OnSnap to here.
     /// Creates a PhotoNote given a Texture2D.
@@ -214,15 +247,9 @@ public class PhotoCameraController : MonoBehaviour
     /// <param name="photo">Texture2D object representing the photo</param>
     private void CreatePhotoNote(Texture2D photo)
     {
-        //puts white  overlay over and then fades it out to simulate a camera snap
-        snapOverlay.canvasRenderer.SetAlpha(.5f);
-        snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
-
-        GameObject photograph = Instantiate(photographPrefab, notebookMenu.transform);
-        PhotoNote photoNote = photograph.GetComponent<PhotoNote>();
+        Photo photoNote = new Photo();
         photoNote.SetSubject(DetectPhotographedSubject());
-        photoNote.SetBounds(notebookMenu.transform as RectTransform);
-        photoNote.LoadImage(photo);
+        photoNote.SetImage(photo);
 
         // Add photo to storage
         PhotoStorage.Instance.AddPhoto(photoNote);
@@ -236,7 +263,6 @@ public class PhotoCameraController : MonoBehaviour
     /// </summary>
     private IEnumerator ScanDocument()
     {
-        cameraUI.SetActive(false);
         yield return new WaitForEndOfFrame();
 
         Vector3[] corners = new Vector3[4];
@@ -247,11 +273,6 @@ public class PhotoCameraController : MonoBehaviour
         
         scan.ReadPixels(paperRect, 0, 0);
         scan.Apply();
-
-        if (playerStateController.GetPhotoMode())
-        {
-            cameraUI.SetActive(true); // if still in aim
-        }  
 
         CreatePhotoNote(scan);
     }
@@ -425,10 +446,15 @@ public class PhotoCameraController : MonoBehaviour
             return;
         }
 
+        if (GameManager.Instance.state != GameManager.GameState.CAMERA)
+        {
+            CancelCamera();
+        }
+
         // Update FOV change
         targetCamera.fieldOfView = Mathf.Lerp(targetCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
 
-        if (playerStateController.GetPhotoMode() && currentMode == CameraMode.Document)
+        if (playerState.GetPhotoMode() && currentMode == CameraMode.Document)
         {
             UpdateDocPreview();
         }

@@ -808,7 +808,7 @@ GameObject:
   - component: {fileID: 976170215}
   - component: {fileID: 976170214}
   - component: {fileID: 976170218}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PhotographableWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1321,7 +1321,7 @@ GameObject:
   - component: {fileID: 2042591923}
   - component: {fileID: 2042591922}
   - component: {fileID: 2042591926}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: PhotographableBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
