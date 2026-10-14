@@ -60,7 +60,8 @@ public class EnemyMover : MonoBehaviour
                 if (player != null && (searchlight.canSeePlayer || searchlight.IsProximityDetected()))
                     agent.SetDestination(player.position);
                 else
-                    agent.SetDestination(searchlight.LastKnownPlayerPosition);
+                    agent.SetDestination(player.position);
+                    // agent.SetDestination(searchlight.LastKnownPlayerPosition);
 
                 break;
             case EnemySearchlight.AlertState.LookAround:
