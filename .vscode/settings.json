@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Studios26-27.slnx"
+    "dotnet.defaultSolution": "Veil-Sur.slnx"
 }
