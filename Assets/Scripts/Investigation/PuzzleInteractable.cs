@@ -11,6 +11,7 @@ public abstract class PuzzleInteractable : MonoBehaviour, Interactable
 
     public void Awake()
     {
+        questions = new List<QuestionDefinition>();
         // Collect all QuestionDefinition components from children (including inactive ones)
         QuestionDefinition[] childQuestions = GetComponentsInChildren<QuestionDefinition>(true);
 
