@@ -9257,7 +9257,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6e7fb6aa0be674588e92f3bfb1450e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StorageIndicator
-  notFullSprite: {fileID: 0}
   fullSprite: {fileID: 21300000, guid: 275549f32b406ec4cad0f991e70058e1, type: 3}
   errorText: {fileID: 1020239721}
 --- !u!1001 &118826356
@@ -11522,9 +11521,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 651877620684216859, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 911446516936161387, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 985072394494231789, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2564799414158770434, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -11535,16 +11542,48 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_fontSize
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_margin.z
+      value: -1406.855
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 6541dbb1f9ed4c9468c24062d0076634, type: 2}
+    - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_isRightToLeft
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 879180977257963670, guid: 6541dbb1f9ed4c9468c24062d0076634, type: 2}
+    - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_HorizontalAlignment
-      value: 2
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869323443977827894, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5177588649939761001, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -800
+      value: -715
       objectReference: {fileID: 0}
     - target: {fileID: 5177588649939761001, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -50
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: 5375109969785856616, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_Sprite

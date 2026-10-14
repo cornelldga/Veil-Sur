@@ -50,5 +50,5 @@ public class StorageIndicator : MonoBehaviour
             errorText.text = "Error camera full";
             errorText.enabled = isFull;
         }
-    }
+        }
 }
