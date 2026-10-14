@@ -47,13 +47,10 @@ public class DialogueManager : MonoBehaviour {
             return;
         }
         Instance = this;
+        HideDialogue();
+
     }
 
-    private void Start()
-    {
-        if(!isDialogueActive) HideDialogue();
-    }
-    
     /// <summary>
     /// loads the levl 
     /// </summary>

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System;
@@ -12,6 +13,7 @@ using System;
 public class PhotoStorage : MonoBehaviour
 {
    public static PhotoStorage Instance { get; private set; }
+   public static Action<bool> OnStorageChanged;
    private readonly List<Photo> photos = new List<Photo>();
    private readonly Dictionary<Photo, QuestionDefinition> assignedQuestions = new();
 
@@ -160,5 +162,14 @@ public class PhotoStorage : MonoBehaviour
        }
        return removed;
    }
+
+   /// <summary>
+   /// Increments the storage counter UI element to the relevant representation.
+   /// TEMP: text representation, future will be pulse images
+   /// </summary>
+   private void IncrementCounter(){
+       OnStorageChanged?.Invoke(IsPhotoStorageFull());
+   }
+
 
 }
