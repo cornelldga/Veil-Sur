@@ -116,6 +116,11 @@ public class StringPin : MonoBehaviour,
 
     private void VerifyQuestion()
     {
-        GetComponentInParent<QuestionNote>()?.Verify();
+        // Legacy string boards adapt their connection to the same photo-answer API.
+        var question = GetComponentInParent<QuestionNote>();
+        if (question == null) return;
+        var photo = connectedPin != null ? connectedPin.GetComponentInParent<Photo>() : null;
+        question.SetPhoto(photo);
+        if (photo != null) question.Verify();
     }
 }
