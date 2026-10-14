@@ -23,6 +23,7 @@ public class PhotoCameraController : MonoBehaviour
     }
     private Camera targetCamera;
     [Header("Camera Settings")]
+    [SerializeField] private Camera uiCamera;
     [SerializeField] private float normalFOV = 60f;
     [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 10f;
@@ -271,9 +272,24 @@ public class PhotoCameraController : MonoBehaviour
 
         Vector3[] corners = new Vector3[4];
         UIManager.Instance.docPaper.GetWorldCorners(corners);
-        Rect paperRect = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+        
+        Camera camForConversion = (uiCamera != null) ? uiCamera : targetCamera;
+        Vector2 minScreen = RectTransformUtility.WorldToScreenPoint(camForConversion, corners[0]);
+        Vector2 maxScreen = RectTransformUtility.WorldToScreenPoint(camForConversion, corners[2]);
 
-        Texture2D scan = new Texture2D((int)paperRect.width, (int)paperRect.height, TextureFormat.RGB24, false);
+        int width = Mathf.RoundToInt(maxScreen.x - minScreen.x);
+        int height = Mathf.RoundToInt(maxScreen.y - minScreen.y);
+
+
+        if (width <= 0 || height <= 0)
+        {
+            Debug.LogWarning("Invalid dimensions!");
+            yield break; //Prevents creating Texture2D(0, 0) and crashing
+        }
+
+        Rect paperRect = new Rect(minScreen.x, minScreen.y, width, height);
+
+        Texture2D scan = new Texture2D(width, height, TextureFormat.RGB24, false);
         
         scan.ReadPixels(paperRect, 0, 0);
         scan.Apply();
