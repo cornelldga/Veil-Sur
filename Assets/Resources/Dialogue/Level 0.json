@@ -2,12 +2,9 @@
       "welcome": {
         "puzzle": null,
         "lines": [
-          "Aisha? Aisha, can you hear me? Move your mouse to do a little spin if you can hear me.",
+          "Aisha? Aisha, can you hear me? Do a little spin if you can hear me.",
           "Okay, you're in the reception of OYO HQ. So nothing illegal yet. Very aboveboard.",
-          "Quick systems check before you go anywhere. Walk with WASD and interact with objects by pressing 'E'",
-          "You want to make sure you're sending me important intel so right click or press 'R' to use your camera, and left click to take a picture!",
-          "Your pictures will load onto a notebook -- press tab to open it up. connect any key evidence with its corresponding picture to complete it.",
-          "Now that you know the basics, let's get to work."
+          "I've loaded a few of the basics into your head (top right corner of your viewer). Why don't you get to work!"
         ]
       }
       // "elevator": {
