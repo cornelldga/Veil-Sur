@@ -58,7 +58,9 @@ public class PhotoCameraController : MonoBehaviour
     
     private void Awake()
     {
-        controls = new PlayerControls();
+        // controls = new PlayerControls();
+        //switch to this for key binds
+        controls = GameManager.Controls;
         playerState = GetComponent<PlayerState>();
     }
 

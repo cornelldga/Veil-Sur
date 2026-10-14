@@ -13,7 +13,9 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Awake()
     {
-        controls = new PlayerControls();
+        // controls = new PlayerControls();
+        //switch to this for key binds
+        controls = GameManager.Controls;
         camera = Camera.main;
     }
 
@@ -61,8 +63,8 @@ public class PlayerInteraction : MonoBehaviour
     }
 
 
-    private void OnDestroy()
-    {
-        controls?.Dispose();
-    }
+    // private void OnDestroy()
+    // {
+    //     controls?.Dispose();
+    // }
 }
