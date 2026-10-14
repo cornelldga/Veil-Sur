@@ -21,8 +21,8 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float maxLookUp = 85f;
 
     [Header("Crouch")]
-    [SerializeField] private float standHeight = 2f;
-    [SerializeField] private float crouchHeight = 1f;
+    [SerializeField] private float standHeight = 1.8f;
+    [SerializeField] private float crouchHeight = .75f;
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
 
@@ -49,15 +49,17 @@ public class FirstPersonController : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        controls = new PlayerControls();
+        // controls = new PlayerControls();
+        //switch to this for key binds
+        controls = GameManager.Controls;
         staminaController = GetComponent<StaminaController>();
         playerState = GetComponent<PlayerState>();
 
         currentHeight = standHeight;
         controller.height = standHeight;
 
-        cameraStandLocalPos = new Vector3(0f, standHeight * 0.5f, 0f);
-        cameraCrouchLocalPos = new Vector3(0f, crouchHeight * 0.5f, 0f);
+        cameraStandLocalPos = new Vector3(0f, standHeight, 0f);
+        cameraCrouchLocalPos = new Vector3(0f, crouchHeight, 0f);
 
         playerCamera = Camera.main;
         if (playerCamera != null)
@@ -176,8 +178,9 @@ public class FirstPersonController : MonoBehaviour
     private void HandleLook()
     {
         Vector2 lookInput = controls.PlayerMovement.Look.ReadValue<Vector2>();
-        float horizontalLook = lookInput.x * mouseSens;
-        float verticalLook = lookInput.y * mouseSens;
+        float sens = mouseSens * GameManager.Instance.MouseSensitivity;
+        float horizontalLook = lookInput.x * sens;
+        float verticalLook = lookInput.y * sens;
 
         transform.Rotate(Vector3.up * horizontalLook);
 
@@ -223,8 +226,8 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-       controls?.Dispose();
-    }
+    // private void OnDestroy()
+    // {
+    //    controls?.Dispose();
+    // }
 }

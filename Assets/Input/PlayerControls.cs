@@ -323,6 +323,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Load"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed12370f-b8f5-4748-a219-027a44aa3563"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -334,6 +343,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Notebook"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b0eeba8-33c9-4804-8eb3-6417630e3ca5"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Load"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -355,6 +375,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // General
         m_General = asset.FindActionMap("General", throwIfNotFound: true);
         m_General_Notebook = m_General.FindAction("Notebook", throwIfNotFound: true);
+        m_General_Load = m_General.FindAction("Load", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -610,6 +631,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_General;
     private List<IGeneralActions> m_GeneralActionsCallbackInterfaces = new List<IGeneralActions>();
     private readonly InputAction m_General_Notebook;
+    private readonly InputAction m_General_Load;
     /// <summary>
     /// Provides access to input actions defined in input action map "General".
     /// </summary>
@@ -625,6 +647,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "General/Notebook".
         /// </summary>
         public InputAction @Notebook => m_Wrapper.m_General_Notebook;
+        /// <summary>
+        /// Provides access to the underlying input action "General/Load".
+        /// </summary>
+        public InputAction @Load => m_Wrapper.m_General_Load;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -654,6 +680,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Notebook.started += instance.OnNotebook;
             @Notebook.performed += instance.OnNotebook;
             @Notebook.canceled += instance.OnNotebook;
+            @Load.started += instance.OnLoad;
+            @Load.performed += instance.OnLoad;
+            @Load.canceled += instance.OnLoad;
         }
 
         /// <summary>
@@ -668,6 +697,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Notebook.started -= instance.OnNotebook;
             @Notebook.performed -= instance.OnNotebook;
             @Notebook.canceled -= instance.OnNotebook;
+            @Load.started -= instance.OnLoad;
+            @Load.performed -= instance.OnLoad;
+            @Load.canceled -= instance.OnLoad;
         }
 
         /// <summary>
@@ -779,5 +811,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnNotebook(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Load" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnLoad(InputAction.CallbackContext context);
     }
 }

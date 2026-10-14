@@ -5,6 +5,7 @@ public class InvestigationManager : MonoBehaviour
 {
     private readonly List<QuestionDefinition> current_questions = new();
     public IReadOnlyList<QuestionDefinition> Questions => current_questions;
+
     public static InvestigationManager current_investigation_manager;
 
     private void Awake()

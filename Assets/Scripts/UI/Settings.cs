@@ -8,6 +8,7 @@ public class Settings : UIScreen
     [SerializeField] private Slider sfxSlider;
     [Tooltip("Slider controlling music volume.")]
     [SerializeField] private Slider musicSlider;  
+    [SerializeField] private Slider sensitivitySlider;
     public void OnBackPressed()
     {
         UIManager.Instance.Back();
@@ -27,6 +28,7 @@ public class Settings : UIScreen
 
         sfxSlider.value = AudioManager.Instance.GetSfxVolume();
         musicSlider.value = AudioManager.Instance.GetMusicVolume();
+        sensitivitySlider.value = GameManager.Instance.MouseSensitivity;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -34,7 +36,20 @@ public class Settings : UIScreen
     {
         sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSfxVolume);
         musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
+        sensitivitySlider.onValueChanged.AddListener(GameManager.Instance.SetMouseSensitivity);
         
+    }
+
+    /// <summary>
+    /// resets key bindings to default
+    /// </summary>
+    public void ResetKeyBindings()
+    {
+        GameManager.ResetBindings();
+
+        // Update every row's label to show the default key again
+        foreach (KeyBinding row in GetComponentsInChildren<KeyBinding>())
+            row.RefreshLabel();
     }
 
     // Update is called once per frame
