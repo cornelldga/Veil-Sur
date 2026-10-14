@@ -237,6 +237,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Load",
+                    "type": "Button",
+                    "id": "ed12370f-b8f5-4748-a219-027a44aa3563",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -248,6 +257,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Notebook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7b0eeba8-33c9-4804-8eb3-6417630e3ca5",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Load",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
