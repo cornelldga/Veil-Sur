@@ -163,5 +163,17 @@ public class EnemyMover : MonoBehaviour
         return reachedSuspicionTarget;
     }
 
+    /// <summary>
+    /// Calls GameManager.LoseGame when the player enters the mutant's trigger.
+    /// </summary>
+    /// <param name="other">The collider that entered the trigger.</param>
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            GameManager.Instance.LoseGame();
+        }
+    }
+
    
 }
