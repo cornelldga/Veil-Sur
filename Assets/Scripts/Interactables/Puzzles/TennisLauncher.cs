@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TennisLauncher : SoundEvent, Interactable
+public class TennisLauncher : MonoBehaviour, Interactable
 {
     [SerializeField] float launchDistance = 6f;
     [SerializeField] float launchSpeed = 8f;
@@ -19,7 +19,6 @@ public class TennisLauncher : SoundEvent, Interactable
     void Trigger(float dist)
     {
         Vector3 destination = this.transform.position + this.transform.forward * dist;
-        RegisterSoundEvent(destination, launchVolume);
 
         GameObject ball = Instantiate(tennisBallPrefab, transform.position, transform.rotation);
         TennisBall ballScript = ball.GetComponent<TennisBall>();
