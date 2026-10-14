@@ -4,14 +4,24 @@ using System.Linq;
 
 public abstract class PuzzleInteractable : MonoBehaviour, Interactable
 {
-    //If you don't like serialized fields, feel free to make the code just register the children questions
-    [SerializeField] List<QuestionDefinition> questions;
+    List<QuestionDefinition> questions;
     [SerializeField] List<PuzzleInteractable> next_puzzles;
     //True if this PuzzleInteractable is supposed to be the first or part of the set of first puzzles that the player is supposed to solve
     [SerializeField] bool first;
 
     public void Awake()
     {
+        // Collect all QuestionDefinition components from children (including inactive ones)
+        QuestionDefinition[] childQuestions = GetComponentsInChildren<QuestionDefinition>(true);
+
+        foreach (QuestionDefinition q in childQuestions)
+        {
+            if (!questions.Contains(q))
+            {
+                questions.Add(q);
+            }
+        }
+
         if (first)
         {
             foreach (QuestionDefinition q in questions)
