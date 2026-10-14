@@ -12203,6 +12203,7 @@ GameObject:
   - component: {fileID: 349240241}
   - component: {fileID: 349240240}
   - component: {fileID: 349240239}
+  - component: {fileID: 349240242}
   m_Layer: 0
   m_Name: Calendar
   m_TagString: Untagged
@@ -12304,6 +12305,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 349240237}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &349240242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349240237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
+  subjectId: SolutionCalendar
 --- !u!1001 &372057553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16863,6 +16877,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3974714574635435488, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
   m_PrefabInstance: {fileID: 951946469}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &951946471 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 558004538979084732, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
+  m_PrefabInstance: {fileID: 951946469}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
 --- !u!1 &1023528777
 GameObject:
   m_ObjectHideFlags: 0
@@ -16897,7 +16922,9 @@ Transform:
   m_LocalPosition: {x: -0.7388, y: 2.49998, z: -5.3280897}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1522117110}
+  - {fileID: 1463646154}
   m_Father: {fileID: 1290897221}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1023528779
@@ -16913,7 +16940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
   next_puzzles: []
-  first: 0
+  first: 1
 --- !u!64 &1023528780
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -26437,6 +26464,84 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1001 &1463646153
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1023528778}
+    m_Modifications:
+    - target: {fileID: 5898849927439980329, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_Name
+      value: Date Question
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.21727997
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.45557
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.4999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066510313781384580, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: question_text
+      value: What is the date?
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066510313781384580, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: required_objects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066510313781384580, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: 'required_objects.Array.data[0]'
+      value: 
+      objectReference: {fileID: 349240242}
+    - target: {fileID: 7066510313781384580, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: 'required_objects.Array.data[1]'
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+--- !u!4 &1463646154 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+  m_PrefabInstance: {fileID: 1463646153}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &1519435124
 Mesh:
   m_ObjectHideFlags: 0
@@ -26615,6 +26720,80 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1001 &1522117109
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1023528778}
+    m_Modifications:
+    - target: {fileID: 5898849927439980329, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_Name
+      value: Elevator Code Question
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.21727997
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.45557
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.4999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066510313781384580, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: question_text
+      value: What is the elevator code?
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066510313781384580, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: required_objects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066510313781384580, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+      propertyPath: 'required_objects.Array.data[0]'
+      value: 
+      objectReference: {fileID: 951946471}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+--- !u!4 &1522117110 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6651078200130346262, guid: 20893b41c70ccd8408692e63f8b0c5ea, type: 3}
+  m_PrefabInstance: {fileID: 1522117109}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &1577467825
 Mesh:
   m_ObjectHideFlags: 0
