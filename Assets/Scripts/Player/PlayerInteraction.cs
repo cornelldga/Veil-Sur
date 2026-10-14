@@ -9,10 +9,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private Camera camera;
     private PlayerControls controls;
+    private PlayerState playerState;
 
     private void Awake()
     {
         controls = new PlayerControls();
+        camera = Camera.main;
     }
 
     private void OnEnable()
@@ -27,7 +29,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Start()
     {
-        camera = GameManager.PlayerCamera;
+        playerState = GameManager.PlayerInstance.GetComponent<PlayerState>();
     }
 
 
@@ -35,21 +37,29 @@ public class PlayerInteraction : MonoBehaviour
     /// Update() will, once per frame, use Raycast to check if the player is
     /// looking at a valid readable document. If player interacts and the object
     /// has an interactable component, the interact action is successful.
+    /// UI component will popup when looking at an interactable component.
     /// </summary>
     private void Update()
     {
+        if (playerState.GetPhotoMode())
+        {
+            // Don't show 'E to Interact' when Camera is on
+            UIManager.Instance.ShowInteractPrompt(false); 
+            return; // Block interaction when Camera is open (Doc mode).
+        }
+
+        Interactable interactable = null;
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, rayLength))
         { 
-            if (controls.PlayerMovement.Interact.WasPerformedThisFrame())
-            {
-                var interactable = hit.collider.gameObject.GetComponent<Interactable>();
-                if (interactable != null)
-                {
-                    interactable.Interact();
-                }
-            }
+            interactable = hit.collider.GetComponentInParent<Interactable>();
         }
+            UIManager.Instance.ShowInteractPrompt(interactable != null);
+        if (controls.PlayerMovement.Interact.WasPerformedThisFrame() & interactable!= null) {
+            interactable.Interact();
+        }
+            
     }
+
 
     private void OnDestroy()
     {

@@ -366,9 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2a91188b88561a4db134f8465aa12fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DocController
-  docCanvas: {fileID: 0}
-  docTextAreaUI: {fileID: 0}
-  docFile: ElevatorCode
+  jsonFile: {fileID: 0}
 --- !u!114 &558004538979084732
 MonoBehaviour:
   m_ObjectHideFlags: 0

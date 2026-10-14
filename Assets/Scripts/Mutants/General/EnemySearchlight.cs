@@ -1,0 +1,364 @@
+using UnityEngine;
+/// <summary>
+/// This class handles state changes for enemy AI.
+/// </summary>
+/// 
+public enum Priority {Sight = 0, Sound = 1, Smell = 2, None = 999}
+public class EnemySearchlight : MonoBehaviour
+{
+    public enum AlertState { Patrol, Suspicious, Alert, LookAround }
+
+    [Header("Target")]
+    protected Transform player;
+    [SerializeField] protected LayerMask obstacleMask;
+    [SerializeField] protected LayerMask playerMask;
+
+    [Header("Vision Cone")]
+    [SerializeField] protected float viewDistance = 10f;
+    [SerializeField] protected float viewAngle = 60f;      // cone angle
+    [SerializeField] protected float eyeHeight;     // raycast origin offset up from pivot
+
+    [Header("Sweep (Patrol)")]
+    [SerializeField] protected float sweepAngle = 45f; 
+    [SerializeField] protected float sweepSpeed = 30f;
+
+    [Header("Detection Timing")]
+    [SerializeField] protected float timeToSuspicious = 0.3f;
+    [SerializeField] protected float timeToAlert = 0.6f;   
+    [SerializeField] protected float suspicionDecayRate = 1f; 
+    [SerializeField] protected float maxDetectionMultiplier = 3f; 
+    [SerializeField] protected float loseAlertAfter = 3f; 
+    
+    [SerializeField] protected float proximityDetection = 2f; // During chase, if player is within this distance, doesn't lose alert
+    
+    /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
+    [SerializeField] protected int investigateCount = 3; 
+
+    [Header("Visuals")]
+    [SerializeField] protected Light spotLight;
+    protected Color patrolColor = Color.green;
+    protected Color suspiciousColor = new Color(1f, 0.85f, 0f);
+    protected Color alertColor = Color.red;
+
+    [Header("Cone Mesh (visible in Game view)")]
+    [SerializeField] protected bool showConeMesh = true;
+    [SerializeField] protected MeshFilter coneMeshFilter;   // child object's MeshFilter
+    [SerializeField] protected MeshRenderer coneMeshRenderer;
+    protected int coneRayCount = 24; // resolution of the cone edge
+    protected float coneAlpha = 0.35f;
+    protected Mesh coneMesh;
+
+    [Header("Public Fields")]
+    public AlertState CurrentState { get; protected set; } = AlertState.Patrol;
+    public Vector3 LastKnownPlayerPosition { get; protected set; }
+    public bool canSeePlayer = false; // Whether the mutant can see the player without obstruction
+    public float distanceToPlayer; // Used to increase mutant suspicion gain based on proximity
+
+
+    [Header("Protected States")]
+    protected float baseFacingAngle;
+    protected float sweepTimer;
+    protected float detectionMeter;
+    protected float timesLookedAround; // How many times the mutant already looked around in investigate state.
+    protected float lastSeenTimer;
+    protected Priority currentPriority = Priority.None;
+
+    protected Vector3 lastPosition; // Used to determine where to face while moving
+
+
+    protected void Start()
+    {
+        player = GameManager.PlayerInstance.transform;
+        baseFacingAngle = transform.eulerAngles.y;
+        lastPosition = transform.position;
+
+        if (showConeMesh && coneMeshFilter != null)
+        {
+            coneMesh = new Mesh { name = "VisionCone" };
+            coneMeshFilter.mesh = coneMesh;
+        }
+    }
+
+    protected virtual void Update()
+    {
+        // SweepSearchlight();
+        FaceTowardsMovement();
+        canSeePlayer = CanSeePlayer();
+        UpdateAlertState(canSeePlayer);
+        UpdateVisual();
+        DrawConeMesh();
+    }
+
+    protected Vector3 EyePosition => transform.position + Vector3.up * eyeHeight;
+
+    protected void SweepSearchlight() // Currently not used
+    {
+        if (CurrentState == AlertState.Alert)
+        {
+            Vector3 dir = player.position - transform.position;
+            dir.y = 0f;
+            if (dir.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation, targetRot, sweepSpeed * 3f * Time.deltaTime);
+            }
+            return;
+        }
+
+        sweepTimer += Time.deltaTime * sweepSpeed;
+        float offset = Mathf.PingPong(sweepTimer, sweepAngle * 2f) - sweepAngle;
+        Quaternion sweepTargetRot = Quaternion.Euler(0, baseFacingAngle + offset, 0);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, sweepTargetRot, sweepSpeed * 2f * Time.deltaTime);
+    }
+
+    /** When patrolling, search cone is in direction of mutant movement. */
+    protected void FaceTowardsMovement()
+    {
+        // Calculate the movement direction direction vector
+        Vector3 direction = transform.position - lastPosition;
+
+        // Flatten the Y-axis if you don't want the object tilting up/down on slopes
+        // direction.y = 0; 
+
+        if (direction.sqrMagnitude > 0.000001f)
+        {
+            // Smoothly rotate towards the target direction
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            // transform.rotation = targetRotation;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
+        }
+
+        // Store the position for the next frame
+        lastPosition = transform.position;
+    }
+
+    protected bool CanSeePlayer()
+    {
+        if (player == null)
+        {
+            return false;
+        }
+
+        Vector3 eye = EyePosition;
+        Vector3 toPlayer = player.position - eye;
+        distanceToPlayer = toPlayer.magnitude;
+        if (distanceToPlayer > viewDistance)
+        {
+            return false;
+        }
+
+        float angleToPlayer = Vector3.Angle(transform.forward, toPlayer);
+        if (angleToPlayer > viewAngle * 0.5f)
+        {
+            return false;
+        }
+
+        if (Physics.Raycast(eye, toPlayer.normalized, out RaycastHit hit, distanceToPlayer, obstacleMask | playerMask))
+        {
+            if (((1 << hit.collider.gameObject.layer) & playerMask) != 0)
+            {
+                LastKnownPlayerPosition = player.position;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected virtual void UpdateAlertState(bool canSeePlayer)
+    {
+        
+        if (canSeePlayer || (CurrentState == AlertState.Alert && IsProximityDetected()))
+        {
+            lastSeenTimer = 0f;
+            float proximity = Mathf.Clamp01(1f - distanceToPlayer / viewDistance);
+            float multiplier = 1f + proximity * (maxDetectionMultiplier - 1f);
+
+            detectionMeter += Time.deltaTime * multiplier;
+        }
+        else
+        {
+            lastSeenTimer += Time.deltaTime;
+            detectionMeter -= suspicionDecayRate * Time.deltaTime;
+        }
+
+        detectionMeter = Mathf.Clamp(detectionMeter, 0f, timeToAlert);
+
+        switch (CurrentState)
+        {
+            case AlertState.Patrol:
+                if (detectionMeter >= timeToSuspicious) SetState(AlertState.Suspicious);
+                break;
+
+            case AlertState.Suspicious:
+                if (detectionMeter >= timeToAlert) SetState(AlertState.Alert);
+                else if (GetComponent<EnemyMover>().ReachedSuspicionTarget() && detectionMeter <= 0f) {
+                    SetState(AlertState.LookAround);
+                    GetComponent<EnemyMover>().StartLookAround();
+                    ResetSuspicion();
+                }
+                break;
+
+            case AlertState.Alert:
+                if (!canSeePlayer && lastSeenTimer >= loseAlertAfter)
+                {
+                    // GetComponent<EnemyMover>()
+                    //     .RegisterDetectionEvent(LastKnownPlayerPosition);
+                    SetState(AlertState.Suspicious);
+                    ReportSense(LastKnownPlayerPosition, Priority.Sight);
+                }
+                break;
+            case AlertState.LookAround:
+                if (canSeePlayer && detectionMeter >= timeToAlert)
+                {
+                    SetState(AlertState.Alert);
+                }
+                else if (timesLookedAround >= investigateCount)
+                {
+                    SetState(AlertState.Patrol);
+                    Debug.Log("Resuming patrol");
+                }
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Lets another sense (scent, hearing) point the searchlight at a position.
+    /// Raises Patrol to Suspicious and pins the meter there. Never escalates to Alert; only sight does.
+    /// </summary>
+    /// <param name="position">World position the player is believed to be at.</param>
+    public virtual void ReportSense(Vector3 position, Priority priority)
+    {
+        if (CurrentState == AlertState.Alert || priority > currentPriority) return;
+
+        LastKnownPlayerPosition = position;
+        detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
+        SetState(AlertState.Suspicious);
+        currentPriority = priority;
+        Debug.Log("Now investigating " + position + " at priority " + priority);
+    }
+
+    protected void SetState(AlertState newState)
+    {
+        if (CurrentState == newState) return;
+        CurrentState = newState;
+        // Debug.Log(newState);
+
+        if (newState == AlertState.Patrol) sweepTimer = 0f;
+        else if (newState == AlertState.LookAround) timesLookedAround = 0;
+    }
+
+    /// <summary>
+    /// Sets currentPriority to Priority.None so any suspicious event will attract the attention of the mutant.
+    /// </summary>
+    protected void ResetSuspicion()
+    {
+        currentPriority = Priority.None;   
+    }
+
+    protected void UpdateVisual()
+    {
+        if (spotLight == null) return;
+
+        spotLight.color = GetDetectionColor();
+        spotLight.spotAngle = viewAngle;
+        spotLight.range = viewDistance;
+    }
+
+    protected void DrawConeMesh()
+    {
+        if (!showConeMesh || coneMesh == null) return;
+
+        Vector3[] vertices = new Vector3[coneRayCount + 2];
+        int[] triangles = new int[coneRayCount * 3];
+        Vector3 eyeLocal = Vector3.up * eyeHeight;
+        vertices[0] = eyeLocal;
+
+        float startAngle = -viewAngle * 0.5f;
+        float angleStep = viewAngle / coneRayCount;
+        Vector3 eyeWorld = EyePosition;
+
+        for (int i = 0; i <= coneRayCount; i++)
+        {
+            float angle = startAngle + angleStep * i;
+            Vector3 dir = Quaternion.AngleAxis(angle, Vector3.up) * transform.forward;
+
+            float dist = viewDistance;
+            if (Physics.Raycast(eyeWorld, dir, out RaycastHit hit, viewDistance, obstacleMask))
+            {
+                dist = hit.distance;
+            }
+            vertices[i + 1] = transform.InverseTransformDirection(dir) * dist + eyeLocal;
+        }
+
+        for (int i = 0; i < coneRayCount; i++)
+        {
+            triangles[i * 3] = 0;
+            triangles[i * 3 + 1] = i + 1;
+            triangles[i * 3 + 2] = i + 2;
+        }
+
+        coneMesh.Clear();
+        coneMesh.vertices = vertices;
+        coneMesh.triangles = triangles;
+        coneMesh.RecalculateNormals();
+        coneMesh.RecalculateBounds();
+
+        if (coneMeshRenderer != null)
+        {
+            Color c = GetDetectionColor();
+            c.a = coneAlpha;
+            coneMeshRenderer.material.color = c;
+        }
+    }
+
+    // Chat helped make the cone color stuff prettier
+    protected virtual Color GetDetectionColor()
+    {
+        if (detectionMeter <= timeToSuspicious)
+        {
+            float t = Mathf.InverseLerp(
+                0f, timeToSuspicious, detectionMeter);
+
+            return Color.Lerp(patrolColor, suspiciousColor, t);
+        }
+
+        float alertProgress = Mathf.InverseLerp(
+            timeToSuspicious, timeToAlert, detectionMeter);
+
+        return Color.Lerp(suspiciousColor, alertColor, alertProgress);
+    }
+
+    // PUBLIC METHODS
+    /** Called by EnemyMover to change state based on enemy position; 
+    possibly consider combining the two files atp? */
+    // public void setInvestigate() 
+    // {
+    //     if (CurrentState == AlertState.Alert && canSeePlayer)
+    //     {
+    //         return;
+    //     }
+    //     SetState(AlertState.Investigate);
+    //     timesLookedAround = 0;
+        
+    // }   
+
+     /** Called by EnemyMover whenever a mutant reaches its wander target and gets
+     a new one */
+    public void UpdateLookAroundCounter() 
+    {
+        timesLookedAround++;
+        // Debug.Log("Times wandered: " + timesLookedAround);
+    }
+
+    /// <summary>
+    /// Returns whether the player is within proximityDetection distance from this mutant.
+    /// Suspicion doesn't decay if the mutant is alerted and the player is too close.
+    /// </summary>
+    /// <returns>Whether the player is within proximityDetection distance from this mutant.</returns>
+    public bool IsProximityDetected()
+    {
+        Debug.Log(distanceToPlayer);
+        return distanceToPlayer <= proximityDetection;
+    }
+}

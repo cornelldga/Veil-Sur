@@ -154,6 +154,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwapCameraMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""3ae9fbb4-90d4-4ef6-aa16-8a897f3c30f1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -288,6 +297,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""40560299-9795-4303-bfeb-c7e7fc81672c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwapCameraMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -299,6 +319,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Notebook"",
                     ""type"": ""Button"",
                     ""id"": ""29201354-ca9c-4e3a-863b-fe354688d366"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Load"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed12370f-b8f5-4748-a219-027a44aa3563"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -316,6 +345,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Notebook"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b0eeba8-33c9-4804-8eb3-6417630e3ca5"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Load"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -331,9 +371,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerMovement_Crouch = m_PlayerMovement.FindAction("Crouch", throwIfNotFound: true);
         m_PlayerMovement_Sprint = m_PlayerMovement.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerMovement_Interact = m_PlayerMovement.FindAction("Interact", throwIfNotFound: true);
+        m_PlayerMovement_SwapCameraMode = m_PlayerMovement.FindAction("SwapCameraMode", throwIfNotFound: true);
         // General
         m_General = asset.FindActionMap("General", throwIfNotFound: true);
         m_General_Notebook = m_General.FindAction("Notebook", throwIfNotFound: true);
+        m_General_Load = m_General.FindAction("Load", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -422,6 +464,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMovement_Crouch;
     private readonly InputAction m_PlayerMovement_Sprint;
     private readonly InputAction m_PlayerMovement_Interact;
+    private readonly InputAction m_PlayerMovement_SwapCameraMode;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerMovement".
     /// </summary>
@@ -461,6 +504,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerMovement/Interact".
         /// </summary>
         public InputAction @Interact => m_Wrapper.m_PlayerMovement_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerMovement/SwapCameraMode".
+        /// </summary>
+        public InputAction @SwapCameraMode => m_Wrapper.m_PlayerMovement_SwapCameraMode;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -508,6 +555,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @SwapCameraMode.started += instance.OnSwapCameraMode;
+            @SwapCameraMode.performed += instance.OnSwapCameraMode;
+            @SwapCameraMode.canceled += instance.OnSwapCameraMode;
         }
 
         /// <summary>
@@ -540,6 +590,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @SwapCameraMode.started -= instance.OnSwapCameraMode;
+            @SwapCameraMode.performed -= instance.OnSwapCameraMode;
+            @SwapCameraMode.canceled -= instance.OnSwapCameraMode;
         }
 
         /// <summary>
@@ -578,6 +631,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_General;
     private List<IGeneralActions> m_GeneralActionsCallbackInterfaces = new List<IGeneralActions>();
     private readonly InputAction m_General_Notebook;
+    private readonly InputAction m_General_Load;
     /// <summary>
     /// Provides access to input actions defined in input action map "General".
     /// </summary>
@@ -593,6 +647,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "General/Notebook".
         /// </summary>
         public InputAction @Notebook => m_Wrapper.m_General_Notebook;
+        /// <summary>
+        /// Provides access to the underlying input action "General/Load".
+        /// </summary>
+        public InputAction @Load => m_Wrapper.m_General_Load;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -622,6 +680,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Notebook.started += instance.OnNotebook;
             @Notebook.performed += instance.OnNotebook;
             @Notebook.canceled += instance.OnNotebook;
+            @Load.started += instance.OnLoad;
+            @Load.performed += instance.OnLoad;
+            @Load.canceled += instance.OnLoad;
         }
 
         /// <summary>
@@ -636,6 +697,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Notebook.started -= instance.OnNotebook;
             @Notebook.performed -= instance.OnNotebook;
             @Notebook.canceled -= instance.OnNotebook;
+            @Load.started -= instance.OnLoad;
+            @Load.performed -= instance.OnLoad;
+            @Load.canceled -= instance.OnLoad;
         }
 
         /// <summary>
@@ -725,6 +789,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SwapCameraMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwapCameraMode(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "General" which allows adding and removing callbacks.
@@ -740,5 +811,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnNotebook(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Load" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnLoad(InputAction.CallbackContext context);
     }
 }

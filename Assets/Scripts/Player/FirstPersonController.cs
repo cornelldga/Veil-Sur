@@ -4,7 +4,7 @@ using UnityEngine;
 /// Drives first-person control through CharacterController
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(PlayerState))]
 [RequireComponent(typeof(StaminaController))]
 public class FirstPersonController : MonoBehaviour
 {
@@ -21,14 +21,14 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float maxLookUp = 85f;
 
     [Header("Crouch")]
-    [SerializeField] private float standHeight = 2f;
-    [SerializeField] private float crouchHeight = 1f;
+    [SerializeField] private float standHeight = 1.8f;
+    [SerializeField] private float crouchHeight = .75f;
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
 
     private CharacterController controller;
     private PlayerControls controls;
-    private PlayerStateController playerStateController;
+    private PlayerState playerState;
     private StaminaController staminaController;
 
     private float verticalLookClamped;
@@ -40,18 +40,24 @@ public class FirstPersonController : MonoBehaviour
 
     public Camera playerCamera;
 
+    private void Start()
+    {
+        // Moved this to a Start() function 
+        Level.current_level.player = gameObject;
+    }
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         controls = new PlayerControls();
         staminaController = GetComponent<StaminaController>();
-        playerStateController = GetComponent<PlayerStateController>();
+        playerState = GetComponent<PlayerState>();
 
         currentHeight = standHeight;
         controller.height = standHeight;
 
-        cameraStandLocalPos = new Vector3(0f, standHeight * 0.5f, 0f);
-        cameraCrouchLocalPos = new Vector3(0f, crouchHeight * 0.5f, 0f);
+        cameraStandLocalPos = new Vector3(0f, standHeight, 0f);
+        cameraCrouchLocalPos = new Vector3(0f, crouchHeight, 0f);
 
         playerCamera = Camera.main;
         if (playerCamera != null)
@@ -61,26 +67,30 @@ public class FirstPersonController : MonoBehaviour
 
         // Send player instance/camera to GameManager
         GameManager.PlayerInstance = gameObject;
+        
         GameManager.PlayerCamera = playerCamera;
     }
 
     private void OnEnable()
     {
-        controls.PlayerMovement.Enable();
+        if (controls != null) controls.PlayerMovement.Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     private void OnDisable()
     {
-        controls.PlayerMovement.Disable();
+        if(controls != null) controls.PlayerMovement.Disable();
     }
 
     private void Update()
     {
-        HandleMove();
-        HandleLook();
-        HandleCrouch();
+        if (playerState.GetPlayerHasControl())
+        {
+            HandleMove();
+            HandleLook();
+            HandleCrouch();
+        }
     }
 
     /// <summary>
@@ -112,12 +122,12 @@ public class FirstPersonController : MonoBehaviour
             isSprinting = false;
         }
 
-        playerStateController.SetMoving(isMoving);
-        playerStateController.SetSprinting(isSprinting);
+        playerState.SetMoving(isMoving);
+        playerState.SetSprinting(isSprinting);
 
         float speed;
 
-        if (playerStateController.GetCrouching())
+        if (playerState.GetCrouching())
         {
             // 1. Crouch takes top priority
             speed = crouchSpeed;
@@ -202,7 +212,7 @@ public class FirstPersonController : MonoBehaviour
         controller.center = new Vector3(0f, currentHeight * 0.5f, 0f);
 
         bool actuallyCrouching = currentHeight < standHeight - 0.01f;
-        playerStateController.SetCrouching(actuallyCrouching);
+        playerState.SetCrouching(actuallyCrouching);
 
         if (playerCamera != null)
         {
@@ -215,6 +225,6 @@ public class FirstPersonController : MonoBehaviour
 
     private void OnDestroy()
     {
-        controls?.Dispose();
+       controls?.Dispose();
     }
 }
