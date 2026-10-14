@@ -64,7 +64,7 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
     {
         if (drag.Photo != Photo) drag.End();
         preview.texture = Photo != null ? Photo.ImageTexture : null;
-        preview.enabled = Photo != null;
+        preview.enabled = Photo != null && drag.Photo == null;
         if (preview.texture != null) fitter.aspectRatio = (float)preview.texture.width / preview.texture.height;
     }
 }

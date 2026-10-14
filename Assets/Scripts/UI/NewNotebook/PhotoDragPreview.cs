@@ -11,11 +11,14 @@ public interface IPhotoDragSource
 public class PhotoDragPreview
 {
     private RawImage image;
+    private RawImage sourcePreview;
+    private bool sourceWasEnabled;
     private RectTransform root;
     public Photo Photo { get; private set; }
 
     public void Begin(Photo photo, RawImage preview, PointerEventData eventData)
     {
+        End();
         Photo = photo;
         root = (RectTransform)UIManager.Instance.notebookGroup.transform;
         var ghost = new GameObject("Dragged Photo", typeof(RectTransform), typeof(RawImage));
@@ -25,6 +28,9 @@ public class PhotoDragPreview
         image.raycastTarget = false;
         image.rectTransform.sizeDelta = preview.rectTransform.rect.size *
             (preview.rectTransform.lossyScale.x / root.lossyScale.x);
+        sourcePreview = preview;
+        sourceWasEnabled = preview.enabled;
+        sourcePreview.enabled = false;
         Drag(eventData);
     }
 
@@ -38,6 +44,8 @@ public class PhotoDragPreview
 
     public void End()
     {
+        if (sourcePreview != null) sourcePreview.enabled = sourceWasEnabled;
+        sourcePreview = null;
         Photo = null;
         if (image != null) Object.Destroy(image.gameObject);
         image = null;

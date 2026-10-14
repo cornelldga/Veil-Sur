@@ -654,7 +654,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 899ea67667ad04de69187312c70ef05c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotoTabScript
-  startsOpen: 0
+  startsOpen: 1
   openedImage: {fileID: 5395810940993499032}
   closedImage: {fileID: 991530636164827005}
   openedToggle: {fileID: 7071953573513071044}
@@ -1885,8 +1885,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7000000000000000201}
   - component: {fileID: 5427150917054161412}
+  - component: {fileID: 7000000000000000201}
   m_Layer: 5
   m_Name: NotebookUI
   m_TagString: Untagged
@@ -1918,6 +1918,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &7000000000000000201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9046182382745127101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c76a6e47c1d642a489a6301452eaf33c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NotebookUIController
+  photoTab: {fileID: 4994223148321263578}
 --- !u!1001 &7305587574190956981
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2032,16 +2045,3 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4910486145722627946, guid: d067728027c7f424b9908d338093eaaf, type: 3}
   m_PrefabInstance: {fileID: 7305587574190956981}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7000000000000000201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9046182382745127101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c76a6e47c1d642a489a6301452eaf33c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::NotebookUIController
-  photoTab: {fileID: 4994223148321263578}

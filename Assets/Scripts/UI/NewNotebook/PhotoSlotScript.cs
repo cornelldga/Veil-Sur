@@ -40,7 +40,7 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         button.targetGraphic.enabled = true;
         button.targetGraphic.color = Color.clear;
         preview.texture = photo != null ? photo.ImageTexture : null;
-        preview.enabled = photo != null;
+        preview.enabled = photo != null && drag.Photo == null;
         if (preview.texture != null) fitter.aspectRatio = (float)preview.texture.width / preview.texture.height;
     }
 
