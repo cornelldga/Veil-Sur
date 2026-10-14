@@ -68,6 +68,9 @@ public class EnemyMover : MonoBehaviour
                 agent.speed = suspiciousSpeed;
                 LookAround();
                 break;
+            case EnemySearchlight.AlertState.Stun:
+                agent.speed = 0;
+                break;
         }
 
         if (searchlight.CurrentState == EnemySearchlight.AlertState.Suspicious &&

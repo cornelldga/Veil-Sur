@@ -255,7 +255,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b8b40fdef4a7084ea8c2a6b1eee8070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotoCameraController
-  photographPrefab: {fileID: 631139541116336735, guid: 31a5b210db7d2421f99fdda81e988610, type: 3}
   normalFOV: 60
   zoomedFOV: 30
   zoomSpeed: 10
@@ -268,6 +267,16 @@ MonoBehaviour:
   outerRayRadius: 0.21
   minRayCasts: 7
   blurRangePastMax: 2
+  storageFullShakeDuration: 0.25
+  storageFullShakeMagnitude: 0.1
+  maxRadius: 10
+  coneAngle: 60
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!136 &5570794706041152154
 CapsuleCollider:
   m_ObjectHideFlags: 0
