@@ -8,10 +8,10 @@ using UnityEngine;
 public abstract class SolutionRule : ScriptableObject
 {
     /// <summary>
-    /// Returns whether the connected notebook item is correct according to
-    /// this rule. connected may be null (question not yet answered), which
+    /// Returns whether the submitted photo is correct according to
+    /// this rule. photo may be null (question not yet answered), which
     /// must be treated as not correct rather than throwing. Must be pure —
     /// no side effects.
     /// </summary>
-    public abstract bool IsCorrect(NotebookItem connected);
+    public abstract bool IsCorrect(Photo photo);
 }
