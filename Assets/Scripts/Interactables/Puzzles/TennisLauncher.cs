@@ -4,7 +4,6 @@ public class TennisLauncher : MonoBehaviour, Interactable
 {
     [SerializeField] float launchDistance = 6f;
     [SerializeField] float launchSpeed = 8f;
-    [SerializeField] float launchVolume = 3f;
     [SerializeField] float ballVolume = 12f;
     [SerializeField] GameObject tennisBallPrefab;
 
