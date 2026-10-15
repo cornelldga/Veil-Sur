@@ -9342,6 +9342,22 @@ PrefabInstance:
       propertyPath: 'startQuestions.Array.data[1]'
       value: 
       objectReference: {fileID: 418260665}
+    - target: {fileID: 7000000000000000300, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000000000000308, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000000000000308, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000000000000308, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -672
+      objectReference: {fileID: 0}
     - target: {fileID: 7000129500749000434, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
       propertyPath: rule
       value: 
