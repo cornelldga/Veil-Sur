@@ -4,47 +4,66 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-/// <summary>Displays a backend question and forwards answer/submission input to it.</summary>
+/// <summary>Reusable question view that displays data from its bound QuestionDefinition.</summary>
 public class QuestionNote : MonoBehaviour
 {
-    [SerializeField] private QuestionDefinition definition;
     [FormerlySerializedAs("image")]
     [SerializeField] private Graphic resultGraphic;
+    [Tooltip("UI text component in this variant that displays the definition's question text.")]
     [SerializeField] private TMP_Text questionLabel;
+    [Tooltip("UI text component in this variant that displays the definition's current feedback.")]
     [SerializeField] private TMP_Text feedbackLabel;
     private Color originalColor;
+    private QuestionDefinition definition;
 
     public QuestionDefinition Definition => definition;
-    public Photo Photo => definition.Photo;
-    public bool IsCorrect => definition.IsCorrect;
-    public bool HasBeenUploaded => definition.HasBeenUploaded;
-    public string QuestionText => definition.QuestionText;
-    public string DefaultFeedback => definition.DefaultFeedback;
-    public event Action AnswerChanged
-    {
-        add { definition.AnswerChanged += value; }
-        remove { definition.AnswerChanged -= value; }
-    }
+    public Photo Photo => definition != null ? definition.Photo : null;
+    public bool IsCorrect => definition != null && definition.IsCorrect;
+    public bool HasBeenUploaded => definition != null && definition.HasBeenUploaded;
+    public string QuestionText => definition != null ? definition.QuestionText : "";
+    public string DefaultFeedback => definition != null ? definition.DefaultFeedback : "";
+    public string FeedbackText => definition != null ? definition.FeedbackText : "";
+    public event Action AnswerChanged;
 
     private void Awake()
     {
         if (resultGraphic != null) originalColor = resultGraphic.color;
-        definition.AnswerChanged += Refresh;
     }
-    private void Start() { Refresh(); }
-    private void OnDestroy() { definition.AnswerChanged -= Refresh; }
 
-    public void SetPhoto(Photo photo) { definition.SetPhoto(photo); }
-    public void ResetResult() { definition.ResetResult(); }
-    public void Verify() { definition.Verify(); }
-    public SolutionRule Rule() { return definition.Rule(); }
-    public string Feedback(string subjectId) { return definition.Feedback(subjectId); }
+    private void OnEnable()
+    {
+        if (definition != null) definition.AnswerChanged += Refresh;
+        Refresh();
+    }
+
+    private void OnDisable()
+    {
+        if (definition != null) definition.AnswerChanged -= Refresh;
+    }
+
+    public void Bind(QuestionDefinition question)
+    {
+        if (isActiveAndEnabled && definition != null) definition.AnswerChanged -= Refresh;
+        definition = question;
+        if (isActiveAndEnabled)
+        {
+            if (definition != null) definition.AnswerChanged += Refresh;
+            Refresh();
+        }
+    }
+
+    public void Unbind() { Bind(null); }
+
+    public void SetPhoto(Photo photo) { definition?.SetPhoto(photo); }
+    public void ResetResult() { definition?.ResetResult(); }
+    public void Verify() { definition?.Verify(); }
 
     private void Refresh()
     {
-        if (questionLabel != null && !string.IsNullOrEmpty(QuestionText)) questionLabel.text = QuestionText;
-        if (feedbackLabel != null) feedbackLabel.text = definition.FeedbackText;
+        if (questionLabel != null) questionLabel.text = QuestionText;
+        if (feedbackLabel != null) feedbackLabel.text = FeedbackText;
         if (resultGraphic != null)
             resultGraphic.color = !HasBeenUploaded ? originalColor : IsCorrect ? Color.green : Color.red;
+        AnswerChanged?.Invoke();
     }
 }
