@@ -8,14 +8,8 @@ public class PhotoSolution : SolutionRule
 {
     [SerializeField] private string requiredSubjectId;
 
-    public override bool IsCorrect(NotebookItem connected)
+    public override bool IsCorrect(Photo photo)
     {
-        //if (connected is not PhotoNote photoNote)
-        //{
-        //    return false;
-        //}
-
-        //return photoNote.HasSubject(requiredSubjectId);
-        return true;
+        return photo != null && photo.HasSubject(requiredSubjectId);
     }
 }
