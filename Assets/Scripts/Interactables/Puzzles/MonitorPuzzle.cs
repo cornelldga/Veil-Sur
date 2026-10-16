@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Video;
 
 /// <summary>
 /// Monitor puzzle from Level One. The monitor displays static until the ID puzzle is solved, at which point it
@@ -18,10 +19,13 @@ public class MonitorPuzzle : MonoBehaviour, Interactable
     [SerializeField] private Material cameraScreen;
 
     [Tooltip("Photographable aspect of the monitor screen, only enabled after completion of ID puzzle.")]
-    [SerializeField] private PhotographableObject feedSubject;
+    [SerializeField] private GameObject feedSubject;
 
     [Tooltip("What is triggered if the player interacts with the monitor early.")]
     [SerializeField] private UnityEvent earlyInteract;
+
+    [Tooltip("Video player for the camera feed.")]
+    [SerializeField] private VideoPlayer cameraVideo;
 
     private bool idFound;
 
@@ -29,7 +33,7 @@ public class MonitorPuzzle : MonoBehaviour, Interactable
     private void Start()
     {
         screen.material = staticScreen;
-        feedSubject.enabled = false;
+        feedSubject.SetActive(false);
     }
 
     /// <summary>
@@ -38,9 +42,15 @@ public class MonitorPuzzle : MonoBehaviour, Interactable
     /// </summary>
     public void Access()
     {
+        if (idFound)
+        {
+            return;
+        }
+
         idFound = true;
         screen.material = cameraScreen;
-        feedSubject.enabled = true;
+        feedSubject.SetActive(true);
+        cameraVideo.Play();
     }
 
     /// <summary>
@@ -48,9 +58,13 @@ public class MonitorPuzzle : MonoBehaviour, Interactable
     /// </summary>
     public void Interact()
     {
-        if (!idFound)
-        {
-            earlyInteract.Invoke();
-        }
+        // temporary line until id puzzle is done
+        Access();
+
+        // temporarily commented out until id puzzle is done
+        // if (!idFound)
+        // {
+        //    earlyInteract.Invoke();
+        // }
     }
 }
