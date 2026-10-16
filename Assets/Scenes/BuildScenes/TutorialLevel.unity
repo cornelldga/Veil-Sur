@@ -26680,7 +26680,7 @@ PrefabInstance:
       objectReference: {fileID: -8149213003581678767, guid: 64f1b142cdade8c4f87b233067639cab, type: 2}
     - target: {fileID: 914365772190382192, guid: 809b2508d0bbd3e4f9f781fff6c1c38e, type: 3}
       propertyPath: m_HorizontalAlignment
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 914365772190382192, guid: 809b2508d0bbd3e4f9f781fff6c1c38e, type: 3}
       propertyPath: m_hasFontAssetChanged
@@ -26752,11 +26752,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7643939106387347298, guid: 809b2508d0bbd3e4f9f781fff6c1c38e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 541
+      value: -711
       objectReference: {fileID: 0}
     - target: {fileID: 7643939106387347298, guid: 809b2508d0bbd3e4f9f781fff6c1c38e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 491
+      value: 453
       objectReference: {fileID: 0}
     - target: {fileID: 7643939106387347298, guid: 809b2508d0bbd3e4f9f781fff6c1c38e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

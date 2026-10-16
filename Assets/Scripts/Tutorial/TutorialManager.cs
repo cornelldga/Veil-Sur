@@ -29,6 +29,8 @@ public class TutorialManager : MonoBehaviour
         "Close your notebook. ",
         "Aim your camera at a document, then press E to switch to document mode.",
         "Left click in document mode to scan it into your notebook.",
+        "Open your notebook again.",
+        "You scanned the document! You can also connect it to questions. Close your notebook.",
         "Press E to interact with objects that have the interact icon."
         // Maybe in the above ^ prompt we'll include a picture of the interact icon.
     };
@@ -95,7 +97,9 @@ public class TutorialManager : MonoBehaviour
             case 7: return state != GameManager.GameState.NOTEBOOK;
             case 8: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
             case 9: return PhotoStorage.Instance.GetPhotoCount() > photoCountAtStepStart;
-            case 10: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
+            case 10: return state == GameManager.GameState.NOTEBOOK;
+            case 11: return state != GameManager.GameState.NOTEBOOK;
+            case 12: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
 
             default: return false;
         }
