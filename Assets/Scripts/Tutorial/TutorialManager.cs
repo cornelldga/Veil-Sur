@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -21,9 +22,11 @@ public class TutorialManager : MonoBehaviour
         "Use WASD to move.",
         "Hold shift to sprint.",
         "Right click to aim your camera, and left click to take a photo!",
-        //"Press tab to open your notebook.",
-        // Connect photo to question
-        // Deleting questions ?
+        "Take four more photos of what you like!",
+        "Press tab to open your notebook.",
+        "Connect a photo to a question.",
+        "Drag a photo onto the trash icon to delete it.",
+        "Close your notebook. ",
         "Aim your camera at a document, then press E to switch to document mode.",
         "Left click in document mode to scan it into your notebook.",
         "Press E to interact with objects that have the interact icon."
@@ -85,10 +88,14 @@ public class TutorialManager : MonoBehaviour
             case 0: return controls.PlayerMovement.Move.ReadValue<Vector2>() != Vector2.zero;
             case 1: return controls.PlayerMovement.Sprint.IsPressed();
             case 2: return PhotoStorage.Instance.GetPhotoCount() > photoCountAtStepStart;
-            // case 2: return state == GameManager.GameState.NOTEBOOK;
-            case 3: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
-            case 4: return PhotoStorage.Instance.GetPhotoCount() > photoCountAtStepStart;
-            case 5: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
+            case 3: return PhotoStorage.Instance.GetPhotoCount() >= photoCountAtStepStart + 4;
+            case 4: return state == GameManager.GameState.NOTEBOOK;
+            case 5: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.Questions.Any(q => q.Photo != null);
+            case 6: return PhotoStorage.Instance.GetPhotoCount() < photoCountAtStepStart;
+            case 7: return state != GameManager.GameState.NOTEBOOK;
+            case 8: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
+            case 9: return PhotoStorage.Instance.GetPhotoCount() > photoCountAtStepStart;
+            case 10: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
 
             default: return false;
         }
