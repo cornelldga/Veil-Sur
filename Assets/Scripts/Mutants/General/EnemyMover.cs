@@ -17,7 +17,7 @@ public class EnemyMover : MonoBehaviour
 
     [Tooltip("The amount of time the mutant stays still before chasing")]
     [SerializeField] protected float alertPauseDuration = 0f;
-    protected EnemySearchLight.AlertState previousState;
+    protected EnemySearchlight.AlertState previousState;
     protected float alertPauseUntil;
     protected Transform player;
 
@@ -54,6 +54,7 @@ public class EnemyMover : MonoBehaviour
         if (state == EnemySearchlight.AlertState.Alert && previousState != EnemySearchlight.AlertState.Alert)
         {
             alertPauseUntil = Time.time + alertPauseDuration;
+            agent.velocity = Vector3.zero;
         }
         previousState = state;
         agent.isStopped = Time.time < alertPauseUntil;
