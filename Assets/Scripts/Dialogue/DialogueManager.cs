@@ -19,6 +19,11 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     public static DialogueManager Instance { get; private set; }
 
+    /// <summary>
+    /// true while a dialogue section is currently playing.
+    /// </summary>
+    public bool IsDialogueActive => isDialogueActive;
+
     [Tooltip("the panel GameObject that gets shown or hidden")]
     [SerializeField] private GameObject dialogueBox;
 
@@ -106,7 +111,7 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void DisplayCurrentLine()
     {
-        dialogueText.text = currentSection.lines[currentLine];
+        dialogueText.text = currentSection.lines[currentLine].ToUpper();
     }
 
     /// <summary>

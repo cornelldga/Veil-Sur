@@ -70,6 +70,14 @@ public class PhotoStorage : MonoBehaviour
        return GetPhotoCount() >= maxCapacity;
    }
 
+   /// <summary>
+   /// Returns the total number of photos the player owns, in storage + in q&a
+   /// </summary>
+   public int GetTotalOwnedPhotoCount()
+   {
+       return GetPhotoCount() + assignedQuestions.Count;
+   }
+
 
    /// <summary>
    /// Adds a captured photo to the storage.
@@ -121,6 +129,7 @@ public class PhotoStorage : MonoBehaviour
        assignedQuestions[photo] = destination;
        destination.AssignPhoto(photo);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 
@@ -135,6 +144,7 @@ public class PhotoStorage : MonoBehaviour
        source.AssignPhoto(null);
        PutInSlot(photo, slot);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 
@@ -157,6 +167,7 @@ public class PhotoStorage : MonoBehaviour
        if (removed)
        {
            PhotosChanged?.Invoke();
+           IncrementCounter();
            Destroy(photo.ImageTexture);
            Destroy(photo.gameObject);
        }
