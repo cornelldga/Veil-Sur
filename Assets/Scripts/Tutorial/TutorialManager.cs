@@ -41,6 +41,8 @@ public class TutorialManager : MonoBehaviour
     private PlayerControls controls;
     private RectTransform promptRect;
     private Vector2 basePosition;
+    private bool hasSeenDialogue;
+    private bool tutorialStarted;
 
     private void Awake()
     {
@@ -72,6 +74,24 @@ public class TutorialManager : MonoBehaviour
 
     private void Update()
     {
+        if (!tutorialStarted)
+        {
+            if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+            {
+                hasSeenDialogue = true;
+                return;
+            }
+            else if (hasSeenDialogue)
+            {
+                tutorialStarted = true;
+                photoCountAtStepStart = PhotoStorage.Instance.GetPhotoCount();
+            }
+            else
+            {
+                return;
+            }
+        }
+
         UpdatePromptFade();
         MoveUpandDown();
 
