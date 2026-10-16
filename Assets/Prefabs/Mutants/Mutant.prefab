@@ -293,7 +293,7 @@ MonoBehaviour:
   suspiciousSpeed: 3
   chaseSpeed: 5
   waitTime: 2
-  wanderRadius: 5
+  wanderRadius: 1.5
 --- !u!54 &1305415287986317326
 Rigidbody:
   m_ObjectHideFlags: 0

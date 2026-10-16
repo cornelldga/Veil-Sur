@@ -158,6 +158,7 @@ public class EnemyMover : MonoBehaviour
     {
         Debug.Log("Beginning to look around");
         reachedWanderTarget = false;
+        investigateTarget = searchlight.LastKnownPlayerPosition;
         nextWanderTime = 0f;
     }
 
