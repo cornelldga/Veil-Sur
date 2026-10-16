@@ -43,6 +43,7 @@ public class EnemySearchlight : MonoBehaviour
     protected Color patrolColor = Color.green;
     protected Color suspiciousColor = new Color(1f, 0.85f, 0f);
     protected Color alertColor = Color.red;
+    protected Color stunColor = Color.pink;
 
     [Header("Cone Mesh (visible in Game view)")]
     [SerializeField] protected bool showConeMesh = true;
@@ -252,7 +253,8 @@ public class EnemySearchlight : MonoBehaviour
     /// <param name="position">World position the player is believed to be at.</param>
     public virtual void ReportSense(Vector3 position, Priority priority)
     {
-        if (CurrentState == AlertState.Alert || priority > currentPriority) return;
+        if (CurrentState == AlertState.Alert || 
+        CurrentState == AlertState.Stun || priority > currentPriority) return;
 
         LastKnownPlayerPosition = position;
         detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
@@ -342,6 +344,10 @@ public class EnemySearchlight : MonoBehaviour
         {
             return alertColor;
         }
+        if (CurrentState == AlertState.Stun)
+        {
+            return stunColor;
+        }
 
         if (detectionMeter <= timeToSuspicious)
         {
@@ -395,12 +401,13 @@ public class EnemySearchlight : MonoBehaviour
     /// </summary>
     public void Stun()
     {
-        if (CurrentState == AlertState.Alert
+        if ((CurrentState == AlertState.Alert || CurrentState == AlertState.Suspicious)
         && timeSinceLastStun >= stunCooldown + stunDuration)
         {
             Debug.Log("Successful stun!");
             timeSinceLastStun = 0;
             SetState(AlertState.Stun);
+            ResetSuspicion();
         }
     }
 }
