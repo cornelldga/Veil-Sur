@@ -163,11 +163,34 @@ public class PhotoStorage : MonoBehaviour
        return removed;
    }
 
-   /// <summary>
-   /// Increments the storage counter UI element to the relevant representation.
-   /// TEMP: text representation, future will be pulse images
-   /// </summary>
-   private void IncrementCounter(){
+    /// <summary>
+    /// Removes and destroys all photos currently owned by the PhotoStorage,
+    /// including their associated textures, then clears all storage slots and
+    /// question assignments. Intended to be called before loading a save file
+    /// so the loaded photos fully replace the current notebook contents.
+    /// </summary>
+    public void ClearAllPhotos()
+    {
+        foreach (var photo in photos)
+        {
+            if (photo == null)
+                continue;
+
+            Destroy(photo.ImageTexture);
+            Destroy(photo.gameObject);
+        }
+
+        photos.Clear();
+        assignedQuestions.Clear();
+
+        PhotosChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Increments the storage counter UI element to the relevant representation.
+    /// TEMP: text representation, future will be pulse images
+    /// </summary>
+    private void IncrementCounter(){
        OnStorageChanged?.Invoke(IsPhotoStorageFull());
    }
 
