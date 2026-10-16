@@ -105,6 +105,8 @@ public class SaveManager : MonoBehaviour
 
     private void LoadPhotos(SaveData data)
     {
+        PhotoStorage.Instance.ClearAllPhotos();
+
         string photoFolder = Path.Combine(Application.persistentDataPath, "Photos");
 
         foreach (PhotoSaveData savePhoto in data.photos)
