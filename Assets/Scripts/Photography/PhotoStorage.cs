@@ -70,6 +70,14 @@ public class PhotoStorage : MonoBehaviour
        return GetPhotoCount() >= maxCapacity;
    }
 
+   /// <summary>
+   /// Returns the total number of photos the player owns, in storage + in q&a
+   /// </summary>
+   public int GetTotalOwnedPhotoCount()
+   {
+       return GetPhotoCount() + assignedQuestions.Count;
+   }
+
 
    /// <summary>
    /// Adds a captured photo to the storage.

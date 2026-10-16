@@ -84,7 +84,7 @@ public class TutorialManager : MonoBehaviour
             else if (hasSeenDialogue)
             {
                 tutorialStarted = true;
-                photoCountAtStepStart = PhotoStorage.Instance.GetPhotoCount();
+                photoCountAtStepStart = PhotoStorage.Instance.GetTotalOwnedPhotoCount();
             }
             else
             {
@@ -98,7 +98,7 @@ public class TutorialManager : MonoBehaviour
         if (step < prompts.Length && IsStepComplete())
         {
             step++;
-            photoCountAtStepStart = PhotoStorage.Instance.GetPhotoCount();
+            photoCountAtStepStart = PhotoStorage.Instance.GetTotalOwnedPhotoCount();
         }
     }
 
@@ -110,15 +110,15 @@ public class TutorialManager : MonoBehaviour
         {
             case 0: return controls.PlayerMovement.Move.ReadValue<Vector2>() != Vector2.zero;
             case 1: return controls.PlayerMovement.Sprint.IsPressed();
-            case 2: return PhotoStorage.Instance.GetPhotoCount() > photoCountAtStepStart;
-            case 3: return PhotoStorage.Instance.GetPhotoCount() >= photoCountAtStepStart + 4;
+            case 2: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
+            case 3: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() >= photoCountAtStepStart + 4;
             case 4: return controls.PlayerMovement.TakePicture.WasPerformedThisFrame() && PhotoStorage.Instance.IsPhotoStorageFull();
             case 5: return state == GameManager.GameState.NOTEBOOK;
             case 6: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.Questions.Any(q => q.Photo != null);
-            case 7: return PhotoStorage.Instance.GetPhotoCount() < photoCountAtStepStart;
+            case 7: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
             case 8: return state != GameManager.GameState.NOTEBOOK;
             case 9: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
-            case 10: return PhotoStorage.Instance.GetPhotoCount() > photoCountAtStepStart;
+            case 10: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
             case 11: return state == GameManager.GameState.NOTEBOOK;
             case 12: return state != GameManager.GameState.NOTEBOOK;
             case 13: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
