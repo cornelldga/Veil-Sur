@@ -85,6 +85,7 @@ public class PhotoStorage : MonoBehaviour
        PutInSlot(photo, FindOpenSlot());
        photo.transform.SetParent(transform);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 
@@ -121,6 +122,7 @@ public class PhotoStorage : MonoBehaviour
        assignedQuestions[photo] = destination;
        destination.AssignPhoto(photo);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 
@@ -135,6 +137,7 @@ public class PhotoStorage : MonoBehaviour
        source.AssignPhoto(null);
        PutInSlot(photo, slot);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 
@@ -157,6 +160,7 @@ public class PhotoStorage : MonoBehaviour
        if (removed)
        {
            PhotosChanged?.Invoke();
+           IncrementCounter();
            Destroy(photo.ImageTexture);
            Destroy(photo.gameObject);
        }
