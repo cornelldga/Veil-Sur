@@ -106,7 +106,7 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void DisplayCurrentLine()
     {
-        dialogueText.text = currentSection.lines[currentLine];
+        dialogueText.text = currentSection.lines[currentLine].ToUpper();
     }
 
     /// <summary>
