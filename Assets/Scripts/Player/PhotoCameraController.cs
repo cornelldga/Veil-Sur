@@ -46,6 +46,9 @@ public class PhotoCameraController : MonoBehaviour
     [Tooltip("Maximum distance the camera is offset while shaking")]
     [SerializeField] private float storageFullShakeMagnitude = 0.1f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip shutterClip;
+
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
     private PlayerState playerState;
@@ -203,6 +206,7 @@ public class PhotoCameraController : MonoBehaviour
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
+        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
         UIManager.Instance.TakePhoto();
         CreatePhotoNote(photo);
     }

@@ -7,6 +7,9 @@ public class NotebookController : MonoBehaviour
     private PlayerControls controls;
     private PlayerState playerState;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip notebookOpenClip;
+
     private void Awake()
     {
         controls = new PlayerControls();
@@ -49,6 +52,7 @@ public class NotebookController : MonoBehaviour
         if (notebookOpen)
         {
             photoCameraController.CancelCamera();
+            AudioManager.Instance.PlaySfxAtPosition(notebookOpenClip, transform.position);
         }
 
         playerState.SetPlayerHasControl(!notebookOpen);

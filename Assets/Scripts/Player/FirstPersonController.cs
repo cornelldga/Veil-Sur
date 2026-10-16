@@ -40,6 +40,9 @@ public class FirstPersonController : MonoBehaviour
 
     public Camera playerCamera;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip crouchClip;
+
     private void Start()
     {
         // Moved this to a Start() function 
@@ -215,6 +218,11 @@ public class FirstPersonController : MonoBehaviour
         controller.center = new Vector3(0f, currentHeight * 0.5f, 0f);
 
         bool actuallyCrouching = currentHeight < standHeight - 0.01f;
+        // Play crouch SFX once, on the transition from standing to crouching
+        if (actuallyCrouching && !playerState.GetCrouching())
+        {
+            AudioManager.Instance.PlaySfxAttached(crouchClip, transform, volume: 0.6f);
+        }
         playerState.SetCrouching(actuallyCrouching);
 
         if (playerCamera != null)
