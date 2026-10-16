@@ -121,6 +121,7 @@ public class PhotoStorage : MonoBehaviour
        assignedQuestions[photo] = destination;
        destination.AssignPhoto(photo);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 
@@ -135,6 +136,7 @@ public class PhotoStorage : MonoBehaviour
        source.AssignPhoto(null);
        PutInSlot(photo, slot);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 

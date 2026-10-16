@@ -22,14 +22,10 @@ public class StorageIndicator : MonoBehaviour
         image.sprite = fullSprite;
     }
 
-    private void Start()
-    {
-        UpdateSprite(PhotoStorage.Instance.IsPhotoStorageFull());
-    }
-
     private void OnEnable()
     {
         PhotoStorage.OnStorageChanged += UpdateSprite;
+        UpdateSprite(PhotoStorage.Instance.IsPhotoStorageFull());
     }
 
     private void OnDisable()
@@ -50,5 +46,5 @@ public class StorageIndicator : MonoBehaviour
             errorText.text = "Error camera full";
             errorText.enabled = isFull;
         }
-        }
+    }
 }
