@@ -46,6 +46,13 @@ public class PhotoCameraController : MonoBehaviour
     [Tooltip("Maximum distance the camera is offset while shaking")]
     [SerializeField] private float storageFullShakeMagnitude = 0.1f;
 
+    [Header("Mutant Stun Settings")]
+    [SerializeField] private float maxRadius = 10f; // How far the cone extends
+    [Range(0, 360)]
+    [SerializeField] private float coneAngle = 60f; // Total width of the cone in degrees
+    [SerializeField] private LayerMask targetMask; // Layer containing enemies or interactable items
+    [SerializeField] private LayerMask obstacleMask; // Layer containing walls/blocking objects
+
     private const int RaysPerCircle = 8;
     private PlayerControls controls;
     private PlayerState playerState;
@@ -184,6 +191,8 @@ public class PhotoCameraController : MonoBehaviour
 
     private void OnSnap(InputAction.CallbackContext ctx)
     {
+        StunMutantsInCone();
+
         if (!playerState.GetPhotoMode())
         {
             return;
@@ -419,6 +428,40 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         return bestSubjectId;
+    }
+
+    /// <summary>
+    /// On camera snap, stuns any mutants detected in a cone in front of the player.
+    /// </summary>
+    private void StunMutantsInCone()
+    {
+        // 1. Gather all targets within a circular range (cheap physics test)
+        Collider[] targetsInRadius = Physics.OverlapSphere(transform.position, maxRadius, targetMask);
+
+        for (int i = 0; i < targetsInRadius.Length; i++)
+        {
+            if (!targetsInRadius[i].CompareTag("Mutant"))
+            {
+                continue;
+            }
+
+            Transform target = targetsInRadius[i].transform;
+            Vector3 dirToTarget = (target.position - transform.position).normalized;
+
+            // 2. Check if the target is within the forward alignment angle
+            if (Vector3.Angle(transform.forward, dirToTarget) < coneAngle / 2)
+            {
+                float dstToTarget = Vector3.Distance(transform.position, target.position);
+
+                // 3. Optional: Line-of-sight raycast to ensure a wall isn't blocking the view
+                if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
+                {
+                    // Debug.Log($"Detected: {target.name} inside the vision cone!");
+                    EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
+                    mutant.Stun();
+                }
+            }
+        }
     }
 
     /// <summary>

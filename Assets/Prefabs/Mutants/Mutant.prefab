@@ -261,6 +261,8 @@ MonoBehaviour:
   loseAlertAfter: 3
   proximityDetection: 3.5
   investigateCount: 3
+  stunDuration: 2
+  stunCooldown: 5
   spotLight: {fileID: 0}
   showConeMesh: 1
   coneMeshFilter: {fileID: 1927768490209125107}
