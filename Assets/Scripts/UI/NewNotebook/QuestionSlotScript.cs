@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 /// <summary>Receives a photo and displays the question's assigned answer.</summary>
 [RequireComponent(typeof(Button))]
-public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPhotoDragSource
+public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, IPhotoDragSource
 {
     [Tooltip("Question view owning this slot within the question prefab.")]
     [SerializeField] private QuestionNote question;
@@ -22,8 +22,6 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
         button = GetComponent<Button>();
         fitter = preview.GetComponent<AspectRatioFitter>();
         notebook = UIManager.Instance.Notebook;
-        notebook.RegisterQuestion(question);
-        button.onClick.AddListener(InsertSelectedPhoto);
         question.AnswerChanged += RefreshPreview;
         RefreshPreview();
     }
@@ -31,9 +29,7 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
     private void OnDestroy()
     {
         if (notebook == null) return;
-        notebook.RemoveQuestion(question);
         question.AnswerChanged -= RefreshPreview;
-        button.onClick.RemoveListener(InsertSelectedPhoto);
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -43,9 +39,10 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
         if (source != null && source.DraggedPhoto != null) SetPhoto(source.DraggedPhoto);
     }
 
-    public void InsertSelectedPhoto()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        if (notebook.PhotoTab.SelectedPhoto != null) SetPhoto(notebook.PhotoTab.SelectedPhoto);
+        if (eventData.button == PointerEventData.InputButton.Left && eventData.clickCount == 2 && button.IsInteractable())
+            notebook.ShowPhotoPreview(Photo);
     }
 
     public void SetPhoto(Photo photo) { question.SetPhoto(photo); }
@@ -53,7 +50,7 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (eventData.button != PointerEventData.InputButton.Left || Photo == null) return;
+        if (eventData.button != PointerEventData.InputButton.Left || Photo == null || question.IsCorrect) return;
         drag.Begin(Photo, preview, eventData);
     }
     public void OnDrag(PointerEventData eventData) { drag.Drag(eventData); }
@@ -62,7 +59,7 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
 
     private void RefreshPreview()
     {
-        if (drag.Photo != Photo) drag.End();
+        if (question.IsCorrect || drag.Photo != Photo) drag.End();
         preview.texture = Photo != null ? Photo.ImageTexture : null;
         preview.enabled = Photo != null && drag.Photo == null;
         if (preview.texture != null) fitter.aspectRatio = (float)preview.texture.width / preview.texture.height;
