@@ -2,9 +2,9 @@
       "welcome": {
         "puzzle": null,
         "lines": [
-          "Aisha? Aisha, can you hear me?\nDo a little spin if you can hear me.",
+          "Aisha? Aisha, can you hear me?",
           "Okay, you're in the reception of OYO HQ.\nSo nothing illegal yet. Very aboveboard.",
-          "I've loaded a few of the basics into your head (top left corner.) Get to work!",
+          "I've loaded a few of the basics into your head for a quick systems check. Get to work!"
         ]
       }
       // "elevator": {

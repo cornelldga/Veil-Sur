@@ -24962,7 +24962,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'ERROR: Camera storage full.'
+  m_text: 'ERROR: Storage full.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 64f1b142cdade8c4f87b233067639cab, type: 2}
   m_sharedMaterial: {fileID: -8149213003581678767, guid: 64f1b142cdade8c4f87b233067639cab, type: 2}
