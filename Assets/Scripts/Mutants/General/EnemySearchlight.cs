@@ -167,7 +167,7 @@ public class EnemySearchlight : MonoBehaviour
 
     protected virtual void UpdateAlertState(bool canSeePlayer)
     {
-        // Debug.Log("Last seen timer: " +lastSeenTimer);
+        
         if (canSeePlayer || (CurrentState == AlertState.Alert && IsProximityDetected()))
         {
             lastSeenTimer = 0f;
@@ -202,7 +202,6 @@ public class EnemySearchlight : MonoBehaviour
             case AlertState.Alert:
                 if (!canSeePlayer && lastSeenTimer >= loseAlertAfter)
                 {
-                    Debug.Log("Lost sight of player, investigating last known position");
                     // GetComponent<EnemyMover>()
                     //     .RegisterDetectionEvent(LastKnownPlayerPosition);
                     SetState(AlertState.Suspicious);
@@ -316,11 +315,6 @@ public class EnemySearchlight : MonoBehaviour
     // Chat helped make the cone color stuff prettier
     protected virtual Color GetDetectionColor()
     {
-        if (CurrentState == AlertState.Alert)
-        {
-            return alertColor;
-        }
-
         if (detectionMeter <= timeToSuspicious)
         {
             float t = Mathf.InverseLerp(
@@ -364,7 +358,7 @@ public class EnemySearchlight : MonoBehaviour
     /// <returns>Whether the player is within proximityDetection distance from this mutant.</returns>
     public bool IsProximityDetected()
     {
-        // Debug.Log("Distance to player: " + distanceToPlayer);
+        Debug.Log(distanceToPlayer);
         return distanceToPlayer <= proximityDetection;
     }
 }
