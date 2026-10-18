@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 /// <summary>
 /// This class handles enemy movement.
 /// </summary>
@@ -14,12 +15,16 @@ public class EnemyMover : MonoBehaviour
 
     [Header("Alert")]
     [SerializeField] protected float chaseSpeed = 5f;
-
-    [Tooltip("The amount of time the mutant stays still before chasing")]
-    [SerializeField] protected float alertPauseDuration = 0f;
-    protected EnemySearchlight.AlertState previousState;
-    protected float alertPauseUntil;
     protected Transform player;
+
+    [Header("Notice")]
+    [Tooltip("Seconds the mutant stands still on first becoming suspicious. Match the notice animation length.")]
+    [FormerlySerializedAs("alertPauseDuration")]
+    [SerializeField] protected float noticePauseDuration = 0f;
+    protected EnemySearchlight.AlertState previousState;
+    protected float noticePauseUntil;
+
+    public bool IsNoticePausing => Time.time < noticePauseUntil;
 
     [Header("Investigate")]
     /** How long the mutant waits at a wander point before choosing a new one */
@@ -31,7 +36,7 @@ public class EnemyMover : MonoBehaviour
     protected EnemySearchlight searchlight;
     protected int currentPatrolIndex;
     protected Vector3 investigateTarget;
-    protected bool reachedSuspicionTarget;
+    protected bool reachedDestination;
     protected bool reachedWanderTarget;
     protected float nextWanderTime = 0f;
 
@@ -51,13 +56,15 @@ public class EnemyMover : MonoBehaviour
     protected virtual void Update()
     {
         EnemySearchlight.AlertState state = searchlight.CurrentState;
-        if (state == EnemySearchlight.AlertState.Alert && previousState != EnemySearchlight.AlertState.Alert)
+        bool justNoticed = state == EnemySearchlight.AlertState.Suspicious &&
+            previousState == EnemySearchlight.AlertState.Patrol;
+        if (justNoticed)
         {
-            alertPauseUntil = Time.time + alertPauseDuration;
+            noticePauseUntil = Time.time + noticePauseDuration;
             agent.velocity = Vector3.zero;
         }
         previousState = state;
-        agent.isStopped = Time.time < alertPauseUntil;
+        agent.isStopped = IsNoticePausing;
         
         switch (searchlight.CurrentState)
         {
@@ -83,15 +90,7 @@ public class EnemyMover : MonoBehaviour
                 break;
         }
 
-        if (searchlight.CurrentState == EnemySearchlight.AlertState.Suspicious &&
-        !agent.pathPending && agent.remainingDistance <= waypointTolerance)
-        {
-            reachedSuspicionTarget = true;
-        }
-        else
-        {
-            reachedSuspicionTarget = false;
-        }
+        reachedDestination = !agent.pathPending && agent.remainingDistance <= waypointTolerance;
     }
 
     protected void Patrol()
@@ -168,13 +167,14 @@ public class EnemyMover : MonoBehaviour
     public void StartLookAround()
     {
         Debug.Log("Beginning to look around");
-        reachedWanderTarget = false;
+        investigateTarget = searchlight.LastKnownPlayerPosition;
+        reachedWanderTarget = true;
         nextWanderTime = 0f;
     }
 
-    public bool ReachedSuspicionTarget()
+    public bool ReachedDestination()
     {
-        return reachedSuspicionTarget;
+        return reachedDestination;
     }
 
     /// <summary>

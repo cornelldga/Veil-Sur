@@ -171,6 +171,7 @@ public class EnemySearchlight : MonoBehaviour
         if (canSeePlayer || (CurrentState == AlertState.Alert && IsProximityDetected()))
         {
             lastSeenTimer = 0f;
+            LastKnownPlayerPosition = player.position;
             float proximity = Mathf.Clamp01(1f - distanceToPlayer / viewDistance);
             float multiplier = 1f + proximity * (maxDetectionMultiplier - 1f);
 
@@ -192,7 +193,7 @@ public class EnemySearchlight : MonoBehaviour
 
             case AlertState.Suspicious:
                 if (detectionMeter >= timeToAlert) SetState(AlertState.Alert);
-                else if (GetComponent<EnemyMover>().ReachedSuspicionTarget() && detectionMeter <= 0f) {
+                else if (GetComponent<EnemyMover>().ReachedDestination() && detectionMeter <= 0f) {
                     SetState(AlertState.LookAround);
                     GetComponent<EnemyMover>().StartLookAround();
                     ResetSuspicion();
@@ -200,7 +201,9 @@ public class EnemySearchlight : MonoBehaviour
                 break;
 
             case AlertState.Alert:
-                if (!canSeePlayer && lastSeenTimer >= loseAlertAfter)
+                // Arriving at the last known spot ends the chase too, so the mutant never idles out the timer there.
+                bool lostPlayer = lastSeenTimer > 0f;
+                if (lostPlayer && (lastSeenTimer >= loseAlertAfter || GetComponent<EnemyMover>().ReachedDestination()))
                 {
                     // GetComponent<EnemyMover>()
                     //     .RegisterDetectionEvent(LastKnownPlayerPosition);

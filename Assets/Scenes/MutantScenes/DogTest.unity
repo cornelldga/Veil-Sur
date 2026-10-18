@@ -1605,6 +1605,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1610540346}
     - target: {fileID: 3920839090453783550, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3920839090453783550, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: sniffRadius
       value: 10
       objectReference: {fileID: 0}
