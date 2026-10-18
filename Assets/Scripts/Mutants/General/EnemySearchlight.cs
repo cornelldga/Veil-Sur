@@ -244,11 +244,12 @@ public class EnemySearchlight : MonoBehaviour
     protected void SetState(AlertState newState)
     {
         if (CurrentState == newState) return;
+        AlertState previousState = CurrentState;
         CurrentState = newState;
         // Debug.Log(newState);
 
         if (newState == AlertState.Patrol) sweepTimer = 0f;
-        else if (newState == AlertState.LookAround) timesLookedAround = 0;
+        else if (newState == AlertState.Suspicious && previousState != AlertState.LookAround) timesLookedAround = 0;
     }
 
     /// <summary>

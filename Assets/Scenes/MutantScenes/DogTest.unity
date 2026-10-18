@@ -1467,6 +1467,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4316216645541462601, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7316898121491863721, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: maxFilmCount
       value: 2
@@ -1513,7 +1517,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8778038784107693722, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -59.99994
+      value: -60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1604,10 +1608,6 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1610540346}
-    - target: {fileID: 3920839090453783550, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3920839090453783550, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: sniffRadius
       value: 10

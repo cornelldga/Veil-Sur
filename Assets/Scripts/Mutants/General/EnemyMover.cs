@@ -56,8 +56,9 @@ public class EnemyMover : MonoBehaviour
     protected virtual void Update()
     {
         EnemySearchlight.AlertState state = searchlight.CurrentState;
+        // LookAround counts as patrolling here 
         bool justNoticed = state == EnemySearchlight.AlertState.Suspicious &&
-            previousState == EnemySearchlight.AlertState.Patrol;
+            (previousState == EnemySearchlight.AlertState.Patrol || previousState == EnemySearchlight.AlertState.LookAround);
         if (justNoticed)
         {
             noticePauseUntil = Time.time + noticePauseDuration;
