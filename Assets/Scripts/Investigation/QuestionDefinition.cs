@@ -7,24 +7,50 @@ using UnityEngine;
 public class QuestionDefinition : MonoBehaviour
 {
     [SerializeField] private List<PhotographableObject> required_objects = new();
-    [SerializeField] private SolutionRule rule;
-    [SerializeField] private TextAsset investigationData;
-    [SerializeField] private int section = 1;
-    [SerializeField] private string questionId;
+    [TextArea]
+    [SerializeField] private string questionText;
+    [TextArea]
+    [SerializeField] private string defaultFeedback = "Incorrect photo.";
+    [Tooltip("Questions unlocked when this question is answered correctly.")]
+    [SerializeField] private QuestionDefinition[] futureQuestions = Array.Empty<QuestionDefinition>();
+    [Tooltip("Puzzles this question helps unlock. All questions linking to a puzzle must be answered correctly before it can be used.")]
+    [SerializeField] private PuzzleInteractable[] futurePuzzles = Array.Empty<PuzzleInteractable>();
+    [InspectorName("Require All Prerequisites")]
+    [Tooltip("When enabled, all incoming questions must be answered and all incoming puzzles successfully interacted with. Otherwise, any one is enough.")]
+    [SerializeField] private bool requireAllPrerequisiteQuestions = true;
+    private readonly HashSet<QuestionDefinition> prerequisiteQuestions = new();
+    private readonly HashSet<PuzzleInteractable> prerequisitePuzzles = new();
     private readonly List<Photo> photos = new();
-    private InvestigationQuestion question;
     private PhotoStorage storage;
 
     public Photo Photo => photos.Count > 0 ? photos[0] : null;
     public IReadOnlyList<Photo> Photos => photos;
     public bool IsCorrect { get; private set; }
     public bool HasBeenUploaded { get; private set; }
-    public string QuestionText => question?.questionText ?? "";
-    public string DefaultFeedback => question?.defaultFeedback ?? "";
+    public string QuestionText => questionText;
+    public string DefaultFeedback => defaultFeedback;
+    public IReadOnlyList<QuestionDefinition> FutureQuestions => futureQuestions;
+    public IReadOnlyList<PuzzleInteractable> FuturePuzzles => futurePuzzles;
     public string FeedbackText { get; private set; } = "";
     public event Action AnswerChanged;
+    public event Action<QuestionDefinition> Solved;
 
-    private void Awake() { LoadQuestion(); }
+    internal bool CanUnlock => requireAllPrerequisiteQuestions
+        ? prerequisiteQuestions.All(question => question.IsCorrect) &&
+            prerequisitePuzzles.All(puzzle => puzzle.HasBeenInteractedWith)
+        : prerequisiteQuestions.Any(question => question.IsCorrect) ||
+            prerequisitePuzzles.Any(puzzle => puzzle.HasBeenInteractedWith);
+
+    internal void RegisterPrerequisite(QuestionDefinition question)
+    {
+        prerequisiteQuestions.Add(question);
+    }
+
+    internal void RegisterPrerequisite(PuzzleInteractable puzzle)
+    {
+        prerequisitePuzzles.Add(puzzle);
+    }
+
     private void Start()
     {
         storage = PhotoStorage.Instance;
@@ -41,6 +67,7 @@ public class QuestionDefinition : MonoBehaviour
 
     public void SetPhoto(Photo photo)
     {
+        if (IsCorrect) return;
         if (photo != null) PhotoStorage.Instance.MoveToQuestion(photo, this);
         else if (Photo != null) PhotoStorage.Instance.ReturnPhoto(Photo);
     }
@@ -59,41 +86,11 @@ public class QuestionDefinition : MonoBehaviour
     {
         if (Photo == photo) SetPhoto(null);
     }
-    public SolutionRule Rule() { return rule; }
     public bool isSolved() { return IsCorrect; }
-
-    private InvestigationAnswer FindAnswer(string subjectId)
-    {
-        if (question?.answers != null)
-            foreach (var answer in question.answers)
-                if (answer != null && answer.subjectId == subjectId) return answer;
-        return null;
-    }
-
-    public string Feedback(string subjectId)
-    {
-        return FindAnswer(subjectId)?.message ?? DefaultFeedback;
-    }
-
-    private void LoadQuestion()
-    {
-        if (investigationData == null) return;
-        var data = JsonUtility.FromJson<InvestigationData>(investigationData.text);
-        if (data?.mentalMap == null) return;
-        foreach (var entry in data.mentalMap)
-        {
-            if (entry == null || entry.section != section || entry.questions == null) continue;
-            foreach (var candidate in entry.questions)
-            {
-                if (candidate == null || candidate.questionId != questionId) continue;
-                question = candidate;
-                return;
-            }
-        }
-    }
 
     public void ResetResult()
     {
+        if (IsCorrect) return;
         IsCorrect = false;
         HasBeenUploaded = false;
         FeedbackText = "";
@@ -102,48 +99,17 @@ public class QuestionDefinition : MonoBehaviour
 
     public void Verify()
     {
-        var answer = Photo != null ? FindAnswer(Photo.SubjectId()) : null;
+        if (IsCorrect) return;
         bool stored = photos.Count > 0 && PhotoStorage.Instance != null &&
             photos.All(photo => photo != null && PhotoStorage.Instance.Owns(photo));
-        if (rule != null) IsCorrect = stored && rule.IsCorrect(Photo);
-        else if (required_objects.Count > 0)
-            IsCorrect = stored && required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId)));
-        else IsCorrect = stored && answer != null && answer.isCorrect;
+        IsCorrect = stored && required_objects.Count > 0 &&
+            required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId)));
         FeedbackText = !stored ? "Select a photo for this question." :
-            answer?.message ?? question?.defaultFeedback ?? (IsCorrect ? "Correct." : "Incorrect photo.");
+            IsCorrect ? "Correct." : DefaultFeedback;
         HasBeenUploaded = true;
+        if (IsCorrect)
+            foreach (var puzzle in futurePuzzles) puzzle.DecreaseQuestionsRemaining();
         AnswerChanged?.Invoke();
-    }
-
-    // Loaded investigation data
-    [System.Serializable]
-    public class InvestigationData {
-        public InvestigationSection[] mentalMap;
-    }
-
-    // One section and questions
-    [System.Serializable]
-    public class InvestigationSection
-    {
-        public int section;
-        public InvestigationQuestion[] questions;
-    }
-
-    // One question and its answers
-    [System.Serializable]
-    public class InvestigationQuestion
-    {
-        public string questionId;
-        public string questionText;
-        public string defaultFeedback;
-        public InvestigationAnswer[] answers;
-    }
-
-    // Answer associated with subject id
-    [System.Serializable]
-    public class InvestigationAnswer {
-        public string subjectId;
-        public bool isCorrect;
-        public string message;
+        if (IsCorrect) Solved?.Invoke(this);
     }
 }

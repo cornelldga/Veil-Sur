@@ -108,6 +108,7 @@ public class UIManager : MonoBehaviour
     {
         if (Instance != this) return;
 
+        if (Notebook != null) Notebook.Initialize();
         var photoTab = Notebook != null ? Notebook.PhotoTab : null;
         if (photoTab != null && PhotoStorage.Instance != null) PhotoStorage.Instance.SetCapacity(photoTab.SlotCount);
         ShowInteractPrompt(false);
