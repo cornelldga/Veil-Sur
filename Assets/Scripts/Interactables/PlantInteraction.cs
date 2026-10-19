@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class PlantInteraction : MonoBehaviour, Interactable
 {
@@ -14,6 +15,9 @@ public class PlantInteraction : MonoBehaviour, Interactable
 
     [Tooltip("The attached particle system")]
     [SerializeField] private ParticleSystem interactionParticles;
+
+    [Tooltip("The amount of particles to emit")]
+    [SerializeField] private int particleAmount;
 
     public void Start()
     {
@@ -31,7 +35,7 @@ public class PlantInteraction : MonoBehaviour, Interactable
         }
         if (interactionParticles != null)
         {
-            interactionParticles.Play();
+            interactionParticles.Emit(Math.Max(10, particleAmount));
         }
     }
 }
