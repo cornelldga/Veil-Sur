@@ -12,8 +12,8 @@ public enum ElevatorDirection
 ///
 /// INTENDED BEHAVIOR (not fully functional yet):
 ///
-///     Two buttons outside the elevator, each with a direction, queue the
-///     floor to be traveled to.
+///     The doors start closed. Two buttons outside the elevator, each with a
+///     direction, queue the floor to be traveled to and open the doors.
 ///
 ///     When the Player walks in, they're temporarily frozen and the doors close
 ///     as the level is loaded (currently scene transition).
@@ -31,7 +31,7 @@ public enum ElevatorDirection
 ///     AND give a ride sound.
 ///
 ///     The light's top and bottom should be transforms positioned above and 
-///     below the front door of the elevator (natural enter and exit)
+///     below the front door of the elevator (natural enter and exit) in prefab
 ///
 /// The Open and Close states are currently the door objects being inactive and
 /// active. This is temporary until the animations are added.
@@ -56,7 +56,6 @@ public class ElevatorController : MonoBehaviour
 
     [Header("Door Logic")]
     [SerializeField] private GameObject elevatorDoor;
-    [SerializeField] private bool startOpen = true;
     [Tooltip("Seconds between the Player walking in and the doors closing")]
     [SerializeField] private float doorOpenCloseDelay;
 
@@ -65,7 +64,7 @@ public class ElevatorController : MonoBehaviour
     [SerializeField] private float rideDuration = 8f;
 
     [Header("Elevator Lighting")]
-    [Tooltip("The light that sweeps up and down. Can be a Point Light with an emissive mesh as a child. Turned off except during the ride.")]
+    [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride.")]
     [SerializeField] private Transform shaftLight;
     [Tooltip("Start of light sweep, place an Empty Game Object below the elevator door (in front of it)")]
     [SerializeField] private Transform lightBottom;
@@ -88,7 +87,7 @@ public class ElevatorController : MonoBehaviour
 
     private void Start()
     {
-        SetDoors(startOpen);
+        SetDoors(false); // Doors always start closed now
 
         if (shaftLight != null)
         {
@@ -96,9 +95,16 @@ public class ElevatorController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This queues up the Scene where the player should travel to.
+    /// 
+    /// It is invoked by the ElevatorButton script, which passes in a direction.
+    /// This way, we can allow the player to travel back up
+    /// (which I think was intended at the end).
+    /// </summary>
     public bool QueueFloor(ElevatorDirection direction)
     {
-        if (state != State.Open)
+        if (state == State.Closing)
         {
             return false;
         }
@@ -111,9 +117,9 @@ public class ElevatorController : MonoBehaviour
 
         queuedFloor = direction;
 
-        if (playerInside)
+        if (state == State.Closed)
         {
-            StartCoroutine(TravelSequence(scene));
+            OpenDoors();
         }
 
         return true;
@@ -127,14 +133,12 @@ public class ElevatorController : MonoBehaviour
 
         playerInside = true;
 
-        if (!CanTravelTo(nextScene))
+        if (!queuedFloor.HasValue)
         {
             return;
         }
 
-        // Right now, always go up. Need to get interaction functional.
-        queuedFloor = ElevatorDirection.Up;
-        StartCoroutine(TravelSequence(nextScene));
+        StartCoroutine(TravelSequence(GetSceneFor(queuedFloor.Value)));
     }
 
     private void OnTriggerExit(Collider other)
@@ -182,7 +186,10 @@ public class ElevatorController : MonoBehaviour
             shaftLight.gameObject.SetActive(true);
         }
 
-        AudioManager.Instance.PlaySfxAtPosition(rideSfx, transform.position);
+        if (AudioManager.Instance != null && rideSfx != null)
+        {
+            AudioManager.Instance.PlaySfxAtPosition(rideSfx, transform.position);
+        }
 
         int lastSweep = -1;
 
