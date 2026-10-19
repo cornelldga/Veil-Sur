@@ -19,6 +19,11 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     public static DialogueManager Instance { get; private set; }
 
+    /// <summary>
+    /// true while a dialogue section is currently playing.
+    /// </summary>
+    public bool IsDialogueActive => isDialogueActive;
+
     [Tooltip("the panel GameObject that gets shown or hidden")]
     [SerializeField] private GameObject dialogueBox;
 
@@ -35,6 +40,7 @@ public class DialogueManager : MonoBehaviour {
     private HashSet<string> played = new HashSet<string>();
     private int currentLine = 0; //index
     private bool isDialogueActive = false;
+    private int startedFrame = -1; //the frame a dialogue opened on, so the click that triggered it doesn't skip a line
 
     /// <summary>
     /// Sets up the singleton instance
@@ -78,6 +84,7 @@ public class DialogueManager : MonoBehaviour {
         currentSection = section;
         currentLine = 0;
         isDialogueActive = true;
+        startedFrame = Time.frameCount;
 
         ShowDialogue();
         DisplayCurrentLine();
@@ -106,7 +113,7 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void DisplayCurrentLine()
     {
-        dialogueText.text = currentSection.lines[currentLine];
+        dialogueText.text = currentSection.lines[currentLine].ToUpper();
     }
 
     /// <summary>
@@ -140,7 +147,7 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void Update()
     {
-        if (!isDialogueActive) return;
+        if (!isDialogueActive || Time.frameCount == startedFrame) return;
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             NextLine();

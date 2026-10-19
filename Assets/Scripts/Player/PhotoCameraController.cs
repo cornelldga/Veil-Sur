@@ -237,6 +237,7 @@ public class PhotoCameraController : MonoBehaviour
 
         shakeOrigin = targetCamera.transform.localPosition;
         shakeCoroutine = StartCoroutine(ShakeCamera(storageFullShakeDuration, storageFullShakeMagnitude));
+        PhotoStorage.OnPhotoBlocked?.Invoke();
     }
 
     /// <summary>
