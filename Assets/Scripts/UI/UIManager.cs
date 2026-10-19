@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -286,11 +287,11 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Shows the jumpscare image and steps through the frames once.
+    /// Uses real time so it still plays while the game is frozen.
     /// </summary>
-    /// <param name="frames"></param>
-    /// <param name="fps"></param>
-    /// <returns></returns>
+    /// <param name="frames">the sprites to play, in order</param>
+    /// <param name="fps">frames shown per second</param>
     public IEnumerator PlayJumpscare(Sprite[] frames, float fps)
     {
         jumpscareImage.enabled = true;

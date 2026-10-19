@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System;
+using System.Collections;
 using UnityEngine.InputSystem; 
 
 public class GameManager : MonoBehaviour
@@ -207,20 +208,30 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// The temporary lose state for the game. 
-    /// Stops time for the game and enables the lose panel 
-    /// to be seen for the player.
+    /// The temporary lose state for the game.
+    /// Plays the catching mutant's jumpscare, then shows the lose panel.
+    /// Only the first call per run does anything.
     /// </summary>
+    /// <param name="frames">the jumpscare frames of the mutant that caught the player</param>
+    /// <param name="fps">playback speed of the jumpscare frames</param>
+    /// <param name="audio">the jumpscare sound, null until mutants have one</param>
     public void LoseGame(Sprite[] frames, float fps, AudioClip audio)
     {
         if (hasLost) return;
         hasLost = true;
-        StartCouroutine();
+        StartCoroutine(LoseSequence(frames, fps, audio));
     }
 
+    /// <summary>
+    /// Freezes the game and removes player control, waits for the jumpscare
+    /// to finish, then shows the lose panel.
+    /// </summary>
+    /// <param name="frames">the jumpscare frames to play</param>
+    /// <param name="fps">playback speed of the jumpscare frames</param>
+    /// <param name="audio">the jumpscare sound, currently unused</param>
     private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
     {
-        PlayerInstance.GetComponent<PlayerState>.SetPlayerHasControl(false);
+        PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
         Time.timeScale = 0f;
         // for when we have jumpscare audio
         // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
