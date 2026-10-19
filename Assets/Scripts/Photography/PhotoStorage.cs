@@ -14,6 +14,8 @@ public class PhotoStorage : MonoBehaviour
 {
    public static PhotoStorage Instance { get; private set; }
    public static Action<bool> OnStorageChanged;
+   /// <summary>Raised when the player tries to take a photo while storage is full.</summary>
+   public static Action OnPhotoBlocked;
    private readonly List<Photo> photos = new List<Photo>();
    private readonly Dictionary<Photo, QuestionDefinition> assignedQuestions = new();
 

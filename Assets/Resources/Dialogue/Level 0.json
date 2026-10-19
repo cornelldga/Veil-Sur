@@ -6,6 +6,12 @@
           "Okay, you're in the reception of OYO HQ.\nSo nothing illegal yet. Very aboveboard.",
           "I've loaded a few of the basics into your head for a quick systems check. Get to work!"
         ]
+      },
+      "leave-room": {
+        "puzzle": null,
+        "lines": [
+          "Now find a way to leave this room."
+        ]
       }
       // "elevator": {
       //   "puzzle": "elevator",
