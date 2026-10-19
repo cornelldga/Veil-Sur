@@ -14633,7 +14633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6e0d1a2eecb4768ac298f688e6d38f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantInteraction
-  plantSFX: {fileID: 8300000, guid: e2456cb46b1d943eb9f0afad3e6b2292, type: 3}
+  plantSFX: {fileID: 8300000, guid: cdd10de8dd3d04069a65584eee3641db, type: 3}
   interactionParticles: {fileID: 2115743416}
   particleAmount: 10
 --- !u!64 &409006794
@@ -16258,7 +16258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6e0d1a2eecb4768ac298f688e6d38f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantInteraction
-  plantSFX: {fileID: 8300000, guid: e2456cb46b1d943eb9f0afad3e6b2292, type: 3}
+  plantSFX: {fileID: 8300000, guid: cdd10de8dd3d04069a65584eee3641db, type: 3}
   interactionParticles: {fileID: 1802208091}
   particleAmount: 10
 --- !u!64 &531596706
@@ -31754,7 +31754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6e0d1a2eecb4768ac298f688e6d38f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantInteraction
-  plantSFX: {fileID: 8300000, guid: e2456cb46b1d943eb9f0afad3e6b2292, type: 3}
+  plantSFX: {fileID: 8300000, guid: cdd10de8dd3d04069a65584eee3641db, type: 3}
   interactionParticles: {fileID: 1920580862}
   particleAmount: 10
 --- !u!64 &1325965889
@@ -57461,7 +57461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6e0d1a2eecb4768ac298f688e6d38f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantInteraction
-  plantSFX: {fileID: 8300000, guid: e2456cb46b1d943eb9f0afad3e6b2292, type: 3}
+  plantSFX: {fileID: 8300000, guid: cdd10de8dd3d04069a65584eee3641db, type: 3}
   interactionParticles: {fileID: 1753601905}
   particleAmount: 10
 --- !u!64 &2048270782
