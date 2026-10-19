@@ -191,8 +191,6 @@ public class PhotoCameraController : MonoBehaviour
 
     private void OnSnap(InputAction.CallbackContext ctx)
     {
-        StunMutantsInCone();
-
         if (!playerState.GetPhotoMode())
         {
             return;
@@ -201,6 +199,10 @@ public class PhotoCameraController : MonoBehaviour
         {
             HandleStorageFull();
             return;
+        }
+        else
+        {
+            StunMutantsInCone();
         }
 
         if (currentMode == CameraMode.Document && hoveredDocument != null)
