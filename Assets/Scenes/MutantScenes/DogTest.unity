@@ -1616,10 +1616,6 @@ PrefabInstance:
       propertyPath: spotLight
       value: 
       objectReference: {fileID: 410087040}
-    - target: {fileID: 8302148578949936598, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
-      propertyPath: loseAlertAfter
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
