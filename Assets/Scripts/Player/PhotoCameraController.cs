@@ -46,6 +46,8 @@ public class PhotoCameraController : MonoBehaviour
     [Tooltip("Maximum distance the camera is offset while shaking")]
     [SerializeField] private float storageFullShakeMagnitude = 0.1f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip shutterClip;
     [Header("Mutant Stun Settings")]
     [SerializeField] private float maxRadius = 10f; // How far the cone extends
     [Range(0, 360)]
@@ -214,6 +216,7 @@ public class PhotoCameraController : MonoBehaviour
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
+        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
         UIManager.Instance.TakePhoto();
         CreatePhotoNote(photo);
     }
