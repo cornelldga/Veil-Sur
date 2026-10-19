@@ -197,7 +197,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.65
+  m_Height: 1.8
   m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -236,7 +236,7 @@ MonoBehaviour:
   mouseSens: 0.15
   minLookDown: -85
   maxLookUp: 85
-  standHeight: 1.65
+  standHeight: 1.8
   crouchHeight: 0.75
   crouchTransitionSpeed: 15
   ceilingCheckMask:
@@ -269,6 +269,14 @@ MonoBehaviour:
   blurRangePastMax: 2
   storageFullShakeDuration: 0.25
   storageFullShakeMagnitude: 0.1
+  maxRadius: 17.5
+  coneAngle: 60
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!136 &5570794706041152154
 CapsuleCollider:
   m_ObjectHideFlags: 0
