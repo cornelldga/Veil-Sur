@@ -114,7 +114,7 @@ public class TutorialManager : MonoBehaviour
             case 3: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() >= photoCountAtStepStart + 4;
             case 4: return controls.PlayerMovement.TakePicture.WasPerformedThisFrame() && PhotoStorage.Instance.IsPhotoStorageFull();
             case 5: return state == GameManager.GameState.NOTEBOOK;
-            case 6: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.Questions.Any(q => q.Photo != null);
+            case 6: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
             case 7: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
             case 8: return state != GameManager.GameState.NOTEBOOK;
             case 9: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();

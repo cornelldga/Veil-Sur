@@ -50,7 +50,6 @@ public class PhotoStorage : MonoBehaviour
 
 
 
-
    /// <summary>
    /// Returns the number of photos currently held in the storage.
    /// </summary>
@@ -172,6 +171,30 @@ public class PhotoStorage : MonoBehaviour
            Destroy(photo.gameObject);
        }
        return removed;
+   }
+
+   /// <summary>
+   /// Destroys photos and deletes photo storage.
+   /// Called on scene load.
+   /// </summary>
+   public void ClearAll()
+   {
+       foreach (var photo in photos)
+       {
+           if (photo == null) continue;
+           Destroy(photo.ImageTexture);
+           Destroy(photo.gameObject);
+       }
+       foreach (var photo in assignedQuestions.Keys)
+       {
+           if (photo == null) continue;
+           Destroy(photo.ImageTexture);
+           Destroy(photo.gameObject);
+       }
+       photos.Clear();
+       assignedQuestions.Clear();
+       PhotosChanged?.Invoke();
+       IncrementCounter();
    }
 
    /// <summary>
