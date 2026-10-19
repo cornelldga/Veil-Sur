@@ -1,64 +1,39 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
+/// <summary>Requires its linked questions to be solved, then reveals questions after interaction.</summary>
 public abstract class PuzzleInteractable : MonoBehaviour, Interactable
 {
-    //If you don't like serialized fields, feel free to make the code just register the children questions
-    [SerializeField] List<QuestionDefinition> questions = new();
-    [SerializeField] List<PuzzleInteractable> next_puzzles = new();
-    //True if this PuzzleInteractable is supposed to be the first or part of the set of first puzzles that the player is supposed to solve
-    [SerializeField] bool first;
+    [Tooltip("Questions unlocked after this puzzle is successfully interacted with.")]
+    [SerializeField] private QuestionDefinition[] futureQuestions = Array.Empty<QuestionDefinition>();
+    private int questionsRemaining;
 
-    private void Start()
-    {
-        if (first)
-        {
-            foreach (QuestionDefinition q in questions)
-            {
-                InvestigationManager.current_investigation_manager.AddActiveQuestion(q);
-            }
-        }
-    }
+    public IReadOnlyList<QuestionDefinition> FutureQuestions => futureQuestions;
+    public int QuestionsRemaining => questionsRemaining;
+    public bool HasBeenInteractedWith { get; private set; }
+    public event Action<PuzzleInteractable> Interacted;
 
-    public bool IsSolved()
-    {
-        return questions.Count > 0 && questions.All(question => question != null && question.isSolved());
-    }
+    internal void IncreaseQuestionsRemaining() { questionsRemaining++; }
+    internal void DecreaseQuestionsRemaining() { questionsRemaining--; }
+
+    public bool IsSolved() { return questionsRemaining == 0; }
 
     public void Interact()
     {
-        //if we got all the questions solved, we can add the questions from all the next interactables
-        if (IsSolved())
-        {
-            foreach(QuestionDefinition q in questions)
-            {
-                InvestigationManager.current_investigation_manager.RemoveActiveQuestion(q);
-            }
-            foreach(PuzzleInteractable puzzle_interactable in next_puzzles)
-            {
-                foreach(QuestionDefinition q in puzzle_interactable.questions)
-                {
-                    InvestigationManager.current_investigation_manager.AddActiveQuestion(q);
-                }
-            }
-            //notify investigation manager of new questions
-            SuccessBehavior();
-        } else
+        if (!IsSolved())
         {
             FailBehavior();
+            return;
         }
+
+        SuccessBehavior();
+        if (HasBeenInteractedWith) return;
+
+        HasBeenInteractedWith = true;
+        Interacted?.Invoke(this);
     }
 
-    /// <summary>
-    /// Any extra behavior that a PuzzleInteractable does if it is successful
-    /// </summary>
     public abstract void SuccessBehavior();
-
-    /// <summary>
-    /// Any extra behavior that a PuzzleInteractable does if the player doesn't have all questions solved
-    /// </summary>
     public abstract void FailBehavior();
-
-
 }
