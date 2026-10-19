@@ -18,6 +18,7 @@ public class SaveManager : MonoBehaviour
     [System.Serializable]
     public class SaveData
     {
+        public int levelNumber;
         public Vector3 playerPosition;
         public List<PhotoSaveData> photos = new();
     }
@@ -149,5 +150,22 @@ public class SaveManager : MonoBehaviour
     private void OnLoad(InputAction.CallbackContext ctx)
     {
         LoadGame();
+    }
+
+    /// <summary>
+    /// Returns true if there is already a save for the current level.
+    /// </summary>
+    public bool HasCurrentLevelSave()
+    {
+        if (!File.Exists(savePath))
+            return false;
+
+        string json = File.ReadAllText(savePath);
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+        if (data == null)
+            return false;
+
+        return data.levelNumber == GameManager.Instance.CurrentLevel();
     }
 }

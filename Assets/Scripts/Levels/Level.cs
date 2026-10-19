@@ -14,5 +14,10 @@ public class Level : MonoBehaviour
     private void Awake()
     {
         current_level = this;
+
+        if (!SaveManager.Instance.HasCurrentLevelSave())
+        {
+            SaveManager.Instance.SaveGame();
+        }
     }
 }

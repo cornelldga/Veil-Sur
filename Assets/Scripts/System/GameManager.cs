@@ -22,6 +22,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool isDebugMode = false;
     [SerializeField] GameObject losePanel;
 
+    [Header("Level Info")]
+    private int currentLevelIndex;
+    [SerializeField] Scene[] levels;
+
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
 
@@ -232,5 +236,60 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// Returns the index of the current level in the levels array.
+    /// Returns -1 if the current scene is not a gameplay level.
+    /// </summary>
+    public int CurrentLevel()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        for (int i = 0; i < levels.Length; i++)
+        {
+            if (levels[i].name == currentScene)
+                return i;
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// To be called by levels when they are done, asking the game to load the next level.
+    /// </summary>
+    public void NextLevel()
+    {
+        int current = CurrentLevel();
+
+        if (current == -1)
+        {
+            Debug.LogError("Current scene is not registered in the levels array.");
+            return;
+        }
+
+        int next = current + 1;
+
+        if (next >= levels.Length)
+        {
+            Debug.Log("Last level completed.");
+            // TODO: Load credits, win screen, main menu, etc.
+            return;
+        }
+
+        GoToLevel(levels[next].name);
+    }
+
+    /// <summary>
+    /// Loads a level based on the index.
+    /// </summary>
+    public void LoadLevel(int levelNumber)
+    {
+        if (levelNumber < 0 || levelNumber >= levels.Length)
+        {
+            Debug.LogError($"Level index {levelNumber} is out of range.");
+            return;
+        }
+
+        GoToLevel(levels[levelNumber].name);
+    }
+
 }
