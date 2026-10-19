@@ -18,6 +18,7 @@ public class MutantBillboard : MonoBehaviour
     private static readonly int IsMovingParam = Animator.StringToHash("IsMoving");
     private static readonly int IsAlertParam = Animator.StringToHash("IsAlert");
     private static readonly int IsNoticingParam = Animator.StringToHash("IsNoticing");
+    private static readonly int IsStunnedParam = Animator.StringToHash("IsStunned");
 
     [Tooltip("Agent speed above which the mutant counts as moving")]
     [SerializeField] private float moveThreshold = 0.1f;
@@ -58,6 +59,8 @@ public class MutantBillboard : MonoBehaviour
         animator.SetBool(IsMovingParam, agent.velocity.magnitude > moveThreshold);
         animator.SetBool(IsAlertParam, searchlight.CurrentState == EnemySearchlight.AlertState.Alert);
         animator.SetBool(IsNoticingParam, mover.IsNoticePausing);
+        animator.SetBool(IsStunnedParam, searchlight.CurrentState == EnemySearchlight.AlertState.Stun);
+
     }
 
     /// <summary>
