@@ -21,10 +21,10 @@ public class PlantInteraction : MonoBehaviour, Interactable
 
     public void Start()
     {
-        if (interactionParticles != null)
-        {
-            interactionParticles.Stop();
-        }
+        // if (interactionParticles != null)
+        // {
+        //     interactionParticles.Stop();
+        // }
     }
     public void Interact()
     {
