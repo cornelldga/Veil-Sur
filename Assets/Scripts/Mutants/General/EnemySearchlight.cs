@@ -6,7 +6,7 @@ using UnityEngine;
 public enum Priority {Sight = 0, Sound = 1, Smell = 2, None = 999}
 public class EnemySearchlight : MonoBehaviour
 {
-    public enum AlertState { Patrol, Suspicious, Alert, LookAround }
+    public enum AlertState { Patrol, Suspicious, Alert, LookAround, Stun }
 
     [Header("Target")]
     protected Transform player;
@@ -34,11 +34,16 @@ public class EnemySearchlight : MonoBehaviour
     /** Number of times a mutant looks around after losing LOS during chase or hearing a sound */
     [SerializeField] protected int investigateCount = 3; 
 
+    [Header("Stun Settings")]
+    [SerializeField] protected float stunDuration = 1f; // How long stun lasts
+    [SerializeField] protected float stunCooldown = 10f; // Time between stuns
+
     [Header("Visuals")]
     [SerializeField] protected Light spotLight;
     protected Color patrolColor = Color.green;
     protected Color suspiciousColor = new Color(1f, 0.85f, 0f);
     protected Color alertColor = Color.red;
+    protected Color stunColor = Color.pink;
 
     [Header("Cone Mesh (visible in Game view)")]
     [SerializeField] protected bool showConeMesh = true;
@@ -61,6 +66,7 @@ public class EnemySearchlight : MonoBehaviour
     protected float detectionMeter;
     protected float timesLookedAround; // How many times the mutant already looked around in investigate state.
     protected float lastSeenTimer;
+    protected float timeSinceLastStun; // How long since the mutant was last stunned
     protected Priority currentPriority = Priority.None;
 
     protected Vector3 lastPosition; // Used to determine where to face while moving
@@ -167,7 +173,7 @@ public class EnemySearchlight : MonoBehaviour
 
     protected virtual void UpdateAlertState(bool canSeePlayer)
     {
-        
+        // Debug.Log("Last seen timer: " +lastSeenTimer);
         if (canSeePlayer || (CurrentState == AlertState.Alert && IsProximityDetected()))
         {
             lastSeenTimer = 0f;
@@ -184,6 +190,9 @@ public class EnemySearchlight : MonoBehaviour
         }
 
         detectionMeter = Mathf.Clamp(detectionMeter, 0f, timeToAlert);
+
+        // Update stun timer
+        timeSinceLastStun += Time.deltaTime;
 
         switch (CurrentState)
         {
@@ -222,6 +231,21 @@ public class EnemySearchlight : MonoBehaviour
                     Debug.Log("Resuming patrol");
                 }
                 break;
+            case AlertState.Stun:
+                if (timeSinceLastStun >= stunDuration)
+                {
+                    if (LastKnownPlayerPosition != null)
+                    {
+                        SetState(AlertState.Suspicious);
+                        ReportSense(LastKnownPlayerPosition, Priority.Sight);
+                    }
+                    else
+                    {
+                        SetState(AlertState.Patrol);
+                    }
+                    
+                }
+                break;
         }
     }
 
@@ -232,7 +256,8 @@ public class EnemySearchlight : MonoBehaviour
     /// <param name="position">World position the player is believed to be at.</param>
     public virtual void ReportSense(Vector3 position, Priority priority)
     {
-        if (CurrentState == AlertState.Alert || priority > currentPriority) return;
+        if (CurrentState == AlertState.Alert || 
+        CurrentState == AlertState.Stun || priority > currentPriority) return;
 
         LastKnownPlayerPosition = position;
         detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
@@ -319,6 +344,15 @@ public class EnemySearchlight : MonoBehaviour
     // Chat helped make the cone color stuff prettier
     protected virtual Color GetDetectionColor()
     {
+        if (CurrentState == AlertState.Alert)
+        {
+            return alertColor;
+        }
+        if (CurrentState == AlertState.Stun)
+        {
+            return stunColor;
+        }
+
         if (detectionMeter <= timeToSuspicious)
         {
             float t = Mathf.InverseLerp(
@@ -362,7 +396,22 @@ public class EnemySearchlight : MonoBehaviour
     /// <returns>Whether the player is within proximityDetection distance from this mutant.</returns>
     public bool IsProximityDetected()
     {
-        Debug.Log(distanceToPlayer);
+        // Debug.Log("Distance to player: " + distanceToPlayer);
         return distanceToPlayer <= proximityDetection;
+    }
+
+    /// <summary>
+    /// Called on camera flash to stun the mutant during chase. 
+    /// </summary>
+    public void Stun()
+    {
+        if ((CurrentState == AlertState.Alert || CurrentState == AlertState.Suspicious)
+        && timeSinceLastStun >= stunCooldown + stunDuration)
+        {
+            Debug.Log("Successful stun!");
+            timeSinceLastStun = 0;
+            SetState(AlertState.Stun);
+            ResetSuspicion();
+        }
     }
 }
