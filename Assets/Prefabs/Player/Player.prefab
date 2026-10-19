@@ -243,6 +243,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   playerCamera: {fileID: 827428221439690476}
+  crouchClip: {fileID: 8300000, guid: 2da580f5d2bc245828a4e0c962d75ba4, type: 3}
 --- !u!114 &3942358293781664924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,6 +270,7 @@ MonoBehaviour:
   blurRangePastMax: 2
   storageFullShakeDuration: 0.25
   storageFullShakeMagnitude: 0.1
+  shutterClip: {fileID: 8300000, guid: 2a5906470f95e4dcdacd7761937ab0ec, type: 3}
   maxRadius: 17.5
   coneAngle: 60
   targetMask:
@@ -358,6 +360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcfbabe74aedd5b4f81d5d4ce043efb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NotebookController
+  notebookOpenClip: {fileID: 8300000, guid: 6b20c84fbe1cd4f84acad3c160e6d956, type: 3}
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0

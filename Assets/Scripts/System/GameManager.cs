@@ -125,6 +125,9 @@ public class GameManager : MonoBehaviour
             SetState(GameState.MAIN_MENU);        // entering the title scene
         else if (_state == GameState.MAIN_MENU)
             SetState(GameState.DEFAULT);          // leaving the title scene
+
+        // Each scene starts with empty photo storage, remove this if you want to keep photos between scenes
+        if (PhotoStorage.Instance != null) PhotoStorage.Instance.ClearAll();
     }
 
     private void Update()
