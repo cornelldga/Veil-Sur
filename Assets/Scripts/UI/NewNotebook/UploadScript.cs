@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -17,16 +18,16 @@ public class UploadScript : MonoBehaviour
     }
     public void Upload()
     {
-        int submitted = 0;
-        AllCorrect = true;
-        foreach (var question in UIManager.Instance.Notebook.Questions)
+        var questions = UIManager.Instance.Notebook.QuestionSlots
+            .Where(slot => slot.isActiveAndEnabled && slot.Definition != null)
+            .Select(slot => slot.Definition)
+            .ToArray();
+        AllCorrect = questions.Length > 0;
+        foreach (var question in questions)
         {
-            if (!question.isActiveAndEnabled) continue;
-            submitted++;
             question.Verify();
             AllCorrect &= question.IsCorrect;
         }
-        AllCorrect &= submitted > 0;
         if (AllCorrect) onAllCorrect.Invoke();
     }
     private void OnDestroy()
