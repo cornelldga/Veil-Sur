@@ -59,7 +59,9 @@ public class MutantBillboard : MonoBehaviour
         animator.SetBool(IsMovingParam, agent.velocity.magnitude > moveThreshold);
         animator.SetBool(IsAlertParam, searchlight.CurrentState == EnemySearchlight.AlertState.Alert);
         animator.SetBool(IsNoticingParam, mover.IsNoticePausing);
-        animator.SetBool(IsStunnedParam, searchlight.CurrentState == EnemySearchlight.AlertState.Stun);
+        animator.SetBool(IsStunnedParam, 
+        (searchlight.CurrentState == EnemySearchlight.AlertState.Stun) 
+        || (searchlight.CurrentState == EnemySearchlight.AlertState.Idle && agent.velocity.magnitude <= moveThreshold));
 
     }
 

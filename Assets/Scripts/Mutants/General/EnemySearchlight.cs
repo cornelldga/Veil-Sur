@@ -129,16 +129,17 @@ public class EnemySearchlight : MonoBehaviour
 
         // Flatten the Y-axis if you don't want the object tilting up/down on slopes
         // direction.y = 0; 
-        if (CurrentState == AlertState.Idle) 
-        {
-            Quaternion targetRotation = Quaternion.Euler(0, idleFacingYAngle, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
-        }
-        else if (direction.sqrMagnitude > 0.000001f)
+        
+        if (direction.sqrMagnitude > 0.000001f)
         {
             // Smoothly rotate towards the target direction
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             // transform.rotation = targetRotation;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
+        }
+        else if (CurrentState == AlertState.Idle) 
+        {
+            Quaternion targetRotation = Quaternion.Euler(0, idleFacingYAngle, 0);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
         }
 
