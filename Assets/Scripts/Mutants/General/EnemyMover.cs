@@ -5,6 +5,9 @@ using UnityEngine.Serialization;
 /// </summary>
 public class EnemyMover : MonoBehaviour
 {
+    [Header("Idle")]
+    [SerializeField] protected Vector3 idlePosition;
+
     [Header("Patrol")]
     [SerializeField] protected Transform[] patrolPoints;
     [SerializeField] protected float patrolSpeed = 2f;
@@ -69,6 +72,9 @@ public class EnemyMover : MonoBehaviour
         
         switch (searchlight.CurrentState)
         {
+            case EnemySearchlight.AlertState.Idle:
+                agent.SetDestination(idlePosition);
+                break;
             case EnemySearchlight.AlertState.Patrol:
                 Patrol();
                 break;

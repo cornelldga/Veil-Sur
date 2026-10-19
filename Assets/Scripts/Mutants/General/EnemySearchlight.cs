@@ -6,12 +6,15 @@ using UnityEngine;
 public enum Priority {Sight = 0, Sound = 1, Smell = 2, None = 999}
 public class EnemySearchlight : MonoBehaviour
 {
-    public enum AlertState { Patrol, Suspicious, Alert, LookAround, Stun }
+    public enum AlertState { Idle, Patrol, Suspicious, Alert, LookAround, Stun }
 
     [Header("Target")]
     protected Transform player;
     [SerializeField] protected LayerMask obstacleMask;
     [SerializeField] protected LayerMask playerMask;
+
+    [Header("Idle Behavior")]
+    [SerializeField] protected float idleFacingYAngle = 0f;
 
     [Header("Vision Cone")]
     [SerializeField] protected float viewDistance = 10f;
@@ -72,7 +75,7 @@ public class EnemySearchlight : MonoBehaviour
     protected Vector3 lastPosition; // Used to determine where to face while moving
 
 
-    protected void Start()
+    protected virtual void Start()
     {
         player = GameManager.PlayerInstance.transform;
         baseFacingAngle = transform.eulerAngles.y;
@@ -126,8 +129,12 @@ public class EnemySearchlight : MonoBehaviour
 
         // Flatten the Y-axis if you don't want the object tilting up/down on slopes
         // direction.y = 0; 
-
-        if (direction.sqrMagnitude > 0.000001f)
+        if (CurrentState == AlertState.Idle) 
+        {
+            Quaternion targetRotation = Quaternion.Euler(0, idleFacingYAngle, 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
+        }
+        else if (direction.sqrMagnitude > 0.000001f)
         {
             // Smoothly rotate towards the target direction
             Quaternion targetRotation = Quaternion.LookRotation(direction);
@@ -196,7 +203,8 @@ public class EnemySearchlight : MonoBehaviour
 
         switch (CurrentState)
         {
-            case AlertState.Patrol:
+            case AlertState.Idle :
+            case AlertState.Patrol :
                 if (detectionMeter >= timeToSuspicious) SetState(AlertState.Suspicious);
                 break;
 
@@ -217,7 +225,7 @@ public class EnemySearchlight : MonoBehaviour
                     // GetComponent<EnemyMover>()
                     //     .RegisterDetectionEvent(LastKnownPlayerPosition);
                     SetState(AlertState.Suspicious);
-                    ReportSense(LastKnownPlayerPosition, Priority.Sight);
+                    ReportSense(LastKnownPlayerPosition, Priority.Sight, "Player");
                 }
                 break;
             case AlertState.LookAround:
@@ -237,7 +245,7 @@ public class EnemySearchlight : MonoBehaviour
                     if (LastKnownPlayerPosition != null)
                     {
                         SetState(AlertState.Suspicious);
-                        ReportSense(LastKnownPlayerPosition, Priority.Sight);
+                        ReportSense(LastKnownPlayerPosition, Priority.Sight, "Player");
                     }
                     else
                     {
@@ -254,7 +262,9 @@ public class EnemySearchlight : MonoBehaviour
     /// Raises Patrol to Suspicious and pins the meter there. Never escalates to Alert; only sight does.
     /// </summary>
     /// <param name="position">World position the player is believed to be at.</param>
-    public virtual void ReportSense(Vector3 position, Priority priority)
+    /// <param name="priority">Type of sense detected.</param>
+    /// <param name="position">Name of the source. Used only in special cases.</param>
+    public virtual void ReportSense(Vector3 position, Priority priority, string source)
     {
         if (CurrentState == AlertState.Alert || 
         CurrentState == AlertState.Stun || priority > currentPriority) return;
