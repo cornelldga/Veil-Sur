@@ -9343,6 +9343,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 418260665}
     - target: {fileID: 7000000000000000300, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
+      propertyPath: m_Name
+      value: EnlargedPhotoOverlay
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000000000000300, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

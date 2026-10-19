@@ -62,8 +62,7 @@ public class QuestionNote : MonoBehaviour
     {
         if (questionLabel != null) questionLabel.text = QuestionText;
         if (feedbackLabel != null) feedbackLabel.text = FeedbackText;
-        if (resultGraphic != null)
-            resultGraphic.color = !HasBeenUploaded ? originalColor : IsCorrect ? Color.green : Color.red;
+        if (resultGraphic != null) resultGraphic.color = IsCorrect ? Color.green : originalColor;
         AnswerChanged?.Invoke();
     }
 }

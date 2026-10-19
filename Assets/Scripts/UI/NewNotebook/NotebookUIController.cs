@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,7 @@ public class NotebookUIController : MonoBehaviour
     [Header("Photo Preview")]
     [SerializeField] private GameObject photoPreview;
     [SerializeField] private RawImage photoPreviewImage;
+    [SerializeField] private TextMeshProUGUI numberCorrectText;
     private readonly Queue<QuestionDefinition> pendingQuestions = new();
     private readonly HashSet<PuzzleInteractable> puzzles = new();
 
@@ -129,6 +131,8 @@ public class NotebookUIController : MonoBehaviour
         question.Solved += OnQuestionSolved;
         slot.Bind(question);
         slot.gameObject.SetActive(true);
+        numberCorrectText.text = "LINKS INCORRECT";
+        
         return true;
     }
 }
