@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcfbabe74aedd5b4f81d5d4ce043efb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NotebookController
-  notebookOpenClip: {fileID: 8300000, guid: af53f9f1f03b34dd1a7ebec42f4a5ec8, type: 3}
+  notebookOpenClip: {fileID: 8300000, guid: 6b20c84fbe1cd4f84acad3c160e6d956, type: 3}
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0
