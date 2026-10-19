@@ -10647,6 +10647,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StorageIndicator
   notFullSprite: {fileID: 0}
   fullSprite: {fileID: 21300000, guid: 275549f32b406ec4cad0f991e70058e1, type: 3}
+--- !u!1 &93181556 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+  m_PrefabInstance: {fileID: 1254275448}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &102142329 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+  m_PrefabInstance: {fileID: 1156285407}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &118826356
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14606,6 +14616,46 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &409006790 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+  m_PrefabInstance: {fileID: 514412569}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &409006793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409006790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa6e0d1a2eecb4768ac298f688e6d38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantInteraction
+  plantSFX: {fileID: 8300000, guid: e2456cb46b1d943eb9f0afad3e6b2292, type: 3}
+--- !u!64 &409006794
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409006790}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -805239033701561478, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -16000,7 +16050,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 409006793}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 409006794}
   m_SourcePrefab: {fileID: 100100000, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!43 &525641152
 Mesh:
@@ -16185,6 +16241,41 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
   m_PrefabInstance: {fileID: 1254275448}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &531596705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93181556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa6e0d1a2eecb4768ac298f688e6d38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantInteraction
+  plantSFX: {fileID: 8300000, guid: e2456cb46b1d943eb9f0afad3e6b2292, type: 3}
+--- !u!64 &531596706
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93181556}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -805239033701561478, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!1 &550856900
 GameObject:
   m_ObjectHideFlags: 0
@@ -23477,7 +23568,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1325965889}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1325965888}
   m_SourcePrefab: {fileID: 100100000, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!43 &714510289
 Mesh:
@@ -24853,9 +24950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09dbd0c7b42f4bdcabffd2099aa6e21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
-  questions: []
-  next_puzzles: []
-  first: 0
+  futureQuestions: []
 --- !u!64 &1023528780
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -25978,7 +26073,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2048270782}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2048270781}
   m_SourcePrefab: {fileID: 100100000, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!1 &1159626178
 GameObject:
@@ -26653,7 +26754,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 531596706}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 531596705}
   m_SourcePrefab: {fileID: 100100000, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!1 &1255136533
 GameObject:
@@ -31614,6 +31721,46 @@ Transform:
   - {fileID: 231927381}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1325965885 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+  m_PrefabInstance: {fileID: 710601534}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1325965888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325965885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa6e0d1a2eecb4768ac298f688e6d38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantInteraction
+  plantSFX: {fileID: 8300000, guid: e2456cb46b1d943eb9f0afad3e6b2292, type: 3}
+--- !u!64 &1325965889
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325965885}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -805239033701561478, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!1 &1336353441
 GameObject:
   m_ObjectHideFlags: 0
@@ -42602,6 +42749,41 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
   m_PrefabInstance: {fileID: 1156285407}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2048270781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102142329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa6e0d1a2eecb4768ac298f688e6d38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantInteraction
+  plantSFX: {fileID: 8300000, guid: e2456cb46b1d943eb9f0afad3e6b2292, type: 3}
+--- !u!64 &2048270782
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102142329}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -805239033701561478, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!43 &2066449765
 Mesh:
   m_ObjectHideFlags: 0
