@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
+    private bool hasLost = false;
 
     public void SetMouseSensitivity(float value)
     {
@@ -207,11 +208,23 @@ public class GameManager : MonoBehaviour
     /// Stops time for the game and enables the lose panel 
     /// to be seen for the player.
     /// </summary>
-    public void LoseGame()
+    public void LoseGame(Sprite[] frames, float fps, AudioClip audio)
     {
-        losePanel.SetActive(true);
+        if (hasLost) return;
+        hasLost = true;
+        StartCouroutine();
+    }
+
+    private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
+    {
+        PlayerInstance.GetComponent<PlayerState>.SetPlayerHasControl(false);
         Time.timeScale = 0f;
-        PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
+        // for when we have jumpscare audio
+        // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+
+        yield return UIManager.Instance.PlayJumpscare(frames, fps);
+
+        losePanel.SetActive(true);
     }
 
     /// <summary>

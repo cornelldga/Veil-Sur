@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Reflection;
 
 public class UIManager : MonoBehaviour
 {
@@ -26,6 +27,9 @@ public class UIManager : MonoBehaviour
 
     [Tooltip("Assign your Canvas (or a child of it). Screens spawn under this.")]
     [SerializeField] private Transform screenRoot;
+
+    [Header("Jumpscare")]
+    [SerializeField] private Image jumpscareImage;
 
     // Runtime instances, created once and kept for the manager's lifetime
     public UIScreen MainMenu { get; private set; }
@@ -279,6 +283,23 @@ public class UIManager : MonoBehaviour
         //puts white  overlay over and then fades it out to simulate a camera snap
         snapOverlay.canvasRenderer.SetAlpha(.5f);
         snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="frames"></param>
+    /// <param name="fps"></param>
+    /// <returns></returns>
+    public IEnumerator PlayJumpscare(Sprite[] frames, float fps)
+    {
+        jumpscareImage.enabled = true;
+        foreach (Sprite frame in frames)
+        {
+            jumpscareImage.sprite = frame;
+            yield return new WaitForSecondsRealtime(1f / fps);
+        }
+
     }
 
     // /// <summary>
