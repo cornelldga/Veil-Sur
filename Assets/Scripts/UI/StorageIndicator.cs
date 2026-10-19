@@ -1,49 +1,71 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Swaps the storage indicator image between a "not full" and a "full" sprite
-/// whenever the photo storage changes.
+/// Shows the storage-full image and "Error camera full" text briefly after the player
+/// tries to take a photo while photo storage is full. Hidden otherwise.
 /// </summary>
 [RequireComponent(typeof(Image))]
 public class StorageIndicator : MonoBehaviour
 {
-    [Tooltip("Sprite shown while photo storage has space")]
-    [SerializeField] private Sprite notFullSprite;
-    [Tooltip("Sprite shown when photo storage is full")]
+    [Tooltip("Sprite shown when a photo is blocked because storage is full")]
     [SerializeField] private Sprite fullSprite;
+    [Tooltip("Child text shown when a photo is blocked because storage is full")]
+    [SerializeField] private TextMeshProUGUI errorText;
+    [Tooltip("Seconds the error stays visible after a blocked photo attempt")]
+    [SerializeField] private float errorDuration = 1.5f;
 
     private Image image;
+    private Coroutine errorRoutine;
 
     private void Awake()
     {
         image = GetComponent<Image>();
-    }
-
-    private void Start()
-    {
-        UpdateSprite(PhotoStorage.Instance.IsPhotoStorageFull());
+        image.sprite = fullSprite;
+        Hide();
     }
 
     private void OnEnable()
     {
-        PhotoStorage.OnStorageChanged += UpdateSprite;
+        PhotoStorage.OnPhotoBlocked += ShowError;
     }
 
     private void OnDisable()
     {
-        PhotoStorage.OnStorageChanged -= UpdateSprite;
+        PhotoStorage.OnPhotoBlocked -= ShowError;
+        Hide();
     }
 
     /// <summary>
-    /// Shows the full sprite or the not-full sprite.
+    /// Shows the full image and error text for a short time after a blocked photo attempt.
     /// </summary>
-    /// <param name="isFull"> true if photo storage is at max capacity.</param>
-    private void UpdateSprite(bool isFull)
+    private void ShowError()
     {
-        image.sprite = isFull ? fullSprite : notFullSprite;
+        image.color = Color.white;
+        if (errorText != null)
+        {
+            errorText.text = "Error camera full";
+            errorText.enabled = true;
+        }
+        if (errorRoutine != null) StopCoroutine(errorRoutine);
+        errorRoutine = StartCoroutine(HideErrorAfterDelay());
+    }
 
-        //uncomment if want no image for storage not full
-        image.color = isFull ? Color.white : Color.clear;
+    private IEnumerator HideErrorAfterDelay()
+    {
+        yield return new WaitForSeconds(errorDuration);
+        Hide();
+    }
+
+    /// <summary>
+    /// Hides the image and error text.
+    /// </summary>
+    private void Hide()
+    {
+        image.color = Color.clear;
+        if (errorText != null) errorText.enabled = false;
+        errorRoutine = null;
     }
 }
