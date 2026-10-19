@@ -2,16 +2,15 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>Displays, selects, and drags one stored photo.</summary>
+/// <summary>Displays, previews, and drags one stored photo.</summary>
 [RequireComponent(typeof(Button))]
 [DefaultExecutionOrder(-10)]
-public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPhotoDragSource
+public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler, IPhotoDragSource
 {
     [Tooltip("Photo preview belonging to this slot prefab.")]
     [SerializeField] private RawImage preview;
     private Button button;
     private AspectRatioFitter fitter;
-    private PhotoTabScript photoTab;
     private readonly PhotoDragPreview drag = new();
     private int storageSlot;
 
@@ -22,13 +21,11 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         button = GetComponent<Button>();
         fitter = preview.GetComponent<AspectRatioFitter>();
-        button.onClick.AddListener(Select);
         SetPhoto(null);
     }
 
-    public void Initialize(PhotoTabScript tab, int slot)
+    public void Initialize(int slot)
     {
-        photoTab = tab;
         storageSlot = slot;
     }
 
@@ -44,12 +41,15 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (preview.texture != null) fitter.aspectRatio = (float)preview.texture.width / preview.texture.height;
     }
 
-    private void Select() { photoTab.SelectPhoto(Photo); }
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left && eventData.clickCount == 2)
+            UIManager.Instance.Notebook.ShowPhotoPreview(Photo);
+    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (eventData.button != PointerEventData.InputButton.Left || Photo == null) return;
-        Select();
         drag.Begin(Photo, preview, eventData);
     }
 
@@ -67,9 +67,4 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData) { drag.End(); }
     private void OnDisable() { drag.End(); }
-    private void OnDestroy()
-    {
-        if (button != null) button.onClick.RemoveListener(Select);
-    }
-
 }

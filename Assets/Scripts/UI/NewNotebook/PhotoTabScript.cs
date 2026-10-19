@@ -25,13 +25,12 @@ public class PhotoTabScript : MonoBehaviour
 
     public bool IsOpen { get; private set; }
     public int SlotCount => slots.Length;
-    public Photo SelectedPhoto { get; private set; }
 
     private void Start()
     {
         openedToggle.onClick.AddListener(Close);
         closedToggle.onClick.AddListener(Open);
-        for (int i = 0; i < slots.Length; i++) slots[i].Initialize(this, i);
+        for (int i = 0; i < slots.Length; i++) slots[i].Initialize(i);
         SetOpen(startsOpen);
         storage = PhotoStorage.Instance;
         if (storage != null) storage.PhotosChanged += Refresh;
@@ -59,15 +58,9 @@ public class PhotoTabScript : MonoBehaviour
         photoPanel.gameObject.SetActive(open);
     }
 
-    public void SelectPhoto(Photo photo)
-    {
-        SelectedPhoto = photo;
-    }
-
     public void Refresh()
     {
         var photos = storage != null ? storage.Photos : null;
-        if (SelectedPhoto != null && !storage.Contains(SelectedPhoto)) SelectedPhoto = null;
         for (int i = 0; i < slots.Length; i++)
         {
             var photo = photos != null && i < photos.Count ? photos[i] : null;
