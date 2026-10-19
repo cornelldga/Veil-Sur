@@ -23,7 +23,7 @@ public class TutorialManager : MonoBehaviour
         "Hold shift to sprint.",
         "Right click to aim your camera, and left click to take a photo!",
         "Take four more photos of objects around the room!",
-        "Try to take one more photo, your storage is full!",
+        // "Try to take one more photo, your storage is full!",
         // "Press tab to open your notebook.",
         //COMMENTED OUT FOR TETSING PURPOSES ADD BACK ONCE TUTORIAL PUZZLE IS COMPLETE
         //can't progress without anything in notebook
@@ -119,7 +119,7 @@ public class TutorialManager : MonoBehaviour
             case 1: return controls.PlayerMovement.Sprint.IsPressed();
             case 2: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
             case 3: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() >= photoCountAtStepStart + 4;
-            case 4: return controls.PlayerMovement.TakePicture.WasPerformedThisFrame() && PhotoStorage.Instance.IsPhotoStorageFull();
+            // case 4: return controls.PlayerMovement.TakePicture.WasPerformedThisFrame() && PhotoStorage.Instance.IsPhotoStorageFull();
             // case 5: return state == GameManager.GameState.NOTEBOOK;
             // case 6: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
             // case 7: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;

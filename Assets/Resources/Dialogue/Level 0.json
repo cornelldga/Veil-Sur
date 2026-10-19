@@ -10,7 +10,8 @@
       "leave-room": {
         "puzzle": null,
         "lines": [
-          "Now find a way to leave this room."
+          "Great job!",
+          "Now find a way to leave this room  "
         ]
       }
       // "elevator": {

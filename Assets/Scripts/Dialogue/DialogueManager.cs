@@ -40,6 +40,7 @@ public class DialogueManager : MonoBehaviour {
     private HashSet<string> played = new HashSet<string>();
     private int currentLine = 0; //index
     private bool isDialogueActive = false;
+    private int startedFrame = -1; //the frame a dialogue opened on, so the click that triggered it doesn't skip a line
 
     /// <summary>
     /// Sets up the singleton instance
@@ -83,6 +84,7 @@ public class DialogueManager : MonoBehaviour {
         currentSection = section;
         currentLine = 0;
         isDialogueActive = true;
+        startedFrame = Time.frameCount;
 
         ShowDialogue();
         DisplayCurrentLine();
@@ -145,7 +147,7 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void Update()
     {
-        if (!isDialogueActive) return;
+        if (!isDialogueActive || Time.frameCount == startedFrame) return;
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             NextLine();
