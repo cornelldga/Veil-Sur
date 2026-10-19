@@ -76,13 +76,8 @@ public class ElevatorController : MonoBehaviour
     [Tooltip("How fast the light is moving per sweep. Linear movement")]
     [SerializeField] private AnimationCurve sweepCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 
-    // [Header("SFX")]
-    // [SerializeField] private AudioSource sfxSource;
-    // [SerializeField] private AudioClip doorCloseSfx;
-    // [SerializeField] private AudioClip sweepSfx;
-    // [SerializeField] private AudioSource rideLoopSource;
-    // [SerializeField] private float rideLoopMinPitch = 0.8f;
-    // [SerializeField] private float rideLoopMinVolume = 0.4f;
+    [Header("SFX")]
+    [SerializeField] private AudioClip rideSfx;
 
     private State state;
     private ElevatorDirection? queuedFloor;
@@ -186,6 +181,8 @@ public class ElevatorController : MonoBehaviour
             shaftLight.position = lightBottom.position;
             shaftLight.gameObject.SetActive(true);
         }
+
+        AudioManager.Instance.PlaySfxAtPosition(rideSfx, transform.position);
 
         int lastSweep = -1;
 

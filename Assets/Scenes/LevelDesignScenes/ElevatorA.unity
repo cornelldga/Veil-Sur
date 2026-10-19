@@ -13031,7 +13031,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6754540749796627215, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7450253034250995934, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16501,48 +16501,6 @@ MonoBehaviour:
   startOpen: 1
   doorOpenCloseDelay: 3
   rideDuration: 8
-  rideSpeedCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.3
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.7
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   shaftLight: {fileID: 1531018329}
   lightBottom: {fileID: 722542791}
   lightTop: {fileID: 1211083980}
@@ -16571,12 +16529,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  sfxSource: {fileID: 0}
-  doorCloseSfx: {fileID: 8300000, guid: e3c3a83be5d5f4e4e9bc7ebee3ae437c, type: 3}
-  sweepSfx: {fileID: 8300000, guid: e3c3a83be5d5f4e4e9bc7ebee3ae437c, type: 3}
-  rideLoopSource: {fileID: 2078817521}
-  rideLoopMinPitch: 0.8
-  rideLoopMinVolume: 0.4
+  rideSfx: {fileID: 8300000, guid: e3c3a83be5d5f4e4e9bc7ebee3ae437c, type: 3}
 --- !u!1 &598332707
 GameObject:
   m_ObjectHideFlags: 0
@@ -42926,11 +42879,6 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!82 &2078817521 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 6754540749796627215, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
-  m_PrefabInstance: {fileID: 250352875}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2133210911 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5546934702508371156, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
