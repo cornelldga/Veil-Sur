@@ -167,10 +167,11 @@ public class EnemySearchlight : MonoBehaviour
 
     protected virtual void UpdateAlertState(bool canSeePlayer)
     {
-        // Debug.Log("Last seen timer: " +lastSeenTimer);
+        
         if (canSeePlayer || (CurrentState == AlertState.Alert && IsProximityDetected()))
         {
             lastSeenTimer = 0f;
+            LastKnownPlayerPosition = player.position;
             float proximity = Mathf.Clamp01(1f - distanceToPlayer / viewDistance);
             float multiplier = 1f + proximity * (maxDetectionMultiplier - 1f);
 
@@ -192,7 +193,7 @@ public class EnemySearchlight : MonoBehaviour
 
             case AlertState.Suspicious:
                 if (detectionMeter >= timeToAlert) SetState(AlertState.Alert);
-                else if (GetComponent<EnemyMover>().ReachedSuspicionTarget() && detectionMeter <= 0f) {
+                else if (GetComponent<EnemyMover>().ReachedDestination() && detectionMeter <= 0f) {
                     SetState(AlertState.LookAround);
                     GetComponent<EnemyMover>().StartLookAround();
                     ResetSuspicion();
@@ -200,9 +201,10 @@ public class EnemySearchlight : MonoBehaviour
                 break;
 
             case AlertState.Alert:
-                if (!canSeePlayer && lastSeenTimer >= loseAlertAfter)
+                // Arriving at the last known spot ends the chase too, so the mutant never idles out the timer there.
+                bool lostPlayer = lastSeenTimer > 0f;
+                if (lostPlayer && (lastSeenTimer >= loseAlertAfter || GetComponent<EnemyMover>().ReachedDestination()))
                 {
-                    Debug.Log("Lost sight of player, investigating last known position");
                     // GetComponent<EnemyMover>()
                     //     .RegisterDetectionEvent(LastKnownPlayerPosition);
                     SetState(AlertState.Suspicious);
@@ -242,11 +244,12 @@ public class EnemySearchlight : MonoBehaviour
     protected void SetState(AlertState newState)
     {
         if (CurrentState == newState) return;
+        AlertState previousState = CurrentState;
         CurrentState = newState;
         // Debug.Log(newState);
 
         if (newState == AlertState.Patrol) sweepTimer = 0f;
-        else if (newState == AlertState.LookAround) timesLookedAround = 0;
+        else if (newState == AlertState.Suspicious && previousState != AlertState.LookAround) timesLookedAround = 0;
     }
 
     /// <summary>
@@ -316,11 +319,6 @@ public class EnemySearchlight : MonoBehaviour
     // Chat helped make the cone color stuff prettier
     protected virtual Color GetDetectionColor()
     {
-        if (CurrentState == AlertState.Alert)
-        {
-            return alertColor;
-        }
-
         if (detectionMeter <= timeToSuspicious)
         {
             float t = Mathf.InverseLerp(
@@ -364,7 +362,7 @@ public class EnemySearchlight : MonoBehaviour
     /// <returns>Whether the player is within proximityDetection distance from this mutant.</returns>
     public bool IsProximityDetected()
     {
-        // Debug.Log("Distance to player: " + distanceToPlayer);
+        Debug.Log(distanceToPlayer);
         return distanceToPlayer <= proximityDetection;
     }
 }
