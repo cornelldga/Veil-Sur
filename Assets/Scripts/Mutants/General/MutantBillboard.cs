@@ -5,7 +5,7 @@ using UnityEngine.AI;
 /// 8-direction billboard for 2.5D mutants. Goes on a child of the mutant root: the root's
 /// rotation is the mutant's real facing, and this child always turns to face the player camera.
 /// Tells the Animator which of the 8 angles the camera sees, whether the mutant is moving,
-/// and whether it is in Alert;
+/// whether it is in Alert, and whether it is in the notice pause;
 /// the Animator's blend trees pick and play the clips.
 /// </summary>
 [RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
@@ -17,6 +17,7 @@ public class MutantBillboard : MonoBehaviour
     private static readonly int DirectionParam = Animator.StringToHash("Direction");
     private static readonly int IsMovingParam = Animator.StringToHash("IsMoving");
     private static readonly int IsAlertParam = Animator.StringToHash("IsAlert");
+    private static readonly int IsNoticingParam = Animator.StringToHash("IsNoticing");
 
     [Tooltip("Agent speed above which the mutant counts as moving")]
     [SerializeField] private float moveThreshold = 0.1f;
@@ -25,9 +26,10 @@ public class MutantBillboard : MonoBehaviour
     private Transform root;
     private NavMeshAgent agent;
     private EnemySearchlight searchlight;
+    private EnemyMover mover;
 
     /// <summary>
-    /// Caches the Animator, the mutant root, and the root's NavMeshAgent and EnemySearchlight.
+    /// Caches the Animator, the mutant root, and the root's NavMeshAgent, EnemySearchlight, and EnemyMover.
     /// </summary>
     private void Start()
     {
@@ -35,6 +37,7 @@ public class MutantBillboard : MonoBehaviour
         root = transform.parent;
         agent = GetComponentInParent<NavMeshAgent>();
         searchlight = GetComponentInParent<EnemySearchlight>();
+        mover = GetComponentInParent<EnemyMover>();
     }
 
     /// <summary>
@@ -54,6 +57,7 @@ public class MutantBillboard : MonoBehaviour
         animator.SetFloat(DirectionParam, GetDirectionIndex(toCamera));
         animator.SetBool(IsMovingParam, agent.velocity.magnitude > moveThreshold);
         animator.SetBool(IsAlertParam, searchlight.CurrentState == EnemySearchlight.AlertState.Alert);
+        animator.SetBool(IsNoticingParam, mover.IsNoticePausing);
     }
 
     /// <summary>
