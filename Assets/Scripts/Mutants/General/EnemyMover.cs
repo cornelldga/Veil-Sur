@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 /// <summary>
 /// This class handles enemy movement.
 /// </summary>
@@ -16,6 +17,15 @@ public class EnemyMover : MonoBehaviour
     [SerializeField] protected float chaseSpeed = 5f;
     protected Transform player;
 
+    [Header("Notice")]
+    [Tooltip("Seconds the mutant stands still on first becoming suspicious. Match the notice animation length.")]
+    [FormerlySerializedAs("alertPauseDuration")]
+    [SerializeField] protected float noticePauseDuration = 0f;
+    protected EnemySearchlight.AlertState previousState;
+    protected float noticePauseUntil;
+
+    public bool IsNoticePausing => Time.time < noticePauseUntil;
+
     [Header("Investigate")]
     /** How long the mutant waits at a wander point before choosing a new one */
     [SerializeField] protected float waitTime = 2f;
@@ -26,7 +36,7 @@ public class EnemyMover : MonoBehaviour
     protected EnemySearchlight searchlight;
     protected int currentPatrolIndex;
     protected Vector3 investigateTarget;
-    protected bool reachedSuspicionTarget;
+    protected bool reachedDestination;
     protected bool reachedWanderTarget;
     protected float nextWanderTime = 0f;
 
@@ -45,6 +55,18 @@ public class EnemyMover : MonoBehaviour
 
     protected virtual void Update()
     {
+        EnemySearchlight.AlertState state = searchlight.CurrentState;
+        // LookAround counts as patrolling here 
+        bool justNoticed = state == EnemySearchlight.AlertState.Suspicious &&
+            (previousState == EnemySearchlight.AlertState.Patrol || previousState == EnemySearchlight.AlertState.LookAround);
+        if (justNoticed)
+        {
+            noticePauseUntil = Time.time + noticePauseDuration;
+            agent.velocity = Vector3.zero;
+        }
+        previousState = state;
+        agent.isStopped = IsNoticePausing;
+        
         switch (searchlight.CurrentState)
         {
             case EnemySearchlight.AlertState.Patrol:
@@ -67,20 +89,9 @@ public class EnemyMover : MonoBehaviour
                 agent.speed = suspiciousSpeed;
                 LookAround();
                 break;
-            case EnemySearchlight.AlertState.Stun:
-                agent.speed = 0;
-                break;
         }
 
-        if (searchlight.CurrentState == EnemySearchlight.AlertState.Suspicious &&
-        !agent.pathPending && agent.remainingDistance <= waypointTolerance)
-        {
-            reachedSuspicionTarget = true;
-        }
-        else
-        {
-            reachedSuspicionTarget = false;
-        }
+        reachedDestination = !agent.pathPending && agent.remainingDistance <= waypointTolerance;
     }
 
     protected void Patrol()
@@ -157,14 +168,14 @@ public class EnemyMover : MonoBehaviour
     public void StartLookAround()
     {
         Debug.Log("Beginning to look around");
-        reachedWanderTarget = false;
         investigateTarget = searchlight.LastKnownPlayerPosition;
+        reachedWanderTarget = true;
         nextWanderTime = 0f;
     }
 
-    public bool ReachedSuspicionTarget()
+    public bool ReachedDestination()
     {
-        return reachedSuspicionTarget;
+        return reachedDestination;
     }
 
     /// <summary>
