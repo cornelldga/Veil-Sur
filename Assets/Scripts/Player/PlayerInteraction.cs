@@ -56,7 +56,7 @@ public class PlayerInteraction : MonoBehaviour
             interactable = hit.collider.GetComponentInParent<Interactable>();
         }
             UIManager.Instance.ShowInteractPrompt(interactable != null);
-        if (controls.PlayerMovement.Interact.WasPerformedThisFrame() & interactable!= null) {
+        if (controls.PlayerMovement.Interact.WasPerformedThisFrame() && interactable!= null) {
             interactable.Interact();
         }
             
