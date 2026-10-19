@@ -1,5 +1,6 @@
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Level : MonoBehaviour
 {
@@ -14,6 +15,13 @@ public class Level : MonoBehaviour
     private void Awake()
     {
         current_level = this;
+
+        SaveOnFirstTime();
+    }
+
+    private IEnumerator SaveOnFirstTime()
+    {
+        yield return new WaitUntil(() => SaveManager.Instance != null);
 
         if (!SaveManager.Instance.HasCurrentLevelSave())
         {

@@ -95,6 +95,9 @@ public class SaveManager : MonoBehaviour
 
         SaveData data = JsonUtility.FromJson<SaveData>(json);
 
+        //load level
+        GameManager.Instance.LoadLevel(data.levelNumber);
+
         // load player first
         Level.current_level.player.SetActive(false);
         Level.current_level.player.transform.position = data.playerPosition;

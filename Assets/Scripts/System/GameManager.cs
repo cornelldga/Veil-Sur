@@ -24,8 +24,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Level Info")]
     private int currentLevelIndex;
-    [SerializeField] Scene[] levels;
-
+    
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
 
@@ -242,54 +241,33 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public int CurrentLevel()
     {
-        string currentScene = SceneManager.GetActiveScene().name;
-
-        for (int i = 0; i < levels.Length; i++)
-        {
-            if (levels[i].name == currentScene)
-                return i;
-        }
-
-        return -1;
+        return SceneManager.GetActiveScene().buildIndex;
     }
+
 
     /// <summary>
     /// To be called by levels when they are done, asking the game to load the next level.
     /// </summary>
     public void NextLevel()
     {
-        int current = CurrentLevel();
+        int next = SceneManager.GetActiveScene().buildIndex + 1;
 
-        if (current == -1)
-        {
-            Debug.LogError("Current scene is not registered in the levels array.");
-            return;
-        }
-
-        int next = current + 1;
-
-        if (next >= levels.Length)
-        {
-            Debug.Log("Last level completed.");
-            // TODO: Load credits, win screen, main menu, etc.
-            return;
-        }
-
-        GoToLevel(levels[next].name);
+        if (next < SceneManager.sceneCountInBuildSettings)
+            SceneManager.LoadScene(next);
     }
 
     /// <summary>
-    /// Loads a level based on the index.
+    /// Loads a level based on its build index.
     /// </summary>
     public void LoadLevel(int levelNumber)
     {
-        if (levelNumber < 0 || levelNumber >= levels.Length)
+        if (levelNumber < 0 || levelNumber >= SceneManager.sceneCountInBuildSettings)
         {
             Debug.LogError($"Level index {levelNumber} is out of range.");
             return;
         }
 
-        GoToLevel(levels[levelNumber].name);
+        SceneManager.LoadScene(levelNumber);
     }
 
 }
