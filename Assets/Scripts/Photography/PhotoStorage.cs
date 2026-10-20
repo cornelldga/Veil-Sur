@@ -14,6 +14,8 @@ public class PhotoStorage : MonoBehaviour
 {
    public static PhotoStorage Instance { get; private set; }
    public static Action<bool> OnStorageChanged;
+   /// <summary>Raised when the player tries to take a photo while storage is full.</summary>
+   public static Action OnPhotoBlocked;
    private readonly List<Photo> photos = new List<Photo>();
    private readonly Dictionary<Photo, QuestionDefinition> assignedQuestions = new();
 
@@ -50,7 +52,6 @@ public class PhotoStorage : MonoBehaviour
 
 
 
-
    /// <summary>
    /// Returns the number of photos currently held in the storage.
    /// </summary>
@@ -68,6 +69,14 @@ public class PhotoStorage : MonoBehaviour
    public bool IsPhotoStorageFull()
    {
        return GetPhotoCount() >= maxCapacity;
+   }
+
+   /// <summary>
+   /// Returns the total number of photos the player owns, in storage + in q&a
+   /// </summary>
+   public int GetTotalOwnedPhotoCount()
+   {
+       return GetPhotoCount() + assignedQuestions.Count;
    }
 
 
@@ -121,6 +130,7 @@ public class PhotoStorage : MonoBehaviour
        assignedQuestions[photo] = destination;
        destination.AssignPhoto(photo);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 
@@ -135,6 +145,7 @@ public class PhotoStorage : MonoBehaviour
        source.AssignPhoto(null);
        PutInSlot(photo, slot);
        PhotosChanged?.Invoke();
+       IncrementCounter();
        return true;
    }
 
@@ -157,10 +168,35 @@ public class PhotoStorage : MonoBehaviour
        if (removed)
        {
            PhotosChanged?.Invoke();
+           IncrementCounter();
            Destroy(photo.ImageTexture);
            Destroy(photo.gameObject);
        }
        return removed;
+   }
+
+   /// <summary>
+   /// Destroys photos and deletes photo storage.
+   /// Called on scene load.
+   /// </summary>
+   public void ClearAll()
+   {
+       foreach (var photo in photos)
+       {
+           if (photo == null) continue;
+           Destroy(photo.ImageTexture);
+           Destroy(photo.gameObject);
+       }
+       foreach (var photo in assignedQuestions.Keys)
+       {
+           if (photo == null) continue;
+           Destroy(photo.ImageTexture);
+           Destroy(photo.gameObject);
+       }
+       photos.Clear();
+       assignedQuestions.Clear();
+       PhotosChanged?.Invoke();
+       IncrementCounter();
    }
 
    /// <summary>

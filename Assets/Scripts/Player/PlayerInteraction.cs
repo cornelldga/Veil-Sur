@@ -46,7 +46,7 @@ public class PlayerInteraction : MonoBehaviour
         if (playerState.GetPhotoMode())
         {
             // Don't show 'E to Interact' when Camera is on
-            UIManager.Instance.ShowInteractPrompt(false); 
+            UIManager.Instance.ShowInteractPrompt(false);
             return; // Block interaction when Camera is open (Doc mode).
         }
 
@@ -56,7 +56,7 @@ public class PlayerInteraction : MonoBehaviour
             interactable = hit.collider.GetComponentInParent<Interactable>();
         }
             UIManager.Instance.ShowInteractPrompt(interactable != null);
-        if (controls.PlayerMovement.Interact.WasPerformedThisFrame() & interactable!= null) {
+        if (controls.PlayerMovement.Interact.WasPerformedThisFrame() && interactable!= null) {
             interactable.Interact();
         }
             
