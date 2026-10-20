@@ -57,6 +57,6 @@ public class Elevator : PuzzleInteractable
 
     public override void FailBehavior()
     {
-        ErrorNotifier.Show("ERROR: elevator locked");
+        ErrorNotifier.Show("ERROR: Locked. Requires a passcode to unlock.");
     }
 }
