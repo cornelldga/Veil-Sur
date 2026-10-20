@@ -12978,6 +12978,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2122614969541896895, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: errorDuration
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 2564799414158770434, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
@@ -24928,6 +24932,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
   futureQuestions: []
   closeDelay: 8
+  locked: 1
 --- !u!64 &1023528780
 MeshCollider:
   m_ObjectHideFlags: 0

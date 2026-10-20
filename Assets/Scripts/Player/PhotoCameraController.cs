@@ -253,7 +253,7 @@ public class PhotoCameraController : MonoBehaviour
 
         shakeOrigin = targetCamera.transform.localPosition;
         shakeCoroutine = StartCoroutine(ShakeCamera(storageFullShakeDuration, storageFullShakeMagnitude));
-        ErrorNotifier.Show("Error camera full");
+        ErrorNotifier.Show("ERROR: camera full");
     }
 
     /// <summary>
