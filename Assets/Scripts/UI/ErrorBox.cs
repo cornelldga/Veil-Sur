@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// ErrorNotifier.Show is called (e.g. storage full, locked elevator). Hidden otherwise.
 /// </summary>
 [RequireComponent(typeof(Image))]
-public class StorageIndicator : MonoBehaviour
+public class ErrorBox : MonoBehaviour
 {
     [Tooltip("Sprite shown as the error box background")]
     [SerializeField] private Sprite fullSprite;
