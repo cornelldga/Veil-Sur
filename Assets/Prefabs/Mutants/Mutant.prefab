@@ -261,6 +261,8 @@ MonoBehaviour:
   loseAlertAfter: 3
   proximityDetection: 3.5
   investigateCount: 3
+  stunDuration: 2
+  stunCooldown: 5
   spotLight: {fileID: 0}
   showConeMesh: 1
   coneMeshFilter: {fileID: 1927768490209125107}
@@ -291,7 +293,7 @@ MonoBehaviour:
   suspiciousSpeed: 3
   chaseSpeed: 5
   waitTime: 2
-  wanderRadius: 5
+  wanderRadius: 1.5
 --- !u!54 &1305415287986317326
 Rigidbody:
   m_ObjectHideFlags: 0
