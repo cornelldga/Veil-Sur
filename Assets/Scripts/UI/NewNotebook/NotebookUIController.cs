@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,12 +17,24 @@ public class NotebookUIController : MonoBehaviour
     [Header("Photo Preview")]
     [SerializeField] private GameObject photoPreview;
     [SerializeField] private RawImage photoPreviewImage;
+    [SerializeField] private TextMeshProUGUI numberCorrectText;
+    [Header("Incorrect Answer Feedback")]
+    [SerializeField, Min(0f)] private float incorrectShakeDuration = 0.2f;
+    [Tooltip("Maximum horizontal offset in UI units.")]
+    [SerializeField, Min(0f)] private float incorrectShakeMagnitude = 6f;
+    [SerializeField] private RectTransform shakeTarget;
+    private Coroutine shakeCoroutine;
+    private Vector2 shakeOrigin;
     private readonly Queue<QuestionDefinition> pendingQuestions = new();
     private readonly HashSet<PuzzleInteractable> puzzles = new();
 
     public PhotoTabScript PhotoTab => photoTab;
     public IReadOnlyList<QuestionDefinition> StartQuestions => startQuestions;
     public IReadOnlyList<QuestionNote> QuestionSlots => questionSlots;
+    
+    [Header("Developer Stuff")]
+    [Tooltip("When enabled, the notebook will always allow uploads and whether questions are correct.")]
+    public bool developerMode = false;
 
     public void ShowPhotoPreview(Photo photo)
     {
@@ -41,7 +55,40 @@ public class NotebookUIController : MonoBehaviour
 
     private void OnDisable()
     {
+        StopShake();
         if (photoPreview != null) ClosePhotoPreview();
+    }
+
+    public void ShakeIncorrectAnswer()
+    {
+        StopShake();
+        if (!isActiveAndEnabled || incorrectShakeDuration <= 0f || incorrectShakeMagnitude <= 0f || shakeTarget == null) return;
+
+        shakeOrigin = shakeTarget.anchoredPosition;
+        shakeCoroutine = StartCoroutine(ShakeNotebook());
+    }
+
+    private IEnumerator ShakeNotebook()
+    {
+        for (float elapsed = 0f; elapsed < incorrectShakeDuration; elapsed += Time.unscaledDeltaTime)
+        {
+            float progress = elapsed / incorrectShakeDuration;
+            float offset = Mathf.Sin(progress * Mathf.PI * 6f) * incorrectShakeMagnitude * (1f - progress);
+            shakeTarget.anchoredPosition = shakeOrigin + Vector2.right * offset;
+            yield return null;
+        }
+
+        shakeTarget.anchoredPosition = shakeOrigin;
+        shakeCoroutine = null;
+    }
+
+    private void StopShake()
+    {
+        if (shakeCoroutine == null) return;
+
+        StopCoroutine(shakeCoroutine);
+        shakeCoroutine = null;
+        if (shakeTarget != null) shakeTarget.anchoredPosition = shakeOrigin;
     }
 
     internal void Initialize()
@@ -129,6 +176,8 @@ public class NotebookUIController : MonoBehaviour
         question.Solved += OnQuestionSolved;
         slot.Bind(question);
         slot.gameObject.SetActive(true);
+        numberCorrectText.text = "LINKS INCORRECT";
+        
         return true;
     }
 }

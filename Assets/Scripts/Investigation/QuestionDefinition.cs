@@ -97,15 +97,25 @@ public class QuestionDefinition : MonoBehaviour
         AnswerChanged?.Invoke();
     }
 
+    /// <summary>Checks the current answer without locking it or unlocking future questions.</summary>
+    public bool CheckAnswer()
+    {
+        return IsCorrect || (HasStoredPhotos() && required_objects.Count > 0 &&
+            required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId))));
+    }
+
+    private bool HasStoredPhotos()
+    {
+        return photos.Count > 0 && PhotoStorage.Instance != null &&
+            photos.All(photo => photo != null && PhotoStorage.Instance.Owns(photo));
+    }
+
     public void Verify()
     {
         if (IsCorrect) return;
-        bool stored = photos.Count > 0 && PhotoStorage.Instance != null &&
-            photos.All(photo => photo != null && PhotoStorage.Instance.Owns(photo));
-        IsCorrect = stored && required_objects.Count > 0 &&
-            required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId)));
-        FeedbackText = !stored ? "Select a photo for this question." :
-            IsCorrect ? "Correct." : DefaultFeedback;
+        bool stored = HasStoredPhotos();
+        IsCorrect = CheckAnswer();
+        // FeedbackText = !stored ? "Select a photo for this question." : IsCorrect ? "Correct." : DefaultFeedback;
         HasBeenUploaded = true;
         if (IsCorrect)
             foreach (var puzzle in futurePuzzles) puzzle.DecreaseQuestionsRemaining();
