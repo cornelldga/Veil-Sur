@@ -30,6 +30,8 @@ public class PhotoCameraController : MonoBehaviour
     [Tooltip("The maximum range that a subject can be from the camera")]
     [Header("Detection")]
     [SerializeField] private float maxPhotoRange = 10f;
+    [Tooltip("How far away (in meters) a document can be read in document mode")]
+    [SerializeField] private float maxDocReadRange = 3f;
     [SerializeField] private LayerMask photoOcclusionMask = ~0;
     [Tooltip("Inner circle radius in world units")]
     [SerializeField] private float innerRayRadius = 0.07f;
@@ -338,12 +340,13 @@ public class PhotoCameraController : MonoBehaviour
     /// Raycasts from the camera while in Document mode (similar to interaction).
     /// Opens a hovered Document, and will close if the ray moves away.
     /// The ray ignores the Player layer so it can't hit the player's own colliders.
+    /// The ray only reaches maxDocReadRange, so documents must be read up close.
     /// </summary>
     private void UpdateDocPreview()
     { 
         Document newHoveredDocument = null;
 
-        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxPhotoRange, rayMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxDocReadRange, rayMask, QueryTriggerInteraction.Ignore))
         {
             newHoveredDocument = hit.collider.GetComponent<Document>();
         }
