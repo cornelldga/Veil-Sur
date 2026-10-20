@@ -7,7 +7,7 @@ using UnityEngine.Video;
 /// displays the security camera feed. This security feed must then be photographed by the player.
 /// Attempting to interact with the monitor before completion of the ID puzzle is prevented and displays a message.
 /// </summary>
-public class MonitorPuzzle : MonoBehaviour, Interactable
+public class MonitorPuzzle : PuzzleInteractable
 {
     [Tooltip("Renderer for the monitor screen.")]
     [SerializeField] private Renderer screen;
@@ -53,18 +53,13 @@ public class MonitorPuzzle : MonoBehaviour, Interactable
         cameraVideo.Play();
     }
 
-    /// <summary>
-    /// Called when the player attempts to interact with the monitor.
-    /// </summary>
-    public void Interact()
+    public override void SuccessBehavior()
     {
-        // temporary line until id puzzle is done
         Access();
+    }
 
-        // temporarily commented out until id puzzle is done
-        // if (!idFound)
-        // {
-        //    earlyInteract.Invoke();
-        // }
+    public override void FailBehavior()
+    {
+        earlyInteract.Invoke();
     }
 }
