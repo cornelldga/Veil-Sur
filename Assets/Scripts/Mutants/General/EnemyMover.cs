@@ -89,6 +89,9 @@ public class EnemyMover : MonoBehaviour
                 agent.speed = suspiciousSpeed;
                 LookAround();
                 break;
+            case EnemySearchlight.AlertState.Stun:
+                agent.speed = 0;
+                break;
         }
 
         reachedDestination = !agent.pathPending && agent.remainingDistance <= waypointTolerance;
