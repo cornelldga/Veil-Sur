@@ -11086,6 +11086,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 54943308}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 54943311}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 54943312}
     - targetCorrespondingSourceObject: {fileID: 5068481529009301741, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 54943307}
@@ -11101,6 +11107,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -6732023657111804401, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1345402689}
+    - targetCorrespondingSourceObject: {fileID: 7768192788209353461, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1584321160}
+    - targetCorrespondingSourceObject: {fileID: 7768192788209353461, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1584321159}
+    - targetCorrespondingSourceObject: {fileID: 4830076506268734524, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1634059589}
     - targetCorrespondingSourceObject: {fileID: 7197783458827183507, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1345402688}
@@ -11175,7 +11190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
   futureQuestions: []
-  closeDelay: 8
+  controller: {fileID: 0}
 --- !u!95 &54943310
 Animator:
   serializedVersion: 7
@@ -11198,6 +11213,74 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &54943311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54943306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e163e31f9c429954b9727786a5677116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ElevatorController
+  nextScene: TutorialLevel
+  prevScene: TutorialLevel
+  doorAnimator: {fileID: 54943310}
+  doorOpenCloseDelay: 0
+  autoCloseDelay: 8
+  rideDuration: 8
+  shaftLight: {fileID: 0}
+  lightBottom: {fileID: 0}
+  lightTop: {fileID: 0}
+  sweepCount: 4
+  sweepCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rideSfx: {fileID: 8300000, guid: e3c3a83be5d5f4e4e9bc7ebee3ae437c, type: 3}
+--- !u!65 &54943312
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54943306}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &118826356
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37000,6 +37083,48 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &1584321155 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7768192788209353461, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+  m_PrefabInstance: {fileID: 54943303}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1584321159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1584321155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e39abb08b5f3a9c41bf11f1e482e64fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ElevatorButton
+  futureQuestions: []
+  elevator: {fileID: 54943311}
+  direction: 0
+--- !u!64 &1584321160
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1584321155}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2534964839176971238, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
 --- !u!43 &1601787128
 Mesh:
   m_ObjectHideFlags: 0
@@ -37356,6 +37481,26 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &1634059585 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4830076506268734524, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+  m_PrefabInstance: {fileID: 54943303}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1634059589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634059585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e39abb08b5f3a9c41bf11f1e482e64fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ElevatorButton
+  futureQuestions: []
+  elevator: {fileID: 54943311}
+  direction: 1
 --- !u!1 &1692779591
 GameObject:
   m_ObjectHideFlags: 0

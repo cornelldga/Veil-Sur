@@ -1,36 +1,27 @@
-using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
+/// <summary>
+/// This script now determines the interactable behavior.
+/// </summary>
 public class Elevator : PuzzleInteractable
 {
-    [Tooltip("Seconds the elevator stays open before closing again.")]
-    [SerializeField] private float closeDelay = 8f;
+    [Tooltip("Game Object with ElevatorController script. This elevator.")]
+    [SerializeField] private ElevatorController controller;
 
-    private Animator animator;
-    private Coroutine closeRoutine;
-
-    void Awake()
-    {
-        animator = GetComponent<Animator>();
-    }
-
+    /// <summary>
+    /// Opens the elevator doors through the controller.
+    /// </summary>
     public override void SuccessBehavior()
     {
-        animator.SetTrigger("Open");
-
-        // Restart the timer if the player interacts again.
-        if (closeRoutine != null) StopCoroutine(closeRoutine);
-        closeRoutine = StartCoroutine(CloseAfterDelay());
+        if (controller != null)
+        {
+            controller.OpenDoors();
+        }
     }
 
-    private IEnumerator CloseAfterDelay()
-    {
-        yield return new WaitForSeconds(closeDelay);
-        animator.SetTrigger("Close");
-        closeRoutine = null;
-    }
-
+    /// <summary>
+    /// Runs when the interaction fails.
+    /// </summary>
     public override void FailBehavior()
     {
         //dialogue that says "I don't know the code"
