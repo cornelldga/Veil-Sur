@@ -22,6 +22,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool isDebugMode = false;
     [SerializeField] GameObject losePanel;
 
+    [Header("Level Info")]
+    private int currentLevelIndex;
+    
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
 
@@ -235,5 +238,39 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// Returns the index of the current level in the levels array.
+    /// Returns -1 if the current scene is not a gameplay level.
+    /// </summary>
+    public int CurrentLevel()
+    {
+        return SceneManager.GetActiveScene().buildIndex;
+    }
+
+
+    /// <summary>
+    /// To be called by levels when they are done, asking the game to load the next level.
+    /// </summary>
+    public void NextLevel()
+    {
+        int next = SceneManager.GetActiveScene().buildIndex + 1;
+
+        if (next < SceneManager.sceneCountInBuildSettings)
+            SceneManager.LoadScene(next);
+    }
+
+    /// <summary>
+    /// Loads a level based on its build index.
+    /// </summary>
+    public void LoadLevel(int levelNumber)
+    {
+        if (levelNumber < 0 || levelNumber >= SceneManager.sceneCountInBuildSettings)
+        {
+            Debug.LogError($"Level index {levelNumber} is out of range.");
+            return;
+        }
+
+        SceneManager.LoadScene(levelNumber);
+    }
+
 }
