@@ -75,6 +75,9 @@ public class FirstPersonController : MonoBehaviour
 
     private void OnEnable()
     {
+        //Level.current_level.player = gameObject;
+        GameManager.PlayerInstance = gameObject;
+
         if (controls != null) controls.PlayerMovement.Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

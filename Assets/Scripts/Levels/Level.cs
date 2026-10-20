@@ -15,14 +15,15 @@ public class Level : MonoBehaviour
     private void Awake()
     {
         current_level = this;
-
-        SaveOnFirstTime();
     }
 
-    private IEnumerator SaveOnFirstTime()
+    private void OnEnable()
     {
-        yield return new WaitUntil(() => SaveManager.Instance != null);
+        current_level = this;
+    }
 
+    private void Update()
+    {
         if (!SaveManager.Instance.HasCurrentLevelSave())
         {
             SaveManager.Instance.SaveGame();
