@@ -9,14 +9,19 @@ public class UploadScript : MonoBehaviour
 {
     [Tooltip("Text component that displays the number of correct questions on the notebook page.")]
     [SerializeField] private TextMeshProUGUI numberCorrectText;
+    private bool developerMode => UIManager.Instance != null && UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.developerMode;
     private Button button;
     public bool AllCorrect { get; private set; }
 
     private void Awake()
     {
         button = GetComponent<Button>();
-        button.interactable = false;
+        button.interactable = developerMode;
         button.onClick.AddListener(Upload);
+
+        Color tmp = GetComponent<RawImage>().color;
+        tmp.a = developerMode ? 1f : 80 / 255f;
+        GetComponent<RawImage>().color = tmp;
     }
 
     private bool CanUpload()
@@ -36,28 +41,40 @@ public class UploadScript : MonoBehaviour
 
     private void Update()
     {
-        button.interactable = CanUpload();
+        bool canUpload = developerMode || CanUpload();
+        button.interactable = canUpload;
 
         Color tmp = GetComponent<RawImage>().color;
-        tmp.a = CanUpload() ? 1f : 80 / 255f;
+        tmp.a = canUpload ? 1f : 80 / 255f;
         GetComponent<RawImage>().color = tmp;
     }
 
     public void Upload()
     {
-        if (!CanUpload()) return;
+        if (!developerMode && !CanUpload()) return;
 
         var questions = UIManager.Instance.Notebook.QuestionSlots
             .Where(slot => slot.isActiveAndEnabled && slot.Definition != null)
             .Select(slot => slot.Definition)
             .ToArray();
 
+        if (developerMode)
+        {
+            foreach (var question in questions)
+                question.Verify();
+        }
+
         int correctCount = questions.Count(q => q.CheckAnswer());
         AllCorrect = questions.Length > 0 && correctCount == questions.Length;
         Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {AllCorrect}");
+        if (correctCount < questions.Length)
+            UIManager.Instance.Notebook.ShakeIncorrectAnswer();
+
         if (AllCorrect)
         {
             numberCorrectText.text = "ALL LINKS CORRECT";
+
+            if (developerMode) return;
             foreach (var question in questions)
                 question.Verify();
         }
