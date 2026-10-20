@@ -61,7 +61,8 @@ public class EnemyMover : MonoBehaviour
         EnemySearchlight.AlertState state = searchlight.CurrentState;
         // LookAround counts as patrolling here 
         bool justNoticed = state == EnemySearchlight.AlertState.Suspicious &&
-            (previousState == EnemySearchlight.AlertState.Patrol || previousState == EnemySearchlight.AlertState.LookAround);
+            (previousState == EnemySearchlight.AlertState.Patrol || previousState == EnemySearchlight.AlertState.LookAround
+            || previousState == EnemySearchlight.AlertState.Idle);
         if (justNoticed)
         {
             noticePauseUntil = Time.time + noticePauseDuration;
@@ -74,8 +75,17 @@ public class EnemyMover : MonoBehaviour
         {
             case EnemySearchlight.AlertState.Idle:
                 agent.SetDestination(idlePosition);
+                if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
+                {
+                    agent.speed = 0;
+                }
+                else
+                {
+                    agent.speed = patrolSpeed;
+                }
                 break;
             case EnemySearchlight.AlertState.Patrol:
+                agent.speed = patrolSpeed;
                 Patrol();
                 break;
             case EnemySearchlight.AlertState.Suspicious:
@@ -84,12 +94,7 @@ public class EnemyMover : MonoBehaviour
                 break;
             case EnemySearchlight.AlertState.Alert:
                 agent.speed = chaseSpeed;
-
-                if (player != null && (searchlight.canSeePlayer || searchlight.IsProximityDetected()))
-                    agent.SetDestination(player.position);
-                else
-                    agent.SetDestination(searchlight.LastKnownPlayerPosition);
-
+                agent.SetDestination(searchlight.LastKnownPlayerPosition);
                 break;
             case EnemySearchlight.AlertState.LookAround:
                 agent.speed = suspiciousSpeed;
@@ -178,6 +183,7 @@ public class EnemyMover : MonoBehaviour
     {
         Debug.Log("Beginning to look around");
         investigateTarget = searchlight.LastKnownPlayerPosition;
+        searchlight.ResetLookAroundCounter();
         reachedWanderTarget = true;
         nextWanderTime = 0f;
     }

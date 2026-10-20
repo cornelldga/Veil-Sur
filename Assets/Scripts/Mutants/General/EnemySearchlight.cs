@@ -70,6 +70,7 @@ public class EnemySearchlight : MonoBehaviour
     protected float timesLookedAround; // How many times the mutant already looked around in investigate state.
     protected float lastSeenTimer;
     protected float timeSinceLastStun; // How long since the mutant was last stunned
+    protected bool hasKnownPlayerPosition = false;
     protected Priority currentPriority = Priority.None;
 
     protected Vector3 lastPosition; // Used to determine where to face while moving
@@ -80,6 +81,7 @@ public class EnemySearchlight : MonoBehaviour
         player = GameManager.PlayerInstance.transform;
         baseFacingAngle = transform.eulerAngles.y;
         lastPosition = transform.position;
+        timeSinceLastStun = stunCooldown + stunDuration;
 
         if (showConeMesh && coneMeshFilter != null)
         {
@@ -157,7 +159,7 @@ public class EnemySearchlight : MonoBehaviour
         Vector3 eye = EyePosition;
         Vector3 toPlayer = player.position - eye;
         distanceToPlayer = toPlayer.magnitude;
-        if (distanceToPlayer > viewDistance)
+        if (distanceToPlayer > viewDistance || CurrentState == AlertState.Stun)
         {
             return false;
         }
@@ -173,6 +175,7 @@ public class EnemySearchlight : MonoBehaviour
             if (((1 << hit.collider.gameObject.layer) & playerMask) != 0)
             {
                 LastKnownPlayerPosition = player.position;
+                hasKnownPlayerPosition = true;
                 return true;
             }
         }
@@ -182,10 +185,15 @@ public class EnemySearchlight : MonoBehaviour
     protected virtual void UpdateAlertState(bool canSeePlayer)
     {
         // Debug.Log("Last seen timer: " +lastSeenTimer);
-        if (canSeePlayer || (CurrentState == AlertState.Alert && IsProximityDetected()))
+        // bool proximityKeepsAlert = CurrentState == AlertState.Alert && IsProximityDetected();
+
+        bool closeRangeTracking =
+            CurrentState == AlertState.Alert && IsProximityDetected();
+        if (canSeePlayer || closeRangeTracking)
         {
             lastSeenTimer = 0f;
             LastKnownPlayerPosition = player.position;
+
             float proximity = Mathf.Clamp01(1f - distanceToPlayer / viewDistance);
             float multiplier = 1f + proximity * (maxDetectionMultiplier - 1f);
 
@@ -237,13 +245,13 @@ public class EnemySearchlight : MonoBehaviour
                 else if (timesLookedAround >= investigateCount)
                 {
                     SetState(AlertState.Patrol);
-                    Debug.Log("Resuming patrol");
+                    // Debug.Log("Resuming patrol");
                 }
                 break;
             case AlertState.Stun:
                 if (timeSinceLastStun >= stunDuration)
                 {
-                    if (LastKnownPlayerPosition != null)
+                    if (hasKnownPlayerPosition)
                     {
                         SetState(AlertState.Suspicious);
                         ReportSense(LastKnownPlayerPosition, Priority.Sight, "Player");
@@ -267,14 +275,20 @@ public class EnemySearchlight : MonoBehaviour
     /// <param name="position">Name of the source. Used only in special cases.</param>
     public virtual void ReportSense(Vector3 position, Priority priority, string source)
     {
-        if (CurrentState == AlertState.Alert || 
-        CurrentState == AlertState.Stun || priority > currentPriority) return;
+        if (CurrentState == AlertState.Alert ||
+        CurrentState == AlertState.Stun ||
+        priority > currentPriority ||
+        (canSeePlayer && priority != Priority.Sight))
+        {
+            return;
+        }
 
         LastKnownPlayerPosition = position;
+        hasKnownPlayerPosition = true;
         detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
         SetState(AlertState.Suspicious);
         currentPriority = priority;
-        Debug.Log("Now investigating " + position + " at priority " + priority);
+        // Debug.Log("Now investigating " + position + " at priority " + priority);
     }
 
     protected void SetState(AlertState newState)
@@ -282,8 +296,6 @@ public class EnemySearchlight : MonoBehaviour
         if (CurrentState == newState) return;
         AlertState previousState = CurrentState;
         CurrentState = newState;
-        // Debug.Log(newState);
-
         if (newState == AlertState.Patrol) sweepTimer = 0f;
         else if (newState == AlertState.Suspicious && previousState != AlertState.LookAround) timesLookedAround = 0;
     }
@@ -311,12 +323,13 @@ public class EnemySearchlight : MonoBehaviour
 
         Vector3[] vertices = new Vector3[coneRayCount + 2];
         int[] triangles = new int[coneRayCount * 3];
-        Vector3 eyeLocal = Vector3.up * eyeHeight;
-        vertices[0] = eyeLocal;
+        // Vector3 eyeLocal = Vector3.up * eyeHeight;
+        // vertices[0] = eyeLocal;
+        Vector3 eyeWorld = EyePosition;
+        vertices[0] = coneMeshFilter.transform.InverseTransformPoint(eyeWorld);
 
         float startAngle = -viewAngle * 0.5f;
         float angleStep = viewAngle / coneRayCount;
-        Vector3 eyeWorld = EyePosition;
 
         for (int i = 0; i <= coneRayCount; i++)
         {
@@ -328,7 +341,9 @@ public class EnemySearchlight : MonoBehaviour
             {
                 dist = hit.distance;
             }
-            vertices[i + 1] = transform.InverseTransformDirection(dir) * dist + eyeLocal;
+            Vector3 worldPoint = eyeWorld + dir * dist;
+            vertices[i + 1] =
+                coneMeshFilter.transform.InverseTransformPoint(worldPoint);        
         }
 
         for (int i = 0; i < coneRayCount; i++)
@@ -407,10 +422,24 @@ public class EnemySearchlight : MonoBehaviour
     /// <returns>Whether the player is within proximityDetection distance from this mutant.</returns>
     public bool IsProximityDetected()
     {
-        // Debug.Log("Distance to player: " + distanceToPlayer);
-        return distanceToPlayer <= proximityDetection;
-    }
+        if (player == null || CurrentState == AlertState.Stun)
+            return false;
 
+        Vector3 toPlayer = player.position - EyePosition;
+        float distance = toPlayer.magnitude;
+
+        if (distance > proximityDetection)
+            return false;
+
+        // No angle check: detect nearby players in any direction,
+        // provided there is no wall between us.
+        return !Physics.Raycast(
+            EyePosition,
+            toPlayer.normalized,
+            distance,
+            obstacleMask,
+            QueryTriggerInteraction.Ignore);
+    }
     /// <summary>
     /// Called on camera flash to stun the mutant during chase. 
     /// </summary>
@@ -424,5 +453,13 @@ public class EnemySearchlight : MonoBehaviour
             SetState(AlertState.Stun);
             ResetSuspicion();
         }
+    }
+
+    /// <summary>
+    /// Called to reset the look around counter when investigating a new event.
+    /// </summary>
+    public void ResetLookAroundCounter()
+    {
+        timesLookedAround = 0;
     }
 }
