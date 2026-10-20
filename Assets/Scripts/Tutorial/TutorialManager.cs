@@ -63,16 +63,18 @@ public class TutorialManager : MonoBehaviour
 
             parts.Add(b.effectivePath switch
             {
-                "<Mouse>/leftButton" => "left click",
-                "<Mouse>/rightButton" => "right click",
-                "<Mouse>/middleButton" => "middle click",
+                "<Mouse>/leftButton" => "Left click",
+                "<Mouse>/rightButton" => "Right click",
+                "<Mouse>/middleButton" => "Middle click",
                 _ => InputControlPath.ToHumanReadableString(b.effectivePath, InputControlPath.HumanReadableStringOptions.OmitDevice)
             });
         }
 
         // Several bindings on one action (e.g. duplicate defaults) shouldn't repeat the same name.
         parts = parts.Distinct().ToList();
-        return parts.Count == 0 ? "[unbound]" : string.Join(parts.Count == 4 ? "/" : " or ", parts);
+        // Highlight the whole key list (separators included) with a 15% opacity white box (TMP rich text).
+        string keys = parts.Count == 0 ? "[unbound]" : string.Join(parts.Count == 4 ? "/" : " or ", parts);
+        return $"<mark=#FFFFFF18 padding=\"6,6,1,1\">{keys}</mark>";
     }
 
     private int step;
