@@ -17,6 +17,9 @@ public class StorageIndicator : MonoBehaviour
     [Tooltip("Seconds the error stays visible after a blocked photo attempt")]
     [SerializeField] private float errorDuration = 1.5f;
 
+    [Tooltip("Sound effect for when storage is full")]
+    [SerializeField] private AudioClip errorAudioClip;
+        
     private Image image;
     private Coroutine errorRoutine;
 
@@ -43,6 +46,7 @@ public class StorageIndicator : MonoBehaviour
     /// </summary>
     private void ShowError()
     {
+        AudioManager.Instance.PlayUISFX(errorAudioClip);
         image.color = Color.white;
         if (errorText != null)
         {
