@@ -12,6 +12,8 @@ public class TrashCan : MonoBehaviour, IDropHandler
     [SerializeField] private Sprite closedSprite;
     [Tooltip("trash can while a photo is held")]
     [SerializeField] private Sprite openSprite;
+    [Tooltip("sound played when a photo is deleted")]
+    [SerializeField] private AudioClip crumpleClip;
 
     private const float IdleAlpha = 0.35f;
     private const float HeldAlpha = 1f;
@@ -52,8 +54,10 @@ public class TrashCan : MonoBehaviour, IDropHandler
         }
 
         // UIManager.Instance.ShowDeleteConfirmation(photo);
-        PhotoStorage.Instance.RemovePhoto(photo);
-
+        if (PhotoStorage.Instance.RemovePhoto(photo))
+        {
+            AudioManager.Instance.PlaySfxAtPosition(crumpleClip, Camera.main.transform.position, pitch: 1.5f, volume: 0.67f);
+        }
     }
 
     /// <summary>

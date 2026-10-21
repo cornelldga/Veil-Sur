@@ -426,6 +426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrashCan
   closedSprite: {fileID: 21300000, guid: 8a57102d40322a142b3980a79f3d9311, type: 3}
   openSprite: {fileID: 21300000, guid: 4e05efbd9cce7d54c9cec0541894a4da, type: 3}
+  crumpleClip: {fileID: 8300000, guid: 3694065df3f7e6444ac3c8c1f8f5195a, type: 3}
 --- !u!1 &1182234965247065728
 GameObject:
   m_ObjectHideFlags: 0
