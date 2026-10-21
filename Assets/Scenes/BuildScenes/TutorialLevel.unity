@@ -11220,7 +11220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e163e31f9c429954b9727786a5677116, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElevatorController
-  nextScene: TutorialLevel
+  nextScene: LevelOne
   prevScene: TutorialLevel
   doorAnimator: {fileID: 54943310}
   doorOpenCloseDelay: 0
