@@ -56,7 +56,7 @@ public class TrashCan : MonoBehaviour, IDropHandler
         // UIManager.Instance.ShowDeleteConfirmation(photo);
         if (PhotoStorage.Instance.RemovePhoto(photo))
         {
-            AudioManager.Instance.PlaySfxAtPosition(crumpleClip, Camera.main.transform.position, pitch: 1.5f, volume: 0.67f);
+            AudioManager.Instance.PlaySfxAtPosition(crumpleClip, Camera.main.transform.position, pitch: 1.5f, volume: 0.5f);
         }
     }
 
