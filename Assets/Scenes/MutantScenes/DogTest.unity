@@ -1426,11 +1426,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7445490368492494730, guid: 14be270222103f74ba2293e33d315b15, type: 3}
       propertyPath: acceptedSenseSources.Array.size
-      value: 3
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7445490368492494730, guid: 14be270222103f74ba2293e33d315b15, type: 3}
+      propertyPath: 'acceptedSenseSources.Array.data[0]'
+      value: Ball
       objectReference: {fileID: 0}
     - target: {fileID: 7445490368492494730, guid: 14be270222103f74ba2293e33d315b15, type: 3}
       propertyPath: 'acceptedSenseSources.Array.data[2]'
-      value: Player
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7785355781276730557, guid: 14be270222103f74ba2293e33d315b15, type: 3}
       propertyPath: m_LocalPosition.x

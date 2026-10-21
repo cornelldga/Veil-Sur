@@ -101,13 +101,17 @@ public class IdleDogStates : EnemySearchlight
     public override void ReportSense(Vector3 position, Priority priority, string source)
     {
         if (CurrentState == AlertState.Alert || 
-        CurrentState == AlertState.Stun || priority > currentPriority
-        || Array.IndexOf(acceptedSenseSources, source) == -1) return;
+        CurrentState == AlertState.Stun || priority > currentPriority) return;
+
+        // Only react to accepted stimuli while idle
+        if (CurrentState == AlertState.Idle && 
+        GetComponent<EnemyMover>().ReachedDestination() && 
+        Array.IndexOf(acceptedSenseSources, source) == -1) return;
 
         LastKnownPlayerPosition = position;
         detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
         SetState(AlertState.Suspicious);
         currentPriority = priority;
-        Debug.Log("Now investigating " + position + " at priority " + priority);
+        // Debug.Log("Now investigating " + position + " at priority " + priority);
     }
 }
