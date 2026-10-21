@@ -61,9 +61,9 @@ public class PlayerInteraction : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (playerState.GetPhotoMode())
+        if (playerState.GetPhotoMode() || playerState.GetNotebookOpen())
         {
-            // Don't show 'E to Interact' when Camera is on
+            // Don't show 'E to Interact' when Camera is on or Notebook is open
             UIManager.Instance.ShowInteractPrompt(false);
             return; // Block interaction when Camera is open (Doc mode).
         }
