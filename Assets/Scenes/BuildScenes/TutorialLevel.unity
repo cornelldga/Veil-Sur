@@ -12946,6 +12946,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 153798973215187233, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 153798973215187233, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 153798973215187233, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 55
+      objectReference: {fileID: 0}
     - target: {fileID: 517372437154968915, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_fontSize
       value: 90
@@ -12977,6 +12989,10 @@ PrefabInstance:
     - target: {fileID: 985072394494231789, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2122614969541896895, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: errorDuration
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 2564799414158770434, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -13133,6 +13149,10 @@ PrefabInstance:
     - target: {fileID: 8723152175695794877, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9168719646721350734, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_margin.z
+      value: -252.98462
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -24927,6 +24947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
   futureQuestions: []
+  locked: 1
   closeDelay: 8
 --- !u!64 &1023528780
 MeshCollider:

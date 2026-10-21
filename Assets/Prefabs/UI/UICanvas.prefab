@@ -717,7 +717,7 @@ GameObject:
   - component: {fileID: 4232092817267860843}
   - component: {fileID: 2644617160098844990}
   m_Layer: 5
-  m_Name: StorageIndicator
+  m_Name: ErrorBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1242,7 +1242,7 @@ GameObject:
   - component: {fileID: 8163562265793772801}
   - component: {fileID: 5114769397115267023}
   m_Layer: 5
-  m_Name: StorageText
+  m_Name: ErrorText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
