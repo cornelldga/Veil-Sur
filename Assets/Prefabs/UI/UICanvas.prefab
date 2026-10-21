@@ -871,6 +871,7 @@ MonoBehaviour:
   fullSprite: {fileID: 21300000, guid: 7edb9b3f52ed84244adcb6459cab750a, type: 3}
   errorText: {fileID: 5114769397115267023}
   errorDuration: 1.5
+  errorAudioClip: {fileID: 8300000, guid: 4e0c61872fb874649be7b3406ec324f7, type: 3}
 --- !u!1 &5679673861073699459
 GameObject:
   m_ObjectHideFlags: 0

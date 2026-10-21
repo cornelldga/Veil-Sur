@@ -47,6 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   dialogueBox: {fileID: 3272032798394900424}
   dialogueText: {fileID: 7489548436387017701}
+  charactersPerSecond: 40
+  dialogueTickSound: {fileID: 8300000, guid: 1863b726617406f40bddaeaeba65cbb0, type: 3}
 --- !u!1001 &3239124045234291453
 PrefabInstance:
   m_ObjectHideFlags: 0

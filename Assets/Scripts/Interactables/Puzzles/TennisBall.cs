@@ -82,7 +82,7 @@ public class TennisBall : SoundEvent
 
     private void EndOfPath()
     {
-        RegisterSoundEvent(transform.position, ballVolume);
+        RegisterSoundEvent(transform.position, ballVolume, "Ball");
         Destroy(gameObject);
     }
 }
