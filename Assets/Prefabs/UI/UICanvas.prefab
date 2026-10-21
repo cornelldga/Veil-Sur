@@ -188,6 +188,81 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2705219225417734423
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4434950995715628943}
+  - component: {fileID: 1470648791805260979}
+  - component: {fileID: 1538804648868877039}
+  m_Layer: 5
+  m_Name: Jumpscare
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &4434950995715628943
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2705219225417734423}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5620621341236601761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1470648791805260979
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2705219225417734423}
+  m_CullTransparentMesh: 1
+--- !u!114 &1538804648868877039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2705219225417734423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3791320577870528424
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,6 +870,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StorageIndicator
   fullSprite: {fileID: 21300000, guid: 7edb9b3f52ed84244adcb6459cab750a, type: 3}
   errorText: {fileID: 5114769397115267023}
+  errorDuration: 1.5
 --- !u!1 &5679673861073699459
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,6 +984,7 @@ RectTransform:
   - {fileID: 4012377023451554320}
   - {fileID: 8447681852531857237}
   - {fileID: 7933034441972901014}
+  - {fileID: 4434950995715628943}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -998,6 +1075,7 @@ MonoBehaviour:
   settingsMenuPrefab: {fileID: 1181211812633617751, guid: 6a582e03460194cbd810ba9df5e1d35f, type: 3}
   pauseMenuPrefab: {fileID: -8712468317723249130, guid: 5bd448f493dec46318df0296c93ab9b6, type: 3}
   screenRoot: {fileID: 5620621341236601761}
+  jumpscareImage: {fileID: 1538804648868877039}
   docCanvas: {fileID: 739846400131215278}
   docViewer: {fileID: 5366750986226141005}
   docPaper: {fileID: 0}
