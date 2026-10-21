@@ -13,7 +13,8 @@ public class SoundEvent : MonoBehaviour
     /// </summary>
     /// <param name="pos">Where the sound originated from.</param>
     /// <param name="radius">The base radius of the sphere in which mutants detect the sound.</param>
-    protected void RegisterSoundEvent(Vector3 pos, float radius)
+    /// <param name="source">The name of the object creating the sound.</param>
+    protected void RegisterSoundEvent(Vector3 pos, float radius, string source)
     {
         Collider[] collidersInside = Physics.OverlapSphere(pos, radius);
 
@@ -26,7 +27,7 @@ public class SoundEvent : MonoBehaviour
                 EnemySearchlight mutant = col.GetComponent<EnemySearchlight>();
                 if (mutant != null)
                 {
-                    mutant.ReportSense(pos, Priority.Sound);
+                    mutant.ReportSense(pos, Priority.Sound, source);
                 }
             }
         }
