@@ -51,6 +51,14 @@ public class AudioManager : MonoBehaviour
     [Header("Music")]
     [Tooltip("Dedicated AudioSource used for background music playback.")]
     [SerializeField] private AudioSource musicSource;
+
+    [Tooltip("Mixer group the ambience source routes through.")]
+    [SerializeField] private AudioMixerGroup ambienceGroup;
+
+    [Header("Ambience")]
+    [SerializeField] private AudioSource ambienceSource;
+    private const string AmbienceVolumeParam = "AmbienceVolume";
+    private float _currentAmbienceVolume = 1f;
     private const string SfxVolumeParam = "SFXVolume";
     private const string MusicVolumeParam = "MusicVolume";
 
@@ -75,6 +83,12 @@ public class AudioManager : MonoBehaviour
             musicSource.playOnAwake = false;
         }
 
+        if (ambienceSource != null)
+        {
+            ambienceSource.outputAudioMixerGroup = ambienceGroup;
+            ambienceSource.playOnAwake = false;
+        }
+
         for (int i = 0; i < initialPoolSize; i++)
         {
             availableSources.Enqueue(CreatePooledSource());
@@ -85,8 +99,9 @@ public class AudioManager : MonoBehaviour
     {
         // Values should later be adjusted to depend on saved values from previous gameplay
         // Else, a default value
-        SetMusicVolume(0.2f);
+        SetMusicVolume(0.1f);
         SetSfxVolume(0.2f);
+        SetAmbienceVolume(0.4f);
     }
 
     /// <summary>
@@ -132,6 +147,29 @@ public class AudioManager : MonoBehaviour
     {
         if (musicSource == null) return;
         musicSource.Stop();
+    }
+
+    public void SetAmbienceVolume(float linearVolume)
+    {
+        _currentAmbienceVolume = linearVolume;
+        SetMixerVolume(AmbienceVolumeParam, linearVolume);
+    }
+
+    public float GetAmbienceVolume() => _currentAmbienceVolume;
+
+    public void PlayAmbience(AudioClip clip)
+    {
+        if (clip == null || ambienceSource == null) return;
+
+        ambienceSource.clip = clip;
+        ambienceSource.loop = true;
+        ambienceSource.Play();
+    }
+
+    public void StopAmbience()
+    {
+        if (ambienceSource == null) return;
+        ambienceSource.Stop();
     }
 
 

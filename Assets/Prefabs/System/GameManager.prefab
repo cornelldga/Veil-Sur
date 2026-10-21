@@ -190,7 +190,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   dialogueManager: {fileID: 6980105928110123405}
-  lobbyMusic: {fileID: 8300000, guid: b8acb29c6254f4ed4a639562f295673e, type: 3}
+  lobbyMusic: {fileID: 8300000, guid: 15fa748d12eb64188ab39c63581a6253, type: 3}
+  levelOneAmbience: {fileID: 8300000, guid: 7132bdf75a9964f13b3a6840b490e044, type: 3}
   titleSceneName: TitleScreen
   isDebugMode: 1
   losePanel: {fileID: 4679233136749169115}

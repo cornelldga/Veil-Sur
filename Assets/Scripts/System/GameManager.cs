@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
     [Header("Music")]
     [SerializeField] private AudioClip lobbyMusic;
 
+    [Header("Ambience")]
+    [SerializeField] private AudioClip levelOneAmbience;
+
     [Header("Startup")]
     [SerializeField] private string titleSceneName = "TitleScreen";
 
@@ -127,6 +130,17 @@ public class GameManager : MonoBehaviour
 
         // Each scene starts with empty photo storage, remove this if you want to keep photos between scenes
         if (PhotoStorage.Instance != null) PhotoStorage.Instance.ClearAll();
+
+        HandleSceneAmbience(scene.name);
+    }
+
+    private void HandleSceneAmbience(string sceneName)
+    {
+        Debug.Log($"HandleSceneAmbience('{sceneName}')");
+        AudioManager.Instance.StopAmbience();
+
+        if (sceneName == "LevelOne")
+            AudioManager.Instance.PlayAmbience(levelOneAmbience);
     }
 
     private void Update()
