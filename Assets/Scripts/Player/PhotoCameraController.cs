@@ -42,11 +42,6 @@ public class PhotoCameraController : MonoBehaviour
     [Header("Blur Settings")]
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
     [SerializeField] private float blurRangePastMax = 2f;
-    [Header("Error Feedback")]
-    [Tooltip("How long the camera shakes (seconds) when any error message is shown")]
-    [SerializeField] private float errorShakeDuration = 0.25f;
-    [Tooltip("Maximum distance the camera is offset while shaking")]
-    [SerializeField] private float errorShakeMagnitude = 0.1f;
 
     [Header("Audio")]
     [SerializeField] private AudioClip shutterClip;
@@ -59,6 +54,8 @@ public class PhotoCameraController : MonoBehaviour
 
     private const int RaysPerCircle = 8;
     private const string playerLayerName = "Player";
+    private const float ErrorShakeDuration = 0.25f; // Seconds the camera shakes when an error is shown
+    private const float ErrorShakeMagnitude = 0.1f; // Max distance the camera is offset while shaking
     private PlayerControls controls;
     private PlayerState playerState;
     private float targetFOV;
@@ -262,7 +259,7 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         shakeOrigin = targetCamera.transform.localPosition;
-        shakeCoroutine = StartCoroutine(ShakeCamera(errorShakeDuration, errorShakeMagnitude));
+        shakeCoroutine = StartCoroutine(ShakeCamera(ErrorShakeDuration, ErrorShakeMagnitude));
     }
 
     /// <summary>
