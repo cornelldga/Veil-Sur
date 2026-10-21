@@ -36,6 +36,9 @@ public class NotebookUIController : MonoBehaviour
     [Tooltip("When enabled, the notebook will always allow uploads and whether questions are correct.")]
     public bool developerMode = false;
 
+    /// <summary>True while the enlarged photo preview is showing.</summary>
+    public bool IsPhotoPreviewOpen => photoPreview != null && photoPreview.activeSelf;
+
     public void ShowPhotoPreview(Photo photo)
     {
         if (photo == null || photo.ImageTexture == null) return;

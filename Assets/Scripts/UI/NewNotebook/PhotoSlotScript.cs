@@ -17,6 +17,8 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public Photo Photo { get; private set; }
     public Photo DraggedPhoto => drag.Photo;
 
+    [SerializeField] AudioClip dragPhotoSound;
+
     private void Start()
     {
         button = GetComponent<Button>();
@@ -49,6 +51,7 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        AudioManager.Instance.PlayUISFX(dragPhotoSound);
         if (eventData.button != PointerEventData.InputButton.Left || Photo == null) return;
         drag.Begin(Photo, preview, eventData);
     }
@@ -60,6 +63,7 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnDrop(PointerEventData eventData)
     {
+        AudioManager.Instance.PlayUISFX(dragPhotoSound);
         if (eventData.pointerDrag == null || Photo != null) return;
         var source = eventData.pointerDrag.GetComponent<IPhotoDragSource>();
         if (source != null) PhotoStorage.Instance.ReturnPhoto(source.DraggedPhoto, storageSlot);

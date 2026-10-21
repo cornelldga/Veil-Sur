@@ -261,6 +261,7 @@ MonoBehaviour:
   zoomSpeed: 10
   toggleZoom: 0
   maxPhotoRange: 10
+  maxDocReadRange: 3
   photoOcclusionMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -360,7 +361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcfbabe74aedd5b4f81d5d4ce043efb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NotebookController
-  notebookOpenClip: {fileID: 8300000, guid: 6b20c84fbe1cd4f84acad3c160e6d956, type: 3}
+  notebookOpenClip: {fileID: 8300000, guid: 0fafff80f0a1b97499e14fa718fe40f1, type: 3}
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0

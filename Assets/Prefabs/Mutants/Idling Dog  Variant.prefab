@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6888401827181537816
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: idlePosition.x
+      value: 23.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: idlePosition.y
+      value: 1.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: idlePosition.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: patrolPoints.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184192572823106185, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_Name
+      value: Idling Dog  Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 23.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3920839090453783550, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: sniffRadius
+      value: 10
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3920839090453783550, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+    - {fileID: 8302148578949936598, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2184192572823106185, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 7445490368492494730}
+  m_SourcePrefab: {fileID: 100100000, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+--- !u!33 &3147556511448721773 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: 8374119217000137589, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+  m_PrefabInstance: {fileID: 6888401827181537816}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4744343632631584913 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2184192572823106185, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+  m_PrefabInstance: {fileID: 6888401827181537816}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7445490368492494730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744343632631584913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02aca55d2adb0a445a01e8e24ec7ef9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IdleDogStates
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  idleFacingYAngle: 90
+  viewDistance: 20
+  viewAngle: 60
+  eyeHeight: -0.96
+  sweepAngle: 45
+  sweepSpeed: 30
+  timeToSuspicious: 0.5
+  timeToAlert: 1.2
+  suspicionDecayRate: 1
+  maxDetectionMultiplier: 3
+  loseAlertAfter: 3
+  proximityDetection: 3.5
+  investigateCount: 3
+  stunDuration: 2
+  stunCooldown: 5
+  spotLight: {fileID: 0}
+  showConeMesh: 1
+  coneMeshFilter: {fileID: 3147556511448721773}
+  coneMeshRenderer: {fileID: 5337045153766270150}
+  canSeePlayer: 0
+  distanceToPlayer: 0
+  acceptedSenseSources:
+  - 
+  - Ball
+--- !u!23 &5337045153766270150 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1551625025796951774, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+  m_PrefabInstance: {fileID: 6888401827181537816}
+  m_PrefabAsset: {fileID: 0}

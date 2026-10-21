@@ -1321,6 +1321,10 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7316898121491863721, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: levelOneAmbience
+      value: 
+      objectReference: {fileID: 8300000, guid: 7132bdf75a9964f13b3a6840b490e044, type: 3}
     - target: {fileID: 7450253034250995934, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.02408
@@ -18394,6 +18398,7 @@ GameObject:
   - component: {fileID: 1387895218}
   - component: {fileID: 1387895217}
   - component: {fileID: 1387895223}
+  - component: {fileID: 1387895224}
   m_Layer: 9
   m_Name: Elevator
   m_TagString: Untagged
@@ -18772,9 +18777,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09dbd0c7b42f4bdcabffd2099aa6e21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
-  questions: []
-  next_puzzles: []
-  first: 0
+  futureQuestions: []
+  closeDelay: 8
+--- !u!95 &1387895224
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387895216}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!43 &1437300825
 Mesh:
   m_ObjectHideFlags: 0

@@ -31,6 +31,17 @@ public class DialogueManager : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI dialogueText;
 
     
+    [Tooltip("characters per second")]
+    [SerializeField] private float charactersPerSecond = 40f;
+
+    [Tooltip("sound for the type-y sound that plays when a dialogue box appears")]
+    [SerializeField] AudioClip dialogueTickSound;
+
+    [Tooltip("tracker that helps us know when to play the next clicking sound")]
+    int lastVisibleCharacters;
+    //variable that makes sure we don't OD spam the sound effect
+    int charactersPerTick = 3;
+
     private const string dialogueFolder = "Dialogue/Level ";
     //sectioned stored so that StartDialogue("name") can directly reference the dialogue in that section
     private Dictionary<string, DialogueSection> levelSections;
@@ -41,6 +52,8 @@ public class DialogueManager : MonoBehaviour {
     private int currentLine = 0; //index
     private bool isDialogueActive = false;
     private int startedFrame = -1; //the frame a dialogue opened on, so the click that triggered it doesn't skip a line
+    private bool isTyping = false; //true while the current line is still being typed out
+    private float typedCharacters = 0f; //how many characters of the current line are visible (fractional between frames)
 
     /// <summary>
     /// Sets up the singleton instance
@@ -109,11 +122,53 @@ public class DialogueManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// updates the dialogue text ui with the current line
+    /// updates the dialogue text ui with the current line and starts typing it out from the first character
     /// </summary>
     private void DisplayCurrentLine()
     {
         dialogueText.text = currentSection.lines[currentLine].ToUpper();
+        dialogueText.maxVisibleCharacters = 0;
+        typedCharacters = 0f;
+        lastVisibleCharacters = 0;
+        isTyping = true;
+    }
+
+    /// <summary>
+    /// reveals more of the current line based on elapsed time
+    /// stops typing once the whole line is visible
+    /// </summary>
+    private void TypeCurrentLine()
+    {
+        dialogueText.ForceMeshUpdate();
+        int totalCharacters = dialogueText.textInfo.characterCount;
+
+        typedCharacters += charactersPerSecond * Time.unscaledDeltaTime;
+
+        int visibleCharacters = Mathf.FloorToInt(typedCharacters);
+
+        if (visibleCharacters > lastVisibleCharacters)
+        {
+            if (visibleCharacters % charactersPerTick == 0)
+            {
+                Debug.Log("Playing tick");
+                AudioManager.Instance.PlayUISFX(dialogueTickSound, 1);
+            }
+            lastVisibleCharacters = visibleCharacters;
+        }
+
+        dialogueText.maxVisibleCharacters = visibleCharacters;
+
+        if (visibleCharacters >= totalCharacters)
+            FinishTyping();
+    }
+
+    /// <summary>
+    /// skips typing animation and shows the whole current line
+    /// </summary>
+    private void FinishTyping()
+    {
+        dialogueText.maxVisibleCharacters = int.MaxValue;
+        isTyping = false;
     }
 
     /// <summary>
@@ -143,14 +198,18 @@ public class DialogueManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// allows player to click to progress through dialogue lines
+    /// types out the current line, and lets the player click to skip the typing or progress to the next line
     /// </summary>
     private void Update()
     {
         if (!isDialogueActive || Time.frameCount == startedFrame) return;
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            NextLine();
+            if (isTyping) FinishTyping();
+            else NextLine();
+            return;
         }
+
+        if (isTyping) TypeCurrentLine();
     }
 }

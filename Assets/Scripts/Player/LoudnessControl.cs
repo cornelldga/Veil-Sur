@@ -62,7 +62,7 @@ public class LoudnessControl : SoundEvent
         // Alert mutants
         if (loudnessDetectorCollider.radius > 0)
         {
-            RegisterSoundEvent(transform.position, loudnessDetectorCollider.radius);
+            RegisterSoundEvent(transform.position, loudnessDetectorCollider.radius, "Player");
         }
     }
 
