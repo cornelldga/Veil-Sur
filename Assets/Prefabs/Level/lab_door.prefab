@@ -169,3 +169,5 @@ MonoBehaviour:
   openAngle: 90
   openSpeed: 2
   invertSwingDirection: 0
+  autoClose: 1
+  autoCloseDelay: 4
