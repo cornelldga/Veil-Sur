@@ -122,6 +122,8 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        hasLost = false;
+
         if (scene.name == titleSceneName)
             SetState(GameState.MAIN_MENU);        // entering the title scene
         else if (_state == GameState.MAIN_MENU)
