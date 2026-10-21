@@ -198,12 +198,30 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(ReclaimWhenFinished(source));
     }
 
+    /// <summary>
+    /// Plays a non-positional UI sound.
+    /// </summary>
+    public void PlayUISFX(AudioClip clip, float volume = 1f, float pitch = 1f)
+    {
+        if (clip == null) return;
+
+        AudioSource source = GetAvailableSource();
+
+        source.transform.SetParent(transform);
+        source.transform.localPosition = Vector3.zero;
+
+        source.spatialBlend = 0f; // 2D sound
+
+        PlayOnSource(source, clip, volume, pitch);
+    }
+
     private IEnumerator ReclaimWhenFinished(AudioSource source)
     {
         yield return new WaitWhile(() => source.isPlaying);
 
         source.transform.SetParent(transform);
         source.transform.localPosition = Vector3.zero;
+        source.spatialBlend = 1f;
         source.clip = null;
         availableSources.Enqueue(source);
     }

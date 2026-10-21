@@ -34,6 +34,14 @@ public class DialogueManager : MonoBehaviour {
     [Tooltip("characters per second")]
     [SerializeField] private float charactersPerSecond = 40f;
 
+    [Tooltip("sound for the type-y sound that plays when a dialogue box appears")]
+    [SerializeField] AudioClip dialogueTickSound;
+
+    [Tooltip("tracker that helps us know when to play the next clicking sound")]
+    int lastVisibleCharacters;
+    //variable that makes sure we don't OD spam the sound effect
+    int charactersPerTick = 3;
+
     private const string dialogueFolder = "Dialogue/Level ";
     //sectioned stored so that StartDialogue("name") can directly reference the dialogue in that section
     private Dictionary<string, DialogueSection> levelSections;
@@ -121,6 +129,7 @@ public class DialogueManager : MonoBehaviour {
         dialogueText.text = currentSection.lines[currentLine].ToUpper();
         dialogueText.maxVisibleCharacters = 0;
         typedCharacters = 0f;
+        lastVisibleCharacters = 0;
         isTyping = true;
     }
 
@@ -130,14 +139,27 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void TypeCurrentLine()
     {
-        // Counted from the parsed text so rich text tags aren't typed out as characters.
         dialogueText.ForceMeshUpdate();
         int totalCharacters = dialogueText.textInfo.characterCount;
 
         typedCharacters += charactersPerSecond * Time.unscaledDeltaTime;
-        dialogueText.maxVisibleCharacters = Mathf.FloorToInt(typedCharacters);
 
-        if (dialogueText.maxVisibleCharacters >= totalCharacters) FinishTyping();
+        int visibleCharacters = Mathf.FloorToInt(typedCharacters);
+
+        if (visibleCharacters > lastVisibleCharacters)
+        {
+            if (visibleCharacters % charactersPerTick == 0)
+            {
+                Debug.Log("Playing tick");
+                AudioManager.Instance.PlayUISFX(dialogueTickSound, 1);
+            }
+            lastVisibleCharacters = visibleCharacters;
+        }
+
+        dialogueText.maxVisibleCharacters = visibleCharacters;
+
+        if (visibleCharacters >= totalCharacters)
+            FinishTyping();
     }
 
     /// <summary>

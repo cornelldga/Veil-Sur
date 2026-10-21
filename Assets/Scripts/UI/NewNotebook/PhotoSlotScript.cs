@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler, IPhotoDragSource
 {
     [Tooltip("Photo preview belonging to this slot prefab.")]
+    [SerializeField] private AudioClip dragPhotoSound;
     [SerializeField] private RawImage preview;
     private Button button;
     private AspectRatioFitter fitter;
@@ -51,6 +52,7 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         if (eventData.button != PointerEventData.InputButton.Left || Photo == null) return;
         drag.Begin(Photo, preview, eventData);
+        AudioManager.Instance.PlaySfxAttached(dragPhotoSound, this.transform);
     }
 
     public void OnDrag(PointerEventData eventData)
