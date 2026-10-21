@@ -3,51 +3,39 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// trash can open when hover, closed when not hover, and delete photo when drop on it
+/// trash can opens while any photo is being held, closes when released, and deletes photo when dropped on it
 /// </summary>
 [RequireComponent(typeof(Image))]
-public class TrashCan : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
+public class TrashCan : MonoBehaviour, IDropHandler
 {
     [Tooltip("trash can idle")]
     [SerializeField] private Sprite closedSprite;
-    [Tooltip("trash can hover")]
+    [Tooltip("trash can while a photo is held")]
     [SerializeField] private Sprite openSprite;
 
     private const float IdleAlpha = 0.35f;
-    private const float HoverAlpha = 1f;
+    private const float HeldAlpha = 1f;
 
     private Image image;
 
-    private void Start()
+    private void Awake()
     {
         image = GetComponent<Image>();
+    }
+
+    private void Start()
+    {
         SetOpen(false);
+    }
+
+    private void OnEnable()
+    {
+        PhotoDragPreview.DraggingChanged += SetOpen;
     }
 
     private void OnDisable()
     {
-        if (image != null)
-        {
-            SetOpen(false);
-        }
-    }
-
-    /// <summary>
-    /// opens trash can if pointer is hovering and photo being dragged
-    /// </summary>
-    public void OnPointerEnter(PointerEventData pointer)
-    {
-        if (GetDraggedPhoto(pointer) != null)
-        {
-            SetOpen(true);
-        }
-    }
-
-    /// <summary>
-    /// closes trash can when pointer no longer on
-    /// </summary>
-    public void OnPointerExit(PointerEventData pointer)
-    {
+        PhotoDragPreview.DraggingChanged -= SetOpen;
         SetOpen(false);
     }
 
@@ -57,8 +45,6 @@ public class TrashCan : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     /// </summary>
     public void OnDrop(PointerEventData pointer)
     {
-        SetOpen(false);
-
         Photo photo = GetDraggedPhoto(pointer);
         if (photo == null)
         {
@@ -67,10 +53,11 @@ public class TrashCan : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
         // UIManager.Instance.ShowDeleteConfirmation(photo);
         PhotoStorage.Instance.RemovePhoto(photo);
+
     }
 
     /// <summary>
-    /// returns the photo being dragged by the pointer 
+    /// returns the photo being dragged by the pointer
     /// </summary>
     /// <param name="pointer">pointer event data containing the dragged object.</param>
     private Photo GetDraggedPhoto(PointerEventData pointer)
@@ -95,6 +82,6 @@ public class TrashCan : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     private void SetOpen(bool open)
     {
         image.sprite = (open && openSprite != null) ? openSprite : closedSprite;
-        image.color = new Color(1f, 1f, 1f, open ? HoverAlpha : IdleAlpha);
+        image.color = new Color(1f, 1f, 1f, open ? HeldAlpha : IdleAlpha);
     }
 }

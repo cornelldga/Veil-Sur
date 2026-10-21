@@ -16,6 +16,9 @@ public class PhotoDragPreview
     private RectTransform root;
     public Photo Photo { get; private set; }
 
+    /// <summary>Raised with true when any photo drag starts and false when it ends.</summary>
+    public static event System.Action<bool> DraggingChanged;
+
     public void Begin(Photo photo, RawImage preview, PointerEventData eventData)
     {
         End();
@@ -32,6 +35,7 @@ public class PhotoDragPreview
         sourceWasEnabled = preview.enabled;
         sourcePreview.enabled = false;
         Drag(eventData);
+        DraggingChanged?.Invoke(true);
     }
 
     public void Drag(PointerEventData eventData)
@@ -44,10 +48,12 @@ public class PhotoDragPreview
 
     public void End()
     {
+        bool wasDragging = Photo != null;
         if (sourcePreview != null) sourcePreview.enabled = sourceWasEnabled;
         sourcePreview = null;
         Photo = null;
         if (image != null) Object.Destroy(image.gameObject);
         image = null;
+        if (wasDragging) DraggingChanged?.Invoke(false);
     }
 }
