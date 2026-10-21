@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotoSlotScript
   preview: {fileID: 8214945149310184221}
+  dragPhotoSound: {fileID: 8300000, guid: d7c0b66ec09cd074c9f152f4c946b756, type: 3}
 --- !u!222 &3854206047985974806
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1119,6 +1120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotoSlotScript
   preview: {fileID: 367855135718097617}
+  dragPhotoSound: {fileID: 8300000, guid: d7c0b66ec09cd074c9f152f4c946b756, type: 3}
 --- !u!222 &7389814426496387635
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1251,6 +1253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotoSlotScript
   preview: {fileID: 7525840824678460467}
+  dragPhotoSound: {fileID: 8300000, guid: d7c0b66ec09cd074c9f152f4c946b756, type: 3}
 --- !u!222 &8165680727838335809
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1514,6 +1517,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotoSlotScript
   preview: {fileID: 7436445264510689232}
+  dragPhotoSound: {fileID: 8300000, guid: d7c0b66ec09cd074c9f152f4c946b756, type: 3}
 --- !u!222 &6800574298232756308
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2308,6 +2312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotoSlotScript
   preview: {fileID: 4028670559168777692}
+  dragPhotoSound: {fileID: 8300000, guid: d7c0b66ec09cd074c9f152f4c946b756, type: 3}
 --- !u!222 &4970898976035568452
 CanvasRenderer:
   m_ObjectHideFlags: 0
