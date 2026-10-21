@@ -11082,9 +11082,6 @@ PrefabInstance:
       addedObject: {fileID: 54943310}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 54943309}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 54943308}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
@@ -11095,6 +11092,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5068481529009301741, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 54943307}
+    - targetCorrespondingSourceObject: {fileID: 5068481529009301741, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2102348154}
     - targetCorrespondingSourceObject: {fileID: -1610662858922178110, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1345402692}
@@ -11110,12 +11110,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7768192788209353461, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1584321160}
-    - targetCorrespondingSourceObject: {fileID: 7768192788209353461, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1584321159}
-    - targetCorrespondingSourceObject: {fileID: 4830076506268734524, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1634059589}
     - targetCorrespondingSourceObject: {fileID: 7197783458827183507, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1345402688}
@@ -11172,20 +11166,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.8399006, y: 2.2665353, z: 1.4698238}
   m_Center: {x: -0.062458098, y: 1.1290932, z: 0.46868038}
---- !u!114 &54943309
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 54943306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a09dbd0c7b42f4bdcabffd2099aa6e21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Elevator
-  futureQuestions: []
-  controller: {fileID: 54943311}
 --- !u!95 &54943310
 Animator:
   serializedVersion: 7
@@ -24431,7 +24411,7 @@ PrefabInstance:
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'futurePuzzles.Array.data[0]'
       value: 
-      objectReference: {fileID: 54943309}
+      objectReference: {fileID: 2102348154}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: required_objects.Array.size
       value: 1
@@ -25136,7 +25116,7 @@ PrefabInstance:
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'futurePuzzles.Array.data[0]'
       value: 
-      objectReference: {fileID: 54943309}
+      objectReference: {fileID: 2102348154}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: required_objects.Array.size
       value: 1
@@ -37553,21 +37533,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7768192788209353461, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
   m_PrefabInstance: {fileID: 54943303}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1584321159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1584321155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e39abb08b5f3a9c41bf11f1e482e64fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ElevatorButton
-  futureQuestions: []
-  elevator: {fileID: 54943311}
-  direction: 0
 --- !u!64 &1584321160
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -37799,7 +37764,7 @@ PrefabInstance:
     - target: {fileID: 7000241390297672936, guid: 424d1f91a57a94630b27de911e0175c5, type: 3}
       propertyPath: 'futurePuzzles.Array.data[0]'
       value: 
-      objectReference: {fileID: 54943309}
+      objectReference: {fileID: 0}
     - target: {fileID: 8687679714235434922, guid: 424d1f91a57a94630b27de911e0175c5, type: 3}
       propertyPath: m_text
       value: "<b>\xA7</b> How do we know?"
@@ -38088,26 +38053,6 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!1 &1634059585 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4830076506268734524, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
-  m_PrefabInstance: {fileID: 54943303}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1634059589
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634059585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e39abb08b5f3a9c41bf11f1e482e64fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ElevatorButton
-  futureQuestions: []
-  elevator: {fileID: 54943311}
-  direction: 1
 --- !u!1 &1692779591
 GameObject:
   m_ObjectHideFlags: 0
@@ -49688,7 +49633,7 @@ PrefabInstance:
     - target: {fileID: 7000241390297672936, guid: 424d1f91a57a94630b27de911e0175c5, type: 3}
       propertyPath: 'futurePuzzles.Array.data[0]'
       value: 
-      objectReference: {fileID: 54943309}
+      objectReference: {fileID: 0}
     - target: {fileID: 8687679714235434922, guid: 424d1f91a57a94630b27de911e0175c5, type: 3}
       propertyPath: m_text
       value: "<b>\xA7</b> What is the elevator code?"
@@ -53226,6 +53171,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1159, y: 305}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2102348154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54943305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e39abb08b5f3a9c41bf11f1e482e64fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ElevatorButton
+  futureQuestions: []
+  elevator: {fileID: 54943311}
+  direction: 0
 --- !u!43 &2136926126
 Mesh:
   m_ObjectHideFlags: 0
