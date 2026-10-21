@@ -9,17 +9,10 @@ public class Settings : UIScreen
     [Tooltip("Slider controlling music volume.")]
     [SerializeField] private Slider musicSlider;  
     [SerializeField] private Slider sensitivitySlider;
+    [SerializeField] private Slider ambienceSlider;
     public void OnBackPressed()
     {
         UIManager.Instance.Back();
-    }
-
-    [Header("Test (temporary)")]
-    [Tooltip("Test clip used to preview SFX volume. Remove once done testing.")]
-    [SerializeField] private AudioClip testSfxClip;
-    public void PlayTestSfx() // TEMP — wire a button to this, remove later
-    {
-        AudioManager.Instance.PlaySfxAtPosition(testSfxClip, Camera.main.transform.position);
     }
 
     public override void Show() //override so sliders reflect current values every time this opens
@@ -29,6 +22,7 @@ public class Settings : UIScreen
         sfxSlider.value = AudioManager.Instance.GetSfxVolume();
         musicSlider.value = AudioManager.Instance.GetMusicVolume();
         sensitivitySlider.value = GameManager.Instance.MouseSensitivity;
+        ambienceSlider.value = AudioManager.Instance.GetAmbienceVolume();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -37,7 +31,7 @@ public class Settings : UIScreen
         sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSfxVolume);
         musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
         sensitivitySlider.onValueChanged.AddListener(GameManager.Instance.SetMouseSensitivity);
-        
+        ambienceSlider.onValueChanged.AddListener(AudioManager.Instance.SetAmbienceVolume);
     }
 
     /// <summary>
