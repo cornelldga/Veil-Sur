@@ -294,7 +294,7 @@ public class UIManager : MonoBehaviour
     /// <param name="fps">frames shown per second</param>
     public IEnumerator PlayJumpscare(Sprite[] frames, float fps)
     {
-        jumpscareImage.enabled = true;
+        jumpscareImage.gameObject.SetActive(true);
         foreach (Sprite frame in frames)
         {
             jumpscareImage.sprite = frame;
