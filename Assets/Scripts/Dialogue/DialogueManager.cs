@@ -31,6 +31,9 @@ public class DialogueManager : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI dialogueText;
 
     
+    [Tooltip("characters per second")]
+    [SerializeField] private float charactersPerSecond = 40f;
+
     private const string dialogueFolder = "Dialogue/Level ";
     //sectioned stored so that StartDialogue("name") can directly reference the dialogue in that section
     private Dictionary<string, DialogueSection> levelSections;
@@ -41,6 +44,8 @@ public class DialogueManager : MonoBehaviour {
     private int currentLine = 0; //index
     private bool isDialogueActive = false;
     private int startedFrame = -1; //the frame a dialogue opened on, so the click that triggered it doesn't skip a line
+    private bool isTyping = false; //true while the current line is still being typed out
+    private float typedCharacters = 0f; //how many characters of the current line are visible (fractional between frames)
 
     /// <summary>
     /// Sets up the singleton instance
@@ -109,11 +114,39 @@ public class DialogueManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// updates the dialogue text ui with the current line
+    /// updates the dialogue text ui with the current line and starts typing it out from the first character
     /// </summary>
     private void DisplayCurrentLine()
     {
         dialogueText.text = currentSection.lines[currentLine].ToUpper();
+        dialogueText.maxVisibleCharacters = 0;
+        typedCharacters = 0f;
+        isTyping = true;
+    }
+
+    /// <summary>
+    /// reveals more of the current line based on elapsed time
+    /// stops typing once the whole line is visible
+    /// </summary>
+    private void TypeCurrentLine()
+    {
+        // Counted from the parsed text so rich text tags aren't typed out as characters.
+        dialogueText.ForceMeshUpdate();
+        int totalCharacters = dialogueText.textInfo.characterCount;
+
+        typedCharacters += charactersPerSecond * Time.unscaledDeltaTime;
+        dialogueText.maxVisibleCharacters = Mathf.FloorToInt(typedCharacters);
+
+        if (dialogueText.maxVisibleCharacters >= totalCharacters) FinishTyping();
+    }
+
+    /// <summary>
+    /// skips typing animation and shows the whole current line
+    /// </summary>
+    private void FinishTyping()
+    {
+        dialogueText.maxVisibleCharacters = int.MaxValue;
+        isTyping = false;
     }
 
     /// <summary>
@@ -143,14 +176,18 @@ public class DialogueManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// allows player to click to progress through dialogue lines
+    /// types out the current line, and lets the player click to skip the typing or progress to the next line
     /// </summary>
     private void Update()
     {
         if (!isDialogueActive || Time.frameCount == startedFrame) return;
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            NextLine();
+            if (isTyping) FinishTyping();
+            else NextLine();
+            return;
         }
+
+        if (isTyping) TypeCurrentLine();
     }
 }
