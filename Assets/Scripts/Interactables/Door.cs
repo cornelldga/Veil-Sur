@@ -15,6 +15,16 @@ public class Door : MonoBehaviour, Interactable
     [Tooltip("Check this if the door opens toward you instead of pushing away")]
     [SerializeField] private bool invertSwingDirection = false;
 
+    [Header("Auto-Close Settings")]
+    [Tooltip("Toggle whether the door automatically closes after opening")]
+    [SerializeField] private bool autoClose = true;
+    [Tooltip("Seconds to wait before the door begins automatically closing")]
+    [SerializeField] private float autoCloseDelay = 8f;
+
+    private Coroutine autoCloseCoroutine;
+
+
+
     private bool isOpen = false;
     private Quaternion closedRotation;
     private Coroutine rotateCoroutine;
@@ -30,6 +40,13 @@ public class Door : MonoBehaviour, Interactable
     public void Interact()
     {
         if (doorSlab == null) return;
+
+        // Cancel pending timer if player manually interacts
+        if (autoCloseCoroutine != null)
+        {
+            StopCoroutine(autoCloseCoroutine);
+            autoCloseCoroutine = null;
+        }
 
         if (rotateCoroutine != null)
         {
@@ -59,11 +76,26 @@ public class Door : MonoBehaviour, Interactable
             }
 
             Quaternion targetRotation = closedRotation * Quaternion.Euler(0f, 0f, openAngle * sign);
-            rotateCoroutine = StartCoroutine(AnimateDoor(targetRotation));
+            //Start autoclose sequence only once door is fully open.
+            rotateCoroutine = StartCoroutine(AnimateDoor(targetRotation, onComplete: () =>
+            {           
+                if (autoClose)
+                {
+                    autoCloseCoroutine = StartCoroutine(AutoCloseRoutine());
+                }
+            }));
         }
     }
 
-    private IEnumerator AnimateDoor(Quaternion targetRotation)
+    private IEnumerator AutoCloseRoutine()
+    {
+        yield return new WaitForSeconds(autoCloseDelay);
+        isOpen = false;
+        rotateCoroutine = StartCoroutine(AnimateDoor(closedRotation));
+        autoCloseCoroutine = null;
+    }
+
+    private IEnumerator AnimateDoor(Quaternion targetRotation, System.Action onComplete = null)
     {
         while (Quaternion.Angle(doorSlab.localRotation, targetRotation) > 0.5f)
         {
@@ -73,5 +105,6 @@ public class Door : MonoBehaviour, Interactable
 
         doorSlab.localRotation = targetRotation;
         rotateCoroutine = null;
+        onComplete?.Invoke();
     }
 }
