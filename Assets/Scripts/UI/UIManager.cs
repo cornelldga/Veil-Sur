@@ -55,7 +55,7 @@ public class UIManager : MonoBehaviour
     private Photo pendingDeletion;
 
     [Header("Interact Popup")]
-    [SerializeField] public TMP_Text interact;
+    [SerializeField] public RawImage interact;
 
     private void Awake()
     {
