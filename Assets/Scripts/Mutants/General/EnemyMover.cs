@@ -35,6 +35,12 @@ public class EnemyMover : MonoBehaviour
     /** Area around investigation target that the mutant can check */
     [SerializeField] protected float wanderRadius = 5f;
 
+    [Header("Jumpscare")]
+    [SerializeField] private Sprite[] jumpscareFrames;
+    [SerializeField] private float jumpscareFps = 8f;
+    // For when we have audio for the jumpscares
+    // [SerializeField] private AudioClip jumpscareSound;
+
     protected UnityEngine.AI.NavMeshAgent agent;
     protected EnemySearchlight searchlight;
     protected int currentPatrolIndex;
@@ -201,7 +207,8 @@ public class EnemyMover : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            GameManager.Instance.LoseGame();
+            // null for audio for right now since we have no jumpscare audio
+            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
         }
     }
 
