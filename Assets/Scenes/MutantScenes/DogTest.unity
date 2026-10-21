@@ -1424,6 +1424,14 @@ PrefabInstance:
       propertyPath: idleFacingYAngle
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 7445490368492494730, guid: 14be270222103f74ba2293e33d315b15, type: 3}
+      propertyPath: acceptedSenseSources.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7445490368492494730, guid: 14be270222103f74ba2293e33d315b15, type: 3}
+      propertyPath: 'acceptedSenseSources.Array.data[2]'
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 7785355781276730557, guid: 14be270222103f74ba2293e33d315b15, type: 3}
       propertyPath: m_LocalPosition.x
       value: 23.3
@@ -1663,6 +1671,10 @@ PrefabInstance:
     - target: {fileID: 2184192572823106185, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_Name
       value: Dog Mutant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184192572823106185, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_LocalPosition.x
