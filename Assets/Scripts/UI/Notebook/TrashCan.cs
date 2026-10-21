@@ -15,26 +15,38 @@ public class TrashCan : MonoBehaviour, IDropHandler
     [Tooltip("sound played when a photo is deleted")]
     [SerializeField] private AudioClip crumpleClip;
 
-    private const float IdleAlpha = 0.35f;
-    private const float HeldAlpha = 1f;
+    private const float idleAlpha = 0.35f;
+    private const float heldAlpha = 1f;
 
     private Image image;
 
+    /// <summary>
+    /// caches the Image component that shows the trash can sprite
+    /// </summary>
     private void Awake()
     {
         image = GetComponent<Image>();
     }
 
+    /// <summary>
+    /// starts the trash can in its closed, dimmed state
+    /// </summary>
     private void Start()
     {
         SetOpen(false);
     }
 
+    /// <summary>
+    /// subscribes to photo drag events so the trash can opens while a photo is held
+    /// </summary>
     private void OnEnable()
     {
         PhotoDragPreview.DraggingChanged += SetOpen;
     }
 
+    /// <summary>
+    /// unsubscribes from photo drag events and resets the trash can to closed
+    /// </summary>
     private void OnDisable()
     {
         PhotoDragPreview.DraggingChanged -= SetOpen;
@@ -45,6 +57,7 @@ public class TrashCan : MonoBehaviour, IDropHandler
     /// This is called by the event system when a draggable item is dragged and dropped on this object.
     /// Accepts a photo slot or a legacy Photo.
     /// </summary>
+    /// <param name="pointer">pointer event data for the drop, containing the dragged object.</param>
     public void OnDrop(PointerEventData pointer)
     {
         Photo photo = GetDraggedPhoto(pointer);
@@ -53,7 +66,6 @@ public class TrashCan : MonoBehaviour, IDropHandler
             return;
         }
 
-        // UIManager.Instance.ShowDeleteConfirmation(photo);
         if (PhotoStorage.Instance.RemovePhoto(photo))
         {
             AudioManager.Instance.PlaySfxAtPosition(crumpleClip, Camera.main.transform.position, pitch: 1.5f, volume: 0.5f);
@@ -64,6 +76,7 @@ public class TrashCan : MonoBehaviour, IDropHandler
     /// returns the photo being dragged by the pointer
     /// </summary>
     /// <param name="pointer">pointer event data containing the dragged object.</param>
+    /// <returns>The dragged Photo, or null if nothing valid is being dragged.</returns>
     private Photo GetDraggedPhoto(PointerEventData pointer)
     {
         if (pointer.pointerDrag == null)
@@ -86,6 +99,6 @@ public class TrashCan : MonoBehaviour, IDropHandler
     private void SetOpen(bool open)
     {
         image.sprite = (open && openSprite != null) ? openSprite : closedSprite;
-        image.color = new Color(1f, 1f, 1f, open ? HeldAlpha : IdleAlpha);
+        image.color = new Color(1f, 1f, 1f, open ? heldAlpha : idleAlpha);
     }
 }
