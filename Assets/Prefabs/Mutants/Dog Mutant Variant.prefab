@@ -186,6 +186,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: chaseSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: alertPauseDuration
       value: 1
       objectReference: {fileID: 0}
