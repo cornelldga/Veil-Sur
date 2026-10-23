@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9132236541916493441}
   - component: {fileID: 1927768490209125107}
   - component: {fileID: 8898669246296371032}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 2144063137804506192}
   - component: {fileID: 7175148255011429168}
   - component: {fileID: 1305415287986317326}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Mutant
   m_TagString: Mutant
   m_Icon: {fileID: 0}
@@ -249,6 +249,7 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 256
+  idleFacingYAngle: 0
   viewDistance: 20
   viewAngle: 60
   eyeHeight: -0.96
@@ -281,6 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48571ff8ea2e14fca870ebf5677a24e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  idlePosition: {x: 0, y: 0, z: 0}
   patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
@@ -292,8 +294,11 @@ MonoBehaviour:
   waypointTolerance: 0.3
   suspiciousSpeed: 3
   chaseSpeed: 5
+  noticePauseDuration: 0
   waitTime: 2
   wanderRadius: 1.5
+  jumpscareFrames: []
+  jumpscareFps: 8
 --- !u!54 &1305415287986317326
 Rigidbody:
   m_ObjectHideFlags: 0
