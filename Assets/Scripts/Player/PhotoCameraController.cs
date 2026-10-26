@@ -26,6 +26,9 @@ public class PhotoCameraController : MonoBehaviour
     [SerializeField] private float normalFOV = 60f;
     [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 10f;
+
+    [Tooltip("How many seconds must pass before taking another photo.")]
+    [SerializeField] private float photoCooldown = 1f;
     [SerializeField] private bool toggleZoom = false;
     [Tooltip("The maximum range that a subject can be from the camera")]
     [Header("Detection")]
@@ -63,6 +66,7 @@ public class PhotoCameraController : MonoBehaviour
     private CameraMode currentMode = CameraMode.Photo;
     private Document hoveredDocument;
     private Coroutine shakeCoroutine;
+    private float lastPhotoTime = float.NegativeInfinity;
     private int rayMask;
     
     private void Awake()
@@ -214,6 +218,12 @@ public class PhotoCameraController : MonoBehaviour
         {
             return;
         }
+
+        if (Time.unscaledTime - lastPhotoTime < photoCooldown)
+        {
+            return;
+        }
+
         if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
             ErrorNotifier.Show("ERROR: camera full");
@@ -230,6 +240,7 @@ public class PhotoCameraController : MonoBehaviour
             return;
         }
 
+        lastPhotoTime = Time.unscaledTime;
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
