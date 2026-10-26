@@ -24,6 +24,6 @@ public class Elevator : PuzzleInteractable
     /// </summary>
     public override void FailBehavior()
     {
-        //dialogue that says "I don't know the code"
+        ErrorNotifier.Show("ERROR: Locked. Requires a passcode to unlock.");
     }
 }

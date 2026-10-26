@@ -4,17 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Shows the storage-full image and "Error camera full" text briefly after the player
-/// tries to take a photo while photo storage is full. Hidden otherwise.
+/// General-purpose error box. Shows its image and the message text briefly whenever
+/// ErrorNotifier.Show is called (e.g. storage full, locked elevator). Hidden otherwise.
 /// </summary>
 [RequireComponent(typeof(Image))]
-public class StorageIndicator : MonoBehaviour
+public class ErrorBox : MonoBehaviour
 {
-    [Tooltip("Sprite shown when a photo is blocked because storage is full")]
+    [Tooltip("Sprite shown as the error box background")]
     [SerializeField] private Sprite fullSprite;
-    [Tooltip("Child text shown when a photo is blocked because storage is full")]
+    [Tooltip("Child text that displays the error message")]
     [SerializeField] private TextMeshProUGUI errorText;
-    [Tooltip("Seconds the error stays visible after a blocked photo attempt")]
+    [Tooltip("Seconds the error stays visible after it is triggered")]
     [SerializeField] private float errorDuration = 1.5f;
 
     [Tooltip("Sound effect for when storage is full")]
@@ -32,25 +32,26 @@ public class StorageIndicator : MonoBehaviour
 
     private void OnEnable()
     {
-        PhotoStorage.OnPhotoBlocked += ShowError;
+        ErrorNotifier.OnError += ShowError;
     }
 
     private void OnDisable()
     {
-        PhotoStorage.OnPhotoBlocked -= ShowError;
+        ErrorNotifier.OnError -= ShowError;
         Hide();
     }
 
     /// <summary>
-    /// Shows the full image and error text for a short time after a blocked photo attempt.
+    /// Shows the error box with the given text for a short time.
     /// </summary>
-    private void ShowError()
+    /// <param name="message">Text to display in the error box.</param>
+    private void ShowError(string message)
     {
         AudioManager.Instance.PlayUISFX(errorAudioClip);
         image.color = Color.white;
         if (errorText != null)
         {
-            errorText.text = "Error camera full";
+            errorText.text = message;
             errorText.enabled = true;
         }
         if (errorRoutine != null) StopCoroutine(errorRoutine);
