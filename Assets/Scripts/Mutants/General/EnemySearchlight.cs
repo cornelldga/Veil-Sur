@@ -314,7 +314,7 @@ public class EnemySearchlight : MonoBehaviour
         detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
         SetState(AlertState.Suspicious);
         currentPriority = priority;
-        Debug.Log("Now investigating " + position + " at priority " + priority);
+        // Debug.Log("Now investigating " + position + " at priority " + priority);
     }
 
     protected void SetState(AlertState newState)
