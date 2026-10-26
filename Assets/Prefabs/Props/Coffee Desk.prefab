@@ -51,8 +51,61 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.005881852, y: 0.014052098, z: 0.034548424}
-  m_Center: {x: 0.008515628, y: -0.000026890673, z: 0.0074065877}
+  m_Size: {x: 0.0031843162, y: 0.0128026325, z: 0.037703812}
+  m_Center: {x: 0.00986445, y: -0.00012063341, z: 0.008984323}
+--- !u!1 &5079610335520263612
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5129540033400209442}
+  - component: {fileID: 3065058459405272557}
+  m_Layer: 0
+  m_Name: Collider (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5129540033400209442
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5079610335520263612}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: -0.9812876, w: 0.19254766}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1819345246463387542}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -157.797}
+--- !u!65 &3065058459405272557
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5079610335520263612}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.006550761, y: 0.0128026325, z: 0.020305324}
+  m_Center: {x: 0.008181246, y: -0.000120632976, z: 0.0002851162}
 --- !u!1001 &2212716168521941117
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -111,6 +164,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: a1d6488ce5c522e4eb80bbfe1f5f1eec, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4988273741493484192}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: a1d6488ce5c522e4eb80bbfe1f5f1eec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5129540033400209442}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a1d6488ce5c522e4eb80bbfe1f5f1eec, type: 3}
       insertIndex: -1
@@ -138,7 +194,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
