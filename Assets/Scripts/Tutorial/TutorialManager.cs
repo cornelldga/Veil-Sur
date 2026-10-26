@@ -40,7 +40,7 @@ public class TutorialManager : MonoBehaviour
             case 10: return "Drag a photo onto a question to connect it.";
             case 11: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
             case 12: return "Close your notebook.";
-            case 13: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode.";
+            case 13: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode. This allows you to view documents!";
             case 14: return $"{KeyName(c.PlayerMovement.TakePicture)} in document mode to scan it into your notebook.";
             case 15: return "Open your notebook again.";
             case 16: return "You scanned the document! You can also connect it to questions. Close your notebook.";

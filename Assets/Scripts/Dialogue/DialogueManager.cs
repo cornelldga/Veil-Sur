@@ -114,7 +114,7 @@ public class DialogueManager : MonoBehaviour {
     /// goes to next line of dialogue when box is clicked 
     /// </summary>
     public void NextLine(){
-        if (!isDialogueActive || currentSection == null){
+        if (!isDialogueActive || currentSection == null || IsPaused()){
             return;
         }
 
@@ -181,6 +181,14 @@ public class DialogueManager : MonoBehaviour {
     }
 
     /// <summary>
+    /// true while the game is paused, so clicks and typing shouldn't progress the dialogue
+    /// </summary>
+    private bool IsPaused()
+    {
+        return GameManager.Instance != null && GameManager.Instance.state == GameManager.GameState.PAUSED;
+    }
+
+    /// <summary>
     /// hides the click prompt and restarts its countdown
     /// </summary>
     private void HideClickPrompt()
@@ -221,7 +229,7 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void Update()
     {
-        if (!isDialogueActive || Time.frameCount == startedFrame) return;
+        if (!isDialogueActive || Time.frameCount == startedFrame || IsPaused()) return;
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (isTyping) FinishTyping();
