@@ -47,6 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   dialogueBox: {fileID: 3272032798394900424}
   dialogueText: {fileID: 7489548436387017701}
+  clickPrompt: {fileID: 4584251683446470163}
+  clickPromptDelay: 5
   charactersPerSecond: 40
   dialogueTickSound: {fileID: 8300000, guid: 1863b726617406f40bddaeaeba65cbb0, type: 3}
 --- !u!1001 &3239124045234291453
@@ -146,6 +148,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93a68868d7aafdf4cbed258e8c27a563, type: 3}
+--- !u!1 &4584251683446470163 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4584251683446470163, guid: 93a68868d7aafdf4cbed258e8c27a563, type: 3}
+  m_PrefabInstance: {fileID: 3239124045234291453}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3201176431587114878 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 44881142696377731, guid: 93a68868d7aafdf4cbed258e8c27a563, type: 3}

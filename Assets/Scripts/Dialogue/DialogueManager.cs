@@ -37,6 +37,12 @@ public class DialogueManager : MonoBehaviour {
     [Tooltip("sound for the type-y sound that plays when a dialogue box appears")]
     [SerializeField] AudioClip dialogueTickSound;
 
+    [Tooltip("the click tooltip that shows if the player waits too long to advance")]
+    [SerializeField] private GameObject clickPrompt;
+
+    [Tooltip("seconds before the click prompt shows")]
+    [SerializeField] private float clickPromptDelay = 5f;
+
     [Tooltip("tracker that helps us know when to play the next clicking sound")]
     int lastVisibleCharacters;
     //variable that makes sure we don't OD spam the sound effect
@@ -53,6 +59,7 @@ public class DialogueManager : MonoBehaviour {
     private bool isDialogueActive = false;
     private int startedFrame = -1; //the frame a dialogue opened on, so the click that triggered it doesn't skip a line
     private bool isTyping = false; //true while the current line is still being typed out
+    private float idleTime = 0f; //seconds the finished line has gone unclicked
     private float typedCharacters = 0f; //how many characters of the current line are visible (fractional between frames)
 
     /// <summary>
@@ -131,6 +138,7 @@ public class DialogueManager : MonoBehaviour {
         typedCharacters = 0f;
         lastVisibleCharacters = 0;
         isTyping = true;
+        HideClickPrompt();
     }
 
     /// <summary>
@@ -169,6 +177,16 @@ public class DialogueManager : MonoBehaviour {
     {
         dialogueText.maxVisibleCharacters = int.MaxValue;
         isTyping = false;
+        idleTime = 0f;
+    }
+
+    /// <summary>
+    /// hides the click prompt and restarts its countdown
+    /// </summary>
+    private void HideClickPrompt()
+    {
+        idleTime = 0f;
+        if (clickPrompt != null) clickPrompt.SetActive(false);
     }
 
     /// <summary>
@@ -178,6 +196,7 @@ public class DialogueManager : MonoBehaviour {
     {
         isDialogueActive = false;
         currentSection = null;
+        HideClickPrompt();
         HideDialogue();
     }
 
@@ -210,6 +229,13 @@ public class DialogueManager : MonoBehaviour {
             return;
         }
 
-        if (isTyping) TypeCurrentLine();
+        if (isTyping)
+        {
+            TypeCurrentLine();
+            return;
+        }
+
+        idleTime += Time.unscaledDeltaTime;
+        if (idleTime >= clickPromptDelay && clickPrompt != null) clickPrompt.SetActive(true);
     }
 }
