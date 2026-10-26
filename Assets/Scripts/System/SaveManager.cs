@@ -17,7 +17,7 @@ public class SaveManager : MonoBehaviour
     [System.Serializable]
     public class SaveData
     {
-        public int levelNumber;
+        public string sceneName;
         public Vector3 playerPosition;
         public List<PhotoSaveData> photos = new();
     }
@@ -26,6 +26,10 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Instance;
     private void Awake()
     {
+        // GameManager destroys duplicate copies of its prefab, so don't let one take over Instance
+        if (Instance != null && Instance != this)
+            return;
+
         controls = new PlayerControls();
         Instance = this;
         savePath = Application.persistentDataPath + "/save.json";
@@ -40,7 +44,7 @@ public class SaveManager : MonoBehaviour
     {
         SaveData data = new SaveData();
 
-        data.levelNumber = GameManager.Instance.CurrentLevel();
+        data.sceneName = GameManager.Instance.CurrentLevelName();
 
         data.playerPosition = Level.current_level.player.transform.position;
 
@@ -86,7 +90,7 @@ public class SaveManager : MonoBehaviour
     /// <summary>
     /// Loads the game from the current save file. If no save exists, creates a new one
     /// </summary>
-    public void LoadGame()
+    public async void LoadGame()
     {
         if (!File.Exists(savePath))
         {
@@ -95,9 +99,17 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(savePath);
 
         SaveData data = JsonUtility.FromJson<SaveData>(json);
+        // saves from before scenes were saved by name have no sceneName
+        if (data == null || string.IsNullOrEmpty(data.sceneName))
+        {
+            Debug.LogWarning("Save file is missing a scene name, ignoring it.");
+            return;
+        }
 
-        //load level
-        GameManager.Instance.LoadLevel(data.levelNumber);
+        // wait for the scene to finish loading so we apply the save to the new level's player,
+        // and so GameManager's scene-load ClearAll runs before we restore photos
+        if (!await GameManager.Instance.LoadSceneAsync(data.sceneName))
+            return;
 
         // load player first
         Level.current_level.player.SetActive(false);
@@ -141,12 +153,14 @@ public class SaveManager : MonoBehaviour
 
     private void OnEnable()
     {
+        if (Instance != this) return; // duplicate about to be destroyed
         controls.General.Enable();
         controls.General.Load.performed += OnLoad;
     }
 
     private void OnDisable()
     {
+        if (Instance != this) return;
         controls.General.Disable();
         controls.General.Load.performed -= OnLoad;
     }
@@ -170,6 +184,6 @@ public class SaveManager : MonoBehaviour
         if (data == null)
             return false;
 
-        return data.levelNumber == GameManager.Instance.CurrentLevel();
+        return data.sceneName == GameManager.Instance.CurrentLevelName();
     }
 }

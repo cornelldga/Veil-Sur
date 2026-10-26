@@ -173,19 +173,24 @@ public class GameManager : MonoBehaviour
         await LoadSceneAsync(sceneName);
     }
     
-    public async Task LoadSceneAsync(string sceneName)
+    /// <summary>
+    /// Loads a scene by name and completes once the new scene is active.
+    /// Returns false if the scene isn't in Build Settings.
+    /// </summary>
+    public async Task<bool> LoadSceneAsync(string sceneName)
     {
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         if (op == null)
         {
             Debug.LogError($"Scene '{sceneName}' could not be loaded. Is it in Build Settings?");
-            return;
+            return false;
         }
 
         while (!op.isDone)
             await Task.Yield();
 
         HandleSceneMusic(sceneName);
+        return true;
     }
 
     /// <summary>
@@ -285,6 +290,15 @@ public class GameManager : MonoBehaviour
     public int CurrentLevel()
     {
         return SceneManager.GetActiveScene().buildIndex;
+    }
+
+    /// <summary>
+    /// Returns the name of the current scene. Unlike the build index, this doesn't
+    /// change when scenes are added, removed or reordered in Build Settings.
+    /// </summary>
+    public string CurrentLevelName()
+    {
+        return SceneManager.GetActiveScene().name;
     }
 
 
