@@ -17,6 +17,9 @@ public class ErrorBox : MonoBehaviour
     [Tooltip("Seconds the error stays visible after it is triggered")]
     [SerializeField] private float errorDuration = 1.5f;
 
+    [Tooltip("Sound effect for when storage is full")]
+    [SerializeField] private AudioClip errorAudioClip;
+        
     private Image image;
     private Coroutine errorRoutine;
 
@@ -44,6 +47,7 @@ public class ErrorBox : MonoBehaviour
     /// <param name="message">Text to display in the error box.</param>
     private void ShowError(string message)
     {
+        AudioManager.Instance.PlayUISFX(errorAudioClip);
         image.color = Color.white;
         if (errorText != null)
         {

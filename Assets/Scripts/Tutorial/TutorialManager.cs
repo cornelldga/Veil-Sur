@@ -34,14 +34,14 @@ public class TutorialManager : MonoBehaviour
             case 4: return "Try to take one more photo, your storage is full!";
             case 5: return $"Press {KeyName(c.General.Notebook)} to open your notebook.";
             case 6: return "Double click on images in your notebook to look at them larger.";
-            // case 7: return "Drag a photo onto a question to connect it.";
-            case 7: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
-            case 8: return "Close your notebook.";
-            case 9: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode.";
-            case 10: return $"{KeyName(c.PlayerMovement.TakePicture)} in document mode to scan it into your notebook.";
-            case 11: return "Open your notebook again.";
-            case 12: return "You scanned the document! You can also connect it to questions. Close your notebook.";
-            case 13: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
+            case 7: return "Drag a photo onto a question to connect it.";
+            case 8: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
+            case 9: return "Close your notebook.";
+            case 10: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode.";
+            case 11: return $"{KeyName(c.PlayerMovement.TakePicture)} in document mode to scan it into your notebook.";
+            case 12: return "Open your notebook again.";
+            case 13: return "You scanned the document! You can also connect it to questions. Close your notebook.";
+            case 14: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
             // Maybe in the above ^ prompt we'll include a picture of the interact icon.
 
             default: return "";
@@ -144,14 +144,14 @@ public class TutorialManager : MonoBehaviour
             case 4: return controls.PlayerMovement.TakePicture.WasPerformedThisFrame() && PhotoStorage.Instance.IsPhotoStorageFull();
             case 5: return state == GameManager.GameState.NOTEBOOK;
             case 6: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.IsPhotoPreviewOpen;
-            // case 7: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
-            case 7: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
-            case 8: return state != GameManager.GameState.NOTEBOOK;
-            case 9: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
-            case 10: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
-            case 11: return state == GameManager.GameState.NOTEBOOK;
-            case 12: return state != GameManager.GameState.NOTEBOOK;
-            case 13: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
+            case 7: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
+            case 8: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
+            case 9: return state != GameManager.GameState.NOTEBOOK;
+            case 10: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
+            case 11: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
+            case 12: return state == GameManager.GameState.NOTEBOOK;
+            case 13: return state != GameManager.GameState.NOTEBOOK;
+            case 14: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
 
             default: return false;
         }
