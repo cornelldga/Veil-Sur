@@ -284,17 +284,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the index of the current level in the levels array.
-    /// Returns -1 if the current scene is not a gameplay level.
-    /// </summary>
-    public int CurrentLevel()
-    {
-        return SceneManager.GetActiveScene().buildIndex;
-    }
-
-    /// <summary>
-    /// Returns the name of the current scene. Unlike the build index, this doesn't
-    /// change when scenes are added, removed or reordered in Build Settings.
+    /// Returns the name of the current scene.
     /// </summary>
     public string CurrentLevelName()
     {
