@@ -128,6 +128,13 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // undo the lose state, e.g. after loading the last save from the lose panel
+        if (hasLost)
+        {
+            losePanel.SetActive(false);
+            UIManager.Instance.HideJumpscare();
+            Time.timeScale = 1f;
+        }
         hasLost = false;
 
         if (scene.name == titleSceneName)
@@ -263,6 +270,9 @@ public class GameManager : MonoBehaviour
         yield return UIManager.Instance.PlayJumpscare(frames, fps);
 
         losePanel.SetActive(true);
+        // free the cursor so the lose panel's buttons can be clicked
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     /// <summary>
