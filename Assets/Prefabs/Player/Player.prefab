@@ -272,7 +272,8 @@ MonoBehaviour:
   storageFullShakeDuration: 0.25
   storageFullShakeMagnitude: 0.1
   shutterClip: {fileID: 8300000, guid: 2a5906470f95e4dcdacd7761937ab0ec, type: 3}
-  maxRadius: 17.5
+  detectRadius: 20
+  stunRadius: 10
   coneAngle: 60
   targetMask:
     serializedVersion: 2
