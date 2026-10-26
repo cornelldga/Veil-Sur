@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System;
+using System.Collections;
 using UnityEngine.InputSystem; 
 
 public class GameManager : MonoBehaviour
@@ -14,6 +15,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Music")]
     [SerializeField] private AudioClip lobbyMusic;
+
+    [Header("Ambience")]
+    [SerializeField] private AudioClip levelOneAmbience;
 
     [Header("Startup")]
     [SerializeField] private string titleSceneName = "TitleScreen";
@@ -27,6 +31,7 @@ public class GameManager : MonoBehaviour
     
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
+    private bool hasLost = false;
 
     public void SetMouseSensitivity(float value)
     {
@@ -123,6 +128,8 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        hasLost = false;
+
         if (scene.name == titleSceneName)
             SetState(GameState.MAIN_MENU);        // entering the title scene
         else if (_state == GameState.MAIN_MENU)
@@ -130,6 +137,17 @@ public class GameManager : MonoBehaviour
 
         // Each scene starts with empty photo storage, remove this if you want to keep photos between scenes
         if (PhotoStorage.Instance != null) PhotoStorage.Instance.ClearAll();
+
+        HandleSceneAmbience(scene.name);
+    }
+
+    private void HandleSceneAmbience(string sceneName)
+    {
+        Debug.Log($"HandleSceneAmbience('{sceneName}')");
+        AudioManager.Instance.StopAmbience();
+
+        if (sceneName == "LevelOne")
+            AudioManager.Instance.PlayAmbience(levelOneAmbience);
     }
 
     private void Update()
@@ -209,15 +227,37 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// The temporary lose state for the game. 
-    /// Stops time for the game and enables the lose panel 
-    /// to be seen for the player.
+    /// The temporary lose state for the game.
+    /// Plays the catching mutant's jumpscare, then shows the lose panel.
+    /// Only the first call per run does anything.
     /// </summary>
-    public void LoseGame()
+    /// <param name="frames">the jumpscare frames of the mutant that caught the player</param>
+    /// <param name="fps">playback speed of the jumpscare frames</param>
+    /// <param name="audio">the jumpscare sound, null until mutants have one</param>
+    public void LoseGame(Sprite[] frames, float fps, AudioClip audio)
     {
-        losePanel.SetActive(true);
-        Time.timeScale = 0f;
+        if (hasLost) return;
+        hasLost = true;
+        StartCoroutine(LoseSequence(frames, fps, audio));
+    }
+
+    /// <summary>
+    /// Freezes the game and removes player control, waits for the jumpscare
+    /// to finish, then shows the lose panel.
+    /// </summary>
+    /// <param name="frames">the jumpscare frames to play</param>
+    /// <param name="fps">playback speed of the jumpscare frames</param>
+    /// <param name="audio">the jumpscare sound, currently unused</param>
+    private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
+    {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
+        Time.timeScale = 0f;
+        // for when we have jumpscare audio
+        // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+
+        yield return UIManager.Instance.PlayJumpscare(frames, fps);
+
+        losePanel.SetActive(true);
     }
 
     /// <summary>

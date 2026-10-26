@@ -30,6 +30,8 @@ public class PhotoCameraController : MonoBehaviour
     [Tooltip("The maximum range that a subject can be from the camera")]
     [Header("Detection")]
     [SerializeField] private float maxPhotoRange = 10f;
+    [Tooltip("How far away (in meters) a document can be read in document mode")]
+    [SerializeField] private float maxDocReadRange = 3f;
     [SerializeField] private LayerMask photoOcclusionMask = ~0;
     [Tooltip("Inner circle radius in world units")]
     [SerializeField] private float innerRayRadius = 0.07f;
@@ -56,6 +58,7 @@ public class PhotoCameraController : MonoBehaviour
     [SerializeField] private LayerMask obstacleMask; // Layer containing walls/blocking objects
 
     private const int RaysPerCircle = 8;
+    private const string playerLayerName = "Player";
     private PlayerControls controls;
     private PlayerState playerState;
     private float targetFOV;
@@ -63,6 +66,7 @@ public class PhotoCameraController : MonoBehaviour
     private CameraMode currentMode = CameraMode.Photo;
     private Document hoveredDocument;
     private Coroutine shakeCoroutine;
+    private int rayMask;
     
     private void Awake()
     {
@@ -72,6 +76,10 @@ public class PhotoCameraController : MonoBehaviour
         playerState = GetComponent<PlayerState>();
     }
 
+    /// <summary>
+    /// Gets the target camera, sets the starting FOV, builds the camera
+    /// raycast mask, and creates the blur volume.
+    /// </summary>
     private void Start()
     {        
         if (targetCamera == null)
@@ -80,6 +88,14 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         targetFOV = normalFOV;
+
+        // Camera rays skip the Player layer so they can't hit the player's own colliders
+        rayMask = photoOcclusionMask;
+        int playerLayer = LayerMask.NameToLayer(playerLayerName);
+        if (playerLayer != -1)
+        {
+            rayMask &= ~(1 << playerLayer);
+        }
 
         CreateBlurVolume();
     }
@@ -180,7 +196,7 @@ public class PhotoCameraController : MonoBehaviour
         // Currently, just swap between two modes with Q
         // In the future with more camera modes,
         // THIS would need to change ***.
-        currentMode = (currentMode == CameraMode.Photo) ? 
+        currentMode = (currentMode == CameraMode.Photo) ?
         CameraMode.Document : CameraMode.Photo;
 
         UIManager.Instance.SetCameraMode(currentMode);
@@ -323,12 +339,14 @@ public class PhotoCameraController : MonoBehaviour
     /// <summary>
     /// Raycasts from the camera while in Document mode (similar to interaction).
     /// Opens a hovered Document, and will close if the ray moves away.
+    /// The ray ignores the Player layer so it can't hit the player's own colliders.
+    /// The ray only reaches maxDocReadRange, so documents must be read up close.
     /// </summary>
     private void UpdateDocPreview()
     { 
         Document newHoveredDocument = null;
 
-        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxDocReadRange, rayMask, QueryTriggerInteraction.Ignore))
         {
             newHoveredDocument = hit.collider.GetComponent<Document>();
         }
@@ -367,8 +385,10 @@ public class PhotoCameraController : MonoBehaviour
     /// <summary>
     /// Raycasts to find the subject of the most recently taken photo.
     /// Returns the SubjectId with the most hits, as long as it has at least
-    /// minRayCasts hits. Empty string if no such subject exists.
+    /// minRayCasts hits. The rays ignore the Player layer so they can't hit
+    /// the player's own colliders.
     /// </summary>
+    /// <returns>The photographed SubjectId, or an empty string if no such subject exists.</returns>
     private string DetectPhotographedSubject()
     {
         var tally = new Dictionary<string, int>();
@@ -376,7 +396,7 @@ public class PhotoCameraController : MonoBehaviour
 
         foreach (var (ray, isInner) in GetPhotoRays())
         {
-            if (!Physics.Raycast(ray, out RaycastHit hit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
+            if (!Physics.Raycast(ray, out RaycastHit hit, maxPhotoRange, rayMask, QueryTriggerInteraction.Ignore))
             {
                 Debug.DrawRay(ray.origin, ray.direction * maxPhotoRange, Color.red, 5f, false);
                 continue;
@@ -406,7 +426,7 @@ public class PhotoCameraController : MonoBehaviour
 
         Ray centerRay = new(targetCamera.transform.position, targetCamera.transform.forward);
 
-        if (Physics.Raycast(centerRay, out RaycastHit centerHit, maxPhotoRange, photoOcclusionMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(centerRay, out RaycastHit centerHit, maxPhotoRange, rayMask, QueryTriggerInteraction.Ignore))
         {
             PhotographableObject centeredSubject = centerHit.collider.GetComponentInParent<PhotographableObject>();
 

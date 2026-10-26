@@ -125,7 +125,7 @@ public class DogSniff : MonoBehaviour
             }
         }
 
-        searchlight.ReportSense(trail[trailIndex].position, Priority.Smell);
+        searchlight.ReportSense(trail[trailIndex].position, Priority.Smell, "Player");
         // Debug.Log("Sniffing " + trail[trailIndex].position);
         
     }
