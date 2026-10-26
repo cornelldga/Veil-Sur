@@ -7,6 +7,7 @@ using UnityEngine;
 public class QuestionDefinition : MonoBehaviour
 {
     [SerializeField] private List<PhotographableObject> required_objects = new();
+    [SerializeField] private bool requireAllObjects = true;
     [TextArea]
     [SerializeField] private string questionText;
     [TextArea]
@@ -101,7 +102,7 @@ public class QuestionDefinition : MonoBehaviour
     public bool CheckAnswer()
     {
         return IsCorrect || (HasStoredPhotos() && required_objects.Count > 0 &&
-            required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId))));
+            (requireAllObjects ? required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId))) : required_objects.Any(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId)))));
     }
 
     private bool HasStoredPhotos()
