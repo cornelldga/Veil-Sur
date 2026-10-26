@@ -298,12 +298,15 @@ public class PhotoCameraController : MonoBehaviour
 
     /// <summary>
     /// Coroutine to manage the document scanner.
+    /// Plays the shutter sound and hides the viewfinder for the captured frame, then shows it again if the game is still in the camera state.
     /// Gets the rectangle/paper of the DocView in coordinates.
     /// Creates a new texture the size of the paper.
     /// Finally, copies the paper into the scan, and creates a photo note.
     /// </summary>
     private IEnumerator ScanDocument()
     {
+        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        UIManager.Instance.cameraGroup.SetActive(false);
         yield return new WaitForEndOfFrame();
 
         Vector3[] corners = new Vector3[4];
@@ -316,6 +319,7 @@ public class PhotoCameraController : MonoBehaviour
         scan.Apply();
 
         CreatePhotoNote(scan);
+        UIManager.Instance.cameraGroup.SetActive(GameManager.Instance.state == GameManager.GameState.CAMERA);
     }
 
     /// <summary>
