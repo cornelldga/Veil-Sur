@@ -151,7 +151,6 @@ public class ElevatorController : MonoBehaviour
     public void OpenDoors()
     {
         if (traveling || state != State.Closed) return;
-        doorCollider.enabled = false;
         StartCoroutine(OpenDoorsRoutine());
     }
 
@@ -211,6 +210,7 @@ public class ElevatorController : MonoBehaviour
     private IEnumerator OpenDoorsRoutine()
     {
         yield return SetDoorsAnimated(true);
+        doorCollider.enabled = false;
 
         if (playerInside && queuedFloor.HasValue)
         {
