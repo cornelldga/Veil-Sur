@@ -30,6 +30,6 @@ public class ElevatorButton : PuzzleInteractable
     /// </summary>
     public override void FailBehavior()
     {
-        // TBD
+        ErrorNotifier.Show("ERROR: Locked. Requires a code.");
     }
 }

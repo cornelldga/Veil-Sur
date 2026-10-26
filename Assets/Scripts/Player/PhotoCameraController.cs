@@ -42,11 +42,6 @@ public class PhotoCameraController : MonoBehaviour
     [Header("Blur Settings")]
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
     [SerializeField] private float blurRangePastMax = 2f;
-    [Header("Storage Full Feedback")]
-    [Tooltip("How long the camera shakes (seconds) when storage is full")]
-    [SerializeField] private float storageFullShakeDuration = 0.25f;
-    [Tooltip("Maximum distance the camera is offset while shaking")]
-    [SerializeField] private float storageFullShakeMagnitude = 0.1f;
 
     [Header("Audio")]
     [SerializeField] private AudioClip shutterClip;
@@ -59,6 +54,8 @@ public class PhotoCameraController : MonoBehaviour
 
     private const int RaysPerCircle = 8;
     private const string playerLayerName = "Player";
+    private const float ErrorShakeDuration = 0.25f; // Seconds the camera shakes when an error is shown
+    private const float ErrorShakeMagnitude = 0.1f; // Max distance the camera is offset while shaking
     private PlayerControls controls;
     private PlayerState playerState;
     private float targetFOV;
@@ -136,10 +133,14 @@ public class PhotoCameraController : MonoBehaviour
         controls.PlayerMovement.TakePicture.performed += OnSnap;
 
         controls.PlayerMovement.SwapCameraMode.performed += OnSwapCameraMode;
+
+        ErrorNotifier.OnError += OnErrorShown;
     }
 
     private void OnDisable()
     {
+        ErrorNotifier.OnError -= OnErrorShown;
+
         controls.PlayerMovement.AimCamera.performed -= OnAimCameraPerformed;
         controls.PlayerMovement.AimCamera.canceled -= OnAimCameraCanceled;
         controls.PlayerMovement.TakePicture.performed -= OnSnap;
@@ -215,7 +216,7 @@ public class PhotoCameraController : MonoBehaviour
         }
         if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
-            HandleStorageFull();
+            ErrorNotifier.Show("ERROR: camera full");
             return;
         }
         else
@@ -240,11 +241,17 @@ public class PhotoCameraController : MonoBehaviour
     private Vector3 shakeOrigin = Vector3.zero;
 
     /// <summary>
-    /// Called when the player tries to take photo while storage is full.
-    // Shakes camera and brings camera back to origin so it doesn't get offset
+    /// Called whenever any error message is shown through ErrorNotifier.
+    /// Shakes camera and brings camera back to origin so it doesn't get offset
     /// </summary>
-    private void HandleStorageFull()
+    /// <param name="message">Error text being displayed (unused).</param>
+    private void OnErrorShown(string message)
     {
+        if (targetCamera == null)
+        {
+            return;
+        }
+
         if (shakeCoroutine != null)
         {
             StopCoroutine(shakeCoroutine);
@@ -252,8 +259,7 @@ public class PhotoCameraController : MonoBehaviour
         }
 
         shakeOrigin = targetCamera.transform.localPosition;
-        shakeCoroutine = StartCoroutine(ShakeCamera(storageFullShakeDuration, storageFullShakeMagnitude));
-        PhotoStorage.OnPhotoBlocked?.Invoke();
+        shakeCoroutine = StartCoroutine(ShakeCamera(ErrorShakeDuration, ErrorShakeMagnitude));
     }
 
     /// <summary>
@@ -292,12 +298,15 @@ public class PhotoCameraController : MonoBehaviour
 
     /// <summary>
     /// Coroutine to manage the document scanner.
+    /// Plays the shutter sound and hides the viewfinder for the captured frame, then shows it again if the game is still in the camera state.
     /// Gets the rectangle/paper of the DocView in coordinates.
     /// Creates a new texture the size of the paper.
     /// Finally, copies the paper into the scan, and creates a photo note.
     /// </summary>
     private IEnumerator ScanDocument()
     {
+        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        UIManager.Instance.cameraGroup.SetActive(false);
         yield return new WaitForEndOfFrame();
 
         Vector3[] corners = new Vector3[4];
@@ -310,6 +319,7 @@ public class PhotoCameraController : MonoBehaviour
         scan.Apply();
 
         CreatePhotoNote(scan);
+        UIManager.Instance.cameraGroup.SetActive(GameManager.Instance.state == GameManager.GameState.CAMERA);
     }
 
     /// <summary>
