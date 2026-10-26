@@ -26,6 +26,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool isDebugMode = false;
     [SerializeField] GameObject losePanel;
 
+    [Header("Level Info")]
+    private int currentLevelIndex;
+    
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
     private bool hasLost = false;
@@ -125,6 +128,13 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // undo the lose state, e.g. after loading the last save from the lose panel
+        if (hasLost)
+        {
+            losePanel.SetActive(false);
+            UIManager.Instance.HideJumpscare();
+            Time.timeScale = 1f;
+        }
         hasLost = false;
 
         if (scene.name == titleSceneName)
@@ -170,19 +180,24 @@ public class GameManager : MonoBehaviour
         await LoadSceneAsync(sceneName);
     }
     
-    public async Task LoadSceneAsync(string sceneName)
+    /// <summary>
+    /// Loads a scene by name and completes once the new scene is active.
+    /// Returns false if the scene isn't in Build Settings.
+    /// </summary>
+    public async Task<bool> LoadSceneAsync(string sceneName)
     {
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         if (op == null)
         {
             Debug.LogError($"Scene '{sceneName}' could not be loaded. Is it in Build Settings?");
-            return;
+            return false;
         }
 
         while (!op.isDone)
             await Task.Yield();
 
         HandleSceneMusic(sceneName);
+        return true;
     }
 
     /// <summary>
@@ -255,6 +270,9 @@ public class GameManager : MonoBehaviour
         yield return UIManager.Instance.PlayJumpscare(frames, fps);
 
         losePanel.SetActive(true);
+        // free the cursor so the lose panel's buttons can be clicked
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     /// <summary>
@@ -275,5 +293,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// Returns the name of the current scene.
+    /// </summary>
+    public string CurrentLevelName()
+    {
+        return SceneManager.GetActiveScene().name;
+    }
+
+
+    /// <summary>
+    /// To be called by levels when they are done, asking the game to load the next level.
+    /// </summary>
+    public void NextLevel()
+    {
+        int next = SceneManager.GetActiveScene().buildIndex + 1;
+
+        if (next < SceneManager.sceneCountInBuildSettings)
+            SceneManager.LoadScene(next);
+    }
+
+    /// <summary>
+    /// Loads a level based on its build index.
+    /// </summary>
+    public void LoadLevel(int levelNumber)
+    {
+        if (levelNumber < 0 || levelNumber >= SceneManager.sceneCountInBuildSettings)
+        {
+            Debug.LogError($"Level index {levelNumber} is out of range.");
+            return;
+        }
+
+        SceneManager.LoadScene(levelNumber);
+    }
+
 }
