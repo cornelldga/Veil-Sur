@@ -171,3 +171,11 @@ MonoBehaviour:
   invertSwingDirection: 0
   autoClose: 1
   autoCloseDelay: 4
+  mutantLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  mutantOpenDistance: 2
+  raycastHeight: 1

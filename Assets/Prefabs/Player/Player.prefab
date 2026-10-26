@@ -316,10 +316,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoudnessControl
   loudnessDetectorCollider: {fileID: 3284144128573982454}
-  crouchRadius: 2
-  walkRadius: 5
-  runRadius: 10
-  cameraRadius: 10
+  crouchRadius: 3
+  walkRadius: 8
+  runRadius: 20
+  cameraRadius: 20
 --- !u!114 &28695803084452280
 MonoBehaviour:
   m_ObjectHideFlags: 0
