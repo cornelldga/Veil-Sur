@@ -1197,6 +1197,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -6732023657111804401, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1345402689}
+    - targetCorrespondingSourceObject: {fileID: 2233528009911161338, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1635664922}
     - targetCorrespondingSourceObject: {fileID: 7768192788209353461, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1584321160}
@@ -1300,6 +1303,7 @@ MonoBehaviour:
   doorAnimator: {fileID: 54943310}
   doorOpenCloseDelay: 0
   autoCloseDelay: 8
+  doorCollider: {fileID: 1635664922}
   rideDuration: 8
   shaftLight: {fileID: 0}
   lightBottom: {fileID: 0}
@@ -32653,6 +32657,32 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8810374551701209268, guid: 424d1f91a57a94630b27de911e0175c5, type: 3}
   m_PrefabInstance: {fileID: 1620648086}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1635664919 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2233528009911161338, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+  m_PrefabInstance: {fileID: 54943303}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1635664922
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635664919}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.024819234, y: 0.060129922, z: 0.022364601}
+  m_Center: {x: 0, y: 0.031221544, z: 0.001147452}
 --- !u!1 &1654516215
 GameObject:
   m_ObjectHideFlags: 0

@@ -65,6 +65,7 @@ public class ElevatorController : MonoBehaviour
     [SerializeField] private float doorOpenCloseDelay;
     [Tooltip("Seconds the doors stay open before closing again if the Player never gets in.")]
     [SerializeField] private float autoCloseDelay = 8f;
+    [SerializeField] private BoxCollider doorCollider;
 
     [Header("Ride")]
     [Tooltip("Total seconds the ride lasts")]
@@ -150,7 +151,7 @@ public class ElevatorController : MonoBehaviour
     public void OpenDoors()
     {
         if (traveling || state != State.Closed) return;
-
+        doorCollider.enabled = false;
         StartCoroutine(OpenDoorsRoutine());
     }
 
@@ -160,7 +161,7 @@ public class ElevatorController : MonoBehaviour
     public void CloseDoors()
     {
         if (traveling || state != State.Open) return;
-
+        doorCollider.enabled = true;
         StopAutoClose();
         StartCoroutine(SetDoorsAnimated(false));
     }
