@@ -179,7 +179,7 @@ public class NotebookUIController : MonoBehaviour
         question.Solved += OnQuestionSolved;
         slot.Bind(question);
         slot.gameObject.SetActive(true);
-        numberCorrectText.text = "LINKS INCORRECT";
+        numberCorrectText.text = "";
         
         return true;
     }

@@ -68,7 +68,10 @@ public class UploadScript : MonoBehaviour
         AllCorrect = questions.Length > 0 && correctCount == questions.Length;
         Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {AllCorrect}");
         if (correctCount < questions.Length)
+        {
+            numberCorrectText.text = "LINKS INCORRECT";
             UIManager.Instance.Notebook.ShakeIncorrectAnswer();
+        }
 
         if (AllCorrect)
         {
