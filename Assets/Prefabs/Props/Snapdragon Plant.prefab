@@ -4958,7 +4958,7 @@ PrefabInstance:
       addedObject: {fileID: 1505733817696023584}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7077984330021938450}
+      addedObject: {fileID: 2000244224403646880}
   m_SourcePrefab: {fileID: 100100000, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!1 &3946269064275496962 stripped
 GameObject:
@@ -4980,8 +4980,8 @@ MonoBehaviour:
   plantSFX: {fileID: 8300000, guid: cdd10de8dd3d04069a65584eee3641db, type: 3}
   interactionParticles: {fileID: 8992300259658893677}
   particleAmount: 10
---- !u!64 &7077984330021938450
-MeshCollider:
+--- !u!65 &2000244224403646880
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4998,10 +4998,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -805239033701561478, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.69674647, y: 1.3375236, z: 0.6841395}
+  m_Center: {x: -0.0073643923, y: 0.5187618, z: 0.016396448}
 --- !u!4 &4433836039235259064 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
