@@ -180,7 +180,7 @@ public class TutorialManager : MonoBehaviour
             case 16: return state == GameManager.GameState.NOTEBOOK;
             case 17: return state != GameManager.GameState.NOTEBOOK;
             case 18: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
-            case 19: return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+            case 19: return UIManager.Instance.SettingsMenu != null && UIManager.Instance.SettingsMenu.gameObject.activeSelf; 
             default: return false;
         }
     }
