@@ -1206,7 +1206,7 @@ MonoBehaviour:
   doorOpenCloseDelay: 1.5
   autoCloseDelay: 8
   doorCollider: {fileID: 1726734628}
-  rideDuration: 8
+  rideDuration: 5
   shaftLight: {fileID: 0}
   lightBottom: {fileID: 0}
   lightTop: {fileID: 0}
