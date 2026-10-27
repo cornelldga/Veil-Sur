@@ -1227,8 +1227,9 @@ MonoBehaviour:
   nextScene: LevelOne
   prevScene: TutorialLevel
   doorAnimator: {fileID: 54943310}
-  doorOpenCloseDelay: 0
+  doorOpenCloseDelay: 1.5
   autoCloseDelay: 8
+  doorCollider: {fileID: 1726734628}
   rideDuration: 8
   shaftLight: {fileID: 0}
   lightBottom: {fileID: 0}
