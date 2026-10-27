@@ -241,6 +241,14 @@ public class ElevatorController : MonoBehaviour
 
         yield return new WaitForSeconds(doorOpenCloseDelay);
 
+        // Guard agains the player leaving DURING the delay
+        if (!playerInside)
+        {
+            traveling = false;
+            RestartAutoClose();
+            yield break;
+        }
+
         yield return SetDoorsAnimated(false);
         yield return RunRide();
 
