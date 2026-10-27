@@ -86,15 +86,25 @@ public class ElevatorController : MonoBehaviour
     [Header("SFX")]
     [Tooltip("Played once when the ride starts. Ideally about as long as rideDuration.")]
     [SerializeField] private AudioClip rideSfx;
-
-    private State state;
     private ElevatorDirection? queuedFloor;
     private bool playerInside;
     private bool traveling;
     private Coroutine autoCloseRoutine;
     public ElevatorDirection? QueuedFloor => queuedFloor;
-
     private bool HasShaftLight => shaftLight != null && lightBottom != null && lightTop != null;
+    private State _state;
+    private State state
+    {
+        get => _state;
+        set
+        {
+            _state = value;
+            if (doorCollider != null)
+            {
+                doorCollider.enabled = _state != State.Open;
+            }
+        }
+    }
 
     private void Start()
     {
@@ -160,7 +170,6 @@ public class ElevatorController : MonoBehaviour
     public void CloseDoors()
     {
         if (traveling || state != State.Open) return;
-        doorCollider.enabled = true;
         StopAutoClose();
         StartCoroutine(SetDoorsAnimated(false));
     }
@@ -210,7 +219,6 @@ public class ElevatorController : MonoBehaviour
     private IEnumerator OpenDoorsRoutine()
     {
         yield return SetDoorsAnimated(true);
-        doorCollider.enabled = false;
 
         if (playerInside && queuedFloor.HasValue)
         {
