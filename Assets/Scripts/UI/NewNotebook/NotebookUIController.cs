@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>Binds editor-authored question data to the notebook's configured UI slots.</summary>
-public class NotebookUIController : MonoBehaviour
+public class NotebookUIController : SoundEvent
 {
     [Tooltip("Photo tab belonging to this notebook prefab.")]
     [SerializeField] private PhotoTabScript photoTab;
@@ -20,6 +20,7 @@ public class NotebookUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI numberCorrectText;
     [Header("Incorrect Answer Feedback")]
     [SerializeField, Min(0f)] private float incorrectShakeDuration = 0.2f;
+    [SerializeField, Min(0f)] private float incorrectAlertRadius = 30f;
     [Tooltip("Maximum horizontal offset in UI units.")]
     [SerializeField, Min(0f)] private float incorrectShakeMagnitude = 6f;
     [SerializeField] private RectTransform shakeTarget;
@@ -65,6 +66,7 @@ public class NotebookUIController : MonoBehaviour
     public void ShakeIncorrectAnswer()
     {
         StopShake();
+        RegisterSoundEvent(GameManager.PlayerInstance.transform.position, incorrectAlertRadius, "Player");
         if (!isActiveAndEnabled || incorrectShakeDuration <= 0f || incorrectShakeMagnitude <= 0f || shakeTarget == null) return;
 
         shakeOrigin = shakeTarget.anchoredPosition;

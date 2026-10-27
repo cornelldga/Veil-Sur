@@ -41,7 +41,7 @@ public class PhotoDragPreview
         Drag(eventData);
         DraggingChanged?.Invoke(true);
     }
-
+    
     /// <summary>Moves the ghost photo to follow the pointer.</summary>
     /// <param name="eventData">Pointer event with the current position.</param>
     public void Drag(PointerEventData eventData)
