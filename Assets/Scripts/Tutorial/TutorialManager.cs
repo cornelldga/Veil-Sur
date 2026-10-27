@@ -31,7 +31,7 @@ public class TutorialManager : MonoBehaviour
             case 1: return $"Hold {KeyName(c.PlayerMovement.Sprint)} to sprint.";
             case 2: return $"Hold {KeyName(c.PlayerMovement.Crouch)} to crouch.";
             case 3: return $"Press {KeyName(c.PlayerMovement.AimCamera)} to aim your camera, and {KeyName(c.PlayerMovement.TakePicture)} to take a photo!";
-            case 4: return "Take four more photos of objects around the room! 0/4";
+            case 4: return "Take four more photos of objects around the room! 0/4 done!";
             case 5: return "Take four more photos of objects around the room! 1/4 done!";
             case 6: return "Take four more photos of objects around the room! 2/4 done!";
             case 7: return "Take four more photos of objects around the room! 3/4 done!";
@@ -150,6 +150,10 @@ public class TutorialManager : MonoBehaviour
         UpdatePromptFade();
         MoveUpandDown();
 
+        // if photos were discarded since the step began, count from the lower total so the next photo still registers.
+        if (IsTakePhotoStep())
+            photoCountAtStepStart = Mathf.Min(photoCountAtStepStart, PhotoStorage.Instance.GetTotalOwnedPhotoCount());
+
         if (step < PromptCount && IsStepComplete())
         {
             step++;
@@ -193,6 +197,14 @@ public class TutorialManager : MonoBehaviour
             if (slot.Photo == null) return false;
         }
         return hasQuestions;
+    }
+
+    /// <summary>
+    /// true while the current step is finished by taking a new photo instead of deleting or filling storage
+    /// </summary>
+    private bool IsTakePhotoStep()
+    {
+        return (step >= 3 && step <= 7) || step == 15;
     }
 
     private bool IsStepComplete()
