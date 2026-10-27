@@ -13,6 +13,11 @@ public class UploadScript : MonoBehaviour
     private Button button;
     public bool AllCorrect { get; private set; }
 
+    /// <summary>
+    /// raised each time the player uploads and the answers are checked
+    /// </summary>
+    public static event System.Action Uploaded;
+
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -72,6 +77,8 @@ public class UploadScript : MonoBehaviour
             numberCorrectText.text = "LINKS INCORRECT";
             UIManager.Instance.Notebook.ShakeIncorrectAnswer();
         }
+
+        Uploaded?.Invoke();
 
         if (AllCorrect)
         {
