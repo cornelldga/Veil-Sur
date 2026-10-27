@@ -20,7 +20,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private float moveSpeed = 1f;
 
     // Built on demand (not stored) so prompts always show the player's current keybinds.
-    private const int PromptCount = 18;
+    private const int PromptCount = 20;
 
     private string GetPrompt(int index)
     {
@@ -29,22 +29,24 @@ public class TutorialManager : MonoBehaviour
         {
             case 0: return $"Use {KeyName(c.PlayerMovement.Move)} to move.";
             case 1: return $"Hold {KeyName(c.PlayerMovement.Sprint)} to sprint.";
-            case 2: return $"Press {KeyName(c.PlayerMovement.AimCamera)} to aim your camera, and {KeyName(c.PlayerMovement.TakePicture)} to take a photo!";
-            case 3: return "Take four more photos of objects around the room! 0/4";
-            case 4: return "Take four more photos of objects around the room! 1/4 done!";
-            case 5: return "Take four more photos of objects around the room! 2/4 done!";
-            case 6: return "Take four more photos of objects around the room! 3/4 done!";
-            case 7: return "Nice! Try to take one more photo, your storage is full!";
-            case 8: return $"Press {KeyName(c.General.Notebook)} to open your notebook.";
-            case 9: return "Double click on images in your notebook to look at them larger.";
-            case 10: return "Drag a photo onto a question to connect it.";
-            case 11: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
-            case 12: return "Close your notebook.";
-            case 13: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode. This allows you to view documents!";
-            case 14: return $"{KeyName(c.PlayerMovement.TakePicture)} in document mode to scan it into your notebook.";
-            case 15: return "Open your notebook again.";
-            case 16: return "You scanned the document! You can also connect it to questions. Close your notebook.";
-            case 17: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
+            case 2: return $"Hold {KeyName(c.PlayerMovement.Crouch)} to crouch.";
+            case 3: return $"Press {KeyName(c.PlayerMovement.AimCamera)} to aim your camera, and {KeyName(c.PlayerMovement.TakePicture)} to take a photo!";
+            case 4: return "Take four more photos of objects around the room! 0/4";
+            case 5: return "Take four more photos of objects around the room! 1/4 done!";
+            case 6: return "Take four more photos of objects around the room! 2/4 done!";
+            case 7: return "Take four more photos of objects around the room! 3/4 done!";
+            case 8: return "Nice! Try to take one more photo, your storage is full!";
+            case 9: return $"Press {KeyName(c.General.Notebook)} to open your notebook.";
+            case 10: return "Double click on images in your notebook to look at them larger.";
+            case 11: return "Drag a photo onto a question to connect it.";
+            case 12: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
+            case 13: return "Close your notebook.";
+            case 14: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode. This allows you to view documents!";
+            case 15: return $"{KeyName(c.PlayerMovement.TakePicture)} in document mode to scan it into your notebook.";
+            case 16: return "Open your notebook again.";
+            case 17: return "You scanned the document! You can also connect it to questions. Close your notebook.";
+            case 18: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
+            case 19: return "You've got the basics down! You can always change your keybinds by pressing ESC and navigating to settings.";
             // Maybe in the above ^ prompt we'll include a picture of the interact icon.
 
             default: return "";
@@ -161,23 +163,24 @@ public class TutorialManager : MonoBehaviour
         {
             case 0: return controls.PlayerMovement.Move.ReadValue<Vector2>() != Vector2.zero;
             case 1: return controls.PlayerMovement.Sprint.IsPressed();
-            case 2: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
-            case 3: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //1
-            case 4: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //2
-            case 5: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //3
-            case 6: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //4
-            case 7: return controls.PlayerMovement.TakePicture.WasPerformedThisFrame() && PhotoStorage.Instance.IsPhotoStorageFull();
-            case 8: return state == GameManager.GameState.NOTEBOOK;
-            case 9: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.IsPhotoPreviewOpen;
-            case 10: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
-            case 11: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
-            case 12: return state != GameManager.GameState.NOTEBOOK;
-            case 13: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
-            case 14: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
-            case 15: return state == GameManager.GameState.NOTEBOOK;
-            case 16: return state != GameManager.GameState.NOTEBOOK;
-            case 17: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
-
+            case 2: return controls.PlayerMovement.Crouch.IsPressed();
+            case 3: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
+            case 4: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //1
+            case 5: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //2
+            case 6: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //3
+            case 7: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //4
+            case 8: return controls.PlayerMovement.TakePicture.WasPerformedThisFrame() && PhotoStorage.Instance.IsPhotoStorageFull();
+            case 9: return state == GameManager.GameState.NOTEBOOK;
+            case 10: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.IsPhotoPreviewOpen;
+            case 11: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
+            case 12: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
+            case 13: return state != GameManager.GameState.NOTEBOOK;
+            case 14: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
+            case 15: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
+            case 16: return state == GameManager.GameState.NOTEBOOK;
+            case 17: return state != GameManager.GameState.NOTEBOOK;
+            case 18: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
+            case 19: return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
             default: return false;
         }
     }
