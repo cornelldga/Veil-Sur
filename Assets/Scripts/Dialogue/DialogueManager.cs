@@ -198,6 +198,14 @@ public class DialogueManager : MonoBehaviour {
     }
 
     /// <summary>
+    /// ends any dialogue that is playing right now and hides the box, e.g. when the level ends
+    /// </summary>
+    public void CancelDialogue()
+    {
+        EndDialogue();
+    }
+
+    /// <summary>
     /// hides dialogue box when dialogue is done
     /// </summary>
     private void EndDialogue()

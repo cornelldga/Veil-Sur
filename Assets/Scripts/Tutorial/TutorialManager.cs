@@ -30,10 +30,10 @@ public class TutorialManager : MonoBehaviour
             case 0: return $"Use {KeyName(c.PlayerMovement.Move)} to move.";
             case 1: return $"Hold {KeyName(c.PlayerMovement.Sprint)} to sprint.";
             case 2: return $"Press {KeyName(c.PlayerMovement.AimCamera)} to aim your camera, and {KeyName(c.PlayerMovement.TakePicture)} to take a photo!";
-            case 3: return "Take four more photos of objects around the room! 1/4";
-            case 4: return "Take four more photos of objects around the room! 2/4";
-            case 5: return "Take four more photos of objects around the room! 3/4";
-            case 6: return "Take four more photos of objects around the room! 4/4";
+            case 3: return "Take four more photos of objects around the room! 0/4";
+            case 4: return "Take four more photos of objects around the room! 1/4 done!";
+            case 5: return "Take four more photos of objects around the room! 2/4 done!";
+            case 6: return "Take four more photos of objects around the room! 3/4 done!";
             case 7: return "Nice! Try to take one more photo, your storage is full!";
             case 8: return $"Press {KeyName(c.General.Notebook)} to open your notebook.";
             case 9: return "Double click on images in your notebook to look at them larger.";
@@ -88,8 +88,27 @@ public class TutorialManager : MonoBehaviour
     private bool hasSeenDialogue;
     private bool tutorialStarted;
 
+    /// <summary>
+    /// how other scripts can reach the tutorial (null in levels without one)
+    /// </summary>
+    public static TutorialManager Instance { get; private set; }
+
+    /// <summary>
+    /// fades out the current prompt and skips the rest of the tutorial, e.g. when the level ends
+    /// </summary>
+    public void Hide()
+    {
+        step = PromptCount;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     private void Awake()
     {
+        Instance = this;
         // Shared instance, so the player's rebinds apply. Other scripts own its enable/disable state.
         controls = GameManager.Controls;
         promptRect = promptText.rectTransform;
