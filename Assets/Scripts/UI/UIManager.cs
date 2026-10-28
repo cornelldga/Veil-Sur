@@ -303,6 +303,14 @@ public class UIManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Hides the jumpscare image, which otherwise stays up on its last frame.
+    /// </summary>
+    public void HideJumpscare()
+    {
+        jumpscareImage.gameObject.SetActive(false);
+    }
+
     // /// <summary>
     // /// Turns document mode on/off. Only works when the game state is CameraMode
     // /// </summary>

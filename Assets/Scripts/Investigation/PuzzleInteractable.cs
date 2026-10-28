@@ -19,6 +19,16 @@ public abstract class PuzzleInteractable : MonoBehaviour, Interactable
 
     public virtual bool IsSolved() { return questionsRemaining == 0; }
 
+    [SerializeField] private bool debugSolve;
+
+    void Update()
+    {
+        if (debugSolve)
+        {
+            SuccessBehavior();
+        }
+    }
+
     public void Interact()
     {
         if (!IsSolved())
