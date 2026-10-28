@@ -20,6 +20,9 @@ public class SaveManager : MonoBehaviour
         public string sceneName;
         public Vector3 playerPosition;
         public List<PhotoSaveData> photos = new();
+        public bool tutorialStarted;
+        public int tutorialStep;
+        public List<string> playedDialogue = new();
     }
     string savePath;
 
@@ -83,6 +86,15 @@ public class SaveManager : MonoBehaviour
             });
         }
 
+        if (TutorialManager.Instance != null)
+        {
+            data.tutorialStarted = TutorialManager.Instance.TutorialStarted;
+            data.tutorialStep = TutorialManager.Instance.Step;
+        }
+
+        if (DialogueManager.Instance != null)
+            data.playedDialogue = DialogueManager.Instance.GetPlayedSections();
+
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
     }
@@ -118,6 +130,17 @@ public class SaveManager : MonoBehaviour
 
         // load photos
         LoadPhotos(data);
+
+        // wait a frame so the new scene's Start methods (which load the level's dialogue) have run
+        await Awaitable.NextFrameAsync();
+
+        // load dialogue progress
+        if (DialogueManager.Instance != null)
+            DialogueManager.Instance.RestorePlayedSections(data.playedDialogue);
+
+        // load tutorial progress, after photos so the tutorial counts from the restored photos
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.RestoreProgress(data.tutorialStep, data.tutorialStarted);
     }
 
     private void LoadPhotos(SaveData data)
