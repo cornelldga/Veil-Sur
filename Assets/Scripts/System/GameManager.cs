@@ -210,6 +210,62 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// True when the Player is loading in the new scene 
+    /// by elevator (post-Tutorial). The Elevator in the next scene
+    /// will read this.
+    /// </summary>
+    public bool ArrivingByElevator { get; set; }
+
+    private AsyncOperation preloadOperation;
+    private string preloadSceneName;
+
+    /// <summary>
+    /// True when the PreloadScene has finished loading.
+    /// Progress above 90% is held until the scene transition is activated.
+    /// </summary>
+    public bool IsScenePreloaded => preloadOperation != null && preloadOperation.progress >= 0.9f;
+
+    /// <summary>
+    /// Start loading the scene in the background BUT DONT switch
+    /// (this is the prime difference from LoadScene and GoToLevel).
+    /// Call ActivatePreloadedScene() to transition to the next scene.
+    /// </summary>
+    /// <param name="sceneName">String of the scene to load</param>
+    public void PreloadScene(string sceneName)
+    {
+        if (preloadOperation != null) return;
+
+        preloadOperation = SceneManager.LoadSceneAsync(sceneName);
+        if (preloadOperation == null)
+        {
+            Debug.LogError($"Scene '{sceneName} was not loaded. Check Build Settings and names");
+            return;
+        }
+        preloadOperation.allowSceneActivation = false; // will not switch to scene
+
+        preloadSceneName = sceneName;
+    }
+
+    /// <summary>
+    /// Activate the preloaded scene.
+    /// May pivot to the modern Unity Awaitable. Need to look into this.
+    /// </summary>
+    public async Task ActivatePreloadedScene()
+    {
+        if (preloadOperation == null) return; // nothing to activate
+
+        AsyncOperation op = preloadOperation;
+        preloadOperation = null;
+
+        op.allowSceneActivation = true;
+
+        while (!op.isDone)
+        {
+            await Task.Yield();
+        }
+    }
+
+    /// <summary>
     /// Requests the game manager to change the state.
     /// There is no guarantee that the change actually happens.
     /// </summary>
