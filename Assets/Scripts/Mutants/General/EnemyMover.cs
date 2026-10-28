@@ -42,7 +42,7 @@ public class EnemyMover : MonoBehaviour
     [SerializeField] private Sprite[] jumpscareFrames;
     [SerializeField] private float jumpscareFps = 8f;
     // For when we have audio for the jumpscares
-    // [SerializeField] private AudioClip jumpscareSound;
+    [SerializeField] private AudioClip jumpscareSound;
 
     protected UnityEngine.AI.NavMeshAgent agent;
     protected EnemySearchlight searchlight;
@@ -74,8 +74,7 @@ public class EnemyMover : MonoBehaviour
         if (isCollidingPlayer && 
         searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
         {
-            // null for audio for right now since we have no jumpscare audio
-            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound);
         }
 
         EnemySearchlight.AlertState state = searchlight.CurrentState;
@@ -229,9 +228,8 @@ public class EnemyMover : MonoBehaviour
             if (searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
             {
                 // null for audio for right now since we have no jumpscare audio
-                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound);
             }
-            
         }
     }
 

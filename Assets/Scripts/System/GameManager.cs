@@ -274,7 +274,8 @@ public class GameManager : MonoBehaviour
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
         Time.timeScale = 0f;
         // for when we have jumpscare audio
-        // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+        AudioManager.Instance.StopMusic();
+        AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
 
         yield return UIManager.Instance.PlayJumpscare(frames, fps);
 
