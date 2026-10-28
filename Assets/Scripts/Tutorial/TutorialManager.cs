@@ -93,6 +93,7 @@ public class TutorialManager : MonoBehaviour
     private bool hasSeenDialogue;
     private bool tutorialStarted;
     private bool uploadClicked;
+    private PhotoCameraController photoCamera;
 
     /// <summary>
     /// how other scripts can reach the tutorial (null in levels without one)
@@ -123,6 +124,7 @@ public class TutorialManager : MonoBehaviour
 
     private void Start()
     {
+        photoCamera = GameManager.PlayerInstance.GetComponent<PhotoCameraController>();
         promptText.text = "";
         promptText.alpha = 0f;
     }
@@ -227,8 +229,8 @@ public class TutorialManager : MonoBehaviour
             case 11: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
             case 12: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
             case 13: return state != GameManager.GameState.NOTEBOOK;
-            case 14: return state == GameManager.GameState.CAMERA && controls.PlayerMovement.SwapCameraMode.WasPerformedThisFrame();
-            case 15: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
+            case 14: return photoCamera.IsViewingDocument;
+            case 15: return photoCamera.IsViewingDocument && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
             case 16: return state == GameManager.GameState.NOTEBOOK;
             case 17: return AllQuestionSlotsFilled();
             case 18: return uploadClicked;
