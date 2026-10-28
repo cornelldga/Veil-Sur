@@ -194,6 +194,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: jumpscareFps
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: alertPauseDuration
       value: 1
       objectReference: {fileID: 0}
@@ -208,35 +212,35 @@ PrefabInstance:
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: 'jumpscareFrames.Array.data[0]'
       value: 
-      objectReference: {fileID: -523632201, guid: fa3cc2ad6d5ca4eee8aac6ccd60f7b2a, type: 3}
+      objectReference: {fileID: 563236054, guid: c44c6950913754f72b295f428108b9f3, type: 3}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: 'jumpscareFrames.Array.data[1]'
       value: 
-      objectReference: {fileID: 1624209243, guid: fa3cc2ad6d5ca4eee8aac6ccd60f7b2a, type: 3}
+      objectReference: {fileID: 978819451, guid: c44c6950913754f72b295f428108b9f3, type: 3}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: 'jumpscareFrames.Array.data[2]'
       value: 
-      objectReference: {fileID: 1208202867, guid: fa3cc2ad6d5ca4eee8aac6ccd60f7b2a, type: 3}
+      objectReference: {fileID: -719035679, guid: c44c6950913754f72b295f428108b9f3, type: 3}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: 'jumpscareFrames.Array.data[3]'
       value: 
-      objectReference: {fileID: 1528412337, guid: fa3cc2ad6d5ca4eee8aac6ccd60f7b2a, type: 3}
+      objectReference: {fileID: 222130464, guid: c44c6950913754f72b295f428108b9f3, type: 3}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: 'jumpscareFrames.Array.data[4]'
       value: 
-      objectReference: {fileID: 409979991, guid: fa3cc2ad6d5ca4eee8aac6ccd60f7b2a, type: 3}
+      objectReference: {fileID: -2081358363, guid: c44c6950913754f72b295f428108b9f3, type: 3}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: 'jumpscareFrames.Array.data[5]'
       value: 
-      objectReference: {fileID: 567391524, guid: fa3cc2ad6d5ca4eee8aac6ccd60f7b2a, type: 3}
+      objectReference: {fileID: 1940749507, guid: c44c6950913754f72b295f428108b9f3, type: 3}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: 'jumpscareFrames.Array.data[6]'
       value: 
-      objectReference: {fileID: 976761018, guid: fa3cc2ad6d5ca4eee8aac6ccd60f7b2a, type: 3}
+      objectReference: {fileID: 1847946114, guid: c44c6950913754f72b295f428108b9f3, type: 3}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: 'jumpscareFrames.Array.data[7]'
       value: 
-      objectReference: {fileID: -1399874290, guid: fa3cc2ad6d5ca4eee8aac6ccd60f7b2a, type: 3}
+      objectReference: {fileID: -1146593764, guid: c44c6950913754f72b295f428108b9f3, type: 3}
     - target: {fileID: 8122762717042905871, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_Name
       value: Dog Mutant Variant

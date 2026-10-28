@@ -1896,10 +1896,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1610540346}
     - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
-      propertyPath: jumpscareFps
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: 'patrolPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 1676294026}
