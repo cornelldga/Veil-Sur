@@ -269,9 +269,10 @@ MonoBehaviour:
   outerRayRadius: 0.21
   minRayCasts: 7
   blurRangePastMax: 2
-  storageFullShakeDuration: 0.25
-  storageFullShakeMagnitude: 0.1
   shutterClip: {fileID: 8300000, guid: 2a5906470f95e4dcdacd7761937ab0ec, type: 3}
+  detectRadius: 20
+  stunRadius: 10
+  documentScanClip: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
   maxRadius: 17.5
   coneAngle: 60
   targetMask:

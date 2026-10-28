@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(FirstPersonController))]
 public class PlayerState : MonoBehaviour
 {
-    private bool notebookOpen = false;
     private bool isCrouching = false;
     private bool isSprinting = false;
     private bool isMoving = false;

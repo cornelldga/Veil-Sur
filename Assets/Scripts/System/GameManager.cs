@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
-    [SerializeField] private bool isDebugMode = false;
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
@@ -150,7 +149,6 @@ public class GameManager : MonoBehaviour
 
     private void HandleSceneAmbience(string sceneName)
     {
-        Debug.Log($"HandleSceneAmbience('{sceneName}')");
         AudioManager.Instance.StopAmbience();
 
         if (sceneName == "LevelOne")
@@ -173,6 +171,17 @@ public class GameManager : MonoBehaviour
         //HandleSceneMusic("MainMenu");
         // This is TEMPORARY
         AudioManager.Instance.PlayMusic(lobbyMusic);
+    }
+
+    /// <summary>
+    /// Leaves the title screen by discarding this GameManager, so the next scene's
+    /// own GameManager takes over exactly as if that scene had been the first one run.
+    /// </summary>
+    public void StartFresh(string sceneName)
+    {
+        Instance = null;
+        Destroy(gameObject);
+        SceneManager.LoadScene(sceneName);
     }
 
     public async void GoToLevel(string sceneName)

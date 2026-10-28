@@ -99,9 +99,9 @@ public class AudioManager : MonoBehaviour
     {
         // Values should later be adjusted to depend on saved values from previous gameplay
         // Else, a default value
-        SetMusicVolume(0.1f);
+        SetMusicVolume(0.3f);
         SetSfxVolume(0.2f);
-        SetAmbienceVolume(0.4f);
+        SetAmbienceVolume(0.5f);
     }
 
     /// <summary>
