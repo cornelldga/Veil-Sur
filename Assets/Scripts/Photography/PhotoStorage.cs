@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 
 /// <summary>
@@ -43,9 +42,9 @@ public class PhotoStorage : MonoBehaviour
        Instance = this;
 
 
-       DontDestroyOnLoad(gameObject);
+        transform.SetParent(null);
 
-
+        DontDestroyOnLoad(gameObject);
    }
 
 

@@ -18,7 +18,10 @@ public class EnemyMover : MonoBehaviour
 
     [Header("Alert")]
     [SerializeField] protected float chaseSpeed = 5f;
+    [SerializeField] protected float chaseAcceleration = 40f;
+    protected float normalAcceleration;
     protected Transform player;
+
 
     [Header("Notice")]
     [Tooltip("Seconds the mutant stands still on first becoming suspicious. Match the notice animation length.")]
@@ -49,11 +52,14 @@ public class EnemyMover : MonoBehaviour
     protected bool reachedWanderTarget;
     protected float nextWanderTime = 0f;
 
+    protected bool isCollidingPlayer = false;
+
     protected void Awake()
     {
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         searchlight = GetComponent<EnemySearchlight>();
         agent.updateRotation = false;
+        normalAcceleration = agent.acceleration;
     }
 
     protected virtual void Start()
@@ -64,6 +70,14 @@ public class EnemyMover : MonoBehaviour
 
     protected virtual void Update()
     {
+        // Kill player if they're colliding with mutant after stun expires
+        if (isCollidingPlayer && 
+        searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
+        {
+            // null for audio for right now since we have no jumpscare audio
+            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+        }
+
         EnemySearchlight.AlertState state = searchlight.CurrentState;
         // LookAround counts as patrolling here 
         bool justNoticed = state == EnemySearchlight.AlertState.Suspicious &&
@@ -76,6 +90,10 @@ public class EnemyMover : MonoBehaviour
         }
         previousState = state;
         agent.isStopped = IsNoticePausing;
+
+        bool chasing = searchlight.CurrentState == EnemySearchlight.AlertState.Alert;
+        agent.acceleration = chasing ? chaseAcceleration : normalAcceleration;
+        agent.autoBraking = !chasing;
         
         switch (searchlight.CurrentState)
         {
@@ -187,7 +205,7 @@ public class EnemyMover : MonoBehaviour
 
     public void StartLookAround()
     {
-        Debug.Log("Beginning to look around");
+        // Debug.Log("Beginning to look around");
         investigateTarget = searchlight.LastKnownPlayerPosition;
         searchlight.ResetLookAroundCounter();
         reachedWanderTarget = true;
@@ -207,8 +225,25 @@ public class EnemyMover : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // null for audio for right now since we have no jumpscare audio
-            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+            isCollidingPlayer = true;
+            if (searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
+            {
+                // null for audio for right now since we have no jumpscare audio
+                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+            }
+            
+        }
+    }
+
+    /// <summary>
+    /// Sets isCollidingPlayer flag to false
+    /// </summary>
+    /// <param name="other">The collider that exited the trigger.</param>
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+           isCollidingPlayer = false;
         }
     }
 

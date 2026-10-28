@@ -158,7 +158,6 @@ public class DialogueManager : MonoBehaviour {
         {
             if (visibleCharacters % charactersPerTick == 0)
             {
-                Debug.Log("Playing tick");
                 AudioManager.Instance.PlayUISFX(dialogueTickSound, 1);
             }
             lastVisibleCharacters = visibleCharacters;
