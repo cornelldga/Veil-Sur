@@ -28,7 +28,7 @@ public class PhotoCameraController : SoundEvent
     [SerializeField] private float zoomSpeed = 10f;
 
     [Tooltip("How many seconds must pass before taking another photo.")]
-    [SerializeField] private float photoCooldown = 1f;
+    [SerializeField] private float photoCooldown = 0.1f;
     [SerializeField] private bool toggleZoom = false;
     [Tooltip("The maximum range that a subject can be from the camera")]
     [Header("Detection")]

@@ -16,6 +16,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject cameraGroup;
     [SerializeField] public Image snapOverlay;
     private PhotoCameraController.CameraMode cameraMode;
+    [Tooltip("Text that indicates which camera mode is currently enabled.")]
+    [SerializeField] private TMP_Text cameraModeLabel;
 
     [Header("Notebook UI")]
     [SerializeField] public GameObject notebookGroup;
@@ -118,6 +120,7 @@ public class UIManager : MonoBehaviour
         if (photoTab != null && PhotoStorage.Instance != null) PhotoStorage.Instance.SetCapacity(photoTab.SlotCount);
         ShowInteractPrompt(false);
         ApplyState(GameManager.Instance.state);
+        UpdateModeLabel();
     }
 
     private void OnGameStateChanged(GameManager.GameState oldState, GameManager.GameState newState)
@@ -272,8 +275,29 @@ public class UIManager : MonoBehaviour
     public void SetCameraMode(PhotoCameraController.CameraMode cameraMode)
     {
         this.cameraMode = cameraMode;
+        UpdateModeLabel();
         if (GameManager.Instance.state == GameManager.GameState.CAMERA)
             ApplyState(GameManager.GameState.CAMERA);
+    }
+
+    /// <summary>
+    /// Updates the on-screen label to indicate which camera mode is currently enabled.
+    /// </summary>
+    public void UpdateModeLabel()
+    {
+        if (cameraModeLabel == null)
+        {
+            return;
+        }
+
+        if (cameraMode == PhotoCameraController.CameraMode.Photo)
+        {
+            cameraModeLabel.text = "[PHOTO MODE]";
+        }
+
+        else if (cameraMode == PhotoCameraController.CameraMode.Document) {
+            cameraModeLabel.text = "[DOCUMENT MODE]";
+        }
     }
 
     /// <summary>
