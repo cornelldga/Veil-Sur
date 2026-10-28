@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
-    [SerializeField] private bool isDebugMode = false;
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
@@ -150,7 +149,6 @@ public class GameManager : MonoBehaviour
 
     private void HandleSceneAmbience(string sceneName)
     {
-        Debug.Log($"HandleSceneAmbience('{sceneName}')");
         AudioManager.Instance.StopAmbience();
 
         if (sceneName == "LevelOne")

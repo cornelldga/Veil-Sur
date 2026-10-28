@@ -20,6 +20,7 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected float viewDistance = 10f;
     [SerializeField] protected float viewAngle = 60f;      // cone angle
     [SerializeField] protected float eyeHeight;     // raycast origin offset up from pivot
+    [SerializeField] protected float chaseTurnSpeed = 540f;
 
     [Header("Sweep (Patrol)")]
     [SerializeField] protected float sweepAngle = 45f; 
@@ -31,6 +32,7 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected float suspicionDecayRate = 1f; 
     [SerializeField] protected float maxDetectionMultiplier = 3f; 
     [SerializeField] protected float loseAlertAfter = 3f; 
+    [SerializeField] protected float chaseLostGrace = 0.75f;
     
     [SerializeField] protected float proximityDetection = 2f; // During chase, if player is within this distance, doesn't lose alert
     
@@ -126,27 +128,48 @@ public class EnemySearchlight : MonoBehaviour
     /** When patrolling, search cone is in direction of mutant movement. */
     protected void FaceTowardsMovement()
     {
-        // Calculate the movement direction direction vector
-        Vector3 direction = transform.position - lastPosition;
+        Vector3 movement = transform.position - lastPosition;
+        lastPosition = transform.position;
 
-        // Flatten the Y-axis if you don't want the object tilting up/down on slopes
-        // direction.y = 0; 
-        
+        if (CurrentState == AlertState.Stun)
+            return;
+
+        Vector3 direction =
+            CurrentState == AlertState.Alert
+                ? LastKnownPlayerPosition - transform.position
+                : movement;
+
+        direction.y = 0f;
+
         if (direction.sqrMagnitude > 0.000001f)
         {
-            // Smoothly rotate towards the target direction
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            // transform.rotation = targetRotation;
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
-        }
-        else if (CurrentState == AlertState.Idle) 
-        {
-            Quaternion targetRotation = Quaternion.Euler(0, idleFacingYAngle, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
-        }
 
-        // Store the position for the next frame
-        lastPosition = transform.position;
+            if (CurrentState == AlertState.Alert)
+            {
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation,
+                    targetRotation,
+                    chaseTurnSpeed * Time.deltaTime);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    targetRotation,
+                    sweepSpeed * Time.deltaTime);
+            }
+        }
+        else if (CurrentState == AlertState.Idle)
+        {
+            Quaternion targetRotation =
+                Quaternion.Euler(0f, idleFacingYAngle, 0f);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                sweepSpeed * Time.deltaTime);
+        }
     }
 
     protected bool CanSeePlayer()
@@ -225,18 +248,21 @@ public class EnemySearchlight : MonoBehaviour
                     ResetSuspicion();
                 }
                 break;
-
             case AlertState.Alert:
-                // Arriving at the last known spot ends the chase too, so the mutant never idles out the timer there.
-                bool lostPlayer = lastSeenTimer > 0f;
-                if (lostPlayer && (lastSeenTimer >= loseAlertAfter || GetComponent<EnemyMover>().ReachedDestination()))
+            {
+                bool lostTooLong = lastSeenTimer >= loseAlertAfter;
+
+                bool reachedLastSeenPosition =
+                    lastSeenTimer >= chaseLostGrace &&
+                    GetComponent<EnemyMover>().ReachedDestination();
+
+                if (lostTooLong || reachedLastSeenPosition)
                 {
-                    // GetComponent<EnemyMover>()
-                    //     .RegisterDetectionEvent(LastKnownPlayerPosition);
                     SetState(AlertState.Suspicious);
                     ReportSense(LastKnownPlayerPosition, Priority.Sight, "Player");
                 }
                 break;
+            }
             case AlertState.LookAround:
                 if (canSeePlayer && detectionMeter >= timeToAlert)
                 {
@@ -448,7 +474,7 @@ public class EnemySearchlight : MonoBehaviour
         if ((CurrentState == AlertState.Alert || CurrentState == AlertState.Suspicious)
         && timeSinceLastStun >= stunCooldown + stunDuration)
         {
-            Debug.Log("Successful stun!");
+            // Debug.Log("Successful stun!");
             timeSinceLastStun = 0;
             SetState(AlertState.Stun);
             ResetSuspicion();
