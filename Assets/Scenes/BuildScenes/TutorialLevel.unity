@@ -689,7 +689,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5765142676256614039, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
       propertyPath: m_Name
-      value: FalseDate3
+      value: FalseElevatorCode
       objectReference: {fileID: 0}
     - target: {fileID: 5790920198243268945, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
       propertyPath: m_Mesh
@@ -22112,7 +22112,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5765142676256614039, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
       propertyPath: m_Name
-      value: CorrectDate
+      value: FalseDate2
       objectReference: {fileID: 0}
     - target: {fileID: 5790920198243268945, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
       propertyPath: m_Mesh
@@ -25732,6 +25732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
   futureQuestions: []
+  debugSolve: 0
   controller: {fileID: 0}
 --- !u!64 &1232035508
 MeshCollider:
@@ -26906,6 +26907,17 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!114 &1328072267 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 558004538979084732, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
+  m_PrefabInstance: {fileID: 944625024}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
 --- !u!1001 &1336435776
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30413,7 +30425,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5765142676256614039, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
       propertyPath: m_Name
-      value: FaleDate2
+      value: FalseElevatorCode1
       objectReference: {fileID: 0}
     - target: {fileID: 5790920198243268945, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
       propertyPath: m_Mesh
@@ -30437,6 +30449,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3974714574635435488, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
   m_PrefabInstance: {fileID: 1467767530}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1467767532 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 558004538979084732, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
+  m_PrefabInstance: {fileID: 1467767530}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
 --- !u!4 &1501428723 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1391529310777809957, guid: 15ef4eab20e4d43b99b1dc57db137bcc, type: 3}
@@ -33710,6 +33733,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3974714574635435488, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
   m_PrefabInstance: {fileID: 1802856579}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1802856581 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 558004538979084732, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
+  m_PrefabInstance: {fileID: 1802856579}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
 --- !u!1001 &1812712772
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36071,6 +36105,10 @@ PrefabInstance:
       value: Take a picture of a plant.
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: requireAllObjects
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: futureQuestions.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -36213,7 +36251,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: required_objects.Array.size
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'futureQuestions.Array.data[0]'
@@ -36227,6 +36265,18 @@ PrefabInstance:
       propertyPath: 'required_objects.Array.data[0]'
       value: 
       objectReference: {fileID: 2200000031}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: 'required_objects.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1802856581}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: 'required_objects.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1328072267}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: 'required_objects.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1467767532}
     - target: {fileID: 4200086836180689366, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: m_Name
       value: Document Intro Question Data
