@@ -46,7 +46,7 @@ public class SaveManager : MonoBehaviour
 
         data.sceneName = GameManager.Instance.CurrentLevelName();
 
-        data.playerPosition = Level.current_level.player.transform.position;
+        if(Level.current_level.player != null) data.playerPosition = Level.current_level.player.transform.position;
 
         string photoFolder = Path.Combine(Application.persistentDataPath, "Photos");
 
