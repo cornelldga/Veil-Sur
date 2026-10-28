@@ -119,6 +119,12 @@ public class ElevatorController : MonoBehaviour
         {
             shaftLight.gameObject.SetActive(false);
         }
+
+        if (GameManager.Instance.ArrivingByElevator)
+        {
+            GameManager.Instance.ArrivingByElevator = false; 
+            StartCoroutine(ArrivalSequence());
+        }
     }
 
     /// <summary>
@@ -254,6 +260,17 @@ public class ElevatorController : MonoBehaviour
 
         GameManager.Instance.GoToLevel(targetScene); // Should always go to TutorialLevel right now.
         // Might need to make the position of the elevator at the origin across all levels
+    }
+
+    /// <summary>
+    /// Coroutine that runs when the Player arrives by the elevator.
+    /// Doors start closed and open after doorOpenCloseDelay.
+    /// Used before stepping into the next level.
+    /// </summary>
+    private IEnumerator ArrivalSequence()
+    {
+        yield return new WaitForSeconds(doorOpenCloseDelay);
+        OpenDoors();
     }
 
     /// <summary>
