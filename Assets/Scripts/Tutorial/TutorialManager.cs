@@ -31,10 +31,10 @@ public class TutorialManager : MonoBehaviour
             case 1: return $"Hold {KeyName(c.PlayerMovement.Sprint)} to sprint.";
             case 2: return $"Hold {KeyName(c.PlayerMovement.Crouch)} to crouch.";
             case 3: return $"Press {KeyName(c.PlayerMovement.AimCamera)} to aim your camera, and {KeyName(c.PlayerMovement.TakePicture)} to take a photo!";
-            case 4: return "Take four more photos of objects around the room, and make sure one is a PLANT! 0/4 done!";
-            case 5: return "Take four more photos of objects around the room! 1/4 done!";
-            case 6: return "Take four more photos of objects around the room! 2/4 done!";
-            case 7: return "Take four more photos of objects around the room! 3/4 done!";
+            case 4: return "Now take a photo of a PLANT in the room!";
+            case 5: return "Nice! Take three more photos of objects around the room! 0/3 done!";
+            case 6: return "Take three more photos of objects around the room! 1/3 done!";
+            case 7: return "Take three more photos of objects around the room! 2/3 done!";
             case 8: return "Nice! Try to take one more photo, your storage is full!";
             case 9: return $"Press {KeyName(c.General.Notebook)} to open your notebook.";
             case 10: return "Double click on images in your notebook to look at them larger.";
@@ -86,6 +86,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     private int step;
+    private const string PlantSubjectId = "Plant"; 
     private int photoCountAtStepStart;
     private PlayerControls controls;
     private RectTransform promptRect;
@@ -219,10 +220,10 @@ public class TutorialManager : MonoBehaviour
             case 1: return controls.PlayerMovement.Sprint.IsPressed();
             case 2: return controls.PlayerMovement.Crouch.IsPressed();
             case 3: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
-            case 4: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //1
-            case 5: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //2
-            case 6: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //3
-            case 7: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //4
+            case 4: return PhotoStorage.Instance.Photos.Any(p => p != null && p.HasSubject(PlantSubjectId));
+            case 5: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //1
+            case 6: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //2
+            case 7: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart; //3
             case 8: return controls.PlayerMovement.TakePicture.WasPerformedThisFrame() && PhotoStorage.Instance.IsPhotoStorageFull();
             case 9: return state == GameManager.GameState.NOTEBOOK;
             case 10: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.IsPhotoPreviewOpen;
