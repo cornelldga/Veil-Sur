@@ -255,11 +255,16 @@ public class ElevatorController : MonoBehaviour
             yield break;
         }
 
+        GameManager.Instance.PreloadScene(targetScene);
+
         yield return SetDoorsAnimated(false);
         yield return RunRide();
 
-        GameManager.Instance.GoToLevel(targetScene); // Should always go to TutorialLevel right now.
-        // Might need to make the position of the elevator at the origin across all levels
+        // Waiting in Elevator UNTIL scene is loaded (even if default ride duration has ended)
+        yield return new WaitUntil(() => GameManager.Instance.IsScenePreloaded);
+
+        GameManager.Instance.ArrivingByElevator = true;
+        _ = GameManager.Instance.ActivatePreloadedScene();
     }
 
     /// <summary>
