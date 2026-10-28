@@ -69,7 +69,7 @@ public class ElevatorController : MonoBehaviour
 
     [Header("Ride")]
     [Tooltip("Total seconds the ride lasts")]
-    [SerializeField] private float rideDuration = 8f;
+    [SerializeField] private float rideDuration = 5f;
 
     [Header("Elevator Lighting")]
     [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride (hopefully this time)")]
