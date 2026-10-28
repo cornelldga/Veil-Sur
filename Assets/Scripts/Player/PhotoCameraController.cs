@@ -45,9 +45,12 @@ public class PhotoCameraController : SoundEvent
 
     [Header("Audio")]
     [SerializeField] private AudioClip shutterClip;
+    [SerializeField] private AudioClip documentScanClip; //document mode
     [Header("Mutant-Related Settings")]
     [SerializeField] private float detectRadius = 10f; // How far the sound cone extends
     [SerializeField] private float stunRadius = 10f; // How far the stun cone extends
+    [Header("Mutant Stun Settings")]
+    [SerializeField] private float maxRadius = 10f; // How far the cone extends
     [Range(0, 360)]
     [SerializeField] private float coneAngle = 60f; // Total width of the cone in degrees
     [SerializeField] private LayerMask targetMask; // Layer containing enemies or interactable items
@@ -307,7 +310,7 @@ public class PhotoCameraController : SoundEvent
     /// </summary>
     private IEnumerator ScanDocument()
     {
-        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        AudioManager.Instance.PlaySfxAtPosition(documentScanClip, targetCamera.transform.position);
         UIManager.Instance.cameraGroup.SetActive(false);
         yield return new WaitForEndOfFrame();
 
