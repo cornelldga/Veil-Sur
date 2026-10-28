@@ -19,6 +19,8 @@ public class SaveManager : MonoBehaviour
     {
         public string sceneName;
         public Vector3 playerPosition;
+        public Quaternion playerRotation = Quaternion.identity;
+        public float cameraVerticalLook;
         public List<PhotoSaveData> photos = new();
         public bool tutorialStarted;
         public int tutorialStep;
@@ -49,7 +51,14 @@ public class SaveManager : MonoBehaviour
 
         data.sceneName = GameManager.Instance.CurrentLevelName();
 
-        if(Level.current_level.player != null) data.playerPosition = Level.current_level.player.transform.position;
+        if (Level.current_level.player != null)
+        {
+            data.playerPosition = Level.current_level.player.transform.position;
+            data.playerRotation = Level.current_level.player.transform.rotation;
+
+            FirstPersonController fpc = Level.current_level.player.GetComponent<FirstPersonController>();
+            if (fpc != null) data.cameraVerticalLook = fpc.VerticalLook;
+        }
 
         string photoFolder = Path.Combine(Application.persistentDataPath, "Photos");
 
@@ -126,7 +135,11 @@ public class SaveManager : MonoBehaviour
         // load player first
         Level.current_level.player.SetActive(false);
         Level.current_level.player.transform.position = data.playerPosition;
+        Level.current_level.player.transform.rotation = data.playerRotation;
         Level.current_level.player.SetActive(true);
+
+        FirstPersonController fpc = Level.current_level.player.GetComponent<FirstPersonController>();
+        if (fpc != null) fpc.SetVerticalLook(data.cameraVerticalLook);
 
         // load photos
         LoadPhotos(data);
