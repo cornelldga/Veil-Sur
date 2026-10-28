@@ -44,7 +44,8 @@ public class PhotoCameraController : MonoBehaviour
     [SerializeField] private float blurRangePastMax = 2f;
 
     [Header("Audio")]
-    [SerializeField] private AudioClip shutterClip;
+    [SerializeField] private AudioClip shutterClip; //photo mode
+    [SerializeField] private AudioClip documentScanClip; //document mode
     [Header("Mutant Stun Settings")]
     [SerializeField] private float maxRadius = 10f; // How far the cone extends
     [Range(0, 360)]
@@ -305,7 +306,7 @@ public class PhotoCameraController : MonoBehaviour
     /// </summary>
     private IEnumerator ScanDocument()
     {
-        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        AudioManager.Instance.PlaySfxAtPosition(documentScanClip, targetCamera.transform.position);
         UIManager.Instance.cameraGroup.SetActive(false);
         yield return new WaitForEndOfFrame();
 

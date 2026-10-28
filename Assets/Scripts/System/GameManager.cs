@@ -175,6 +175,17 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.PlayMusic(lobbyMusic);
     }
 
+    /// <summary>
+    /// Leaves the title screen by discarding this GameManager, so the next scene's
+    /// own GameManager takes over exactly as if that scene had been the first one run.
+    /// </summary>
+    public void StartFresh(string sceneName)
+    {
+        Instance = null;
+        Destroy(gameObject);
+        SceneManager.LoadScene(sceneName);
+    }
+
     public async void GoToLevel(string sceneName)
     {
         await LoadSceneAsync(sceneName);
