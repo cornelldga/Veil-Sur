@@ -65,10 +65,11 @@ public class ElevatorController : MonoBehaviour
     [SerializeField] private float doorOpenCloseDelay;
     [Tooltip("Seconds the doors stay open before closing again if the Player never gets in.")]
     [SerializeField] private float autoCloseDelay = 8f;
+    [SerializeField] private BoxCollider doorCollider;
 
     [Header("Ride")]
     [Tooltip("Total seconds the ride lasts")]
-    [SerializeField] private float rideDuration = 8f;
+    [SerializeField] private float rideDuration = 5f;
 
     [Header("Elevator Lighting")]
     [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride (hopefully this time)")]
@@ -85,15 +86,25 @@ public class ElevatorController : MonoBehaviour
     [Header("SFX")]
     [Tooltip("Played once when the ride starts. Ideally about as long as rideDuration.")]
     [SerializeField] private AudioClip rideSfx;
-
-    private State state;
     private ElevatorDirection? queuedFloor;
     private bool playerInside;
     private bool traveling;
     private Coroutine autoCloseRoutine;
     public ElevatorDirection? QueuedFloor => queuedFloor;
-
     private bool HasShaftLight => shaftLight != null && lightBottom != null && lightTop != null;
+    private State _state;
+    private State state
+    {
+        get => _state;
+        set
+        {
+            _state = value;
+            if (doorCollider != null)
+            {
+                doorCollider.enabled = _state != State.Open;
+            }
+        }
+    }
 
     private void Start()
     {
@@ -150,7 +161,6 @@ public class ElevatorController : MonoBehaviour
     public void OpenDoors()
     {
         if (traveling || state != State.Closed) return;
-
         StartCoroutine(OpenDoorsRoutine());
     }
 
@@ -160,7 +170,6 @@ public class ElevatorController : MonoBehaviour
     public void CloseDoors()
     {
         if (traveling || state != State.Open) return;
-
         StopAutoClose();
         StartCoroutine(SetDoorsAnimated(false));
     }
@@ -231,6 +240,14 @@ public class ElevatorController : MonoBehaviour
         StopAutoClose();
 
         yield return new WaitForSeconds(doorOpenCloseDelay);
+
+        // Guard agains the player leaving DURING the delay
+        if (!playerInside)
+        {
+            traveling = false;
+            RestartAutoClose();
+            yield break;
+        }
 
         yield return SetDoorsAnimated(false);
         yield return RunRide();

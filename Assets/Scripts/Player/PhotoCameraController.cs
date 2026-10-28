@@ -14,7 +14,7 @@ using UnityEngine.UI;
 /// the player's photo camera.
 /// </summary>
 [RequireComponent(typeof(PlayerState))]
-public class PhotoCameraController : MonoBehaviour
+public class PhotoCameraController : SoundEvent
 {
     public enum CameraMode
     {
@@ -48,6 +48,10 @@ public class PhotoCameraController : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioClip shutterClip;
+    [SerializeField] private AudioClip documentScanClip; //document mode
+    [Header("Mutant-Related Settings")]
+    [SerializeField] private float detectRadius = 10f; // How far the sound cone extends
+    [SerializeField] private float stunRadius = 10f; // How far the stun cone extends
     [Header("Mutant Stun Settings")]
     [SerializeField] private float maxRadius = 10f; // How far the cone extends
     [Range(0, 360)]
@@ -232,6 +236,7 @@ public class PhotoCameraController : MonoBehaviour
         else
         {
             StunMutantsInCone();
+            RegisterSoundEvent(transform.position, detectRadius, "Player");
         }
 
         if (currentMode == CameraMode.Document && hoveredDocument != null)
@@ -316,7 +321,7 @@ public class PhotoCameraController : MonoBehaviour
     /// </summary>
     private IEnumerator ScanDocument()
     {
-        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        AudioManager.Instance.PlaySfxAtPosition(documentScanClip, targetCamera.transform.position);
         UIManager.Instance.cameraGroup.SetActive(false);
         yield return new WaitForEndOfFrame();
 
@@ -483,7 +488,7 @@ public class PhotoCameraController : MonoBehaviour
     private void StunMutantsInCone()
     {
         // 1. Gather all targets within a circular range (cheap physics test)
-        Collider[] targetsInRadius = Physics.OverlapSphere(transform.position, maxRadius, targetMask);
+        Collider[] targetsInRadius = Physics.OverlapSphere(transform.position, stunRadius, targetMask);
 
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
