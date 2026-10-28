@@ -106,6 +106,7 @@ public class EnemySearchlight : MonoBehaviour
     }
 
     protected Vector3 EyePosition => transform.position + Vector3.up * eyeHeight;
+    protected Vector3 PlayerHeadPosition => GameManager.PlayerCamera.transform.position;
 
     protected void SweepSearchlight() // Currently not used
     {
@@ -183,7 +184,7 @@ public class EnemySearchlight : MonoBehaviour
         }
 
         Vector3 eye = EyePosition;
-        Vector3 toPlayer = player.position - eye;
+        Vector3 toPlayer = PlayerHeadPosition - eye;
         distanceToPlayer = toPlayer.magnitude;
         if (distanceToPlayer > viewDistance || CurrentState == AlertState.Stun)
         {
@@ -196,16 +197,15 @@ public class EnemySearchlight : MonoBehaviour
             return false;
         }
 
-        if (Physics.Raycast(eye, toPlayer.normalized, out RaycastHit hit, distanceToPlayer, obstacleMask | playerMask))
+        // The camera sits on top of the player's capsule, so a ray to it can miss the capsule; only walls count.
+        if (Physics.Raycast(eye, toPlayer.normalized, distanceToPlayer, obstacleMask, QueryTriggerInteraction.Ignore))
         {
-            if (((1 << hit.collider.gameObject.layer) & playerMask) != 0)
-            {
-                LastKnownPlayerPosition = player.position;
-                hasKnownPlayerPosition = true;
-                return true;
-            }
+            return false;
         }
-        return false;
+
+        LastKnownPlayerPosition = player.position;
+        hasKnownPlayerPosition = true;
+        return true;
     }
 
     protected virtual void UpdateAlertState(bool canSeePlayer)
@@ -456,7 +456,7 @@ public class EnemySearchlight : MonoBehaviour
         if (player == null || CurrentState == AlertState.Stun)
             return false;
 
-        Vector3 toPlayer = player.position - EyePosition;
+        Vector3 toPlayer = PlayerHeadPosition - EyePosition;
         float distance = toPlayer.magnitude;
 
         if (distance > proximityDetection)
