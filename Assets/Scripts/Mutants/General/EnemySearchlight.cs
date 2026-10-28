@@ -76,6 +76,7 @@ public class EnemySearchlight : MonoBehaviour
     protected Priority currentPriority = Priority.None;
 
     protected Vector3 lastPosition; // Used to determine where to face while moving
+    protected MutantBillboard billboard; // Null on mutants without 8-direction art
 
 
     protected virtual void Start()
@@ -84,6 +85,7 @@ public class EnemySearchlight : MonoBehaviour
         baseFacingAngle = transform.eulerAngles.y;
         lastPosition = transform.position;
         timeSinceLastStun = stunCooldown + stunDuration;
+        billboard = GetComponentInChildren<MutantBillboard>();
 
         if (showConeMesh && coneMeshFilter != null)
         {
@@ -467,10 +469,13 @@ public class EnemySearchlight : MonoBehaviour
             QueryTriggerInteraction.Ignore);
     }
     /// <summary>
-    /// Called on camera flash to stun the mutant during chase. 
+    /// Called on camera flash to stun the mutant during chase.
+    /// Billboarded mutants only get stunned while showing their front sprite.
     /// </summary>
     public void Stun()
     {
+        if (billboard != null && !billboard.IsShowingFront) return;
+
         if ((CurrentState == AlertState.Alert || CurrentState == AlertState.Suspicious)
         && timeSinceLastStun >= stunCooldown + stunDuration)
         {
