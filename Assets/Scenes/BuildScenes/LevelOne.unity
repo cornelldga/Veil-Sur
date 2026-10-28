@@ -17685,11 +17685,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.33
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.84
+      value: -12.364
       objectReference: {fileID: 0}
     - target: {fileID: 5086562254823082869, guid: 8d5cfcbf8f0d4421a8ce33af9e204276, type: 3}
       propertyPath: m_LocalRotation.w
@@ -18778,7 +18778,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Elevator
   futureQuestions: []
-  closeDelay: 8
+  debugSolve: 0
+  controller: {fileID: 0}
 --- !u!95 &1387895224
 Animator:
   serializedVersion: 7
@@ -18979,6 +18980,63 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1001 &1472085065
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.06292965
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.10775739
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -11.704046
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249688166427153708, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8734475295925604246, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
+      propertyPath: m_Name
+      value: Elevator
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ec579d5911de29f44a09eba89ad59a6b, type: 3}
 --- !u!43 &1511211764
 Mesh:
   m_ObjectHideFlags: 0
@@ -24547,3 +24605,4 @@ SceneRoots:
   - {fileID: 250352875}
   - {fileID: 282706409}
   - {fileID: 768966515}
+  - {fileID: 1472085065}
