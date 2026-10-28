@@ -1,5 +1,4 @@
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
@@ -7,11 +6,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(RawImage))]
 public class UploadScript : MonoBehaviour
 {
-    [Tooltip("Text component that displays the number of correct questions on the notebook page.")]
-    [SerializeField] private TextMeshProUGUI numberCorrectText;
     private bool developerMode => UIManager.Instance != null && UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.developerMode;
     private Button button;
-    public bool AllCorrect { get; private set; }
+    public bool AllCorrect => UIManager.Instance.Notebook.AllCurrentQuestionsCorrect;
 
     private void Awake()
     {
@@ -54,7 +51,7 @@ public class UploadScript : MonoBehaviour
         if (!developerMode && !CanUpload()) return;
 
         var questions = UIManager.Instance.Notebook.QuestionSlots
-            .Where(slot => slot.isActiveAndEnabled && slot.Definition != null)
+            .Where(slot => slot != null && slot.isActiveAndEnabled && slot.Definition != null)
             .Select(slot => slot.Definition)
             .ToArray();
 
@@ -65,19 +62,17 @@ public class UploadScript : MonoBehaviour
         }
 
         int correctCount = questions.Count(q => q.CheckAnswer());
-        AllCorrect = questions.Length > 0 && correctCount == questions.Length;
-        Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {AllCorrect}");
+        bool allCorrect = questions.Length > 0 && correctCount == questions.Length;
+        Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {allCorrect}");
         if (correctCount < questions.Length)
             UIManager.Instance.Notebook.ShakeIncorrectAnswer();
 
-        if (AllCorrect)
+        if (allCorrect && !developerMode)
         {
-            numberCorrectText.text = "ALL LINKS CORRECT";
-
-            if (developerMode) return;
             foreach (var question in questions)
                 question.Verify();
         }
+        UIManager.Instance.Notebook.RefreshPageFeedback();
     }
 
     private void OnDestroy()
