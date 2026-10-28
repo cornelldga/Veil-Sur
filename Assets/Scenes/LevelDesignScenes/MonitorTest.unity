@@ -493,31 +493,31 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7000000000000000201, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: questionSlots.Array.size
+      propertyPath: pages.Array.data[0].questionSlots.Array.size
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7000000000000000201, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: startQuestions.Array.size
+      propertyPath: pages.Array.data[0].startQuestions.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7000000000000000201, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: 'questionSlots.Array.data[0]'
+      propertyPath: 'pages.Array.data[0].questionSlots.Array.data[0]'
       value: 
       objectReference: {fileID: 1795202748}
     - target: {fileID: 7000000000000000201, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: 'questionSlots.Array.data[1]'
+      propertyPath: 'pages.Array.data[0].questionSlots.Array.data[1]'
       value: 
       objectReference: {fileID: 322126204}
     - target: {fileID: 7000000000000000201, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: 'questionSlots.Array.data[2]'
+      propertyPath: 'pages.Array.data[0].questionSlots.Array.data[2]'
       value: 
       objectReference: {fileID: 857168770}
     - target: {fileID: 7000000000000000201, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: 'startQuestions.Array.data[0]'
+      propertyPath: 'pages.Array.data[0].startQuestions.Array.data[0]'
       value: 
       objectReference: {fileID: 124234730}
     - target: {fileID: 7000000000000000201, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
-      propertyPath: 'startQuestions.Array.data[1]'
+      propertyPath: 'pages.Array.data[0].startQuestions.Array.data[1]'
       value: 
       objectReference: {fileID: 1134681186}
     - target: {fileID: 7000000000000000300, guid: 52e06702b73ca4c80bf43a5e0505efec, type: 3}
