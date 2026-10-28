@@ -20,6 +20,7 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected float viewDistance = 10f;
     [SerializeField] protected float viewAngle = 60f;      // cone angle
     [SerializeField] protected float eyeHeight;     // raycast origin offset up from pivot
+    [SerializeField] protected float coneHeight = -0.96f; // cone mesh offset up from pivot, kept near the floor
     [SerializeField] protected float chaseTurnSpeed = 540f;
 
     [Header("Sweep (Patrol)")]
@@ -354,7 +355,9 @@ public class EnemySearchlight : MonoBehaviour
         // Vector3 eyeLocal = Vector3.up * eyeHeight;
         // vertices[0] = eyeLocal;
         Vector3 eyeWorld = EyePosition;
-        vertices[0] = coneMeshFilter.transform.InverseTransformPoint(eyeWorld);
+        // Rays start at the eyes so low walls don't cut the cone; the mesh is drawn lower, at coneHeight.
+        Vector3 eyeToCone = Vector3.up * (coneHeight - eyeHeight);
+        vertices[0] = coneMeshFilter.transform.InverseTransformPoint(eyeWorld + eyeToCone);
 
         float startAngle = -viewAngle * 0.5f;
         float angleStep = viewAngle / coneRayCount;
@@ -369,7 +372,7 @@ public class EnemySearchlight : MonoBehaviour
             {
                 dist = hit.distance;
             }
-            Vector3 worldPoint = eyeWorld + dir * dist;
+            Vector3 worldPoint = eyeWorld + dir * dist + eyeToCone;
             vertices[i + 1] =
                 coneMeshFilter.transform.InverseTransformPoint(worldPoint);        
         }
