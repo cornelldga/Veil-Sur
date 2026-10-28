@@ -193,7 +193,13 @@ public class EnemySearchlight : MonoBehaviour
             return false;
         }
 
-        if (Physics.Raycast(eye, toPlayer.normalized, out RaycastHit hit, distanceToPlayer, obstacleMask | playerMask))
+        if (Physics.Raycast(
+            eye,
+            toPlayer.normalized,
+            out RaycastHit hit,
+            distanceToPlayer,
+            obstacleMask | playerMask,
+            QueryTriggerInteraction.Ignore))
         {
             if (((1 << hit.collider.gameObject.layer) & playerMask) != 0)
             {
@@ -202,6 +208,7 @@ public class EnemySearchlight : MonoBehaviour
                 return true;
             }
         }
+        
         return false;
     }
 
