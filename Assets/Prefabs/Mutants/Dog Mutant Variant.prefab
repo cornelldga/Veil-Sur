@@ -190,6 +190,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: jumpscareSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 8c36c1d1e6bf24a22a4c1a5daae7910a, type: 3}
+    - target: {fileID: 7175148255011429168, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: alertPauseDuration
       value: 1
       objectReference: {fileID: 0}

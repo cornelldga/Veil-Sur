@@ -277,6 +277,7 @@ MonoBehaviour:
   wanderRadius: 5
   jumpscareFrames: []
   jumpscareFps: 8
+  jumpscareSound: {fileID: 8300000, guid: 9898a8da3f0e141b1ad76a9f122a54d1, type: 3}
   farSpeed: 1.5
   closeSpeed: 6
   targetObject: {fileID: 0}
