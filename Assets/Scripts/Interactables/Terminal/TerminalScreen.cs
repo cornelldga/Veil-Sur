@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Drives the world-space canvas on a terminal's monitor. Add any UI under the
@@ -27,12 +28,17 @@ public class TerminalScreen : MonoBehaviour
     [Tooltip("Spin speed of the interact icon in degrees per second")]
     [SerializeField] private float spinSpeed = 900f;
 
+    [Header("Storage Bar")]
+    [Tooltip("Filled image of the full bar, layered over the empty bar")]
+    [SerializeField] private Image storageFill;
+
     private Coroutine messageRoutine;
     private bool spinning;
 
     private void Awake()
     {
         SetText(idleMessage);
+        SetFill(0f);
     }
 
     private void Update()
@@ -80,6 +86,18 @@ public class TerminalScreen : MonoBehaviour
         }
 
         if (!spinning && interactIcon != null) interactIcon.localRotation = Quaternion.identity;
+
+        // Keep the bar full while the saved message is flashing
+        if (messageRoutine == null || progress > 0f) SetFill(progress);
+    }
+
+    /// <summary>
+    /// Sets how much of the full storage bar is revealed over the empty one.
+    /// </summary>
+    /// <param name="amount">fill amount from 0 to 1</param>
+    private void SetFill(float amount)
+    {
+        if (storageFill != null) storageFill.fillAmount = amount;
     }
 
     /// <summary>
@@ -106,6 +124,7 @@ public class TerminalScreen : MonoBehaviour
             screenText.enabled = true;
         }
         SetText(idleMessage);
+        SetFill(0f);
         messageRoutine = null;
     }
 }
