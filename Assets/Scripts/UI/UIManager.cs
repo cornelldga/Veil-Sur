@@ -18,6 +18,10 @@ public class UIManager : MonoBehaviour
     private PhotoCameraController.CameraMode cameraMode;
     [Tooltip("Text that indicates which camera mode is currently enabled.")]
     [SerializeField] private TMP_Text cameraModeLabel;
+    [Tooltip("Icon for photo/camera mode.")]
+    [SerializeField] private GameObject cameraModeIcon;
+    [Tooltip("Icon for document scanning mode.")]
+    [SerializeField] private GameObject documentModeIcon;
     [Header("Camera Photo Flash")]
     [Tooltip("Seconds of black shutter effect before flash.")]
     [SerializeField] private float shutterTime = 0.054f;
@@ -30,7 +34,7 @@ public class UIManager : MonoBehaviour
     [Tooltip("How long it takes for the flash effect to fade.")]
     [SerializeField] private float flashFade = 0.34f;
     [Tooltip("Amount of time to wait after shutter.")]
-    [SerializeField] private float waitTime = 0.42f;
+    [SerializeField] private float waitTime = 0.34f;
     private Coroutine flashCoroutine;
 
     [Header("Notebook UI")]
@@ -307,10 +311,15 @@ public class UIManager : MonoBehaviour
         if (cameraMode == PhotoCameraController.CameraMode.Photo)
         {
             cameraModeLabel.text = "[PHOTO MODE]";
+            cameraModeIcon.SetActive(true);
+            documentModeIcon.SetActive(false);
+            
         }
 
         else if (cameraMode == PhotoCameraController.CameraMode.Document) {
             cameraModeLabel.text = "[DOCUMENT MODE]";
+            documentModeIcon.SetActive(true);
+            cameraModeIcon.SetActive(false);
         }
     }
 
@@ -336,31 +345,21 @@ public class UIManager : MonoBehaviour
     /// <returns></returns>
     private IEnumerator FlashCoroutine()
     {
-        // Shutter effect
-        //for (float t = 0f; t < shutterTime; t += Time.unscaledDeltaTime)
-        //{
-        //    snapOverlay.color = Color.black;
-        //    snapOverlay.canvasRenderer.SetAlpha(shutterOpacity);
-        //    yield return new WaitForSecondsRealtime(shutterTime / 1f);
-
-        //    snapOverlay.canvasRenderer.SetAlpha(0f);
-        //    yield return new WaitForSecondsRealtime(shutterTime / 1f); 
-        //}
         yield return new WaitForSecondsRealtime(0.01f);
         snapOverlay.color = Color.black;
         snapOverlay.canvasRenderer.SetAlpha(shutterOpacity);
         yield return new WaitForSecondsRealtime(shutterTime);
         snapOverlay.canvasRenderer.SetAlpha(0f);
 
-        // Short pause
+        // Short pause before flash
         yield return new WaitForSecondsRealtime(waitTime);
 
-        // Max flash hold
+        // Flash is held for a moment
         snapOverlay.color = Color.white;
         snapOverlay.canvasRenderer.SetAlpha(maxFlash);
         yield return new WaitForSecondsRealtime(flashTime);
 
-        // Fade out
+        // Fade out from flash
         for (float t = 0f; t < flashFade; t += Time.unscaledDeltaTime)
         {
             snapOverlay.canvasRenderer.SetAlpha(Mathf.Lerp(maxFlash, 0f, t/flashFade));
