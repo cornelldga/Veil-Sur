@@ -51,9 +51,12 @@ public class UploadScript : MonoBehaviour
         GetComponent<RawImage>().color = tmp;
     }
 
+    /// <summary>Marks the current notebook page as uploaded, checks its answers, and verifies them when all are correct.</summary>
     public void Upload()
     {
         if (!developerMode && !CanUpload()) return;
+        // TODO(Claire): TEMP FIX
+        UIManager.Instance.Notebook.MarkCurrentPageUploaded();
 
         var questions = UIManager.Instance.Notebook.QuestionSlots
             .Where(slot => slot != null && slot.isActiveAndEnabled && slot.Definition != null)
@@ -71,7 +74,6 @@ public class UploadScript : MonoBehaviour
         Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {allCorrect}");
         if (correctCount < questions.Length)
         {
-            numberCorrectText.text = "LINKS INCORRECT";
             UIManager.Instance.Notebook.ShakeIncorrectAnswer();
         }
 
