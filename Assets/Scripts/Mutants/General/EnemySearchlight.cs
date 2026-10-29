@@ -197,8 +197,14 @@ public class EnemySearchlight : MonoBehaviour
             return false;
         }
 
-        // The camera sits on top of the player's capsule, so a ray to it can miss the capsule; only walls count.
-        if (Physics.Raycast(eye, toPlayer.normalized, distanceToPlayer, obstacleMask, QueryTriggerInteraction.Ignore))
+        // The camera sits on top of the player's capsule,
+        // so only walls should block the line of sight.
+        if (Physics.Raycast(
+            eye,
+            toPlayer.normalized,
+            distanceToPlayer,
+            obstacleMask,
+            QueryTriggerInteraction.Ignore))
         {
             return false;
         }
