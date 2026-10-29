@@ -85,8 +85,44 @@ public class TutorialManager : MonoBehaviour
     private bool hasSeenDialogue;
     private bool tutorialStarted;
 
+    /// <summary>
+    /// The tutorial in the current scene, or null if this level has none.
+    /// </summary>
+    public static TutorialManager Instance { get; private set; }
+
+    /// <summary>
+    /// Current prompt index, for saving.
+    /// </summary>
+    public int Step => step;
+
+    /// <summary>
+    /// True once the opening dialogue has finished and prompts are showing, for saving.
+    /// </summary>
+    public bool TutorialStarted => tutorialStarted;
+
+    /// <summary>
+    /// Restores tutorial progress from a save.
+    /// </summary>
+    public void RestoreProgress(int savedStep, bool started)
+    {
+        step = Mathf.Clamp(savedStep, 0, PromptCount);
+        tutorialStarted = started;
+        // The opening dialogue already started (or was skipped because it was saved as played),
+        // so the tutorial begins as soon as no dialogue is showing.
+        hasSeenDialogue = true;
+        photoCountAtStepStart = PhotoStorage.Instance.GetTotalOwnedPhotoCount();
+        promptText.text = "";
+        promptText.alpha = 0f;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     private void Awake()
     {
+        Instance = this;
         // Shared instance, so the player's rebinds apply. Other scripts own its enable/disable state.
         controls = GameManager.Controls;
         promptRect = promptText.rectTransform;
