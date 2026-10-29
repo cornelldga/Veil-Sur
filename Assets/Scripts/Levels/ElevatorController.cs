@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -67,9 +68,13 @@ public class ElevatorController : MonoBehaviour
     [SerializeField] private float autoCloseDelay = 8f;
     [SerializeField] private BoxCollider doorCollider;
 
-    [Header("Ride")]
+    [Header("Player Ride")]
     [Tooltip("Total seconds the ride lasts")]
     [SerializeField] private float rideDuration = 5f;
+    [Tooltip("Where the Player is walked to inside the Elevator prefab. Should be where they start Levels.")]
+    [SerializeField] private Transform playerStandPoint;
+    [Tooltip("Seconds it will take to walk the Player to playerStandPoint and make them face the doors")]
+    [SerializeField] private float scriptedDuration = 1.2f;
 
     [Header("Elevator Lighting")]
     [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride (hopefully this time)")]
@@ -257,6 +262,7 @@ public class ElevatorController : MonoBehaviour
 
         GameManager.Instance.PreloadScene(targetScene);
 
+        Coroutine scriptedCentering = StartCoroutine(CenterPlayer());
         yield return SetDoorsAnimated(false);
         yield return RunRide();
 
@@ -267,6 +273,32 @@ public class ElevatorController : MonoBehaviour
         _ = GameManager.Instance.ActivatePreloadedScene();
     }
 
+
+    private IEnumerator CenterPlayer()
+    {
+        FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
+        player.BeginScriptedMovement();
+
+        float startYaw = player.Yaw;
+        float startPitch = player.Pitch;
+        Vector3 startPos = player.transform.position;
+        Vector3 targetPos = playerStandPoint.position;
+        float targetYaw = playerStandPoint.eulerAngles.y;
+
+        for (float t = 0f; t < scriptedDuration; t += Time.deltaTime)
+        {
+            float k = Mathf.SmoothStep(0f, 1f, t / scriptedDuration);
+
+            Vector3 dest = Vector3.Lerp(startPos, targetPos, k);
+            Vector3 delta = dest - player.transform.position;
+            delta.y = 0f;
+
+            player.GuidePlayerBy(delta, Mathf.LerpAngle(startYaw, targetYaw, k), Mathf.Lerp(startPitch, 0f, k));
+
+            yield return null;
+        }
+    }
+
     /// <summary>
     /// Coroutine that runs when the Player arrives by the elevator.
     /// Doors start closed and open after doorOpenCloseDelay.
@@ -274,7 +306,13 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     private IEnumerator ArrivalSequence()
     {
+        FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
+        player.PlacePositionAt(playerStandPoint.position, playerStandPoint.eulerAngles.y, 0f);
+        player.BeginScriptedMovement();
+
         yield return new WaitForSeconds(doorOpenCloseDelay);
+        
+        player.EndScriptedMovement();
         OpenDoors();
     }
 

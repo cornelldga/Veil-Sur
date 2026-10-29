@@ -43,6 +43,16 @@ public class FirstPersonController : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip crouchClip;
 
+    /// <summary>
+    /// World yaw of the Player's body, in degrees.
+    /// </summary>
+    public float Yaw => transform.eulerAngles.y;
+
+    /// <summary>
+    /// Camera pitch, in degrees. Positive looks down.
+    /// </summary>
+    public float Pitch => verticalLookClamped;
+
     private void Start()
     {
         // Moved this to a Start() function 
