@@ -106,3 +106,6 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ss]ceneDependencyCache*
 /.vscode
 .DS_Store
+
+# ProBuilder settings
+probuilder.settings.json
