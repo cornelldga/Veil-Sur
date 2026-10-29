@@ -18,6 +18,20 @@ public class UIManager : MonoBehaviour
     private PhotoCameraController.CameraMode cameraMode;
     [Tooltip("Text that indicates which camera mode is currently enabled.")]
     [SerializeField] private TMP_Text cameraModeLabel;
+    [Header("Camera Photo Flash")]
+    [Tooltip("Seconds of black shutter effect before flash.")]
+    [SerializeField] private float shutterTime = 0.054f;
+    [Tooltip("Opacity of the shutter effect.")]
+    [SerializeField] private float shutterOpacity = 0.52f;
+    [Tooltip("How bright the flash gets at its maximum.")]
+    [SerializeField] private float maxFlash = 0.3f;
+    [Tooltip("How long the flash effect lasts.")]
+    [SerializeField] private float flashTime = 0.04f;
+    [Tooltip("How long it takes for the flash effect to fade.")]
+    [SerializeField] private float flashFade = 0.34f;
+    [Tooltip("Amount of time to wait after shutter.")]
+    [SerializeField] private float waitTime = 0.42f;
+    private Coroutine flashCoroutine;
 
     [Header("Notebook UI")]
     [SerializeField] public GameObject notebookGroup;
@@ -306,8 +320,55 @@ public class UIManager : MonoBehaviour
     public void TakePhoto()
     {
         //puts white  overlay over and then fades it out to simulate a camera snap
-        snapOverlay.canvasRenderer.SetAlpha(.5f);
-        snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
+        //snapOverlay.canvasRenderer.SetAlpha(.5f);
+        //snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+        }
+        flashCoroutine = StartCoroutine(FlashCoroutine());
+    }
+
+    /// <summary>
+    /// Camera effect upon taking a photo. First has a "shutter" black blinking, then brief pause at maximum flash.
+    /// then fade back out.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator FlashCoroutine()
+    {
+        // Shutter effect
+        //for (float t = 0f; t < shutterTime; t += Time.unscaledDeltaTime)
+        //{
+        //    snapOverlay.color = Color.black;
+        //    snapOverlay.canvasRenderer.SetAlpha(shutterOpacity);
+        //    yield return new WaitForSecondsRealtime(shutterTime / 1f);
+
+        //    snapOverlay.canvasRenderer.SetAlpha(0f);
+        //    yield return new WaitForSecondsRealtime(shutterTime / 1f); 
+        //}
+        yield return new WaitForSecondsRealtime(0.01f);
+        snapOverlay.color = Color.black;
+        snapOverlay.canvasRenderer.SetAlpha(shutterOpacity);
+        yield return new WaitForSecondsRealtime(shutterTime);
+        snapOverlay.canvasRenderer.SetAlpha(0f);
+
+        // Short pause
+        yield return new WaitForSecondsRealtime(waitTime);
+
+        // Max flash hold
+        snapOverlay.color = Color.white;
+        snapOverlay.canvasRenderer.SetAlpha(maxFlash);
+        yield return new WaitForSecondsRealtime(flashTime);
+
+        // Fade out
+        for (float t = 0f; t < flashFade; t += Time.unscaledDeltaTime)
+        {
+            snapOverlay.canvasRenderer.SetAlpha(Mathf.Lerp(maxFlash, 0f, t/flashFade));
+            yield return null;
+        }
+
+        snapOverlay.canvasRenderer.SetAlpha(0f);
+        flashCoroutine = null;
     }
 
     /// <summary>
