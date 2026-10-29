@@ -115,11 +115,6 @@ public class TutorialManager : MonoBehaviour
     }
 
     /// <summary>
-    /// The tutorial in the current scene, or null if this level has none.
-    /// </summary>
-    public static TutorialManager Instance { get; private set; }
-
-    /// <summary>
     /// Current prompt index, for saving.
     /// </summary>
     public int Step => step;
@@ -142,11 +137,6 @@ public class TutorialManager : MonoBehaviour
         photoCountAtStepStart = PhotoStorage.Instance.GetTotalOwnedPhotoCount();
         promptText.text = "";
         promptText.alpha = 0f;
-    }
-
-    private void OnDestroy()
-    {
-        if (Instance == this) Instance = null;
     }
 
     private void Awake()
