@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour
         if (kb == null || _state == GameState.MAIN_MENU || IsRebinding) return;
 
         if (kb.escapeKey.wasPressedThisFrame)
-            TogglePause();
+            HandleEscape();
     }
 
     private void InitializeGame()
@@ -207,6 +207,20 @@ public class GameManager : MonoBehaviour
 
         HandleSceneMusic(sceneName);
         return true;
+    }
+
+    private void HandleEscape()
+    {
+        if (_state == GameState.NOTEBOOK)
+        {
+            var notebook = UIManager.Instance.Notebook;
+            if (notebook != null && notebook.IsPhotoPreviewOpen)
+                notebook.ClosePhotoPreview();     // enlarged photo -> normal notebook view
+            else
+                SetState(GameState.DEFAULT);      // notebook -> game
+        }
+        else
+            TogglePause();
     }
 
     /// <summary>
