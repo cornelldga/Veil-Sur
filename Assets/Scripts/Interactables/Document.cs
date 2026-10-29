@@ -10,7 +10,7 @@ public class DocData
 }
 
 
-public class Document : MonoBehaviour
+public class Document : MonoBehaviour, Interactable
 {
     [Header("UI Features")]
     
@@ -48,6 +48,18 @@ public class Document : MonoBehaviour
     private void LoadDocData()
     {
         docData = JsonUtility.FromJson<DocData>(jsonFile.text);
+    }
+
+    public void Interact()
+    {
+        if (isOpen)
+        {
+            CloseDoc();
+        }
+        else
+        {
+            OpenDoc();
+        }
     }
 
     public void OpenDoc()
