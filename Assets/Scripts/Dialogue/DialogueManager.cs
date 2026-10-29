@@ -111,7 +111,37 @@ public class DialogueManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// goes to next line of dialogue when box is clicked 
+    /// the IDs of every dialogue section already played this level, for saving
+    /// </summary>
+    public List<string> GetPlayedSections()
+    {
+        return new List<string>(played);
+    }
+
+    /// <summary>
+    /// restores already played sections from a save. closes the current dialogue if it was already played
+    /// </summary>
+    /// <param name="sectionIDs"> the played section IDs from the save </param>
+    public void RestorePlayedSections(List<string> sectionIDs)
+    {
+        played = new HashSet<string>(sectionIDs);
+
+        // the scene's opening dialogue (e.g. "welcome") may have started before the save was applied
+        if (isDialogueActive && currentSection != null)
+        {
+            foreach (string id in played)
+            {
+                if (levelSections != null && levelSections.TryGetValue(id, out DialogueSection section) && section == currentSection)
+                {
+                    EndDialogue();
+                    break;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// goes to next line of dialogue when box is clicked
     /// </summary>
     public void NextLine(){
         if (!isDialogueActive || currentSection == null || IsPaused()){
