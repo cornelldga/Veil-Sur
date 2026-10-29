@@ -75,6 +75,8 @@ public class ElevatorController : MonoBehaviour
     [SerializeField] private Transform playerStandPoint;
     [Tooltip("Seconds it will take to walk the Player to playerStandPoint and make them face the doors")]
     [SerializeField] private float scriptedDuration = 1.2f;
+    [Tooltip("Camera pitch while standing in the elevator, in degrees. Positive looks down.")]
+    [SerializeField] private float lookPitch = 15f;
 
     [Header("Elevator Lighting")]
     [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride (hopefully this time)")]
@@ -293,7 +295,7 @@ public class ElevatorController : MonoBehaviour
             Vector3 delta = dest - player.transform.position;
             delta.y = 0f;
 
-            player.GuidePlayerBy(delta, Mathf.LerpAngle(startYaw, targetYaw, k), Mathf.Lerp(startPitch, 0f, k));
+            player.GuidePlayerBy(delta, Mathf.LerpAngle(startYaw, targetYaw, k), Mathf.Lerp(startPitch, lookPitch, k));
 
             yield return null;
         }
@@ -307,7 +309,7 @@ public class ElevatorController : MonoBehaviour
     private IEnumerator ArrivalSequence()
     {
         FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
-        player.PlacePositionAt(playerStandPoint.position, playerStandPoint.eulerAngles.y, 0f);
+        player.PlacePositionAt(playerStandPoint.position, playerStandPoint.eulerAngles.y, lookPitch);
         player.BeginScriptedMovement();
 
         yield return new WaitForSeconds(doorOpenCloseDelay);
