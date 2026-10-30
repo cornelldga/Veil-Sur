@@ -25,6 +25,13 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float crouchHeight = .75f;
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
+    [Header("Sprinting Effects")]
+    [SerializeField] private float sprintingFOV = 124;
+    [SerializeField] private float fovChangeSpeed = 5f;
+    [SerializeField] private CanvasGroup sprintVignette;
+    [SerializeField] private float vignetteOpacity = 0.9f;
+    [SerializeField] private float vignetteFadeSpeed = 4f;
+    private float normalFOV;
 
     private CharacterController controller;
     private PlayerControls controls;
@@ -68,6 +75,7 @@ public class FirstPersonController : MonoBehaviour
         if (playerCamera != null)
         {
             playerCamera.transform.localPosition = cameraStandLocalPos;
+            normalFOV = playerCamera.fieldOfView;
         }
 
         // Send player instance/camera to GameManager
@@ -99,6 +107,7 @@ public class FirstPersonController : MonoBehaviour
             HandleLook();
             HandleCrouch();
         }
+        HandleSprintingEffects();
     }
 
     /// <summary>
@@ -234,6 +243,38 @@ public class FirstPersonController : MonoBehaviour
                 (currentHeight - crouchHeight) / (standHeight - crouchHeight));
             playerCamera.transform.localPosition = Vector3.Lerp(
                 playerCamera.transform.localPosition, targetCamPos, crouchTransitionSpeed * Time.deltaTime);
+        }
+    }
+
+    private void HandleSprintingEffects()
+    {
+        if (playerCamera != null)
+        {
+            float targetFOV;
+            if (isSprinting)
+            {
+               targetFOV = sprintingFOV;
+            } else
+            {
+               targetFOV = normalFOV;
+            }
+
+            playerCamera.fieldOfView = Mathf.Lerp(
+                playerCamera.fieldOfView, targetFOV, fovChangeSpeed * Time.deltaTime);
+        }
+        if (sprintVignette != null)
+        {
+            float targetAlpha;
+            if (isSprinting)
+            {
+                targetAlpha = vignetteOpacity;
+            } else
+            {
+                targetAlpha = 0f;
+            }
+            sprintVignette.alpha = Mathf.Lerp(
+                sprintVignette.alpha, targetAlpha, vignetteFadeSpeed * Time.deltaTime
+            );
         }
     }
 
