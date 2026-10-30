@@ -64,6 +64,7 @@ public class UploadScript : MonoBehaviour
         int correctCount = questions.Count(q => q.CheckAnswer());
         bool allCorrect = questions.Length > 0 && correctCount == questions.Length;
         Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {allCorrect}");
+        UIManager.Instance.Notebook.PlayUploadResult(allCorrect);
         if (correctCount < questions.Length)
             UIManager.Instance.Notebook.ShakeIncorrectAnswer();
 
