@@ -75,12 +75,14 @@ public class Document : MonoBehaviour, Interactable
         docCanvas.SetActive(true);
         isOpen = true;
         openedByInteract = false;
+        playerStateController.SetDocOpen(true);
     }
     public void CloseDoc()
     {
         docCanvas.SetActive(false);
         isOpen = false;
         openedByInteract = false;
+        playerStateController.SetDocOpen(false);
     }
 
     private void Update()
