@@ -49,9 +49,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] public TMP_Text docViewer;
     [SerializeField] public RectTransform docPaper;
 
-    [Header("Delete Confirmation")]
-    [SerializeField] private GameObject deleteConfirmation;
-
     private Photo pendingDeletion;
 
     [Header("Interact Popup")]
@@ -218,48 +215,6 @@ public class UIManager : MonoBehaviour
     //         UIManager.Instance.Show(UIGroupId.Pause);
     // }
 
-    /// <summary>
-    /// Displays the delete confirmation for the given photo.
-    /// </summary>
-    public void ShowDeleteConfirmation(Photo photo)
-    {
-        pendingDeletion = photo;
-        if (deleteConfirmation != null)
-        {
-            deleteConfirmation.SetActive(true);
-        }
-    }
-
-    /// <summary>
-    /// Called when the player confirms deletion of a photo. Removes the pending
-    /// photo from the storage and hides the confimation pop-up.
-    /// </summary>
-    public void ConfirmDelete()
-    {
-        if (pendingDeletion != null)
-        {
-            PhotoStorage.Instance.RemovePhoto(pendingDeletion);
-            pendingDeletion = null;
-        }
-
-        if (deleteConfirmation != null)
-        {
-            deleteConfirmation.SetActive(false);
-        }
-    }
-
-    /// <summary>
-    /// Called when the player cancels deletion. Does not remove the pending
-    /// photo from the storage and hides the confirmation pop-up.
-    /// </summary>
-    public void CancelDelete()
-    {
-        pendingDeletion = null;
-        if (deleteConfirmation != null)
-        {
-            deleteConfirmation.SetActive(false);
-        }
-    }
 
     public void ShowInteractPrompt(bool visible)
     {
