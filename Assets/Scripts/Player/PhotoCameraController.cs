@@ -48,6 +48,7 @@ public class PhotoCameraController : SoundEvent
 
     [Header("Audio")]
     [SerializeField] private AudioClip shutterClip;
+    [SerializeField] private float shutterDelay = 0.1f;
     [SerializeField] private AudioClip documentScanClip; //document mode
     [Header("Mutant-Related Settings")]
     [SerializeField] private float detectRadius = 10f; // How far the sound cone extends
@@ -249,7 +250,8 @@ public class PhotoCameraController : SoundEvent
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
-        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        //AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        StartCoroutine(PlayShutterDelayed());
         UIManager.Instance.TakePhoto();
         CreatePhotoNote(photo);
     }
@@ -557,5 +559,18 @@ public class PhotoCameraController : SoundEvent
         {
             UpdateDocPreview();
         }
+    }
+
+    /// <summary>
+    /// Plays shutter sound after slight delay to match the vfx.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator PlayShutterDelayed()
+    {
+        if (shutterDelay > 0f)
+        {
+            yield return new WaitForSecondsRealtime(shutterDelay);
+        }
+        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
     }
 }

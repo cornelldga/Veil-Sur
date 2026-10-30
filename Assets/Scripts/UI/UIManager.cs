@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject documentModeIcon;
     [Header("Camera Photo Flash")]
     [Tooltip("Seconds of black shutter effect before flash.")]
-    [SerializeField] private float shutterTime = 0.054f;
+    [SerializeField] private float shutterTime = 0.06f;
     [Tooltip("Opacity of the shutter effect.")]
     [SerializeField] private float shutterOpacity = 0.52f;
     [Tooltip("How bright the flash gets at its maximum.")]
