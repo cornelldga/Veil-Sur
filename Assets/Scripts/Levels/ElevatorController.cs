@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -67,9 +68,15 @@ public class ElevatorController : MonoBehaviour
     [SerializeField] private float autoCloseDelay = 8f;
     [SerializeField] private BoxCollider doorCollider;
 
-    [Header("Ride")]
+    [Header("Player Ride")]
     [Tooltip("Total seconds the ride lasts")]
     [SerializeField] private float rideDuration = 5f;
+    [Tooltip("Where the Player is walked to inside the Elevator prefab. Should be where they start Levels.")]
+    [SerializeField] private Transform playerStandPoint;
+    [Tooltip("Seconds it will take to walk the Player to playerStandPoint and make them face the doors")]
+    [SerializeField] private float scriptedDuration = 1.2f;
+    [Tooltip("Camera pitch while standing in the elevator, in degrees. Positive looks down.")]
+    [SerializeField] private float lookPitch = 15f;
 
     [Header("Elevator Lighting")]
     [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride (hopefully this time)")]
@@ -118,6 +125,12 @@ public class ElevatorController : MonoBehaviour
         if (shaftLight != null)
         {
             shaftLight.gameObject.SetActive(false);
+        }
+
+        if (GameManager.Instance.ArrivingByElevator)
+        {
+            GameManager.Instance.ArrivingByElevator = false; 
+            StartCoroutine(ArrivalSequence());
         }
     }
 
@@ -249,11 +262,79 @@ public class ElevatorController : MonoBehaviour
             yield break;
         }
 
+        GameManager.Instance.PreloadScene(targetScene);
+
+        Coroutine scriptedCentering = StartCoroutine(CenterPlayer());
         yield return SetDoorsAnimated(false);
         yield return RunRide();
 
-        GameManager.Instance.GoToLevel(targetScene); // Should always go to TutorialLevel right now.
-        // Might need to make the position of the elevator at the origin across all levels
+        // Waiting in Elevator UNTIL scene is loaded (even if default ride duration has ended)
+        yield return new WaitUntil(() => GameManager.Instance.IsScenePreloaded);
+
+        SavePlayerPose();
+        GameManager.Instance.ArrivingByElevator = true;
+        _ = GameManager.Instance.ActivatePreloadedScene();
+    }
+
+
+    private IEnumerator CenterPlayer()
+    {
+        FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
+        player.BeginScriptedMovement();
+
+        float startYaw = player.Yaw;
+        float startPitch = player.Pitch;
+        Vector3 startPos = player.transform.position;
+        Vector3 targetPos = playerStandPoint.position;
+        float targetYaw = playerStandPoint.eulerAngles.y;
+
+        for (float t = 0f; t < scriptedDuration; t += Time.deltaTime)
+        {
+            float k = Mathf.SmoothStep(0f, 1f, t / scriptedDuration);
+
+            Vector3 dest = Vector3.Lerp(startPos, targetPos, k);
+            Vector3 delta = dest - player.transform.position;
+            delta.y = 0f;
+
+            player.GuidePlayerBy(delta, Mathf.LerpAngle(startYaw, targetYaw, k), Mathf.Lerp(startPitch, lookPitch, k));
+
+            yield return null;
+        }
+    }
+
+    /// <summary>
+    /// Coroutine that runs when the Player arrives by the elevator.
+    /// Doors start closed and open after doorOpenCloseDelay.
+    /// Used before stepping into the next level.
+    /// </summary>
+    private IEnumerator ArrivalSequence()
+    {
+        FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
+
+        Pose pose = GameManager.Instance.ArrivalPose;
+        Vector3 posititon = transform.TransformPoint(pose.position);
+        float yaw = (transform.rotation * pose.rotation).eulerAngles.y;
+        player.PlacePositionAt(posititon, yaw, lookPitch);
+        
+        player.BeginScriptedMovement();
+
+        yield return new WaitForSeconds(doorOpenCloseDelay);
+        
+        player.EndScriptedMovement();
+        OpenDoors();
+    }
+
+    /// <summary>
+    /// Stores where the Player is standing relative to this Elevator object.
+    /// The Elevator in the next scene will use this pose to place the Player.
+    /// </summary>
+    private void SavePlayerPose()
+    {
+        Transform player = GameManager.PlayerInstance.transform;
+
+        GameManager.Instance.ArrivalPose = new Pose(
+            transform.InverseTransformPoint(player.position), 
+            Quaternion.Inverse(transform.rotation) * player.rotation);
     }
 
     /// <summary>
