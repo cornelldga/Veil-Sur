@@ -107,28 +107,11 @@ public class FirstPersonController : MonoBehaviour
     private void HandleMove()
     {
         bool sprintHeld = controls.PlayerMovement.Sprint.IsPressed();
-        bool sprintPressedThisFrame = controls.PlayerMovement.Sprint.WasPressedThisFrame();
-        
+
         Vector2 moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
         bool isMoving = moveInput.sqrMagnitude > 0.01f;
 
-        // Track whether the player released the sprint key
-        if (!sprintHeld)
-        {
-            isSprinting = false;
-        }
-
-        // Can only start sprinting if the key was released first and not exhausted
-        if (sprintPressedThisFrame && isMoving && !staminaController.isExhausted)
-        {
-            isSprinting = true;
-        }
-
-        // Cancel sprinting immediately if stamina hits zero or player stops moving
-        if (staminaController.isExhausted || !isMoving)
-        {
-            isSprinting = false;
-        }
+        isSprinting = sprintHeld && isMoving && !staminaController.isExhausted && !playerState.GetCrouching();
 
         playerState.SetMoving(isMoving);
         playerState.SetSprinting(isSprinting);
@@ -161,7 +144,7 @@ public class FirstPersonController : MonoBehaviour
         }
 
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
-        move *= speed;
+        move = Vector3.ClampMagnitude(move, 1f) * speed;
 
         if (controller.isGrounded && verticalVelocity < 0f)
         {

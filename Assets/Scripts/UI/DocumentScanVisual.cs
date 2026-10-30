@@ -13,14 +13,14 @@ public class DocumentScanVisual : MonoBehaviour
     [Tooltip("How long the scan effect takes.")]
     [SerializeField] private float scanTime = 0.75f;
     [Tooltip("Thickness of scan line.")]
-    [SerializeField] private float lineThickness = 9f;
+    [SerializeField] private float lineThickness = 7.8f;
 
     private Image scanLine;
     private RectTransform lineRect;
 
     private Image fastLine;
     private RectTransform fastLineRect;
-    [SerializeField] private float fastThickness = 5f;
+    [SerializeField] private float fastThickness = 4f;
 
     private void Awake()
     {
