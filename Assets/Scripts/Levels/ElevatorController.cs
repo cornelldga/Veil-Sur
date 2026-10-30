@@ -266,7 +266,7 @@ public class ElevatorController : MonoBehaviour
             yield break;
         }
 
-        GameManager.Instance.PreloadScene(targetScene);
+        GameManager.Instance.StartFresh(targetScene);
 
         Coroutine scriptedCentering = StartCoroutine(CenterPlayer());
         yield return SetDoorsAnimated(false);
