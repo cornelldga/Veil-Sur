@@ -288,8 +288,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Shows or hides the interact (hand) icon. The icon always stays hidden
+    /// while the player has a document open.
+    /// </summary>
     public void ShowInteractPrompt(bool visible)
     {
+        if (GameManager.PlayerInstance != null && GameManager.PlayerInstance.GetComponent<PlayerState>().GetDocOpen())
+            visible = false;
         if (interact.gameObject.activeSelf != visible) interact.gameObject.SetActive(visible);
     }
 
