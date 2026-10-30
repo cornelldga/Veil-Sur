@@ -170,17 +170,6 @@
                 },
                 {
                     "name": "",
-                    "id": "11e1f14b-7c5b-42d2-8726-a0a5a2081dbe",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "AimCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "693d2381-e971-47ee-8514-7961f3715e0c",
                     "path": "<Keyboard>/r",
                     "interactions": "",

@@ -32,6 +32,16 @@ public class NotebookUIController : SoundEvent
     [Tooltip("Maximum horizontal offset in UI units.")]
     [SerializeField, Min(0f)] private float incorrectShakeMagnitude = 6f;
     [SerializeField] private RectTransform shakeTarget;
+
+    [Header("Upload SFX")]
+    [SerializeField] private AudioClip correctClip;
+    [SerializeField] private AudioClip errorClip;
+
+    public void PlayUploadResult(bool correct)
+    {
+        AudioClip clip = correct ? correctClip : errorClip;
+        AudioManager.Instance.PlaySfxAtPosition(clip, Camera.main.transform.position);
+    }
     private Coroutine shakeCoroutine;
     private Vector2 shakeOrigin;
     private readonly Dictionary<QuestionDefinition, NotebookPage> questionPages = new();

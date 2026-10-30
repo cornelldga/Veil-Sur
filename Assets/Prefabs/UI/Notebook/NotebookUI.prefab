@@ -173,7 +173,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 3279670932217759121}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -1404,7 +1404,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 528832993018368787}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -2741,4 +2741,6 @@ MonoBehaviour:
   incorrectAlertRadius: 30
   incorrectShakeMagnitude: 6
   shakeTarget: {fileID: 1091525468159418425}
+  correctClip: {fileID: 8300000, guid: 640245b2bce2844e7ba2de763a5767c4, type: 3}
+  errorClip: {fileID: 8300000, guid: 4e0c61872fb874649be7b3406ec324f7, type: 3}
   developerMode: 0

@@ -26,6 +26,14 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
 
+    [Header("Footsteps")]
+    [SerializeField] private AudioClip footstepClip;
+    [SerializeField] private float walkStepPitch = 1f;
+    [SerializeField] private float sprintStepPitch = 1.4f;
+    [SerializeField] private float stepVolume = 0.5f;
+
+    private float nextFootstepTime;
+
     private CharacterController controller;
     private PlayerControls controls;
     private PlayerState playerState;
@@ -42,6 +50,16 @@ public class FirstPersonController : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioClip crouchClip;
+
+    /// <summary>
+    /// World yaw of the Player's body, in degrees.
+    /// </summary>
+    public float Yaw => transform.eulerAngles.y;
+
+    /// <summary>
+    /// Camera pitch, in degrees. Positive looks down.
+    /// </summary>
+    public float Pitch => verticalLookClamped;
 
     private void Start()
     {
@@ -132,6 +150,7 @@ public class FirstPersonController : MonoBehaviour
 
         playerState.SetMoving(isMoving);
         playerState.SetSprinting(isSprinting);
+        HandleFootsteps(isMoving);
 
         float speed;
 
@@ -171,6 +190,20 @@ public class FirstPersonController : MonoBehaviour
 
         move.y = verticalVelocity;
         controller.Move(move * Time.deltaTime);
+    }
+
+    private void HandleFootsteps(bool isMoving)
+    {
+        if (footstepClip == null || !isMoving || !controller.isGrounded) return;
+        if (playerState.GetCrouching()) return;
+        if (Time.time < nextFootstepTime) return;
+
+        float pitch = isSprinting ? sprintStepPitch : walkStepPitch;
+
+        AudioManager.Instance.PlaySfxAttached(footstepClip, transform, volume: stepVolume, pitch: pitch);
+
+        // Higher pitch plays faster, so the clip finishes sooner
+        nextFootstepTime = Time.time + footstepClip.length / pitch;
     }
 
     public void SetRunSpeed(float speed)
@@ -254,8 +287,72 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Take control from the Player for scripted movement, like the Elevator.
+    /// </summary>
+    public void BeginScriptedMovement()
+    {
+        playerState.SetPlayerHasControl(false);
+        playerState.SetMoving(false);
+        playerState.SetSprinting(false);
+    }
+
+    /// <summary>
+    /// Give control back to the Player after scripted movement.
+    /// </summary>
+    public void EndScriptedMovement()
+    {
+        playerState.SetPlayerHasControl(true);
+    }
+
+    /// <summary>
+    /// Sets the FirstPersonController's look direction.
+    /// </summary>
+    /// <param name="yaw">World yaw for the Player</param>
+    /// <param name="pitch">Camera pitch for the Player</param>
+    public void SetLook(float yaw, float pitch)
+    {
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+        verticalLookClamped = Mathf.Clamp(pitch, minLookDown, maxLookUp);
+        if (playerCamera != null)
+        {
+            playerCamera.transform.localEulerAngles = new Vector3(verticalLookClamped, 0f, 0f);
+        }
+    }
+
+    /// <summary>
+    /// Put the Player at a world position AND look direction. 
+    /// Turns off the Character controller to have direct control of position,
+    /// without overrides. 
+    /// </summary>
+    /// <param name="pos">World position for the Player to be set to</param>
+    /// <param name="yaw">World yaw for the Player to be set to</param>
+    /// <param name="pitch">Camera pitch for the Player to be set to</param>
+    public void PlacePositionAt(Vector3 pos, float yaw, float pitch)
+    {
+        controller.enabled = false;
+        transform.position = pos;
+        controller.enabled = true;
+
+        SetLook(yaw, pitch);
+    }
+
+    /// <summary>
+    /// Guides the Player by a delta and sets the look direction during scripted
+    /// movement. Uses the CharacterController for movement to maintain collision.
+    /// </summary>
+    /// <param name="delta">How far to move the Player</param>
+    /// <param name="yaw">World yaw for the Player</param>
+    /// <param name="pitch">Camera pitch for the Player</param>
+    public void GuidePlayerBy(Vector3 delta, float yaw, float pitch)
+    {
+        controller.Move(delta);
+        SetLook(yaw, pitch);
+    }
+
     // private void OnDestroy()
     // {
     //    controls?.Dispose();
     // }
 }
+
