@@ -189,6 +189,23 @@ public class FirstPersonController : MonoBehaviour
     }
 
     /// <summary>
+    /// Up/down camera angle, for saving.
+    /// </summary>
+    public float VerticalLook => verticalLookClamped;
+
+    /// <summary>
+    /// Sets the up/down camera angle, e.g. when loading a save.
+    /// </summary>
+    public void SetVerticalLook(float angle)
+    {
+        verticalLookClamped = Mathf.Clamp(angle, minLookDown, maxLookUp);
+        if (playerCamera != null)
+        {
+            playerCamera.transform.localEulerAngles = new Vector3(verticalLookClamped, 0f, 0f);
+        }
+    }
+
+    /// <summary>
     /// Move the camera depending on look input.
     /// </summary>
     private void HandleLook()

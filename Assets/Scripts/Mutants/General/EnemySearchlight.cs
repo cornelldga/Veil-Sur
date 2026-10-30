@@ -20,6 +20,7 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected float viewDistance = 10f;
     [SerializeField] protected float viewAngle = 60f;      // cone angle
     [SerializeField] protected float eyeHeight;     // raycast origin offset up from pivot
+    [SerializeField] protected float coneHeight = -0.96f; // cone mesh offset up from pivot, kept near the floor
     [SerializeField] protected float chaseTurnSpeed = 540f;
 
     [Header("Sweep (Patrol)")]
@@ -76,6 +77,7 @@ public class EnemySearchlight : MonoBehaviour
     protected Priority currentPriority = Priority.None;
 
     protected Vector3 lastPosition; // Used to determine where to face while moving
+    protected MutantBillboard billboard; // Null on mutants without 8-direction art
 
 
     protected virtual void Start()
@@ -84,6 +86,7 @@ public class EnemySearchlight : MonoBehaviour
         baseFacingAngle = transform.eulerAngles.y;
         lastPosition = transform.position;
         timeSinceLastStun = stunCooldown + stunDuration;
+        billboard = GetComponentInChildren<MutantBillboard>();
 
         if (showConeMesh && coneMeshFilter != null)
         {
@@ -103,6 +106,7 @@ public class EnemySearchlight : MonoBehaviour
     }
 
     protected Vector3 EyePosition => transform.position + Vector3.up * eyeHeight;
+    protected Vector3 PlayerHeadPosition => GameManager.PlayerCamera.transform.position;
 
     protected void SweepSearchlight() // Currently not used
     {
@@ -180,7 +184,7 @@ public class EnemySearchlight : MonoBehaviour
         }
 
         Vector3 eye = EyePosition;
-        Vector3 toPlayer = player.position - eye;
+        Vector3 toPlayer = PlayerHeadPosition - eye;
         distanceToPlayer = toPlayer.magnitude;
         if (distanceToPlayer > viewDistance || CurrentState == AlertState.Stun)
         {
@@ -193,16 +197,21 @@ public class EnemySearchlight : MonoBehaviour
             return false;
         }
 
-        if (Physics.Raycast(eye, toPlayer.normalized, out RaycastHit hit, distanceToPlayer, obstacleMask | playerMask))
+        // The camera sits on top of the player's capsule,
+        // so only walls should block the line of sight.
+        if (Physics.Raycast(
+            eye,
+            toPlayer.normalized,
+            distanceToPlayer,
+            obstacleMask,
+            QueryTriggerInteraction.Ignore))
         {
-            if (((1 << hit.collider.gameObject.layer) & playerMask) != 0)
-            {
-                LastKnownPlayerPosition = player.position;
-                hasKnownPlayerPosition = true;
-                return true;
-            }
+            return false;
         }
-        return false;
+
+        LastKnownPlayerPosition = player.position;
+        hasKnownPlayerPosition = true;
+        return true;
     }
 
     protected virtual void UpdateAlertState(bool canSeePlayer)
@@ -352,7 +361,9 @@ public class EnemySearchlight : MonoBehaviour
         // Vector3 eyeLocal = Vector3.up * eyeHeight;
         // vertices[0] = eyeLocal;
         Vector3 eyeWorld = EyePosition;
-        vertices[0] = coneMeshFilter.transform.InverseTransformPoint(eyeWorld);
+        // Rays start at the eyes so low walls don't cut the cone; the mesh is drawn lower, at coneHeight.
+        Vector3 eyeToCone = Vector3.up * (coneHeight - eyeHeight);
+        vertices[0] = coneMeshFilter.transform.InverseTransformPoint(eyeWorld + eyeToCone);
 
         float startAngle = -viewAngle * 0.5f;
         float angleStep = viewAngle / coneRayCount;
@@ -367,7 +378,7 @@ public class EnemySearchlight : MonoBehaviour
             {
                 dist = hit.distance;
             }
-            Vector3 worldPoint = eyeWorld + dir * dist;
+            Vector3 worldPoint = eyeWorld + dir * dist + eyeToCone;
             vertices[i + 1] =
                 coneMeshFilter.transform.InverseTransformPoint(worldPoint);        
         }
@@ -451,7 +462,7 @@ public class EnemySearchlight : MonoBehaviour
         if (player == null || CurrentState == AlertState.Stun)
             return false;
 
-        Vector3 toPlayer = player.position - EyePosition;
+        Vector3 toPlayer = PlayerHeadPosition - EyePosition;
         float distance = toPlayer.magnitude;
 
         if (distance > proximityDetection)
@@ -467,10 +478,13 @@ public class EnemySearchlight : MonoBehaviour
             QueryTriggerInteraction.Ignore);
     }
     /// <summary>
-    /// Called on camera flash to stun the mutant during chase. 
+    /// Called on camera flash to stun the mutant during chase.
+    /// Billboarded mutants only get stunned while showing their front sprite.
     /// </summary>
     public void Stun()
     {
+        if (billboard != null && !billboard.IsShowingFront) return;
+
         if ((CurrentState == AlertState.Alert || CurrentState == AlertState.Suspicious)
         && timeSinceLastStun >= stunCooldown + stunDuration)
         {

@@ -245,7 +245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 2560
   playerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -253,6 +253,7 @@ MonoBehaviour:
   viewDistance: 20
   viewAngle: 60
   eyeHeight: -0.96
+  chaseTurnSpeed: 540
   sweepAngle: 180
   sweepSpeed: 15
   timeToSuspicious: 0.5
@@ -260,6 +261,7 @@ MonoBehaviour:
   suspicionDecayRate: 1
   maxDetectionMultiplier: 3
   loseAlertAfter: 3
+  chaseLostGrace: 0.75
   proximityDetection: 3.5
   investigateCount: 3
   stunDuration: 2
@@ -294,6 +296,7 @@ MonoBehaviour:
   waypointTolerance: 0.3
   suspiciousSpeed: 3
   chaseSpeed: 5
+  chaseAcceleration: 40
   noticePauseDuration: 0
   waitTime: 2
   wanderRadius: 1.5

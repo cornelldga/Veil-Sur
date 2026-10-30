@@ -1,15 +1,23 @@
 using UnityEngine;
 
-public class TennisLauncher : MonoBehaviour, Interactable
+/// <summary>
+/// Tennis ball launcher from Level One. Locked until the questions linked to it are solved.
+/// </summary>
+public class TennisLauncher : PuzzleInteractable
 {
     [SerializeField] float launchDistance = 6f;
     [SerializeField] float launchSpeed = 8f;
     [SerializeField] float ballVolume = 12f;
     [SerializeField] GameObject tennisBallPrefab;
 
-    public void Interact()
+    public override void SuccessBehavior()
     {
         Trigger(launchDistance);
+    }
+
+    public override void FailBehavior()
+    {
+        ErrorNotifier.Show("Seems complicated. Maybe I can find instructions somewhere?");
     }
 
     /// <summary>
