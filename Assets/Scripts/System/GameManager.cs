@@ -30,6 +30,10 @@ public class GameManager : MonoBehaviour
     
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
+    /// <summary>
+    /// Player's pose relative to the Elevator
+    /// </summary>
+    public Pose ArrivalPose { get; set; }
     private bool hasLost = false;
 
     public void SetMouseSensitivity(float value)

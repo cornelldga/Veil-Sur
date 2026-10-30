@@ -271,6 +271,7 @@ public class ElevatorController : MonoBehaviour
         // Waiting in Elevator UNTIL scene is loaded (even if default ride duration has ended)
         yield return new WaitUntil(() => GameManager.Instance.IsScenePreloaded);
 
+        SavePlayerPose();
         GameManager.Instance.ArrivingByElevator = true;
         _ = GameManager.Instance.ActivatePreloadedScene();
     }
@@ -309,13 +310,31 @@ public class ElevatorController : MonoBehaviour
     private IEnumerator ArrivalSequence()
     {
         FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
-        player.PlacePositionAt(playerStandPoint.position, playerStandPoint.eulerAngles.y, lookPitch);
+
+        Pose pose = GameManager.Instance.ArrivalPose;
+        Vector3 posititon = transform.TransformPoint(pose.position);
+        float yaw = (transform.rotation * pose.rotation).eulerAngles.y;
+        player.PlacePositionAt(posititon, yaw, lookPitch);
+        
         player.BeginScriptedMovement();
 
         yield return new WaitForSeconds(doorOpenCloseDelay);
         
         player.EndScriptedMovement();
         OpenDoors();
+    }
+
+    /// <summary>
+    /// Stores where the Player is standing relative to this Elevator object.
+    /// The Elevator in the next scene will use this pose to place the Player.
+    /// </summary>
+    private void SavePlayerPose()
+    {
+        Transform player = GameManager.PlayerInstance.transform;
+
+        GameManager.Instance.ArrivalPose = new Pose(
+            transform.InverseTransformPoint(player.position), 
+            Quaternion.Inverse(transform.rotation) * player.rotation);
     }
 
     /// <summary>
