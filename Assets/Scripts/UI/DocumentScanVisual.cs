@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class DocumentScanVisual : MonoBehaviour
 {
     [Tooltip("Color of the scan line.")]
-    [SerializeField] private Color scanColor = new Color(1f, 0.65f, 0.05f, 1f);
+    [SerializeField] private Color scanColor = new Color(1f, 0.9294f, 0.051f, 1f);
     [Tooltip("How long the scan effect takes.")]
     [SerializeField] private float scanTime = 0.75f;
     [Tooltip("Thickness of scan line.")]
@@ -21,6 +21,10 @@ public class DocumentScanVisual : MonoBehaviour
     private Image fastLine;
     private RectTransform fastLineRect;
     [SerializeField] private float fastThickness = 4f;
+
+    [SerializeField] private float highlightTime = 0.4f;
+    [SerializeField, Range(0f, 1f)] private float highlightAlpha = 0.22f;
+    private Image doneHighlight;
 
     private void Awake()
     {
@@ -65,6 +69,28 @@ public class DocumentScanVisual : MonoBehaviour
         // hide until scan time!!!! yay
         line.SetActive(false);
         smallerLine.SetActive(false);
+
+        // make yelloe highlihgt for successful scan
+        GameObject highlight = new GameObject(
+            "Successful Scan Highlight", typeof(RectTransform), typeof(Image)
+        );
+        highlight.transform.SetParent(transform, false);
+        
+        doneHighlight = highlight.GetComponent<Image>();
+        RectTransform highlightRect = highlight.GetComponent<RectTransform>();
+        
+        doneHighlight.color = new Color(scanColor.r, scanColor.g, scanColor.b, 0f);
+
+        doneHighlight.raycastTarget = false;
+
+        // cover whole doc
+        highlightRect.anchorMin = Vector2.zero;
+        highlightRect.anchorMax = Vector2.one;
+        highlightRect.pivot = new Vector2(0.5f, 0.5f);
+        highlightRect.sizeDelta = Vector2.zero;
+        highlightRect.anchoredPosition = Vector2.zero;
+
+        highlight.SetActive(false);
     }
 
     /// <summary>
@@ -98,5 +124,22 @@ public class DocumentScanVisual : MonoBehaviour
         // scan done, goodbye lines
         scanLine.gameObject.SetActive(false);
         fastLine.gameObject.SetActive(false);
+
+        // brief highlight for successful scan
+        doneHighlight.gameObject.SetActive(true);
+        float elapsedTime = 0f;
+
+        while (elapsedTime < highlightTime)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+
+            float alpha = highlightAlpha * (1f-Mathf.Clamp01(elapsedTime/highlightTime));
+
+            doneHighlight.color=new Color(scanColor.r, scanColor.g, scanColor.b, alpha);
+
+            yield return null;
+        }
+
+        doneHighlight.gameObject.SetActive(false);
     }
 }
