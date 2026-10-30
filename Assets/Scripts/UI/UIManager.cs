@@ -16,13 +16,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject cameraGroup;
     [SerializeField] public Image snapOverlay;
     private PhotoCameraController.CameraMode cameraMode;
-    [Tooltip("Text that indicates which camera mode is currently enabled.")]
-    [SerializeField] private TMP_Text cameraModeLabel;
-    [Tooltip("Icon for photo/camera mode.")]
-    [SerializeField] private GameObject cameraModeIcon;
-    [Tooltip("Icon for document scanning mode.")]
-    [SerializeField] private GameObject documentModeIcon;
-    [Header("Camera Photo Flash")]
     [Tooltip("Seconds of black shutter effect before flash.")]
     [SerializeField] private float shutterTime = 0.06f;
     [Tooltip("Opacity of the shutter effect.")]
@@ -36,6 +29,10 @@ public class UIManager : MonoBehaviour
     [Tooltip("Amount of time to wait after shutter.")]
     [SerializeField] private float waitTime = 0.34f;
     private Coroutine flashCoroutine;
+
+    private TMP_Text cameraModeLabel;
+    private GameObject cameraModeIcon;
+    private GameObject documentModeIcon;
 
     [Header("Notebook UI")]
     [SerializeField] public GameObject notebookGroup;
@@ -86,6 +83,15 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
+        
+        cameraModeLabel = transform.Find("CameraView/ModeLabel").GetComponent<TMP_Text>();
+        cameraModeIcon = transform.Find("CameraView/CameraModeIcon").gameObject;
+        documentModeIcon = transform.Find("CameraView/DocumentModeIcon").gameObject;
+
+        cameraModeIcon.SetActive(cameraMode == PhotoCameraController.CameraMode.Photo);
+        documentModeIcon.SetActive(cameraMode == PhotoCameraController.CameraMode.Document);
+
+        
         snapOverlay.canvasRenderer.SetAlpha(0f);
         InitializeScreens();
     }
