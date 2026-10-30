@@ -26,6 +26,14 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
 
+    [Header("Footsteps")]
+    [SerializeField] private AudioClip footstepClip;
+    [SerializeField] private float walkStepPitch = 1f;
+    [SerializeField] private float sprintStepPitch = 1.4f;
+    [SerializeField] private float stepVolume = 0.5f;
+
+    private float nextFootstepTime;
+
     private CharacterController controller;
     private PlayerControls controls;
     private PlayerState playerState;
@@ -132,6 +140,7 @@ public class FirstPersonController : MonoBehaviour
 
         playerState.SetMoving(isMoving);
         playerState.SetSprinting(isSprinting);
+        HandleFootsteps(isMoving);
 
         float speed;
 
@@ -171,6 +180,20 @@ public class FirstPersonController : MonoBehaviour
 
         move.y = verticalVelocity;
         controller.Move(move * Time.deltaTime);
+    }
+
+    private void HandleFootsteps(bool isMoving)
+    {
+        if (footstepClip == null || !isMoving || !controller.isGrounded) return;
+        if (playerState.GetCrouching()) return;
+        if (Time.time < nextFootstepTime) return;
+
+        float pitch = isSprinting ? sprintStepPitch : walkStepPitch;
+
+        AudioManager.Instance.PlaySfxAttached(footstepClip, transform, volume: stepVolume, pitch: pitch);
+
+        // Higher pitch plays faster, so the clip finishes sooner
+        nextFootstepTime = Time.time + footstepClip.length / pitch;
     }
 
     public void SetRunSpeed(float speed)

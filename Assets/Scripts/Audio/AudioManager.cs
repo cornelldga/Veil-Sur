@@ -191,6 +191,11 @@ public class AudioManager : MonoBehaviour
         PlayOnSource(source, clip, volume, pitch);
     }
 
+    public void PlayUiSfx(AudioClip clip)
+    {
+        PlaySfxAtPosition(clip, Camera.main.transform.position);
+    }
+
     /// <summary>
     /// Plays a one-shot 3D sound effect that follows a moving transform (e.g.
     /// footsteps) by parenting a pooled AudioSource to it for the duration of playback.
