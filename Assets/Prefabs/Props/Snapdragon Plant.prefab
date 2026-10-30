@@ -4959,6 +4959,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2000244224403646880}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5103251500000000001}
   m_SourcePrefab: {fileID: 100100000, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}
 --- !u!1 &3946269064275496962 stripped
 GameObject:
@@ -5001,6 +5004,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.69674647, y: 1.3375236, z: 0.6841395}
   m_Center: {x: -0.0073643923, y: 0.5187618, z: 0.016396448}
+--- !u!114 &5103251500000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3946269064275496962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
+  subjectId: Plant
 --- !u!4 &4433836039235259064 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2b97907a1f2b34c26bca9d687f35fb7c, type: 3}

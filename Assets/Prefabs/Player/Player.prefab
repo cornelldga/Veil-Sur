@@ -242,6 +242,10 @@ MonoBehaviour:
   ceilingCheckMask:
     serializedVersion: 2
     m_Bits: 1
+  footstepClip: {fileID: 8300000, guid: b8a56b0e433024a0f894fc309ac4e7aa, type: 3}
+  walkStepPitch: 1
+  sprintStepPitch: 1.4
+  stepVolume: 0.5
   playerCamera: {fileID: 827428221439690476}
   crouchClip: {fileID: 8300000, guid: 2da580f5d2bc245828a4e0c962d75ba4, type: 3}
 --- !u!114 &3942358293781664924
@@ -265,14 +269,11 @@ MonoBehaviour:
   photoOcclusionMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  innerRayRadius: 0.07
-  outerRayRadius: 0.21
-  minRayCasts: 7
   blurRangePastMax: 2
   shutterClip: {fileID: 8300000, guid: 2a5906470f95e4dcdacd7761937ab0ec, type: 3}
+  documentScanClip: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
   detectRadius: 20
   stunRadius: 10
-  documentScanClip: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
   maxRadius: 17.5
   coneAngle: 60
   targetMask:

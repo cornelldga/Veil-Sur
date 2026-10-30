@@ -2817,4 +2817,6 @@ MonoBehaviour:
   incorrectAlertRadius: 30
   incorrectShakeMagnitude: 6
   shakeTarget: {fileID: 1091525468159418425}
+  correctClip: {fileID: 8300000, guid: 640245b2bce2844e7ba2de763a5767c4, type: 3}
+  errorClip: {fileID: 8300000, guid: 4e0c61872fb874649be7b3406ec324f7, type: 3}
   developerMode: 0

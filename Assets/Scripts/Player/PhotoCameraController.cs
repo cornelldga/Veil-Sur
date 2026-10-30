@@ -21,6 +21,11 @@ public class PhotoCameraController : SoundEvent
         Photo,
         Document
     }
+    /// <summary>
+    /// true while the camera is in document mode and pointing at a document within reading range
+    /// </summary>
+    public bool IsViewingDocument => currentMode == CameraMode.Document && hoveredDocument != null;
+
     private Camera targetCamera;
     [Header("Camera Settings")]
     [SerializeField] private float normalFOV = 60f;
@@ -380,12 +385,8 @@ public class PhotoCameraController : SoundEvent
     /// </summary>
     private void UpdateDocPreview()
     { 
-        Document newHoveredDocument = null;
+        Document newHoveredDocument = GetDocumentInView();
 
-        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxDocReadRange, rayMask, QueryTriggerInteraction.Ignore))
-        {
-            newHoveredDocument = hit.collider.GetComponent<Document>();
-        }
         if (newHoveredDocument != hoveredDocument && hoveredDocument != null)
         {
             hoveredDocument.CloseDoc();
@@ -396,6 +397,19 @@ public class PhotoCameraController : SoundEvent
         {
             hoveredDocument.OpenDoc();
         }
+    }
+
+    /// <summary>
+    /// raycasts from the camera for a document within the read range
+    /// </summary>
+    /// <returns>the document the camera is pointing at, or null if none</returns>
+    private Document GetDocumentInView()
+    {
+        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxDocReadRange, rayMask, QueryTriggerInteraction.Ignore))
+        {
+            return hit.collider.GetComponent<Document>();
+        }
+        return null;
     }
 
     private void HideDocPreview()

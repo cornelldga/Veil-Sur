@@ -15,6 +15,8 @@ public class NotebookUIController : SoundEvent
         [Tooltip("Question views for this page. Unassigned entries are ignored.")]
         public QuestionNote[] questionSlots = System.Array.Empty<QuestionNote>();
         internal readonly Queue<QuestionDefinition> pendingQuestions = new();
+        // TODO(Claire): TEMP FIX until you redo your LINKS INCORRECT fix (undone by merge). Delete everything tagged TEMP FIX.
+        internal bool uploaded;
     }
 
     [Tooltip("Photo tab belonging to this notebook prefab.")]
@@ -30,6 +32,16 @@ public class NotebookUIController : SoundEvent
     [Tooltip("Maximum horizontal offset in UI units.")]
     [SerializeField, Min(0f)] private float incorrectShakeMagnitude = 6f;
     [SerializeField] private RectTransform shakeTarget;
+
+    [Header("Upload SFX")]
+    [SerializeField] private AudioClip correctClip;
+    [SerializeField] private AudioClip errorClip;
+
+    public void PlayUploadResult(bool correct)
+    {
+        AudioClip clip = correct ? correctClip : errorClip;
+        AudioManager.Instance.PlaySfxAtPosition(clip, Camera.main.transform.position);
+    }
     private Coroutine shakeCoroutine;
     private Vector2 shakeOrigin;
     private readonly Dictionary<QuestionDefinition, NotebookPage> questionPages = new();
@@ -65,8 +77,18 @@ public class NotebookUIController : SoundEvent
         PageChanged?.Invoke();
     }
 
+    /// <summary>Marks the current page as uploaded so RefreshPageFeedback shows its result.</summary>
+    internal void MarkCurrentPageUploaded() { pages[CurrentPageIndex].uploaded = true; }
+
+    /// <summary>Shows whether the current page's links are correct, or nothing until that page has been uploaded.</summary>
     internal void RefreshPageFeedback()
     {
+        // TODO(Claire): TEMP FIX
+        if (!pages[CurrentPageIndex].uploaded)
+        {
+            numberCorrectText.text = "";
+            return;
+        }
         numberCorrectText.text = AllCurrentQuestionsCorrect ? "ALL LINKS CORRECT" : "LINKS INCORRECT";
     }
     /// <summary>True while the enlarged photo preview is showing.</summary>
@@ -224,6 +246,8 @@ public class NotebookUIController : SoundEvent
     }
 
     /// <summary>Reveals an empty view first, then reuses a solved one. Returns false when all slots are in use.</summary>
+    /// <param name="question">Question to show on the page it belongs to.</param>
+    /// <returns>False if that page has no free or solved slot; otherwise true.</returns>
     public bool ShowQuestion(QuestionDefinition question)
     {
         var page = questionPages[question];
@@ -236,6 +260,10 @@ public class NotebookUIController : SoundEvent
 
         question.Solved += OnQuestionSolved;
         slot.Bind(question);
+        slot.gameObject.SetActive(true);
+        numberCorrectText.text = "";
+        // TODO(Claire): TEMP FIX
+        page.uploaded = false;
         slot.gameObject.SetActive(page == pages[CurrentPageIndex]);
         RefreshPageFeedback();
         
