@@ -167,6 +167,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Elevator
       objectReference: {fileID: 0}
+    - target: {fileID: 5068481529009301741, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
+      propertyPath: m_Name
+      value: ElevatorButton
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -494,6 +498,7 @@ MonoBehaviour:
   rideDuration: 5
   playerStandPoint: {fileID: 1838797290217752479}
   scriptedDuration: 1.2
+  lookPitch: 15
   shaftLight: {fileID: 0}
   lightBottom: {fileID: 0}
   lightTop: {fileID: 0}
