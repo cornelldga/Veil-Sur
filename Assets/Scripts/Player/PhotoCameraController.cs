@@ -324,6 +324,14 @@ public class PhotoCameraController : SoundEvent
     private IEnumerator ScanDocument()
     {
         AudioManager.Instance.PlaySfxAtPosition(documentScanClip, targetCamera.transform.position);
+        
+        DocumentScanVisual scanVisual = UIManager.Instance.docPaper.GetComponent<DocumentScanVisual>();
+
+        if (scanVisual != null)
+        {
+            yield return scanVisual.Play();
+        }
+        
         UIManager.Instance.cameraGroup.SetActive(false);
         yield return new WaitForEndOfFrame();
 
