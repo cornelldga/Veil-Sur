@@ -336,4 +336,37 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(levelNumber);
     }
 
+    public float GetPlayerStamina()
+    {
+        if (PlayerInstance == null)
+        {
+            return 0f;
+        }
+
+        StaminaController stamina = PlayerInstance.GetComponent<StaminaController>();
+        if (stamina == null)
+        {
+            return 0f;
+        }
+
+        return stamina.currentStamina;
+    }
+
+    public float GetStaminaPercentage()
+    {
+        if (PlayerInstance == null)
+        {
+            return 1f;
+        }
+
+        StaminaController stamina = PlayerInstance.GetComponent<StaminaController>();
+
+        if (stamina == null)
+        {
+            return 1f;
+        }
+
+        return stamina.StaminaPercent;
+    }
+
 }
