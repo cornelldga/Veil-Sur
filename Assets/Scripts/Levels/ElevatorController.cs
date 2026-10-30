@@ -169,11 +169,15 @@ public class ElevatorController : MonoBehaviour
     }
 
     /// <summary>
-    /// Opens the doors if closed.
+    /// Opens the doors if closed. Also clears the dialogue and tutorial prompt, since the level is over.
     /// </summary>
     public void OpenDoors()
     {
         if (traveling || state != State.Closed) return;
+
+        if (DialogueManager.Instance != null) DialogueManager.Instance.CancelDialogue();
+        if (TutorialManager.Instance != null) TutorialManager.Instance.Hide();
+
         StartCoroutine(OpenDoorsRoutine());
     }
 

@@ -10,6 +10,11 @@ public class UploadScript : MonoBehaviour
     private Button button;
     public bool AllCorrect => UIManager.Instance.Notebook.AllCurrentQuestionsCorrect;
 
+    /// <summary>
+    /// raised each time the player uploads and the answers are checked
+    /// </summary>
+    public static event System.Action Uploaded;
+
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -46,9 +51,12 @@ public class UploadScript : MonoBehaviour
         GetComponent<RawImage>().color = tmp;
     }
 
+    /// <summary>Marks the current notebook page as uploaded, checks its answers, and verifies them when all are correct.</summary>
     public void Upload()
     {
         if (!developerMode && !CanUpload()) return;
+        // TODO(Claire): TEMP FIX
+        UIManager.Instance.Notebook.MarkCurrentPageUploaded();
 
         var questions = UIManager.Instance.Notebook.QuestionSlots
             .Where(slot => slot != null && slot.isActiveAndEnabled && slot.Definition != null)
@@ -66,7 +74,11 @@ public class UploadScript : MonoBehaviour
         Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {allCorrect}");
         UIManager.Instance.Notebook.PlayUploadResult(allCorrect);
         if (correctCount < questions.Length)
+        {
             UIManager.Instance.Notebook.ShakeIncorrectAnswer();
+        }
+
+        Uploaded?.Invoke();
 
         if (allCorrect && !developerMode)
         {
