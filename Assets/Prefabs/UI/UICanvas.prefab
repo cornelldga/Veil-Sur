@@ -1979,8 +1979,30 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1617655690969954461, guid: 60312fae1edbf4d1983b198a499e96bb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7987254789102556206}
   m_SourcePrefab: {fileID: 100100000, guid: 60312fae1edbf4d1983b198a499e96bb, type: 3}
+--- !u!1 &4620911217500481708 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1617655690969954461, guid: 60312fae1edbf4d1983b198a499e96bb, type: 3}
+  m_PrefabInstance: {fileID: 6220551916948869169}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7987254789102556206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4620911217500481708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6223c97495e944a19355690499927f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SprintVignette
+  vignetteOpacity: 0.9
+  vignetteFadeSpeed: 4
 --- !u!224 &6579696410034347347 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 944647633465396578, guid: 60312fae1edbf4d1983b198a499e96bb, type: 3}

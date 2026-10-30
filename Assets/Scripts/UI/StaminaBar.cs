@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles the visual stamina bar on the screen. The stamina bar shrinks towards the middle when
+/// stamina is being used, then grows back outwards and disappears when stamina is regenerating/regenerated.
+/// </summary>
 public class StaminaBar : MonoBehaviour
 {
     private RectTransform staminaBar;

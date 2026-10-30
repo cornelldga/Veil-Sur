@@ -28,15 +28,13 @@ public class FirstPersonController : MonoBehaviour
     [Header("Sprinting Effects")]
     [SerializeField] private float sprintingFOV = 124;
     [SerializeField] private float fovChangeSpeed = 5f;
-    [SerializeField] private CanvasGroup sprintVignette;
-    [SerializeField] private float vignetteOpacity = 0.9f;
-    [SerializeField] private float vignetteFadeSpeed = 4f;
     private float normalFOV;
 
     private CharacterController controller;
     private PlayerControls controls;
     private PlayerState playerState;
     private StaminaController staminaController;
+    private SprintVignette sprintVignette;
 
     private float verticalLookClamped;
     private float verticalVelocity;
@@ -64,6 +62,7 @@ public class FirstPersonController : MonoBehaviour
         controls = GameManager.Controls;
         staminaController = GetComponent<StaminaController>();
         playerState = GetComponent<PlayerState>();
+        sprintVignette = FindFirstObjectByType<SprintVignette>();
 
         currentHeight = standHeight;
         controller.height = standHeight;
@@ -262,19 +261,10 @@ public class FirstPersonController : MonoBehaviour
             playerCamera.fieldOfView = Mathf.Lerp(
                 playerCamera.fieldOfView, targetFOV, fovChangeSpeed * Time.deltaTime);
         }
+        
         if (sprintVignette != null)
         {
-            float targetAlpha;
-            if (isSprinting)
-            {
-                targetAlpha = vignetteOpacity;
-            } else
-            {
-                targetAlpha = 0f;
-            }
-            sprintVignette.alpha = Mathf.Lerp(
-                sprintVignette.alpha, targetAlpha, vignetteFadeSpeed * Time.deltaTime
-            );
+            sprintVignette.UpdateSprintVignette(isSprinting);
         }
     }
 
