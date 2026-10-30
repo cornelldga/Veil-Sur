@@ -25,6 +25,10 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float crouchHeight = .75f;
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
+    [Header("Sprinting Effects")]
+    [SerializeField] private float sprintingFOV = 124;
+    [SerializeField] private float fovChangeSpeed = 5f;
+    private float normalFOV;
 
     [Header("Footsteps")]
     [SerializeField] private AudioClip footstepClip;
@@ -38,6 +42,7 @@ public class FirstPersonController : MonoBehaviour
     private PlayerControls controls;
     private PlayerState playerState;
     private StaminaController staminaController;
+    private SprintVignette sprintVignette;
 
     private float verticalLookClamped;
     private float verticalVelocity;
@@ -75,6 +80,7 @@ public class FirstPersonController : MonoBehaviour
         controls = GameManager.Controls;
         staminaController = GetComponent<StaminaController>();
         playerState = GetComponent<PlayerState>();
+        sprintVignette = FindFirstObjectByType<SprintVignette>();
 
         currentHeight = standHeight;
         controller.height = standHeight;
@@ -86,6 +92,7 @@ public class FirstPersonController : MonoBehaviour
         if (playerCamera != null)
         {
             playerCamera.transform.localPosition = cameraStandLocalPos;
+            normalFOV = playerCamera.fieldOfView;
         }
 
         // Send player instance/camera to GameManager
@@ -117,6 +124,7 @@ public class FirstPersonController : MonoBehaviour
             HandleLook();
             HandleCrouch();
         }
+        HandleSprintingEffects();
     }
 
     /// <summary>
@@ -125,28 +133,11 @@ public class FirstPersonController : MonoBehaviour
     private void HandleMove()
     {
         bool sprintHeld = controls.PlayerMovement.Sprint.IsPressed();
-        bool sprintPressedThisFrame = controls.PlayerMovement.Sprint.WasPressedThisFrame();
-        
+
         Vector2 moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
         bool isMoving = moveInput.sqrMagnitude > 0.01f;
 
-        // Track whether the player released the sprint key
-        if (!sprintHeld)
-        {
-            isSprinting = false;
-        }
-
-        // Can only start sprinting if the key was released first and not exhausted
-        if (sprintPressedThisFrame && isMoving && !staminaController.isExhausted)
-        {
-            isSprinting = true;
-        }
-
-        // Cancel sprinting immediately if stamina hits zero or player stops moving
-        if (staminaController.isExhausted || !isMoving)
-        {
-            isSprinting = false;
-        }
+        isSprinting = sprintHeld && isMoving && !staminaController.isExhausted && !playerState.GetCrouching();
 
         playerState.SetMoving(isMoving);
         playerState.SetSprinting(isSprinting);
@@ -180,7 +171,7 @@ public class FirstPersonController : MonoBehaviour
         }
 
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
-        move *= speed;
+        move = Vector3.ClampMagnitude(move, 1f) * speed;
 
         if (controller.isGrounded && verticalVelocity < 0f)
         {
@@ -284,6 +275,29 @@ public class FirstPersonController : MonoBehaviour
                 (currentHeight - crouchHeight) / (standHeight - crouchHeight));
             playerCamera.transform.localPosition = Vector3.Lerp(
                 playerCamera.transform.localPosition, targetCamPos, crouchTransitionSpeed * Time.deltaTime);
+        }
+    }
+
+    private void HandleSprintingEffects()
+    {
+        if (playerCamera != null)
+        {
+            float targetFOV;
+            if (isSprinting)
+            {
+               targetFOV = sprintingFOV;
+            } else
+            {
+               targetFOV = normalFOV;
+            }
+
+            playerCamera.fieldOfView = Mathf.Lerp(
+                playerCamera.fieldOfView, targetFOV, fovChangeSpeed * Time.deltaTime);
+        }
+        
+        if (sprintVignette != null)
+        {
+            sprintVignette.UpdateSprintVignette(isSprinting);
         }
     }
 

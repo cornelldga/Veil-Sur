@@ -98,6 +98,8 @@ public class NotebookUIController : SoundEvent
     {
         if (photo == null || photo.ImageTexture == null) return;
 
+        photoPreviewImage.GetComponent<PhotoPreviewZoom>().ResetZoom();
+
         photoPreviewImage.texture = photo.ImageTexture;
         photoPreviewImage.GetComponent<AspectRatioFitter>().aspectRatio =
             (float)photo.ImageTexture.width / photo.ImageTexture.height;
@@ -107,6 +109,7 @@ public class NotebookUIController : SoundEvent
 
     public void ClosePhotoPreview()
     {
+        photoPreviewImage.GetComponent<PhotoPreviewZoom>().ResetZoom();
         photoPreview.SetActive(false);
         photoPreviewImage.texture = null;
     }

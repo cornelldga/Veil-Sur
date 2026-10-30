@@ -16,6 +16,23 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject cameraGroup;
     [SerializeField] public Image snapOverlay;
     private PhotoCameraController.CameraMode cameraMode;
+    [Tooltip("Seconds of black shutter effect before flash.")]
+    [SerializeField] private float shutterTime = 0.06f;
+    [Tooltip("Opacity of the shutter effect.")]
+    [SerializeField] private float shutterOpacity = 0.52f;
+    [Tooltip("How bright the flash gets at its maximum.")]
+    [SerializeField] private float maxFlash = 0.3f;
+    [Tooltip("How long the flash effect lasts.")]
+    [SerializeField] private float flashTime = 0.04f;
+    [Tooltip("How long it takes for the flash effect to fade.")]
+    [SerializeField] private float flashFade = 0.34f;
+    [Tooltip("Amount of time to wait after shutter.")]
+    [SerializeField] private float waitTime = 0.34f;
+    private Coroutine flashCoroutine;
+
+    private TMP_Text cameraModeLabel;
+    private GameObject cameraModeIcon;
+    private GameObject documentModeIcon;
 
     [Header("Notebook UI")]
     [SerializeField] public GameObject notebookGroup;
@@ -63,6 +80,15 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
+        
+        cameraModeLabel = transform.Find("CameraView/ModeLabel").GetComponent<TMP_Text>();
+        cameraModeIcon = transform.Find("CameraView/CameraModeIcon").gameObject;
+        documentModeIcon = transform.Find("CameraView/DocumentModeIcon").gameObject;
+
+        cameraModeIcon.SetActive(cameraMode == PhotoCameraController.CameraMode.Photo);
+        documentModeIcon.SetActive(cameraMode == PhotoCameraController.CameraMode.Document);
+
+        
         snapOverlay.canvasRenderer.SetAlpha(0f);
         InitializeScreens();
     }
@@ -115,6 +141,7 @@ public class UIManager : MonoBehaviour
         if (photoTab != null && PhotoStorage.Instance != null) PhotoStorage.Instance.SetCapacity(photoTab.SlotCount);
         ShowInteractPrompt(false);
         ApplyState(GameManager.Instance.state);
+        UpdateModeLabel();
     }
 
     private void OnGameStateChanged(GameManager.GameState oldState, GameManager.GameState newState)
@@ -216,8 +243,14 @@ public class UIManager : MonoBehaviour
     // }
 
 
+    /// <summary>
+    /// Shows or hides the interact (hand) icon. The icon always stays hidden
+    /// while the player has a document open.
+    /// </summary>
     public void ShowInteractPrompt(bool visible)
     {
+        if (GameManager.PlayerInstance != null && GameManager.PlayerInstance.GetComponent<PlayerState>().GetDocOpen())
+            visible = false;
         if (interact.gameObject.activeSelf != visible) interact.gameObject.SetActive(visible);
     }
 
@@ -227,8 +260,34 @@ public class UIManager : MonoBehaviour
     public void SetCameraMode(PhotoCameraController.CameraMode cameraMode)
     {
         this.cameraMode = cameraMode;
+        UpdateModeLabel();
         if (GameManager.Instance.state == GameManager.GameState.CAMERA)
             ApplyState(GameManager.GameState.CAMERA);
+    }
+
+    /// <summary>
+    /// Updates the on-screen label to indicate which camera mode is currently enabled.
+    /// </summary>
+    public void UpdateModeLabel()
+    {
+        if (cameraModeLabel == null)
+        {
+            return;
+        }
+
+        if (cameraMode == PhotoCameraController.CameraMode.Photo)
+        {
+            cameraModeLabel.text = "[PHOTO MODE]";
+            cameraModeIcon.SetActive(true);
+            documentModeIcon.SetActive(false);
+            
+        }
+
+        else if (cameraMode == PhotoCameraController.CameraMode.Document) {
+            cameraModeLabel.text = "[DOCUMENT MODE]";
+            documentModeIcon.SetActive(true);
+            cameraModeIcon.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -237,8 +296,45 @@ public class UIManager : MonoBehaviour
     public void TakePhoto()
     {
         //puts white  overlay over and then fades it out to simulate a camera snap
-        snapOverlay.canvasRenderer.SetAlpha(.5f);
-        snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
+        //snapOverlay.canvasRenderer.SetAlpha(.5f);
+        //snapOverlay.CrossFadeAlpha(0f, 0.2f, ignoreTimeScale: true);
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+        }
+        flashCoroutine = StartCoroutine(FlashCoroutine());
+    }
+
+    /// <summary>
+    /// Camera effect upon taking a photo. First has a "shutter" black blinking, then brief pause at maximum flash.
+    /// then fade back out.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator FlashCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(0.01f);
+        snapOverlay.color = Color.black;
+        snapOverlay.canvasRenderer.SetAlpha(shutterOpacity);
+        yield return new WaitForSecondsRealtime(shutterTime);
+        snapOverlay.canvasRenderer.SetAlpha(0f);
+
+        // Short pause before flash
+        yield return new WaitForSecondsRealtime(waitTime);
+
+        // Flash is held for a moment
+        snapOverlay.color = Color.white;
+        snapOverlay.canvasRenderer.SetAlpha(maxFlash);
+        yield return new WaitForSecondsRealtime(flashTime);
+
+        // Fade out from flash
+        for (float t = 0f; t < flashFade; t += Time.unscaledDeltaTime)
+        {
+            snapOverlay.canvasRenderer.SetAlpha(Mathf.Lerp(maxFlash, 0f, t/flashFade));
+            yield return null;
+        }
+
+        snapOverlay.canvasRenderer.SetAlpha(0f);
+        flashCoroutine = null;
     }
 
     /// <summary>

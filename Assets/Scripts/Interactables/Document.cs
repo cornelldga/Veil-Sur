@@ -10,7 +10,7 @@ public class DocData
 }
 
 
-public class Document : MonoBehaviour
+public class Document : MonoBehaviour, Interactable
 {
     [Header("UI Features")]
     
@@ -23,6 +23,8 @@ public class Document : MonoBehaviour
 
     private PlayerState playerStateController;
     private bool isOpen = false;
+    // True when opened via Interact() rather than the camera's document reader
+    private bool openedByInteract = false;
 
     /// <summary>
     /// Awake() loads all of the JSON text into this document to display
@@ -50,21 +52,48 @@ public class Document : MonoBehaviour
         docData = JsonUtility.FromJson<DocData>(jsonFile.text);
     }
 
+    /// <summary>
+    /// Opens or closes the doc viewer, showing this document's contents the
+    /// same way the camera's document reader does.
+    /// </summary>
+    public void Interact()
+    {
+        if (!isOpen)
+        {
+            OpenDoc();
+            openedByInteract = true;
+        }
+        else
+        {
+            CloseDoc();
+        }
+    }
+
     public void OpenDoc()
     {
         docTextAreaUI.text = docData.text;
         docCanvas.SetActive(true);
         isOpen = true;
+        openedByInteract = false;
+        playerStateController.SetDocOpen(true);
     }
     public void CloseDoc()
     {
         docCanvas.SetActive(false);
         isOpen = false;
+        openedByInteract = false;
+        playerStateController.SetDocOpen(false);
     }
 
     private void Update()
     {
         if (isOpen && playerStateController.GetMoving())
+        {
+            CloseDoc();
+        }
+        // The camera reader manages its own docs, so only close interact-opened
+        // docs when the camera or notebook takes over the screen
+        else if (openedByInteract && (playerStateController.GetPhotoMode() || playerStateController.GetNotebookOpen()))
         {
             CloseDoc();
         }

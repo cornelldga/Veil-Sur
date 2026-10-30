@@ -25,7 +25,8 @@ public class TrashCan : MonoBehaviour, IDropHandler
     /// </summary>
     private void Awake()
     {
-        image = GetComponent<Image>();
+        //image = GetComponent<Image>();
+        image = transform.Find("Trash").GetComponent<Image>();
     }
 
     /// <summary>
