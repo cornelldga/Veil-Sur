@@ -21,6 +21,7 @@ public class Document : MonoBehaviour, Interactable
     private TMP_Text docTextAreaUI;
     private GameObject docCanvas;
 
+    private PhotographableObject subject;
     private PlayerState playerStateController;
     private bool isOpen = false;
     // True when opened via Interact() rather than the camera's document reader
@@ -33,6 +34,7 @@ public class Document : MonoBehaviour, Interactable
     private void Awake()
     {
         LoadDocData();
+        subject = GetComponent<PhotographableObject>();
     }
 
     private void Start()
@@ -75,7 +77,8 @@ public class Document : MonoBehaviour, Interactable
         docCanvas.SetActive(true);
         isOpen = true;
         openedByInteract = false;
-        playerStateController.SetDocOpen(true);
+        // Default to no ID if no photographable object attached
+        playerStateController.SetDocOpen(true, subject != null ? subject.SubjectId : "");
     }
     public void CloseDoc()
     {

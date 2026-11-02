@@ -248,7 +248,7 @@ public class PhotoCameraController : SoundEvent
         //AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
         StartCoroutine(PlayShutterDelayed());
         UIManager.Instance.TakePhoto();
-        CreatePhotoNote(photo);
+        PhotoStorage.Instance.CreatePhoto(photo, DetectPhotographedSubject());
     }
 
     private Vector3 shakeOrigin = Vector3.zero;
@@ -291,25 +291,6 @@ public class PhotoCameraController : SoundEvent
         shakeCoroutine = null;
     }
     /// <summary>
-    /// Creates backend Photo data from a captured texture.
-    /// This way, seperate camera modes can produce separate Textures.
-    /// </summary>
-    /// <param name="photo">Texture2D object representing the photo</param>
-    private void CreatePhotoNote(Texture2D photo)
-    {
-        Photo photoNote = new GameObject("Photo").AddComponent<Photo>();
-        photoNote.SetSubject(DetectPhotographedSubject());
-        photoNote.SetImage(photo);
-
-        // Add photo to storage
-        if (!PhotoStorage.Instance.AddPhoto(photoNote))
-        {
-            Destroy(photoNote.gameObject);
-            Destroy(photo);
-        }
-    }
-
-    /// <summary>
     /// Coroutine to manage the document scanner.
     /// Plays the shutter sound and hides the viewfinder for the captured frame, then shows it again if the game is still in the camera state.
     /// Gets the rectangle/paper of the DocView in coordinates.
@@ -339,7 +320,7 @@ public class PhotoCameraController : SoundEvent
         scan.ReadPixels(paperRect, 0, 0);
         scan.Apply();
 
-        CreatePhotoNote(scan);
+        PhotoStorage.Instance.CreatePhoto(scan, DetectPhotographedSubject());
         UIManager.Instance.cameraGroup.SetActive(GameManager.Instance.state == GameManager.GameState.CAMERA);
     }
 

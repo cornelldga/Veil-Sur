@@ -15,6 +15,7 @@ public class PlayerState : MonoBehaviour
     private bool inPhotoMode = false;
     private bool playerHasControl = true;
     private bool isDocOpen = false;
+    private string openDocSubjectId = "";
 
     public bool GetCrouching()
     {
@@ -81,9 +82,23 @@ public class PlayerState : MonoBehaviour
         return isDocOpen;
     }
 
-    public void SetDocOpen(bool value)
+    /// <summary>
+    /// Sets whether a document is open, and records the document's subject ID
+    /// (for scans). Closing a document clears the open document ID.
+    /// </summary>
+    public void SetDocOpen(bool value, string subjectId = "")
     {
         isDocOpen = value;
+        openDocSubjectId = value ? subjectId : "";
+    }
+
+    /// <summary>
+    /// Returns the subject ID of the open document, or an empty string if there is
+    /// subject or no document is open.
+    /// </summary>
+    public string GetOpenDocSubjectId()
+    {
+        return openDocSubjectId;
     }
 
     public bool GetNotebookOpen()
