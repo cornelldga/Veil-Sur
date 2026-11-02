@@ -242,6 +242,8 @@ MonoBehaviour:
   ceilingCheckMask:
     serializedVersion: 2
     m_Bits: 1
+  sprintingFOV: 124
+  fovChangeSpeed: 5
   footstepClip: {fileID: 8300000, guid: b8a56b0e433024a0f894fc309ac4e7aa, type: 3}
   walkStepPitch: 1
   sprintStepPitch: 1.4
@@ -263,6 +265,7 @@ MonoBehaviour:
   normalFOV: 60
   zoomedFOV: 30
   zoomSpeed: 10
+  photoCooldown: 0.79
   toggleZoom: 0
   maxPhotoRange: 10
   maxDocReadRange: 3
@@ -271,9 +274,10 @@ MonoBehaviour:
     m_Bits: 4294967295
   blurRangePastMax: 2
   shutterClip: {fileID: 8300000, guid: 2a5906470f95e4dcdacd7761937ab0ec, type: 3}
+  shutterDelay: 0.1
   documentScanClip: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
   detectRadius: 20
-  stunRadius: 10
+  stunRadius: 30
   maxRadius: 17.5
   coneAngle: 60
   targetMask:

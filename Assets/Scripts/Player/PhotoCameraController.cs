@@ -529,20 +529,24 @@ public class PhotoCameraController : SoundEvent
 
             Transform target = targetsInRadius[i].transform;
             Vector3 dirToTarget = (target.position - transform.position).normalized;
+            EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
+            mutant.Stun();
+            // Debug.Log("Attempted stun");
 
             // 2. Check if the target is within the forward alignment angle
-            if (Vector3.Angle(transform.forward, dirToTarget) < coneAngle / 2)
-            {
-                float dstToTarget = Vector3.Distance(transform.position, target.position);
-
-                // 3. Optional: Line-of-sight raycast to ensure a wall isn't blocking the view
-                if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
-                {
-                    // Debug.Log($"Detected: {target.name} inside the vision cone!");
-                    EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
-                    mutant.Stun();
-                }
-            }
+            // if (Vector3.Angle(transform.forward, dirToTarget) < coneAngle / 2)
+            // {
+            //     float dstToTarget = Vector3.Distance(transform.position, target.position);
+            //     EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
+            //     mutant.Stun();
+            //     // 3. Optional: Line-of-sight raycast to ensure a wall isn't blocking the view
+            //     // if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
+            //     // {
+            //     //     // Debug.Log($"Detected: {target.name} inside the vision cone!");
+            //     //     EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
+            //     //     mutant.Stun();
+            //     // }
+            // }
         }
     }
 
