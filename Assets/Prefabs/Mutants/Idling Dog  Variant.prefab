@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: sniffRadius
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 4222381407895833100, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3920839090453783550, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
     - {fileID: 8302148578949936598, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}

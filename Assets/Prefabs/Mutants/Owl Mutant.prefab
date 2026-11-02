@@ -137,6 +137,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 332271766392276406, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: subjectId
+      value: OwlMutant
+      objectReference: {fileID: 0}
     - target: {fileID: 6089833534151951921, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_Enabled
       value: 0
