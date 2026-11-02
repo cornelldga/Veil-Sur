@@ -48,6 +48,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Jumpscare")]
     [SerializeField] private Image jumpscareImage;
+    [SerializeField] private bool babyMode = false;
 
     // Runtime instances, created once and kept for the manager's lifetime
     public UIScreen MainMenu { get; private set; }
@@ -351,7 +352,18 @@ public class UIManager : MonoBehaviour
             jumpscareImage.sprite = frame;
             yield return new WaitForSecondsRealtime(1f / fps);
         }
+    }
 
+    public bool NoJumpscare()
+    {
+        if (babyMode == false)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /// <summary>
