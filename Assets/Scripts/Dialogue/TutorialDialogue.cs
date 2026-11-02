@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 // </summary>
-public class TEMPORARYdialogue : MonoBehaviour {
+public class TutorialDialogue : MonoBehaviour {
 
     void Start() {
         var m0 = DialogueManager.Instance;
