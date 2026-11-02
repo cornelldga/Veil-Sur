@@ -7657,6 +7657,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -88
       objectReference: {fileID: 0}
+    - target: {fileID: 6980105928110123405, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: clickPromptDelay
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7450253034250995934, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.02408
@@ -18463,7 +18467,7 @@ GameObject:
   - component: {fileID: 859837781}
   - component: {fileID: 859837782}
   m_Layer: 5
-  m_Name: TEMPORARYDialogue
+  m_Name: DialogueText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
