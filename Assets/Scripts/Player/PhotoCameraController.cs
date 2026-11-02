@@ -67,6 +67,7 @@ public class PhotoCameraController : SoundEvent
 
     // private const int RaysPerCircle = 8;
     private const string playerLayerName = "Player";
+    private const string cameraIgnoreLayerName = "CameraIgnore";
     private const float ErrorShakeDuration = 0.25f; // Seconds the camera shakes when an error is shown
     private const float ErrorShakeMagnitude = 0.1f; // Max distance the camera is offset while shaking
     private PlayerControls controls;
@@ -106,6 +107,12 @@ public class PhotoCameraController : SoundEvent
         if (playerLayer != -1)
         {
             rayMask &= ~(1 << playerLayer);
+        }
+        // Followed the same logic for colliders we want to ignore
+        int cameraIgnoreLayer = LayerMask.NameToLayer(cameraIgnoreLayerName);
+        if (cameraIgnoreLayer != -1)
+        {
+            rayMask &= ~(1 << cameraIgnoreLayer);
         }
 
         CreateBlurVolume();
