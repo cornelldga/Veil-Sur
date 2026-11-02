@@ -142,4 +142,6 @@ public class DocumentScanVisual : MonoBehaviour
 
         doneHighlight.gameObject.SetActive(false);
     }
+
+    public float ScanTime() => scanTime;
 }

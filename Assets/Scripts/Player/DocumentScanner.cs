@@ -9,6 +9,8 @@ using UnityEngine.InputSystem;
 public class DocumentScanner : MonoBehaviour
 {
     [SerializeField] private AudioClip documentScanSfx;
+    [Tooltip("How long through animation until photo saves (so being 3 frames early to close menu doesn't fail the scan)")]
+    [SerializeField, Range(0f, 1f)] private float captureProgress = 0.8f;
 
     private PlayerControls controls;
     private PlayerState playerState;
@@ -75,7 +77,8 @@ public class DocumentScanner : MonoBehaviour
 
             if (scanVisual != null)
             {
-                yield return scanVisual.Play();
+                scanVisual.StartCoroutine(scanVisual.Play());
+                yield return new WaitForSecondsRealtime(scanVisual.ScanTime() * captureProgress);
             }
 
             yield return new WaitForEndOfFrame();
