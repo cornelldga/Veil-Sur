@@ -14,13 +14,8 @@ public class PhotoCameraController : SoundEvent
 {
     public enum CameraMode
     {
-        Photo,
-        Document
+        Photo
     }
-    /// <summary>
-    /// true while the camera is in document mode and pointing at a document within reading range
-    /// </summary>
-    public bool IsViewingDocument => currentMode == CameraMode.Document && hoveredDocument != null;
 
     private Camera targetCamera;
     [Header("Camera Settings")]
@@ -34,8 +29,6 @@ public class PhotoCameraController : SoundEvent
     [Tooltip("The maximum range that a subject can be from the camera")]
     [Header("Detection")]
     [SerializeField] private float maxPhotoRange = 10f;
-    [Tooltip("How far away (in meters) a document can be read in document mode")]
-    [SerializeField] private float maxDocReadRange = 3f;
     [SerializeField] private LayerMask photoOcclusionMask = ~0;
     [Header("Blur Settings")]
     [Tooltip("Distance past maxPhotoRange where the zoom blur reaches full strength")]
@@ -44,12 +37,10 @@ public class PhotoCameraController : SoundEvent
     [Header("Audio")]
     [SerializeField] private AudioClip shutterClip;
     [SerializeField] private float shutterDelay = 0.1f;
-    [SerializeField] private AudioClip documentScanClip; //document mode
     [Header("Mutant-Related Settings")]
     [SerializeField] private float detectRadius = 10f; // How far the sound cone extends
     [SerializeField] private float stunRadius = 10f; // How far the stun cone extends
     [Header("Mutant Stun Settings")]
-    [SerializeField] private float maxRadius = 10f; // How far the cone extends
     [Range(0, 360)]
     [SerializeField] private float coneAngle = 60f; // Total width of the cone in degrees
     [SerializeField] private LayerMask targetMask; // Layer containing enemies or interactable items
@@ -63,8 +54,6 @@ public class PhotoCameraController : SoundEvent
     private PlayerState playerState;
     private float targetFOV;
     private Volume blurVolume;
-    private CameraMode currentMode = CameraMode.Photo;
-    private Document hoveredDocument;
     private Coroutine shakeCoroutine;
     private float lastPhotoTime = float.NegativeInfinity;
     private int rayMask;
@@ -136,8 +125,6 @@ public class PhotoCameraController : SoundEvent
         controls.PlayerMovement.AimCamera.canceled += OnAimCameraCanceled;
         controls.PlayerMovement.TakePicture.performed += OnSnap;
 
-        controls.PlayerMovement.SwapCameraMode.performed += OnSwapCameraMode;
-
         ErrorNotifier.OnError += OnErrorShown;
     }
 
@@ -148,8 +135,6 @@ public class PhotoCameraController : SoundEvent
         controls.PlayerMovement.AimCamera.performed -= OnAimCameraPerformed;
         controls.PlayerMovement.AimCamera.canceled -= OnAimCameraCanceled;
         controls.PlayerMovement.TakePicture.performed -= OnSnap;
-
-        controls.PlayerMovement.SwapCameraMode.performed -= OnSwapCameraMode;
 
         controls.PlayerMovement.Disable();
     }
@@ -183,33 +168,6 @@ public class PhotoCameraController : SoundEvent
         targetFOV = normalFOV;
         blurVolume.weight = 0f;
         playerState.SetPhotoMode(false);
-        playerState.SetPhotoMode(false);
-        HideDocPreview();
-    }
-
-    /// <summary>
-    /// Function to swap between Photo and Document modes. 
-    /// Activates only while camera is being aimed, on Q press.
-    /// </summary>
-    private void OnSwapCameraMode(InputAction.CallbackContext ctx)
-    {
-        if (!playerState.GetPhotoMode())
-        {
-            return;
-        }
-
-        // Currently, just swap between two modes with Q
-        // In the future with more camera modes,
-        // THIS would need to change ***.
-        currentMode = (currentMode == CameraMode.Photo) ?
-        CameraMode.Document : CameraMode.Photo;
-
-        UIManager.Instance.SetCameraMode(currentMode);
-
-        if (currentMode == CameraMode.Photo)
-        {
-            HideDocPreview();
-        }
     }
 
     private void OnSnap(InputAction.CallbackContext ctx)
@@ -233,12 +191,6 @@ public class PhotoCameraController : SoundEvent
         {
             StunMutantsInCone();
             RegisterSoundEvent(transform.position, detectRadius, "Player");
-        }
-
-        if (currentMode == CameraMode.Document && hoveredDocument != null)
-        {
-            StartCoroutine(ScanDocument());
-            return;
         }
 
         lastPhotoTime = Time.unscaledTime;
@@ -290,39 +242,6 @@ public class PhotoCameraController : SoundEvent
         targetCamera.transform.localPosition = shakeOrigin;
         shakeCoroutine = null;
     }
-    /// <summary>
-    /// Coroutine to manage the document scanner.
-    /// Plays the shutter sound and hides the viewfinder for the captured frame, then shows it again if the game is still in the camera state.
-    /// Gets the rectangle/paper of the DocView in coordinates.
-    /// Creates a new texture the size of the paper.
-    /// Finally, copies the paper into the scan, and creates a photo note.
-    /// </summary>
-    private IEnumerator ScanDocument()
-    {
-        AudioManager.Instance.PlaySfxAtPosition(documentScanClip, targetCamera.transform.position);
-        
-        DocumentScanVisual scanVisual = UIManager.Instance.docPaper.GetComponent<DocumentScanVisual>();
-
-        if (scanVisual != null)
-        {
-            yield return scanVisual.Play();
-        }
-        
-        UIManager.Instance.cameraGroup.SetActive(false);
-        yield return new WaitForEndOfFrame();
-
-        Vector3[] corners = new Vector3[4];
-        UIManager.Instance.docPaper.GetWorldCorners(corners);
-        Rect paperRect = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
-
-        Texture2D scan = new Texture2D((int)paperRect.width, (int)paperRect.height, TextureFormat.RGB24, false);
-        
-        scan.ReadPixels(paperRect, 0, 0);
-        scan.Apply();
-
-        PhotoStorage.Instance.CreatePhoto(scan, DetectPhotographedSubject());
-        UIManager.Instance.cameraGroup.SetActive(GameManager.Instance.state == GameManager.GameState.CAMERA);
-    }
 
     /// <summary>
     /// Returns a square Texture2D (not a Sprite) of the center of
@@ -346,50 +265,6 @@ public class PhotoCameraController : SoundEvent
         RenderTexture.active = null;
         targetCamera.targetTexture = previousTarget;
         return photo;
-    }
-
-    /// <summary>
-    /// Raycasts from the camera while in Document mode (similar to interaction).
-    /// Opens a hovered Document, and will close if the ray moves away.
-    /// The ray ignores the Player layer so it can't hit the player's own colliders.
-    /// The ray only reaches maxDocReadRange, so documents must be read up close.
-    /// </summary>
-    private void UpdateDocPreview()
-    { 
-        Document newHoveredDocument = GetDocumentInView();
-
-        if (newHoveredDocument != hoveredDocument && hoveredDocument != null)
-        {
-            hoveredDocument.CloseDoc();
-        }
-        hoveredDocument = newHoveredDocument;
-
-        if (hoveredDocument != null)
-        {
-            hoveredDocument.OpenDoc();
-        }
-    }
-
-    /// <summary>
-    /// raycasts from the camera for a document within the read range
-    /// </summary>
-    /// <returns>the document the camera is pointing at, or null if none</returns>
-    private Document GetDocumentInView()
-    {
-        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxDocReadRange, rayMask, QueryTriggerInteraction.Ignore))
-        {
-            return hit.collider.GetComponent<Document>();
-        }
-        return null;
-    }
-
-    private void HideDocPreview()
-    {
-        if (hoveredDocument != null)
-        {
-            hoveredDocument.CloseDoc();
-            hoveredDocument = null;
-        }
     }
 
     /// <summary>
@@ -477,11 +352,6 @@ public class PhotoCameraController : SoundEvent
 
         // Update FOV change
         targetCamera.fieldOfView = Mathf.Lerp(targetCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
-
-        if (playerState.GetPhotoMode() && currentMode == CameraMode.Document)
-        {
-            UpdateDocPreview();
-        }
     }
 
     /// <summary>

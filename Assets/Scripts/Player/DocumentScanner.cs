@@ -94,7 +94,6 @@ public class DocumentScanner : MonoBehaviour
             scan.ReadPixels(paperRect, 0, 0);
             scan.Apply();
 
-            Debug.Log("SUBJECTID of Doc: " + playerState.GetOpenDocSubjectId());
             PhotoStorage.Instance.CreatePhoto(scan, playerState.GetOpenDocSubjectId());
         }
         finally
