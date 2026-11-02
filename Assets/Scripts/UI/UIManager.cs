@@ -346,6 +346,8 @@ public class UIManager : MonoBehaviour
     /// <param name="fps">frames shown per second</param>
     public IEnumerator PlayJumpscare(Sprite[] frames, float fps)
     {
+        if (babyMode) yield break;
+
         jumpscareImage.gameObject.SetActive(true);
         foreach (Sprite frame in frames)
         {
@@ -354,16 +356,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public bool NoJumpscare()
+    /// <summary>
+    /// Turns baby mode on/off. Hooked to the settings toggle's On Value Changed.
+    /// </summary>
+    /// <param name="on">true skips jumpscares</param>
+    public void SetBabyMode(bool on)
     {
-        if (babyMode == false)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        babyMode = on;
     }
 
     /// <summary>
