@@ -100,6 +100,10 @@ public class IdleDogStates : EnemySearchlight
     /// </summary>
     public override void ReportSense(Vector3 position, Priority priority, string source)
     {
+        Debug.Log($"State: {CurrentState}");
+        Debug.Log($"Source: {source}");
+        Debug.Log($"Accepted: {Array.IndexOf(acceptedSenseSources, source) != -1}");
+        Debug.Log($"Priority: {priority}, Current Priority: {currentPriority}");
         if (CurrentState == AlertState.Alert || 
         CurrentState == AlertState.Stun || priority > currentPriority) return;
 

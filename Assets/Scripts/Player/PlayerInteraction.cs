@@ -17,6 +17,11 @@ public class PlayerInteraction : MonoBehaviour
     private PlayerState playerState;
     private int rayMask;
 
+    // Hold interaction state
+    private HoldInteractable heldTarget;
+    private float holdTimer;
+    private bool holdCompleted;
+
     private void Awake()
     {
         // controls = new PlayerControls();
@@ -65,6 +70,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             // Don't show 'E to Interact' when Camera is on or Notebook is open
             UIManager.Instance.ShowInteractPrompt(false);
+            ResetHold();
             return; // Block interaction when Camera is open (Doc mode).
         }
 
@@ -74,10 +80,64 @@ public class PlayerInteraction : MonoBehaviour
             interactable = hit.collider.GetComponentInParent<Interactable>();
         }
             UIManager.Instance.ShowInteractPrompt(interactable != null);
+        if (interactable is HoldInteractable holdable)
+        {
+            UpdateHold(holdable);
+            return;
+        }
+
+        ResetHold();
         if (controls.PlayerMovement.Interact.WasPerformedThisFrame() && interactable!= null) {
             interactable.Interact();
         }
-            
+
+    }
+
+    /// <summary>
+    /// Advances the hold timer while the interact key is held on a HoldInteractable,
+    /// and interacts once the hold duration is reached. The key must be released
+    /// before the same hold can trigger again.
+    /// </summary>
+    /// <param name="holdable">the hold interactable currently being looked at</param>
+    private void UpdateHold(HoldInteractable holdable)
+    {
+        if (holdable != heldTarget)
+        {
+            ResetHold();
+            heldTarget = holdable;
+        }
+
+        if (!controls.PlayerMovement.Interact.IsPressed())
+        {
+            ResetHold();
+            return;
+        }
+
+        if (holdCompleted) return;
+
+        holdTimer += Time.deltaTime;
+        float progress = holdable.HoldDuration > 0f ? Mathf.Clamp01(holdTimer / holdable.HoldDuration) : 1f;
+        holdable.OnHoldProgress(progress);
+
+        if (progress >= 1f)
+        {
+            holdCompleted = true;
+            holdable.Interact();
+        }
+    }
+
+    /// <summary>
+    /// Cancels any in-progress hold and notifies the held target.
+    /// </summary>
+    private void ResetHold()
+    {
+        if (heldTarget != null && holdTimer > 0f)
+        {
+            heldTarget.OnHoldReleased();
+        }
+        heldTarget = null;
+        holdTimer = 0f;
+        holdCompleted = false;
     }
 
 

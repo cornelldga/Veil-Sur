@@ -172,6 +172,38 @@ public class PhotoStorage : MonoBehaviour
        return removed;
    }
 
+    /// <summary>
+    /// Swaps the photos in two different slots
+    /// </summary>
+   public bool SwapPhotos(int slotOne, int slotTwo)
+    {
+        if (slotOne < 0 || slotOne >= maxCapacity || slotTwo < 0 || slotTwo >= maxCapacity)
+        {
+            return false;
+        }
+
+        if (slotOne == slotTwo)
+        {
+            return true;
+        }
+
+        while (photos.Count <= slotOne)
+        {
+            photos.Add(null);
+        }
+        while (photos.Count <= slotTwo)
+        {
+            photos.Add(null);
+        }
+
+        Photo temp = photos[slotOne];
+        photos[slotOne] = photos[slotTwo];
+        photos[slotTwo] = temp;
+
+        PhotosChanged?.Invoke();
+        return true;
+    }
+
    /// <summary>
    /// Destroys photos and deletes photo storage.
    /// Called on scene load.

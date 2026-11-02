@@ -1242,7 +1242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyBinding
   actionReference: {fileID: -7571176947369502411, guid: c309d577a1b125f4bb671e8e563e2b9b, type: 3}
-  bindingIndex: 1
+  bindingIndex: 0
   keyLabel: {fileID: 2786847919876735100}
   waitingText: Waiting for input...
   waitingColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}

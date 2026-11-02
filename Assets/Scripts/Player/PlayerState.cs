@@ -14,6 +14,7 @@ public class PlayerState : MonoBehaviour
     private bool hasTakenPhoto = false;
     private bool inPhotoMode = false;
     private bool playerHasControl = true;
+    private bool isDocOpen = false;
 
     public bool GetCrouching()
     {
@@ -73,6 +74,16 @@ public class PlayerState : MonoBehaviour
     public void SetPlayerHasControl(bool value)
     {
         playerHasControl = value;
+    }
+
+    public bool GetDocOpen()
+    {
+        return isDocOpen;
+    }
+
+    public void SetDocOpen(bool value)
+    {
+        isDocOpen = value;
     }
 
     public bool GetNotebookOpen()

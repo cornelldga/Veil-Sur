@@ -25,11 +25,24 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float crouchHeight = .75f;
     [SerializeField] private float crouchTransitionSpeed = 15f;
     [SerializeField] private LayerMask ceilingCheckMask = ~0;
+    [Header("Sprinting Effects")]
+    [SerializeField] private float sprintingFOV = 124;
+    [SerializeField] private float fovChangeSpeed = 5f;
+    private float normalFOV;
+
+    [Header("Footsteps")]
+    [SerializeField] private AudioClip footstepClip;
+    [SerializeField] private float walkStepPitch = 1f;
+    [SerializeField] private float sprintStepPitch = 1.4f;
+    [SerializeField] private float stepVolume = 0.5f;
+
+    private float nextFootstepTime;
 
     private CharacterController controller;
     private PlayerControls controls;
     private PlayerState playerState;
     private StaminaController staminaController;
+    private SprintVignette sprintVignette;
 
     private float verticalLookClamped;
     private float verticalVelocity;
@@ -42,6 +55,16 @@ public class FirstPersonController : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioClip crouchClip;
+
+    /// <summary>
+    /// World yaw of the Player's body, in degrees.
+    /// </summary>
+    public float Yaw => transform.eulerAngles.y;
+
+    /// <summary>
+    /// Camera pitch, in degrees. Positive looks down.
+    /// </summary>
+    public float Pitch => verticalLookClamped;
 
     private void Start()
     {
@@ -57,6 +80,7 @@ public class FirstPersonController : MonoBehaviour
         controls = GameManager.Controls;
         staminaController = GetComponent<StaminaController>();
         playerState = GetComponent<PlayerState>();
+        sprintVignette = FindFirstObjectByType<SprintVignette>();
 
         currentHeight = standHeight;
         controller.height = standHeight;
@@ -68,6 +92,7 @@ public class FirstPersonController : MonoBehaviour
         if (playerCamera != null)
         {
             playerCamera.transform.localPosition = cameraStandLocalPos;
+            normalFOV = playerCamera.fieldOfView;
         }
 
         // Send player instance/camera to GameManager
@@ -99,6 +124,7 @@ public class FirstPersonController : MonoBehaviour
             HandleLook();
             HandleCrouch();
         }
+        HandleSprintingEffects();
     }
 
     /// <summary>
@@ -107,31 +133,15 @@ public class FirstPersonController : MonoBehaviour
     private void HandleMove()
     {
         bool sprintHeld = controls.PlayerMovement.Sprint.IsPressed();
-        bool sprintPressedThisFrame = controls.PlayerMovement.Sprint.WasPressedThisFrame();
-        
+
         Vector2 moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
         bool isMoving = moveInput.sqrMagnitude > 0.01f;
 
-        // Track whether the player released the sprint key
-        if (!sprintHeld)
-        {
-            isSprinting = false;
-        }
-
-        // Can only start sprinting if the key was released first and not exhausted
-        if (sprintPressedThisFrame && isMoving && !staminaController.isExhausted)
-        {
-            isSprinting = true;
-        }
-
-        // Cancel sprinting immediately if stamina hits zero or player stops moving
-        if (staminaController.isExhausted || !isMoving)
-        {
-            isSprinting = false;
-        }
+        isSprinting = sprintHeld && isMoving && !staminaController.isExhausted && !playerState.GetCrouching();
 
         playerState.SetMoving(isMoving);
         playerState.SetSprinting(isSprinting);
+        HandleFootsteps(isMoving);
 
         float speed;
 
@@ -161,7 +171,7 @@ public class FirstPersonController : MonoBehaviour
         }
 
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
-        move *= speed;
+        move = Vector3.ClampMagnitude(move, 1f) * speed;
 
         if (controller.isGrounded && verticalVelocity < 0f)
         {
@@ -173,9 +183,40 @@ public class FirstPersonController : MonoBehaviour
         controller.Move(move * Time.deltaTime);
     }
 
+    private void HandleFootsteps(bool isMoving)
+    {
+        if (footstepClip == null || !isMoving || !controller.isGrounded) return;
+        if (playerState.GetCrouching()) return;
+        if (Time.time < nextFootstepTime) return;
+
+        float pitch = isSprinting ? sprintStepPitch : walkStepPitch;
+
+        AudioManager.Instance.PlaySfxAttached(footstepClip, transform, volume: stepVolume, pitch: pitch);
+
+        // Higher pitch plays faster, so the clip finishes sooner
+        nextFootstepTime = Time.time + footstepClip.length / pitch;
+    }
+
     public void SetRunSpeed(float speed)
     {
         sprintSpeed = speed;
+    }
+
+    /// <summary>
+    /// Up/down camera angle, for saving.
+    /// </summary>
+    public float VerticalLook => verticalLookClamped;
+
+    /// <summary>
+    /// Sets the up/down camera angle, e.g. when loading a save.
+    /// </summary>
+    public void SetVerticalLook(float angle)
+    {
+        verticalLookClamped = Mathf.Clamp(angle, minLookDown, maxLookUp);
+        if (playerCamera != null)
+        {
+            playerCamera.transform.localEulerAngles = new Vector3(verticalLookClamped, 0f, 0f);
+        }
     }
 
     /// <summary>
@@ -237,8 +278,95 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
+    private void HandleSprintingEffects()
+    {
+        if (playerCamera != null)
+        {
+            float targetFOV;
+            if (isSprinting)
+            {
+               targetFOV = sprintingFOV;
+            } else
+            {
+               targetFOV = normalFOV;
+            }
+
+            playerCamera.fieldOfView = Mathf.Lerp(
+                playerCamera.fieldOfView, targetFOV, fovChangeSpeed * Time.deltaTime);
+        }
+        
+        if (sprintVignette != null)
+        {
+            sprintVignette.UpdateSprintVignette(isSprinting);
+        }
+    }
+
+    /// <summary>
+    /// Take control from the Player for scripted movement, like the Elevator.
+    /// </summary>
+    public void BeginScriptedMovement()
+    {
+        playerState.SetPlayerHasControl(false);
+        playerState.SetMoving(false);
+        playerState.SetSprinting(false);
+    }
+
+    /// <summary>
+    /// Give control back to the Player after scripted movement.
+    /// </summary>
+    public void EndScriptedMovement()
+    {
+        playerState.SetPlayerHasControl(true);
+    }
+
+    /// <summary>
+    /// Sets the FirstPersonController's look direction.
+    /// </summary>
+    /// <param name="yaw">World yaw for the Player</param>
+    /// <param name="pitch">Camera pitch for the Player</param>
+    public void SetLook(float yaw, float pitch)
+    {
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+        verticalLookClamped = Mathf.Clamp(pitch, minLookDown, maxLookUp);
+        if (playerCamera != null)
+        {
+            playerCamera.transform.localEulerAngles = new Vector3(verticalLookClamped, 0f, 0f);
+        }
+    }
+
+    /// <summary>
+    /// Put the Player at a world position AND look direction. 
+    /// Turns off the Character controller to have direct control of position,
+    /// without overrides. 
+    /// </summary>
+    /// <param name="pos">World position for the Player to be set to</param>
+    /// <param name="yaw">World yaw for the Player to be set to</param>
+    /// <param name="pitch">Camera pitch for the Player to be set to</param>
+    public void PlacePositionAt(Vector3 pos, float yaw, float pitch)
+    {
+        controller.enabled = false;
+        transform.position = pos;
+        controller.enabled = true;
+
+        SetLook(yaw, pitch);
+    }
+
+    /// <summary>
+    /// Guides the Player by a delta and sets the look direction during scripted
+    /// movement. Uses the CharacterController for movement to maintain collision.
+    /// </summary>
+    /// <param name="delta">How far to move the Player</param>
+    /// <param name="yaw">World yaw for the Player</param>
+    /// <param name="pitch">Camera pitch for the Player</param>
+    public void GuidePlayerBy(Vector3 delta, float yaw, float pitch)
+    {
+        controller.Move(delta);
+        SetLook(yaw, pitch);
+    }
+
     // private void OnDestroy()
     // {
     //    controls?.Dispose();
     // }
 }
+

@@ -21,11 +21,19 @@ public class PhotoCameraController : SoundEvent
         Photo,
         Document
     }
+    /// <summary>
+    /// true while the camera is in document mode and pointing at a document within reading range
+    /// </summary>
+    public bool IsViewingDocument => currentMode == CameraMode.Document && hoveredDocument != null;
+
     private Camera targetCamera;
     [Header("Camera Settings")]
     [SerializeField] private float normalFOV = 60f;
     [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 10f;
+
+    [Tooltip("How many seconds must pass before taking another photo.")]
+    [SerializeField] private float photoCooldown = 0.79f;
     [SerializeField] private bool toggleZoom = false;
     [Tooltip("The maximum range that a subject can be from the camera")]
     [Header("Detection")]
@@ -45,6 +53,7 @@ public class PhotoCameraController : SoundEvent
 
     [Header("Audio")]
     [SerializeField] private AudioClip shutterClip;
+    [SerializeField] private float shutterDelay = 0.1f;
     [SerializeField] private AudioClip documentScanClip; //document mode
     [Header("Mutant-Related Settings")]
     [SerializeField] private float detectRadius = 10f; // How far the sound cone extends
@@ -67,6 +76,7 @@ public class PhotoCameraController : SoundEvent
     private CameraMode currentMode = CameraMode.Photo;
     private Document hoveredDocument;
     private Coroutine shakeCoroutine;
+    private float lastPhotoTime = float.NegativeInfinity;
     private int rayMask;
     
     private void Awake()
@@ -218,6 +228,12 @@ public class PhotoCameraController : SoundEvent
         {
             return;
         }
+
+        if (Time.unscaledTime - lastPhotoTime < photoCooldown)
+        {
+            return;
+        }
+
         if (PhotoStorage.Instance.IsPhotoStorageFull())
         {
             ErrorNotifier.Show("ERROR: camera full");
@@ -235,10 +251,12 @@ public class PhotoCameraController : SoundEvent
             return;
         }
 
+        lastPhotoTime = Time.unscaledTime;
         RenderTexture captureRT = RenderTexture.GetTemporary(Screen.width, Screen.height, 24);
         Texture2D photo = CapturePhoto(captureRT);
         RenderTexture.ReleaseTemporary(captureRT);
-        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        //AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
+        StartCoroutine(PlayShutterDelayed());
         UIManager.Instance.TakePhoto();
         CreatePhotoNote(photo);
     }
@@ -311,6 +329,14 @@ public class PhotoCameraController : SoundEvent
     private IEnumerator ScanDocument()
     {
         AudioManager.Instance.PlaySfxAtPosition(documentScanClip, targetCamera.transform.position);
+        
+        DocumentScanVisual scanVisual = UIManager.Instance.docPaper.GetComponent<DocumentScanVisual>();
+
+        if (scanVisual != null)
+        {
+            yield return scanVisual.Play();
+        }
+        
         UIManager.Instance.cameraGroup.SetActive(false);
         yield return new WaitForEndOfFrame();
 
@@ -359,12 +385,8 @@ public class PhotoCameraController : SoundEvent
     /// </summary>
     private void UpdateDocPreview()
     { 
-        Document newHoveredDocument = null;
+        Document newHoveredDocument = GetDocumentInView();
 
-        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxDocReadRange, rayMask, QueryTriggerInteraction.Ignore))
-        {
-            newHoveredDocument = hit.collider.GetComponent<Document>();
-        }
         if (newHoveredDocument != hoveredDocument && hoveredDocument != null)
         {
             hoveredDocument.CloseDoc();
@@ -375,6 +397,19 @@ public class PhotoCameraController : SoundEvent
         {
             hoveredDocument.OpenDoc();
         }
+    }
+
+    /// <summary>
+    /// raycasts from the camera for a document within the read range
+    /// </summary>
+    /// <returns>the document the camera is pointing at, or null if none</returns>
+    private Document GetDocumentInView()
+    {
+        if (Physics.Raycast(targetCamera.transform.position, targetCamera.transform.forward, out RaycastHit hit, maxDocReadRange, rayMask, QueryTriggerInteraction.Ignore))
+        {
+            return hit.collider.GetComponent<Document>();
+        }
+        return null;
     }
 
     private void HideDocPreview()
@@ -552,5 +587,18 @@ public class PhotoCameraController : SoundEvent
         {
             UpdateDocPreview();
         }
+    }
+
+    /// <summary>
+    /// Plays shutter sound after slight delay to match the vfx.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator PlayShutterDelayed()
+    {
+        if (shutterDelay > 0f)
+        {
+            yield return new WaitForSecondsRealtime(shutterDelay);
+        }
+        AudioManager.Instance.PlaySfxAtPosition(shutterClip, targetCamera.transform.position);
     }
 }
