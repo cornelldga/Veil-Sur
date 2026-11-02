@@ -13,10 +13,10 @@ public class DocData
 public class Document : MonoBehaviour, Interactable
 {
     [Header("UI Features")]
-    
+
     [Tooltip("The name of the JSON file in Resources/")]
     [SerializeField] private TextAsset jsonFile;
-    
+
     private DocData docData;
     private TMP_Text docTextAreaUI;
     private GameObject docCanvas;
@@ -51,7 +51,10 @@ public class Document : MonoBehaviour, Interactable
     /// </summary>
     private void LoadDocData()
     {
-        docData = JsonUtility.FromJson<DocData>(jsonFile.text);
+        if (jsonFile != null)
+            docData = JsonUtility.FromJson<DocData>(jsonFile.text);
+        else
+            docData = new DocData { text = "" };
     }
 
     /// <summary>
