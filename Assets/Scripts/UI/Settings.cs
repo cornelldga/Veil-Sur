@@ -10,7 +10,7 @@ public class Settings : UIScreen
     [SerializeField] private Slider musicSlider;  
     [SerializeField] private Slider sensitivitySlider;
     [SerializeField] private Slider ambienceSlider;
-    [SerializeField] private Toggle babyModeToggle;
+    [SerializeField] private Toggle jumpscareToggle;
     public void OnBackPressed()
     {
         UIManager.Instance.Back();
@@ -33,7 +33,7 @@ public class Settings : UIScreen
         musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
         sensitivitySlider.onValueChanged.AddListener(GameManager.Instance.SetMouseSensitivity);
         ambienceSlider.onValueChanged.AddListener(AudioManager.Instance.SetAmbienceVolume);
-        babyModeToggle.onValueChanged.AddListener(UIManager.Instance.NoJumpscares);
+        jumpscareToggle.onValueChanged.AddListener(UIManager.Instance.NoJumpscares);
     }
 
     /// <summary>
