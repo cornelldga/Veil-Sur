@@ -10,10 +10,18 @@ public class Settings : UIScreen
     [SerializeField] private Slider musicSlider;  
     [SerializeField] private Slider sensitivitySlider;
     [SerializeField] private Slider ambienceSlider;
-    [SerializeField] private Toggle jumpscareToggle;
     public void OnBackPressed()
     {
         UIManager.Instance.Back();
+    }
+
+    /// <summary>
+    /// Passes the jumpscare toggle's value to UIManager, which lives outside this prefab.
+    /// </summary>
+    /// <param name="on">true skips jumpscares</param>
+    public void OnJumpscareToggled(bool on)
+    {
+        UIManager.Instance.NoJumpscares(on);
     }
 
     public override void Show() //override so sliders reflect current values every time this opens
@@ -32,9 +40,7 @@ public class Settings : UIScreen
         sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSfxVolume);
         musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
         sensitivitySlider.onValueChanged.AddListener(GameManager.Instance.SetMouseSensitivity);
-        ambienceSlider.onValueChanged.AddListener(AudioManager.Instance.SetAmbienceVolume);
-        jumpscareToggle.onValueChanged.AddListener(UIManager.Instance.NoJumpscares);
-    }
+        ambienceSlider.onValueChanged.AddListener(AudioManager.Instance.SetAmbienceVolume);    }
 
     /// <summary>
     /// resets key bindings to default
