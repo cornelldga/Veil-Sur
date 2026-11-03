@@ -48,7 +48,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Jumpscare")]
     [SerializeField] private Image jumpscareImage;
-    [SerializeField] private bool babyMode = false;
+    [SerializeField] private bool jumpscare = false;
 
     // Runtime instances, created once and kept for the manager's lifetime
     public UIScreen MainMenu { get; private set; }
@@ -346,7 +346,7 @@ public class UIManager : MonoBehaviour
     /// <param name="fps">frames shown per second</param>
     public IEnumerator PlayJumpscare(Sprite[] frames, float fps)
     {
-        if (babyMode) yield break;
+        if (jumpscare) yield break;
 
         jumpscareImage.gameObject.SetActive(true);
         foreach (Sprite frame in frames)
@@ -357,12 +357,12 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Turns baby mode on/off. Hooked to the settings toggle's On Value Changed.
+    /// Turns jumpscare on/off. Hooked to the settings toggle's On Value Changed.
     /// </summary>
     /// <param name="on">true skips jumpscares</param>
-    public void SetBabyMode(bool on)
+    public void NoJumpscares(bool on)
     {
-        babyMode = on;
+        jumpscare = on;
     }
 
     /// <summary>
