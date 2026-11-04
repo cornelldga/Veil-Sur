@@ -47,6 +47,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform screenRoot;
 
     [Header("Jumpscare")]
+    [Tooltip("Half-transparent black Image behind the frames, so transparent frames darken the scene.")]
+    [SerializeField] private GameObject jumpscareBackdrop;
     [SerializeField] private Image jumpscareImage;
 
     // Runtime instances, created once and kept for the manager's lifetime
@@ -346,6 +348,7 @@ public class UIManager : MonoBehaviour
     public IEnumerator PlayJumpscare(Sprite[] frames, float fps)
     {
         jumpscareImage.gameObject.SetActive(true);
+        jumpscareBackdrop.SetActive(true);
         foreach (Sprite frame in frames)
         {
             jumpscareImage.sprite = frame;
@@ -355,11 +358,12 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Hides the jumpscare image, which otherwise stays up on its last frame.
+    /// Hides the jumpscare, which otherwise stays up on its last frame.
     /// </summary>
     public void HideJumpscare()
     {
-        jumpscareImage.gameObject.SetActive(false);
+        jumpscareImage.gameObject.SetActive(true);
+        jumpscareBackdrop.SetActive(false);
     }
 
     // /// <summary>
