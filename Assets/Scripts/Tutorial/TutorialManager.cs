@@ -20,7 +20,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private float moveSpeed = 1f;
 
     // Built on demand (not stored) so prompts always show the player's current keybinds.
-    private const int PromptCount = 22;
+    private const int PromptCount = 23;
 
     private string GetPrompt(int index)
     {
@@ -41,16 +41,17 @@ public class TutorialManager : MonoBehaviour
             case 11: return "Drag your plant photo onto its question to connect it.";
             case 12: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
             case 13: return "Close your notebook.";
-            case 14: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode. This allows you to view documents!";
-            case 15: return $"{KeyName(c.PlayerMovement.TakePicture)} in document mode to scan it into your notebook.";
-            case 16: return "Open your notebook again.";
-            case 17: return "You scanned the document! Drag it onto the document question to fill its answer slot.";
-            case 18: return "Click upload to check how many of your links are correct.";
-            case 19: return "Close your notebook.";
-            case 20: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
+            // case 14: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode. This allows you to view documents!";
+            // case 15: return $"{KeyName(c.PlayerMovement.TakePicture)} in document mode to scan it into your notebook.";
+            case 14: return "Open your notebook again.";
+            case 15: return "You scanned the document! Drag it onto the document question to fill its answer slot.";
+            case 16: return "Click upload to check how many of your links are correct.";
+            case 17: return "New questions appeared! Click the arrow to turn to the next page of your notebook.";
+            case 18: return "Close your notebook.";
+            case 19: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
             // Maybe in the above ^ prompt we'll include a picture of the interact icon.
             // Pause isn't an input action (GameManager reads the ESC key directly), so it can't be looked up like the others.
-            case 21: return "You can always pause by pressing <mark=#FFFFFF18 padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
+            case 20: return "You can always pause by pressing <mark=#FFFFFF18 padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
 
             default: return "";
         }
@@ -255,14 +256,17 @@ public class TutorialManager : MonoBehaviour
             case 11: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
             case 12: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
             case 13: return state != GameManager.GameState.NOTEBOOK;
-            case 14: return photoCamera.IsViewingDocument;
-            case 15: return photoCamera.IsViewingDocument && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
-            case 16: return state == GameManager.GameState.NOTEBOOK;
-            case 17: return AllQuestionSlotsFilled();
-            case 18: return uploadClicked;
-            case 19: return state != GameManager.GameState.NOTEBOOK;
-            case 20: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
-            case 21: return state == GameManager.GameState.PAUSED; // ESC pauses the game
+            // case 14: return photoCamera.IsViewingDocument;
+            // case 15: return photoCamera.IsViewingDocument && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
+            case 14: return state == GameManager.GameState.NOTEBOOK;
+            case 15: return AllQuestionSlotsFilled();
+            case 16: return uploadClicked;
+            // closing the notebook also moves on, so the player can't get stuck if no second page has questions yet
+            case 17: return state != GameManager.GameState.NOTEBOOK ||
+                (UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.CurrentPageIndex > 0);
+            case 18: return state != GameManager.GameState.NOTEBOOK;
+            case 19: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
+            case 20: return state == GameManager.GameState.PAUSED; // ESC pauses the game
             default: return false;
         }
     }
