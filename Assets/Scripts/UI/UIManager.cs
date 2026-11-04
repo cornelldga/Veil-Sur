@@ -48,7 +48,6 @@ public class UIManager : MonoBehaviour
 
     [Header("Jumpscare")]
     [SerializeField] private Image jumpscareImage;
-    [SerializeField] private bool jumpscare = false;
 
     // Runtime instances, created once and kept for the manager's lifetime
     public UIScreen MainMenu { get; private set; }
@@ -346,23 +345,13 @@ public class UIManager : MonoBehaviour
     /// <param name="fps">frames shown per second</param>
     public IEnumerator PlayJumpscare(Sprite[] frames, float fps)
     {
-        if (jumpscare) yield break;
-
         jumpscareImage.gameObject.SetActive(true);
         foreach (Sprite frame in frames)
         {
             jumpscareImage.sprite = frame;
             yield return new WaitForSecondsRealtime(1f / fps);
         }
-    }
 
-    /// <summary>
-    /// Turns jumpscare on/off. Hooked to the settings toggle's On Value Changed.
-    /// </summary>
-    /// <param name="on">true skips jumpscares</param>
-    public void NoJumpscares(bool on)
-    {
-        jumpscare = on;
     }
 
     /// <summary>

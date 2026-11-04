@@ -186,6 +186,7 @@ MonoBehaviour:
   musicSlider: {fileID: 6202241074977839976}
   sensitivitySlider: {fileID: 8838201772720411253}
   ambienceSlider: {fileID: 3382345627911415913}
+  jumpscareToggle: {fileID: 7026781264221328929}
 --- !u!1 &481068815141304275
 GameObject:
   m_ObjectHideFlags: 0
