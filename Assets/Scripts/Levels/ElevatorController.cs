@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum ElevatorDirection
@@ -80,7 +81,7 @@ public class ElevatorController : MonoBehaviour
 
     [Header("Elevator Lighting")]
     [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride (hopefully this time)")]
-    [SerializeField] private Transform shaftLight;
+    [SerializeField] private Light shaftLight;
     [Tooltip("Start of light sweep, place an Empty Game Object below the elevator door (in front of it)")]
     [SerializeField] private Transform lightBottom;
     [Tooltip("End of light sweep, place an Empty Game Object above the elevator door (in front of it)")]
@@ -131,6 +132,11 @@ public class ElevatorController : MonoBehaviour
         {
             GameManager.Instance.ArrivingByElevator = false; 
             StartCoroutine(ArrivalSequence());
+        }
+
+        if (shaftLight != null)
+        {
+            shaftLight.enabled = false;
         }
     }
 
@@ -356,7 +362,7 @@ public class ElevatorController : MonoBehaviour
 
         if (HasShaftLight)
         {
-            shaftLight.position = lightBottom.position;
+            shaftLight.transform.position = lightBottom.position;
             shaftLight.gameObject.SetActive(true);
         }
 
@@ -381,7 +387,7 @@ public class ElevatorController : MonoBehaviour
             if (HasShaftLight)
             {
                 float eased = sweepCurve.Evaluate(t);
-                shaftLight.position = Vector3.LerpUnclamped(lightBottom.position, lightTop.position, eased);
+                shaftLight.transform.position = Vector3.LerpUnclamped(lightBottom.position, lightTop.position, eased);
             }
 
             yield return null;
@@ -390,7 +396,7 @@ public class ElevatorController : MonoBehaviour
         if (HasShaftLight)
         {
             shaftLight.gameObject.SetActive(false);
-            shaftLight.position = lightBottom.position;
+            shaftLight.transform.position = lightBottom.position;
         }
     }
 
