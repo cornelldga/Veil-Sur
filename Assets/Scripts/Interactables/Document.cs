@@ -1,7 +1,5 @@
 using UnityEngine;
 using TMPro;
-using System;
-using System.Runtime.CompilerServices;
 
 [System.Serializable]
 public class DocData
@@ -24,8 +22,6 @@ public class Document : MonoBehaviour, Interactable
     private PhotographableObject subject;
     private PlayerState playerStateController;
     private bool isOpen = false;
-    // True when opened via Interact() rather than the camera's document reader
-    private bool openedByInteract = false;
 
     /// <summary>
     /// Awake() loads all of the JSON text into this document to display
@@ -58,15 +54,13 @@ public class Document : MonoBehaviour, Interactable
     }
 
     /// <summary>
-    /// Opens or closes the doc viewer, showing this document's contents the
-    /// same way the camera's document reader does.
+    /// Opens or closes the doc viewer on interaction.
     /// </summary>
     public void Interact()
     {
         if (!isOpen)
         {
             OpenDoc();
-            openedByInteract = true;
         }
         else
         {
@@ -79,7 +73,6 @@ public class Document : MonoBehaviour, Interactable
         docTextAreaUI.text = docData.text;
         docCanvas.SetActive(true);
         isOpen = true;
-        openedByInteract = false;
         // Default to no ID if no photographable object attached
         playerStateController.SetDocOpen(true, subject != null ? subject.SubjectId : "");
     }
@@ -87,19 +80,16 @@ public class Document : MonoBehaviour, Interactable
     {
         docCanvas.SetActive(false);
         isOpen = false;
-        openedByInteract = false;
         playerStateController.SetDocOpen(false);
     }
 
     private void Update()
     {
-        if (isOpen && playerStateController.GetMoving())
+        if (isOpen && (playerStateController.GetMoving() || playerStateController.GetLookTarget() != (Interactable) this))
         {
             CloseDoc();
         }
-        // The camera reader manages its own docs, so only close interact-opened
-        // docs when the camera or notebook takes over the screen
-        else if (openedByInteract && (playerStateController.GetPhotoMode() || playerStateController.GetNotebookOpen()))
+        else if (isOpen && (playerStateController.GetPhotoMode() || playerStateController.GetNotebookOpen()))
         {
             CloseDoc();
         }

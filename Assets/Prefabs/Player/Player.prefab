@@ -269,17 +269,14 @@ MonoBehaviour:
   photoCooldown: 0.79
   toggleZoom: 0
   maxPhotoRange: 10
-  maxDocReadRange: 3
   photoOcclusionMask:
     serializedVersion: 2
     m_Bits: 4294967295
   blurRangePastMax: 2
   shutterClip: {fileID: 8300000, guid: 2a5906470f95e4dcdacd7761937ab0ec, type: 3}
   shutterDelay: 0.1
-  documentScanClip: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
   detectRadius: 20
   stunRadius: 10
-  maxRadius: 17.5
   coneAngle: 60
   targetMask:
     serializedVersion: 2
@@ -339,7 +336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eb97cb2b860d49678c659b10d0f0986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
-  rayLength: 5
+  rayLength: 2.5
 --- !u!114 &7648119910814920436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,6 +379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DocumentScanner
   documentScanSfx: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
+  captureProgress: 0.8
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0

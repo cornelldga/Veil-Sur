@@ -70,6 +70,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             // Don't show 'E to Interact' when Camera is on or Notebook is open
             UIManager.Instance.ShowInteractPrompt(false);
+            playerState.SetLookTarget(null);
             ResetHold();
             return; // Block interaction when Camera is open (Doc mode).
         }
@@ -79,6 +80,7 @@ public class PlayerInteraction : MonoBehaviour
         { 
             interactable = hit.collider.GetComponentInParent<Interactable>();
         }
+        playerState.SetLookTarget(interactable);
             UIManager.Instance.ShowInteractPrompt(interactable != null);
         if (interactable is HoldInteractable holdable)
         {

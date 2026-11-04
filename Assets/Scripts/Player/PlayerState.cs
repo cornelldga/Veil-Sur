@@ -16,6 +16,7 @@ public class PlayerState : MonoBehaviour
     private bool playerHasControl = true;
     private bool isDocOpen = false;
     private string openDocSubjectId = "";
+    private Interactable lookTarget;
 
     public bool GetCrouching()
     {
@@ -99,6 +100,24 @@ public class PlayerState : MonoBehaviour
     public string GetOpenDocSubjectId()
     {
         return openDocSubjectId;
+    }
+
+    /// <summary>
+    /// Returns the Interactable the player is currently looking at,
+    /// or null if none are being looked at.
+    /// </summary>
+    public Interactable GetLookTarget()
+    {
+        return lookTarget;
+    }
+
+    /// <summary>
+    /// Sets the Interactable the player is currently looking at.
+    /// Should be set to null if no interactable is being looked at. 
+    /// </summary>
+    public void SetLookTarget(Interactable value)
+    {
+        lookTarget = value;
     }
 
     public bool GetNotebookOpen()
