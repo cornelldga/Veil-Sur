@@ -328,6 +328,7 @@ public class ElevatorController : MonoBehaviour
         
         player.BeginScriptedMovement();
 
+        yield return RunRide();
         yield return new WaitForSeconds(doorOpenCloseDelay);
         
         player.EndScriptedMovement();
