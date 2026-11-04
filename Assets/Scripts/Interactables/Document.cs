@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 public class DocData
 {
     public string text;
+    // optional: one entry per line, joined with newlines. Easier to edit than one long text string.
+    public string[] lines;
 }
 
 
@@ -50,6 +52,8 @@ public class Document : MonoBehaviour, Interactable
     private void LoadDocData()
     {
         docData = JsonUtility.FromJson<DocData>(jsonFile.text);
+        if (docData.lines != null && docData.lines.Length > 0)
+            docData.text = string.Join("\n", docData.lines);
     }
 
     /// <summary>
