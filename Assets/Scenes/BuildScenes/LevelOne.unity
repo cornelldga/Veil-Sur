@@ -15244,6 +15244,10 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 713677170}
+    - target: {fileID: 6469504038579169904, guid: 14be270222103f74ba2293e33d315b15, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7445490368492494730, guid: 14be270222103f74ba2293e33d315b15, type: 3}
       propertyPath: acceptedSenseSources.Array.size
       value: 1
@@ -26386,8 +26390,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 705704432}
     m_Modifications:
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: requireIDs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: questionText
       value: What do the mutants look like?
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: requireAllIDs
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireAllObjects
@@ -26399,12 +26411,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: required_objects.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'futureQuestions.Array.data[0]'
       value: 
       objectReference: {fileID: 1421634372}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: requiredSubjectIds.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'required_objects.Array.data[0]'
       value: 
@@ -26413,6 +26429,10 @@ PrefabInstance:
       propertyPath: 'required_objects.Array.data[1]'
       value: 
       objectReference: {fileID: 1110471945}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: 'requiredSubjectIds.Array.data[0]'
+      value: DogMutant
+      objectReference: {fileID: 0}
     - target: {fileID: 4200086836180689366, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: m_Name
       value: Poster Q1 Data
