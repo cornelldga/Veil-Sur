@@ -60,10 +60,9 @@ public class DocumentScanner : MonoBehaviour
 
     /// <summary>
     /// Coroutine to manage the document scanner.
+    /// Saves the document as a texture.
     /// Plays the scan sound and visual.
-    /// Then, gets the rectangle/paper of the DocView in coordinates.
-    /// Creates a new texture the size of the paper.
-    /// Finally, creates a photo by copying the paper into a scan.
+    /// Finally, creates a photo after the scan is completed.
     /// Fails if the document is closed before scanning is finished.
     /// </summary>
     private IEnumerator ScanDocument()
@@ -73,21 +72,9 @@ public class DocumentScanner : MonoBehaviour
         {
             AudioManager.Instance.PlaySfxAtPosition(documentScanSfx, targetCamera.transform.position);
 
-            DocumentScanVisual scanVisual = UIManager.Instance.docPaper.GetComponent<DocumentScanVisual>();
-
-            if (scanVisual != null)
-            {
-                scanVisual.StartCoroutine(scanVisual.Play());
-                yield return new WaitForSecondsRealtime(scanVisual.ScanTime() * captureProgress);
-            }
-
+            // Take photo before scanning animation plays
             yield return new WaitForEndOfFrame();
-
-            if (!playerState.GetDocOpen())
-            {
-                yield break;
-            }
-
+            string subjectId = playerState.GetOpenDocSubjectId();
             Vector3[] corners = new Vector3[4];
             UIManager.Instance.docPaper.GetWorldCorners(corners);
             Rect paperRect = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
@@ -97,7 +84,26 @@ public class DocumentScanner : MonoBehaviour
             scan.ReadPixels(paperRect, 0, 0);
             scan.Apply();
 
-            PhotoStorage.Instance.CreatePhoto(scan, playerState.GetOpenDocSubjectId());
+            // Play scan animation
+            DocumentScanVisual scanVisual = UIManager.Instance.docPaper.GetComponent<DocumentScanVisual>();
+            if (scanVisual != null)
+            {
+                scanVisual.StartCoroutine(scanVisual.Play());
+                yield return new WaitForSecondsRealtime(scanVisual.ScanTime() * captureProgress);
+            }
+
+            // Create photo if the player stayed in the scan
+            if (!playerState.GetDocOpen())
+            {
+                Destroy(scan);
+                yield break;
+            }
+            PhotoStorage.Instance.CreatePhoto(scan, subjectId);
+
+            // Wait until end of scan animation before letting player scan again
+            if (scanVisual != null) {
+                yield return new WaitForSecondsRealtime(scanVisual.TotalTime() - scanVisual.ScanTime() * captureProgress);
+            }
         }
         finally
         {

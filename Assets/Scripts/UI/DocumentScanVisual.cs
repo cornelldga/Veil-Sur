@@ -75,10 +75,10 @@ public class DocumentScanVisual : MonoBehaviour
             "Successful Scan Highlight", typeof(RectTransform), typeof(Image)
         );
         highlight.transform.SetParent(transform, false);
-        
+
         doneHighlight = highlight.GetComponent<Image>();
         RectTransform highlightRect = highlight.GetComponent<RectTransform>();
-        
+
         doneHighlight.color = new Color(scanColor.r, scanColor.g, scanColor.b, 0f);
 
         doneHighlight.raycastTarget = false;
@@ -110,12 +110,12 @@ public class DocumentScanVisual : MonoBehaviour
         {
             time += Time.unscaledDeltaTime;
 
-            float effectProgress = Mathf.Clamp01(time/scanTime);
+            float effectProgress = Mathf.Clamp01(time / scanTime);
 
             float y = effectProgress * docHeight * (-1);
             lineRect.anchoredPosition = new Vector2(0f, y);
 
-            float fastY = Mathf.Max(-docHeight + fastThickness / 2f, effectProgress * docHeight * 1.09f * (-1));            fastLineRect.anchoredPosition = new Vector2(0f, fastY);
+            float fastY = Mathf.Max(-docHeight + fastThickness / 2f, effectProgress * docHeight * 1.09f * (-1)); fastLineRect.anchoredPosition = new Vector2(0f, fastY);
 
             // wait before moving again
             yield return null;
@@ -133,9 +133,9 @@ public class DocumentScanVisual : MonoBehaviour
         {
             elapsedTime += Time.unscaledDeltaTime;
 
-            float alpha = highlightAlpha * (1f-Mathf.Clamp01(elapsedTime/highlightTime));
+            float alpha = highlightAlpha * (1f - Mathf.Clamp01(elapsedTime / highlightTime));
 
-            doneHighlight.color=new Color(scanColor.r, scanColor.g, scanColor.b, alpha);
+            doneHighlight.color = new Color(scanColor.r, scanColor.g, scanColor.b, alpha);
 
             yield return null;
         }
@@ -143,5 +143,14 @@ public class DocumentScanVisual : MonoBehaviour
         doneHighlight.gameObject.SetActive(false);
     }
 
+    private void OnDisable()
+    {
+        scanLine.gameObject.SetActive(false);
+        fastLine.gameObject.SetActive(false);
+        doneHighlight.gameObject.SetActive(false);
+    }
+
+
     public float ScanTime() => scanTime;
+    public float TotalTime() => scanTime + highlightTime;
 }
