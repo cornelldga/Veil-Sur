@@ -15224,6 +15224,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 143916443}
     m_Modifications:
+    - target: {fileID: 1214789362391080232, guid: 14be270222103f74ba2293e33d315b15, type: 3}
+      propertyPath: avoidancePriority
+      value: 49
+      objectReference: {fileID: 0}
     - target: {fileID: 4744343632631584913, guid: 14be270222103f74ba2293e33d315b15, type: 3}
       propertyPath: m_Name
       value: Idling Dog  Variant
