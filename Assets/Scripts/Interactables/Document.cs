@@ -47,10 +47,21 @@ public class Document : MonoBehaviour, Interactable
     /// </summary>
     private void LoadDocData()
     {
-        if (jsonFile != null)
+        // docData = JsonUtility.FromJson<DocData>(jsonFile.text);
+        if (jsonFile == null)
+        {
+            Debug.LogWarning($"Document '{name}' has no JSON file assigned.", this);
+            return;
+        }
+
+        try
+        {
             docData = JsonUtility.FromJson<DocData>(jsonFile.text);
-        else
-            docData = new DocData { text = "" };
+        }
+        catch (System.ArgumentException e)
+        {
+            Debug.LogWarning($"Document '{name}' has invalid JSON: {e.Message}", this);
+        }
     }
 
     /// <summary>
@@ -70,6 +81,7 @@ public class Document : MonoBehaviour, Interactable
 
     public void OpenDoc()
     {
+        if (docData == null || string.IsNullOrEmpty(docData.text)) { return; }
         docTextAreaUI.text = docData.text;
         docCanvas.SetActive(true);
         isOpen = true;

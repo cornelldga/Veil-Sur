@@ -1919,6 +1919,38 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[5]'
       value: 
       objectReference: {fileID: 1678211621}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: 'jumpscareFrames.Array.data[0]'
+      value: 
+      objectReference: {fileID: 797472775, guid: 52d2ab12ee72945fc907e7c752c08150, type: 3}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: 'jumpscareFrames.Array.data[1]'
+      value: 
+      objectReference: {fileID: -140633047, guid: 52d2ab12ee72945fc907e7c752c08150, type: 3}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: 'jumpscareFrames.Array.data[2]'
+      value: 
+      objectReference: {fileID: 847805085, guid: 52d2ab12ee72945fc907e7c752c08150, type: 3}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: 'jumpscareFrames.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1631260334, guid: 52d2ab12ee72945fc907e7c752c08150, type: 3}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: 'jumpscareFrames.Array.data[4]'
+      value: 
+      objectReference: {fileID: -518488013, guid: 52d2ab12ee72945fc907e7c752c08150, type: 3}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: 'jumpscareFrames.Array.data[5]'
+      value: 
+      objectReference: {fileID: 1891239157, guid: 52d2ab12ee72945fc907e7c752c08150, type: 3}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: 'jumpscareFrames.Array.data[6]'
+      value: 
+      objectReference: {fileID: -1310412878, guid: 52d2ab12ee72945fc907e7c752c08150, type: 3}
+    - target: {fileID: 965223220564441782, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+      propertyPath: 'jumpscareFrames.Array.data[7]'
+      value: 
+      objectReference: {fileID: -1197068666, guid: 52d2ab12ee72945fc907e7c752c08150, type: 3}
     - target: {fileID: 2184192572823106185, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_Name
       value: Dog Mutant

@@ -48,6 +48,7 @@ public class PhotoCameraController : SoundEvent
 
     // private const int RaysPerCircle = 8;
     private const string playerLayerName = "Player";
+    private const string cameraIgnoreLayerName = "CameraIgnore";
     private const float ErrorShakeDuration = 0.25f; // Seconds the camera shakes when an error is shown
     private const float ErrorShakeMagnitude = 0.1f; // Max distance the camera is offset while shaking
     private PlayerControls controls;
@@ -85,6 +86,12 @@ public class PhotoCameraController : SoundEvent
         if (playerLayer != -1)
         {
             rayMask &= ~(1 << playerLayer);
+        }
+        // Followed the same logic for colliders we want to ignore
+        int cameraIgnoreLayer = LayerMask.NameToLayer(cameraIgnoreLayerName);
+        if (cameraIgnoreLayer != -1)
+        {
+            rayMask &= ~(1 << cameraIgnoreLayer);
         }
 
         CreateBlurVolume();
@@ -321,20 +328,24 @@ public class PhotoCameraController : SoundEvent
 
             Transform target = targetsInRadius[i].transform;
             Vector3 dirToTarget = (target.position - transform.position).normalized;
+            EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
+            mutant.Stun();
+            // Debug.Log("Attempted stun");
 
             // 2. Check if the target is within the forward alignment angle
-            if (Vector3.Angle(transform.forward, dirToTarget) < coneAngle / 2)
-            {
-                float dstToTarget = Vector3.Distance(transform.position, target.position);
-
-                // 3. Optional: Line-of-sight raycast to ensure a wall isn't blocking the view
-                if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
-                {
-                    // Debug.Log($"Detected: {target.name} inside the vision cone!");
-                    EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
-                    mutant.Stun();
-                }
-            }
+            // if (Vector3.Angle(transform.forward, dirToTarget) < coneAngle / 2)
+            // {
+            //     float dstToTarget = Vector3.Distance(transform.position, target.position);
+            //     EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
+            //     mutant.Stun();
+            //     // 3. Optional: Line-of-sight raycast to ensure a wall isn't blocking the view
+            //     // if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
+            //     // {
+            //     //     // Debug.Log($"Detected: {target.name} inside the vision cone!");
+            //     //     EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
+            //     //     mutant.Stun();
+            //     // }
+            // }
         }
     }
 
