@@ -41,8 +41,8 @@ public class TutorialManager : MonoBehaviour
             case 11: return "Drag your plant photo onto its question to connect it.";
             case 12: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
             case 13: return "Close your notebook.";
-            case 14: return $"Aim your camera at a document, then press {KeyName(c.PlayerMovement.SwapCameraMode)} to switch to document mode. This allows you to view documents!";
-            case 15: return $"{KeyName(c.PlayerMovement.TakePicture)} in document mode to scan it into your notebook.";
+            case 14: return $"Look at a document and press {KeyName(c.PlayerMovement.Interact)} to read it.";
+            case 15: return $"{KeyName(c.PlayerMovement.TakePicture)} while reading a document to scan it into your notebook.";
             case 16: return "Open your notebook again.";
             case 17: return "You scanned the document! Drag it onto the document question to fill its answer slot.";
             case 18: return "Click upload to check how many of your links are correct.";
@@ -94,7 +94,7 @@ public class TutorialManager : MonoBehaviour
     private bool hasSeenDialogue;
     private bool tutorialStarted;
     private bool uploadClicked;
-    private PhotoCameraController photoCamera;
+    private PlayerState playerState;
 
     /// <summary>
     /// how other scripts can reach the tutorial (null in levels without one)
@@ -150,7 +150,7 @@ public class TutorialManager : MonoBehaviour
 
     private void Start()
     {
-        photoCamera = GameManager.PlayerInstance.GetComponent<PhotoCameraController>();
+        playerState = GameManager.PlayerInstance.GetComponent<PlayerState>();
         promptText.text = "";
         promptText.alpha = 0f;
     }
@@ -255,8 +255,8 @@ public class TutorialManager : MonoBehaviour
             case 11: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
             case 12: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
             case 13: return state != GameManager.GameState.NOTEBOOK;
-            case 14: return photoCamera.IsViewingDocument;
-            case 15: return photoCamera.IsViewingDocument && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
+            case 14: return playerState.GetDocOpen();
+            case 15: return playerState.GetDocOpen() && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
             case 16: return state == GameManager.GameState.NOTEBOOK;
             case 17: return AllQuestionSlotsFilled();
             case 18: return uploadClicked;
