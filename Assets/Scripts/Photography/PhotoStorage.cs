@@ -94,6 +94,25 @@ public class PhotoStorage : MonoBehaviour
        return true;
    }
 
+   /// <summary>
+   /// Creates a Photo in the notebook from a given image texture and adds it to the storage.
+   /// If the storage is at maximum capacity, returns 'false' and destroys the created photo.
+   /// </summary>
+   public bool CreatePhoto(Texture2D image, string subjectId)
+   {
+       Photo photo = new GameObject("Photo").AddComponent<Photo>();
+       photo.SetSubject(subjectId);
+       photo.SetImage(image);
+
+       if (!AddPhoto(photo))
+       {
+           Destroy(photo.gameObject);
+           Destroy(image);
+           return false;
+       }
+       return true;
+   }
+
    private int FindOpenSlot()
    {
        for (int i = 0; i < maxCapacity; i++)
