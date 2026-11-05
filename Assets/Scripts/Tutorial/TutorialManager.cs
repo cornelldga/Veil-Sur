@@ -48,7 +48,7 @@ public class TutorialManager : MonoBehaviour
             case 12: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
             case 13: return "Close your notebook.";
             case 14: return $"Look at a document and press {KeyName(c.PlayerMovement.Interact)} to read it.";
-            case 15: return $"{KeyName(c.PlayerMovement.TakePicture)} while reading a document to scan it into your notebook.";
+            case 15: return $"Documents can't be photographed, they must be scanned. {KeyName(c.PlayerMovement.TakePicture)} while reading one to scan it into your notebook.";
             case 16: return "Open your notebook again.";
             case 17: return "You scanned the document! Drag it onto the document question to fill its answer slot.";
             case 18: return "Click upload to check how many of your links are correct.";
