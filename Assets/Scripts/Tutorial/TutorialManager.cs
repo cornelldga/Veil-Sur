@@ -222,7 +222,7 @@ public class TutorialManager : MonoBehaviour
         {
             if (slot == null || !slot.isActiveAndEnabled || slot.Definition == null) continue;
             hasQuestions = true;
-            if (slot.Photo == null) return false;
+            if (!slot.AllPhotoSlotsFilled) return false;
         }
         return hasQuestions;
     }

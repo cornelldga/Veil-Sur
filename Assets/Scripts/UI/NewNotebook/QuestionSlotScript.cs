@@ -8,13 +8,15 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
 {
     [Tooltip("Question view owning this slot within the question prefab.")]
     [SerializeField] private QuestionNote question;
+    [Tooltip("Zero-based photo index within the question. Each slot needs a unique index.")]
+    [SerializeField, Min(0)] private int slotIndex;
     [Tooltip("Photo preview within this question slot prefab.")]
     [SerializeField] private RawImage preview;
     private Button button;
     private AspectRatioFitter fitter;
     private NotebookUIController notebook;
     private readonly PhotoDragPreview drag = new();
-    public Photo Photo => question.Photo;
+    public Photo Photo => question.GetPhoto(slotIndex);
     public Photo DraggedPhoto => drag.Photo;
 
     private void Start()
@@ -45,7 +47,7 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
             notebook.ShowPhotoPreview(Photo);
     }
 
-    public void SetPhoto(Photo photo) { question.SetPhoto(photo); }
+    public void SetPhoto(Photo photo) { question.SetPhoto(photo, slotIndex); }
     public void Clear() { SetPhoto(null); }
 
     public void OnBeginDrag(PointerEventData eventData)
