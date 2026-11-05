@@ -5,9 +5,15 @@ using UnityEngine;
 
 /// <summary>Question data, submitted evidence, and validation. Has no UI dependencies.</summary>
 public class QuestionDefinition : MonoBehaviour
-{
+{   
+    [Tooltip("Whether we check photos by subject IDs or actual objects.")]
+    [SerializeField] private bool requireIDs = false;
     [SerializeField] private List<PhotographableObject> required_objects = new();
     [SerializeField] private bool requireAllObjects = true;
+    [Tooltip("If requireIDs is true, this is the list of subject IDs required.")]
+    [SerializeField] private List<string> requiredSubjectIds = new();
+    [Tooltip("If requireIDs is true, whether we need ALL IDs in the list to be present.")]
+    [SerializeField] private bool requireAllIDs= true;
     [TextArea]
     [SerializeField] private string questionText;
     [TextArea]
@@ -103,8 +109,33 @@ public class QuestionDefinition : MonoBehaviour
     /// <summary>Checks the current answer without locking it or unlocking future questions.</summary>
     public bool CheckAnswer()
     {
+        if (requireIDs)
+        {
+            return CheckAnswerIDs();
+        }
         return IsCorrect || (HasStoredPhotos() && required_objects.Count > 0 &&
             (requireAllObjects ? required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId))) : required_objects.Any(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId)))));
+    }
+
+    /// <summary>
+    /// Same function as CheckAnswer(), but for IDs
+    /// </summary>
+    /// <returns>Whether the linked photos contain all required subject IDs</returns>
+    public bool CheckAnswerIDs() {
+        if (IsCorrect) return true;
+
+        if (!HasStoredPhotos() || requiredSubjectIds.Count == 0)
+            return false;
+
+        bool Matches(string subjectId)
+        {
+            return !string.IsNullOrWhiteSpace(subjectId) &&
+                photos.Any(photo => photo.HasSubject(subjectId));
+        }
+
+        return requireAllIDs
+            ? requiredSubjectIds.All(Matches)
+            : requiredSubjectIds.Any(Matches);
     }
 
     private bool HasStoredPhotos()
