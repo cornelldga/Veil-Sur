@@ -19,8 +19,14 @@ public class TutorialManager : MonoBehaviour
     [Tooltip("Speed of movement")]
     [SerializeField] private float moveSpeed = 1f;
 
+    // seconds the player must hold spring for before the sprint step completes.
+    private const float SprintHoldDuration = .5f;
+
+    // How long sprint has been held continuously; resets when released.
+    private float sprintHeldTime;
+
     // Built on demand (not stored) so prompts always show the player's current keybinds.
-    private const int PromptCount = 23;
+    private const int PromptCount = 21;
 
     private string GetPrompt(int index)
     {
@@ -243,7 +249,9 @@ public class TutorialManager : MonoBehaviour
         switch (step)
         {
             case 0: return controls.PlayerMovement.Move.ReadValue<Vector2>() != Vector2.zero;
-            case 1: return controls.PlayerMovement.Sprint.IsPressed();
+            case 1:
+                sprintHeldTime = controls.PlayerMovement.Sprint.IsPressed() ? sprintHeldTime + Time.unscaledDeltaTime : 0f;
+                return sprintHeldTime >= SprintHoldDuration;
             case 2: return controls.PlayerMovement.Crouch.IsPressed();
             case 3: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
             case 4: return PhotoStorage.Instance.Photos.Any(p => p != null && p.HasSubject(PlantSubjectId));
