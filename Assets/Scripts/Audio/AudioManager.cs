@@ -260,7 +260,8 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator ReclaimWhenFinished(AudioSource source)
     {
-        yield return new WaitWhile(() => source.isPlaying);
+        yield return new WaitWhile(() => source != null && source.isPlaying);
+
 
         source.transform.SetParent(transform);
         source.transform.localPosition = Vector3.zero;
