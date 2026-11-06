@@ -153,7 +153,16 @@ public class GameManager : MonoBehaviour
         // undo the lose state, e.g. after loading the last save from the lose panel
         if (hasLost)
         {
-            losePanel.SetActive(false);
+            if (losePanel != null)
+            {
+                losePanel.SetActive(false);
+                Transform staminaTransform = losePanel.transform.parent != null 
+                    ? losePanel.transform.parent.Find("StaminaUI") 
+                    : null;
+
+                staminaTransform?.gameObject.SetActive(true);
+            }
+
             UIManager.Instance.HideJumpscare();
             Time.timeScale = 1f;
         }
@@ -373,6 +382,12 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         // for when we have jumpscare audio
         // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+
+        if (losePanel != null && losePanel.transform.parent != null)
+        {
+            Transform staminaTransform = losePanel.transform.parent.Find("StaminaUI");
+            staminaTransform?.gameObject.SetActive(false);
+        }
 
         if (!SkipJumpscares)
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
