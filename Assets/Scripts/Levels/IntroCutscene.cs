@@ -13,7 +13,11 @@ public class IntroCutscene : MonoBehaviour
     private void Start()
     {
         // Skip straight to the tutorial until the intro video exists.
-        if (videoPlayer.clip == null) { Leave(); return; }
+        if (videoPlayer.clip == null)
+        {
+            Leave();
+            return;
+        }
 
         Cursor.visible = false;
         videoPlayer.loopPointReached += _ => Leave();
