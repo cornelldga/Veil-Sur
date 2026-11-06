@@ -1995,7 +1995,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1074733947030275012}
   m_Layer: 5
-  m_Name: Questions
+  m_Name: QuestionsUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
