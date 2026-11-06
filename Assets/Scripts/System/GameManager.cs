@@ -342,7 +342,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="frames">the jumpscare frames of the mutant that caught the player</param>
     /// <param name="fps">playback speed of the jumpscare frames</param>
-    /// <param name="audio">the jumpscare sound, null until mutants have one</param>
+    /// <param name="audio">the jumpscare sound of the mutant that caught the player</param>
     public void LoseGame(Sprite[] frames, float fps, AudioClip audio)
     {
         if (hasLost) return;
@@ -356,16 +356,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="frames">the jumpscare frames to play</param>
     /// <param name="fps">playback speed of the jumpscare frames</param>
-    /// <param name="audio">the jumpscare sound, currently unused</param>
+    /// <param name="audio">the jumpscare sound, skipped along with the frames</param>
     private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
     {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
         Time.timeScale = 0f;
-        // for when we have jumpscare audio
-        // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+        AudioManager.Instance.StopMusic();
 
         if (!SkipJumpscares)
+        {
+            AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
+        }
 
         losePanel.SetActive(true);
         // free the cursor so the lose panel's buttons can be clicked
