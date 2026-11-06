@@ -48,6 +48,8 @@ public class QuestionDefinition : MonoBehaviour
         : prerequisiteQuestions.Any(question => question.IsCorrect) ||
             prerequisitePuzzles.Any(puzzle => puzzle.HasBeenInteractedWith);
 
+    internal bool HasPrerequisites => prerequisiteQuestions.Count > 0 || prerequisitePuzzles.Count > 0;
+
     internal void RegisterPrerequisite(QuestionDefinition question)
     {
         prerequisiteQuestions.Add(question);

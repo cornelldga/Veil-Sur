@@ -15,7 +15,6 @@ public class NotebookUIController : SoundEvent
         [Tooltip("Question views for this page. Unassigned entries are ignored.")]
         public QuestionNote[] questionSlots = System.Array.Empty<QuestionNote>();
         internal readonly Queue<QuestionDefinition> pendingQuestions = new();
-        // TODO(Claire): TEMP FIX until you redo your LINKS INCORRECT fix (undone by merge). Delete everything tagged TEMP FIX.
         internal bool uploaded;
     }
 
@@ -84,7 +83,6 @@ public class NotebookUIController : SoundEvent
     /// <summary>Shows whether the current page's links are correct, or nothing until that page has been uploaded.</summary>
     internal void RefreshPageFeedback()
     {
-        // TODO(Claire): TEMP FIX
         if (!pages[CurrentPageIndex].uploaded)
         {
             numberCorrectText.text = "";
@@ -167,7 +165,9 @@ public class NotebookUIController : SoundEvent
                 slot.gameObject.SetActive(false);
             }
 
-            foreach (var question in page.startQuestions) page.pendingQuestions.Enqueue(question);
+            // A  question that other questions unlock waits before being shown
+            foreach (var question in page.startQuestions)
+                if (!question.HasPrerequisites || question.CanUnlock) page.pendingQuestions.Enqueue(question);
             ShowPendingQuestions(page);
         }
         ShowPage(0);
@@ -289,7 +289,6 @@ public class NotebookUIController : SoundEvent
         slot.Bind(question);
         slot.gameObject.SetActive(true);
         numberCorrectText.text = "";
-        // TODO(Claire): TEMP FIX
         page.uploaded = false;
         slot.gameObject.SetActive(page == pages[CurrentPageIndex]);
         RefreshPageFeedback();

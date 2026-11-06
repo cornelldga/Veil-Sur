@@ -5,6 +5,8 @@ using TMPro;
 public class DocData
 {
     public string text;
+    // optional: one entry per line, joined with newlines. Easier to edit than one long text string.
+    public string[] lines;
 }
 
 
@@ -47,7 +49,6 @@ public class Document : MonoBehaviour, Interactable
     /// </summary>
     private void LoadDocData()
     {
-        // docData = JsonUtility.FromJson<DocData>(jsonFile.text);
         if (jsonFile == null)
         {
             Debug.LogWarning($"Document '{name}' has no JSON file assigned.", this);
@@ -61,7 +62,12 @@ public class Document : MonoBehaviour, Interactable
         catch (System.ArgumentException e)
         {
             Debug.LogWarning($"Document '{name}' has invalid JSON: {e.Message}", this);
+            return;
         }
+
+        // Multi-line documents use a "lines" array; join it into the single text the viewer shows.
+        if (docData != null && docData.lines != null && docData.lines.Length > 0)
+            docData.text = string.Join("\n", docData.lines);
     }
 
     /// <summary>
