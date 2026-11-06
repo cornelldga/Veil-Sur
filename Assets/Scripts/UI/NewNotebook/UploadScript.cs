@@ -86,6 +86,7 @@ public class UploadScript : MonoBehaviour
                 question.Verify();
         }
         UIManager.Instance.Notebook.RefreshPageFeedback();
+        UIManager.Instance.Notebook.NotifyQuestionsUnlocked();
     }
 
     private void OnDestroy()

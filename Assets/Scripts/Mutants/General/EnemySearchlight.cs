@@ -43,6 +43,7 @@ public class EnemySearchlight : MonoBehaviour
     [Header("Stun Settings")]
     [SerializeField] protected float stunDuration = 1f; // How long stun lasts
     [SerializeField] protected float stunCooldown = 10f; // Time between stuns
+    [SerializeField] private ParticleSystem stunEffects; // Stun VFX
 
     [Header("Visuals")]
     [SerializeField] protected Light spotLight;
@@ -87,6 +88,8 @@ public class EnemySearchlight : MonoBehaviour
         lastPosition = transform.position;
         timeSinceLastStun = stunCooldown + stunDuration;
         billboard = GetComponentInChildren<MutantBillboard>();
+        stunEffects.Stop();
+        stunEffects.Clear();
 
         if (showConeMesh && coneMeshFilter != null)
         {
@@ -286,6 +289,8 @@ public class EnemySearchlight : MonoBehaviour
             case AlertState.Stun:
                 if (timeSinceLastStun >= stunDuration)
                 {
+                    stunEffects.Stop();
+                    stunEffects.Clear();
                     if (hasKnownPlayerPosition)
                     {
                         SetState(AlertState.Suspicious);
@@ -483,6 +488,16 @@ public class EnemySearchlight : MonoBehaviour
     /// </summary>
     public void Stun()
     {
+        if (canSeePlayer && timeSinceLastStun >= stunCooldown + stunDuration)
+        {
+            // Debug.Log("Successful stun!");
+            timeSinceLastStun = 0;
+            SetState(AlertState.Stun);
+            stunEffects.Play();
+            ResetSuspicion();
+            
+        }
+        return;
         if (billboard != null && !billboard.IsShowingFront) return;
 
         if ((CurrentState == AlertState.Alert || CurrentState == AlertState.Suspicious)
@@ -491,6 +506,7 @@ public class EnemySearchlight : MonoBehaviour
             // Debug.Log("Successful stun!");
             timeSinceLastStun = 0;
             SetState(AlertState.Stun);
+            stunEffects.Play();
             ResetSuspicion();
         }
     }
