@@ -11,7 +11,8 @@ public class NotebookUIController : SoundEvent
     [System.Serializable]
     public class NotebookPage
     {
-        public QuestionDefinition[] startQuestions = System.Array.Empty<QuestionDefinition>();
+        // Assigned per level by LevelQuestions.
+        [System.NonSerialized] public QuestionDefinition[] startQuestions = System.Array.Empty<QuestionDefinition>();
         [Tooltip("Question views for this page. Unassigned entries are ignored.")]
         public QuestionNote[] questionSlots = System.Array.Empty<QuestionNote>();
         internal readonly Queue<QuestionDefinition> pendingQuestions = new();
@@ -154,7 +155,31 @@ public class NotebookUIController : SoundEvent
         if (shakeTarget != null) shakeTarget.anchoredPosition = shakeOrigin;
     }
 
-    internal void Initialize()
+    /// <summary>Replaces the previous level's questions with this level's and resets notebook progress.</summary>
+    public void Load(LevelQuestions level)
+    {
+        if (level.PageCount > pages.Length)
+            Debug.LogWarning($"{level.name} defines {level.PageCount} pages but the notebook only has {pages.Length}.", level);
+
+        ClearLevel();
+        for (int i = 0; i < pages.Length; i++) pages[i].startQuestions = level.GetStartQuestions(i);
+        Initialize();
+    }
+
+    private void ClearLevel()
+    {
+        UnsubscribeAll();
+        questionPages.Clear();
+        puzzles.Clear();
+        newlyUnlockedCount = 0;
+        foreach (var page in pages)
+        {
+            page.pendingQuestions.Clear();
+            page.uploaded = false;
+        }
+    }
+
+    private void Initialize()
     {
         RegisterPrerequisites();
 
@@ -211,7 +236,9 @@ public class NotebookUIController : SoundEvent
         }
     }
 
-    private void OnDestroy()
+    private void OnDestroy() { UnsubscribeAll(); }
+
+    private void UnsubscribeAll()
     {
         foreach (var slot in pages.SelectMany(page => page.questionSlots))
             if (slot != null && slot.Definition != null) slot.Definition.Solved -= OnQuestionSolved;
