@@ -260,14 +260,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonitorPuzzle
   futureQuestions: []
+  debugSolve: 0
   screen: {fileID: 7025718878792002072}
   staticScreen: {fileID: 2100000, guid: 11ff97e59db4f4042b0b164c6bdd2165, type: 2}
-  cameraScreen: {fileID: 2100000, guid: 932cf3a0e6672437690010cdb05a00af, type: 2}
+  cameraScreen: {fileID: 2100000, guid: 1982ebab5758a43159c0658a5ec8fa86, type: 2}
   feedSubject: {fileID: 1672426085529923660}
   earlyInteract:
     m_PersistentCalls:
       m_Calls: []
   cameraVideo: {fileID: 7479693943113727288}
+  idQuestion: {fileID: 0}
+  inactiveCount: 3
 --- !u!4 &7691970356258279068 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6a90c1d34bc199b45923d4cb46810bad, type: 3}
