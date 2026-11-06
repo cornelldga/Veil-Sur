@@ -155,6 +155,7 @@ GameObject:
   - component: {fileID: 28695803084452280}
   - component: {fileID: 7648119910814920436}
   - component: {fileID: 3314498800505621458}
+  - component: {fileID: 131139320717189774}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -268,14 +269,12 @@ MonoBehaviour:
   photoCooldown: 0.79
   toggleZoom: 0
   maxPhotoRange: 10
-  maxDocReadRange: 3
   photoOcclusionMask:
     serializedVersion: 2
     m_Bits: 4294967295
   blurRangePastMax: 2
   shutterClip: {fileID: 8300000, guid: 2a5906470f95e4dcdacd7761937ab0ec, type: 3}
   shutterDelay: 0.1
-  documentScanClip: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
   detectRadius: 20
   stunRadius: 30
   maxRadius: 17.5
@@ -368,6 +367,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NotebookController
   notebookOpenClip: {fileID: 8300000, guid: 0fafff80f0a1b97499e14fa718fe40f1, type: 3}
+--- !u!114 &131139320717189774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805399525289963691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d39e09005c8fa034b8543077868e3f12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DocumentScanner
+  documentScanSfx: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
+  captureProgress: 0.8
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0
