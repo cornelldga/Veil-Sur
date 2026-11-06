@@ -23,6 +23,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
+
+    [Header("Debug Settings")]
+    [SerializeField] private bool debugMode = true;
+    [SerializeField] private Key reloadKey = Key.Y;
+
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
@@ -175,6 +180,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (debugMode)
+        {
+            HandleDebugInput();
+        }
+        
         var kb = Keyboard.current;
         if (kb == null || _state == GameState.MAIN_MENU || IsRebinding) return;
 
@@ -456,6 +466,24 @@ public class GameManager : MonoBehaviour
         }
 
         return stamina.StaminaPercent;
+    }
+
+    private void HandleDebugInput()
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        // Uses the serialized Key enum from the Inspector
+        if (keyboard[reloadKey].wasPressedThisFrame)
+        {
+            RestartCurrentScene();
+        }
+    }
+
+    private void RestartCurrentScene()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 }
