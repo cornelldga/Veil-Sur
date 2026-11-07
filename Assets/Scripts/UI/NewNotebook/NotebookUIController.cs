@@ -299,6 +299,26 @@ public class NotebookUIController : SoundEvent
         ErrorNotifier.Show($"{count} question{(count == 1 ? "" : "s")} unlocked in notebook");
     }
 
+    /// <summary>Index of the page a question is shown or waiting on, or -1 if it isn't unlocked in the notebook.</summary>
+    public int UnlockedPage(QuestionDefinition question)
+    {
+        for (int i = 0; i < pages.Length; i++)
+            if (pages[i].pendingQuestions.Contains(question) ||
+                pages[i].questionSlots.Any(slot => slot != null && slot.Definition == question))
+                return i;
+        return -1;
+    }
+
+    /// <summary>Unlocks a question onto a page when loading a save, skipping its prerequisite checks.</summary>
+    public void RestoreUnlocked(QuestionDefinition question, int page)
+    {
+        if (question == null || page < 0 || page >= pages.Length || UnlockedPage(question) >= 0) return;
+
+        questionPages[question] = pages[page];
+        pages[page].pendingQuestions.Enqueue(question);
+        ShowPendingQuestions(pages[page]);
+    }
+
     /// <summary>Reveals an empty view first, then reuses a solved one. Returns false when all slots are in use.</summary>
     /// <param name="question">Question to show on the page it belongs to.</param>
     /// <returns>False if that page has no free or solved slot; otherwise true.</returns>
