@@ -22,6 +22,9 @@ public class PlayerInteraction : MonoBehaviour
     private float holdTimer;
     private bool holdCompleted;
 
+    // Highlight state
+    private InteractableHighlight currentHighlight;
+
     private void Awake()
     {
         // controls = new PlayerControls();
@@ -38,6 +41,7 @@ public class PlayerInteraction : MonoBehaviour
     private void OnDisable()
     {
         controls.PlayerMovement.Disable();
+        SetHighlight(null);
     }
 
     /// <summary>
@@ -71,6 +75,7 @@ public class PlayerInteraction : MonoBehaviour
             // Don't show 'E to Interact' when Camera is on or Notebook is open
             UIManager.Instance.ShowInteractPrompt(false);
             playerState.SetLookTarget(null);
+            SetHighlight(null);
             ResetHold();
             return; // Block interaction when Camera is open (Doc mode).
         }
@@ -81,6 +86,7 @@ public class PlayerInteraction : MonoBehaviour
             interactable = hit.collider.GetComponentInParent<Interactable>();
         }
         playerState.SetLookTarget(interactable);
+        SetHighlight(interactable); 
             UIManager.Instance.ShowInteractPrompt(interactable != null);
         if (interactable is HoldInteractable holdable)
         {
@@ -93,6 +99,27 @@ public class PlayerInteraction : MonoBehaviour
             interactable.Interact();
         }
 
+    }
+
+    /// <summary>
+    /// Turns the glow off on the previous target and on for the new one.
+    /// Pass null to clear the highlight.
+    /// </summary>
+    /// <param name="target">the interactable currently being looked at, or null</param>
+    private void SetHighlight(Interactable target) // NEW (whole method)
+    {
+        InteractableHighlight next = null;
+        if (target is Component c)
+        {
+            next = c.GetComponent<InteractableHighlight>();
+            if (next == null) next = c.gameObject.AddComponent<InteractableHighlight>();
+        }
+
+        if (next == currentHighlight) return;
+
+        if (currentHighlight != null) currentHighlight.SetHighlighted(false);
+        currentHighlight = next;
+        if (currentHighlight != null) currentHighlight.SetHighlighted(true);
     }
 
     /// <summary>
