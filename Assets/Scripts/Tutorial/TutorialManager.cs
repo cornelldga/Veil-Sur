@@ -103,6 +103,9 @@ public class TutorialManager : MonoBehaviour
     private bool uploadClicked;
     private PlayerState playerState;
 
+    [Tooltip("y position the tutorial prompt moves to when notebook open")]
+    [SerializeField] private float notebookOpenY = 350f;
+
     /// <summary>
     /// how other scripts can reach the tutorial (null in levels without one)
     /// </summary>
@@ -310,8 +313,9 @@ public class TutorialManager : MonoBehaviour
     /// </summary>
     private void MoveUpandDown()
     {
+        float y = GameManager.Instance.state == GameManager.GameState.NOTEBOOK ? notebookOpenY : basePosition.y;
         float offset = Mathf.Sin(Time.unscaledTime * moveSpeed * Mathf.PI * 2f) * amplitude;
-        promptRect.anchoredPosition = basePosition + new Vector2(0f, offset);
+        promptRect.anchoredPosition = new Vector2(basePosition.x, y) + new Vector2(0f, offset);
     }
 
 }
