@@ -15,9 +15,12 @@ public class QuestionNote : MonoBehaviour
     [SerializeField] private TMP_Text feedbackLabel;
     private Color originalColor;
     private QuestionDefinition definition;
+    private QuestionSlotScript[] photoSlots = Array.Empty<QuestionSlotScript>();
 
     public QuestionDefinition Definition => definition;
     public Photo Photo => definition != null ? definition.Photo : null;
+    public bool AllPhotoSlotsFilled => definition != null && photoSlots.Length > 0 &&
+        Array.TrueForAll(photoSlots, slot => slot.Photo != null);
     public bool IsCorrect => definition != null && definition.IsCorrect;
     public bool HasBeenUploaded => definition != null && definition.HasBeenUploaded;
     public string QuestionText => definition != null ? definition.QuestionText : "";
@@ -27,6 +30,7 @@ public class QuestionNote : MonoBehaviour
 
     private void Awake()
     {
+        photoSlots = GetComponentsInChildren<QuestionSlotScript>(true);
         if (resultGraphic != null) originalColor = resultGraphic.color;
     }
 
@@ -54,7 +58,8 @@ public class QuestionNote : MonoBehaviour
 
     public void Unbind() { Bind(null); }
 
-    public void SetPhoto(Photo photo) { definition?.SetPhoto(photo); }
+    public Photo GetPhoto(int index) => definition != null ? definition.GetPhoto(index) : null;
+    public void SetPhoto(Photo photo, int index = 0) { definition?.SetPhoto(photo, index); }
     public void ResetResult() { definition?.ResetResult(); }
     public void Verify() { definition?.Verify(); }
 
