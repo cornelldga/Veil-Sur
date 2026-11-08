@@ -47,7 +47,7 @@ public class TutorialManager : MonoBehaviour
             case 11: return "Drag your plant photo onto its question to connect it.";
             case 12: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
             case 13: return "Close your notebook.";
-            case 14: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon. Try the PLANT!";
+            case 14: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon. <sprite index=0 tint=1> Try the PLANT!";
             case 15: return $"You can also look at a document and press {KeyName(c.PlayerMovement.Interact)} to read it.";
             case 16: return $"Documents can't be photographed, they must be scanned. {KeyName(c.PlayerMovement.TakePicture)} while reading one to scan it into your notebook.";
             case 17: return "Open your notebook again.";
