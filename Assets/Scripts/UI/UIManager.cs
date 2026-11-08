@@ -71,6 +71,9 @@ public class UIManager : MonoBehaviour
     [Header("Interact Popup")]
     [SerializeField] public RawImage interact;
 
+    [Header("Tutorial Text")]
+    [SerializeField] public TMP_Text tutorialText;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)

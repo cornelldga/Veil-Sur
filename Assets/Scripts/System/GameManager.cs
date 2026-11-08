@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
-    private int currentLevelIndex;
+    public string currentSceneName;
     
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public Pose ArrivalPose { get; set; }
     private bool hasLost = false;
-
     public void SetMouseSensitivity(float value)
     {
         MouseSensitivity = value;
@@ -145,6 +144,7 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        currentSceneName = scene.name;
         // undo the lose state, e.g. after loading the last save from the lose panel
         if (hasLost)
         {
