@@ -1,88 +1,66 @@
 using UnityEngine;
 
 /// <summary>
-/// Travels along a parabolic arc from [startPosition], then destroys itself.
-/// The arc travels with [height] [distance] and [speed], which can be set through scripting.
+/// Physics-driven ball. After [Launch], it flies under gravity until it hits something, then makes
+/// a sound and destroys itself.
 /// </summary>
-[RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(Rigidbody), typeof(SphereCollider))]
 public class TennisBall : SoundEvent
 {
-    [SerializeField, Tooltip("Height to travel along arc")] float height = 2f;
-    [SerializeField, Tooltip("Distance to travel along arc")] float distance = 6f;
-    [SerializeField, Tooltip("Units per second along the arc")] float speed = 8f;
-    [SerializeField] LayerMask collisionMask = ~0;
+    [SerializeField, Tooltip("Seconds before the ball destroys itself if nothing is hit")] float maxLifetime = 5f;
 
+    private Rigidbody rb;
     private float ballVolume;
-    private float radius;
-    private Vector3 startPosition;
-    private Vector3 direction;
-    // Arc progress, 0 at start and 1 at [distance]
-    private float t;
+    private bool ended;
 
-    public void SetHeight(float h) { height = h; }
-    public void SetDistance(float d) { distance = Mathf.Max(0.01f, d); }
-    public void SetSpeed(float s) { speed = s; }
     public void SetVolume(float volume) { ballVolume = volume; }
-    public void SetDirection(Vector3 dir) { dir.y = 0f; direction = dir.normalized; }
 
     private void Awake()
     {
-        // Set radius based on collider
-        Vector3 scale = transform.lossyScale;
-        radius = GetComponent<SphereCollider>().radius *
-                Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
-        startPosition = transform.position;
-        if (direction == Vector3.zero) SetDirection(transform.forward);
-        if (direction == Vector3.zero) direction = Vector3.forward;
-    }
-
-    private void Update()
-    {
-        /* Animate parabolic movement: advance t so the ball moves [speed]
-           units/second along the arc itself (math done with Claude) */
-        float horizontal = Mathf.Max(0.01f, distance);
-        float vertical = 4f * height * (1f - 2f * t);
-        float arcSpeed = Mathf.Sqrt(horizontal * horizontal + vertical * vertical);
-        t += speed * Time.deltaTime / arcSpeed;
-
-        // End path when hitting an object
-        Vector3 next = PositionAt(t);
-        Vector3 delta = next - transform.position;
-        // Only check collisions if moving and if not at start of path (avoid collisions with launcher)
-        if (delta.sqrMagnitude > 0f && t >= 0.15f &&
-            Physics.SphereCast(transform.position, radius, delta.normalized, out RaycastHit hit,
-                               delta.magnitude, collisionMask, QueryTriggerInteraction.Ignore))
-        {
-            transform.position = hit.point + hit.normal * radius;
-            EndOfPath();
-            return;
-        }
-        // Fallback if ball left bounds of level
-        else if (t >= 2.0f)
-        {
-            EndOfPath();
-        }
-
-        // Update position
-        transform.position = next;
+        Invoke(nameof(EndOfPath), maxLifetime);
     }
 
     /// <summary>
-    /// Parabola: 0 at t=0 and t=1, [height] at t=0.5
+    /// Stop the ball from colliding with [colliders] (used to not collide with launcher)
     /// </summary>
-    private Vector3 PositionAt(float t)
+    public void IgnoreCollisions(Collider[] colliders)
     {
-        float arc = 4f * height * t * (1f - t);
-        return startPosition + direction * (t * distance) + Vector3.up * arc;
+        Collider ballCollider = GetComponent<SphereCollider>();
+        foreach (Collider col in colliders)
+        {
+            Physics.IgnoreCollision(ballCollider, col);
+        }
+    }
+
+    /// <summary>
+    /// Calculate launch velocity given [height] and [distance] parameters.
+    /// </summary>
+    public void Launch(Vector3 direction, float distance, float height)
+    {
+        direction.y = 0f;
+        float gravity = -Physics.gravity.y; // hi! -jason
+        float upSpeed = Mathf.Sqrt(2f * gravity * Mathf.Max(0.01f, height));
+        float flightTime = 2f * upSpeed / gravity;
+
+        rb.linearVelocity = direction.normalized * (distance / flightTime) + Vector3.up * upSpeed;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        EndOfPath();
     }
 
     private void EndOfPath()
     {
-        RegisterSoundEvent(transform.position, ballVolume, "Ball");
-        Destroy(gameObject);
+        // Only execute once, that way the sound doesn't play for multiple collisions at the same time.
+        if (ended) return;
+        ended = true;
+
+        RegisterSoundEvent(rb.position, ballVolume, "Ball");
     }
 }

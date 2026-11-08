@@ -1,3 +1,14 @@
 {
-  "text": "LabReport1 TBD"
+  "lines": [
+    "<size=50%>From: wellness@oyo.com",
+    "Subject: Memory Wellness Reminder",
+    "<size=60%> </size>",
+    "<i>Dear</i> valued staff!",
+    "<size=50%> </size>",
+    "We have noticed an <i>increase</i> in forgetfulness lately. This is completely normal, and nothing to worry about!",
+    "<size=50%> </size>",
+    "<b>Please write important codes down somewhere safe.</b>",
+    "<size=80%> </size>",
+    "<i>Stay <i>well </i>! :-)</i>"
+  ]
 }
