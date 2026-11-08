@@ -109,3 +109,4 @@ InitTestScene*.unity*
 
 # ProBuilder settings
 probuilder.settings.json
+ProjectSettings/Packages/com.unity.probuilder/Settings.json

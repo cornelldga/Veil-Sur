@@ -47,7 +47,7 @@ public class TutorialManager : MonoBehaviour
             case 11: return "Drag your plant photo onto its question to connect it.";
             case 12: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
             case 13: return "Close your notebook.";
-            case 14: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
+            case 14: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon. Try the plant!";
             case 15: return $"You can also look at a document and press {KeyName(c.PlayerMovement.Interact)} to read it.";
             case 16: return $"Documents can't be photographed, they must be scanned. {KeyName(c.PlayerMovement.TakePicture)} while reading one to scan it into your notebook.";
             case 17: return "Open your notebook again.";
@@ -267,7 +267,7 @@ public class TutorialManager : MonoBehaviour
             case 12: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
             case 13: return state != GameManager.GameState.NOTEBOOK;
             case 14: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
-            case 15: return playerState.GetDocOpen();
+            case 15: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && playerState.GetDocOpen();
             case 16: return playerState.GetDocOpen() && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
             case 17: return state == GameManager.GameState.NOTEBOOK;
             case 18: return AllQuestionSlotsFilled();
