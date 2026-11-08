@@ -6,7 +6,7 @@ using UnityEngine;
 public class TennisLauncher : PuzzleInteractable
 {
     [SerializeField] float launchDistance = 6f;
-    [SerializeField] float launchSpeed = 8f;
+    [SerializeField] float launchHeight = 2f;
     [SerializeField] float ballVolume = 100f;
     [SerializeField] GameObject tennisBallPrefab;
 
@@ -17,6 +17,7 @@ public class TennisLauncher : PuzzleInteractable
 
     public override void FailBehavior()
     {
+        Trigger(launchDistance); //TODO remove
         ErrorNotifier.Show("Seems complicated. Maybe I can find instructions somewhere?");
     }
 
@@ -25,14 +26,11 @@ public class TennisLauncher : PuzzleInteractable
     /// </summary>
     void Trigger(float dist)
     {
-        Vector3 destination = this.transform.position + this.transform.forward * dist;
-
         GameObject ball = Instantiate(tennisBallPrefab, transform.position, transform.rotation);
         TennisBall ballScript = ball.GetComponent<TennisBall>();
-        ballScript.SetDistance(dist);
-        ballScript.SetDirection(this.transform.forward);
-        ballScript.SetSpeed(launchSpeed);
         ballScript.SetVolume(ballVolume);
+        ballScript.IgnoreCollisions(GetComponentsInChildren<Collider>());
+        ballScript.Launch(this.transform.forward, dist, launchHeight);
     }
 
 

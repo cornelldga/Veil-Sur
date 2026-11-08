@@ -42,6 +42,19 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat(SensitivityKey, value);
     }
 
+    private const string SkipJumpscaresKey = "SkipJumpscares";
+    public bool SkipJumpscares { get; private set; }
+
+    /// <summary>
+    /// Saved to PlayerPrefs so the choice survives restarts. Hooked to the settings toggle.
+    /// </summary>
+    /// <param name="skip">true skips jumpscares</param>
+    public void SetSkipJumpscares(bool skip)
+    {
+        SkipJumpscares = skip;
+        PlayerPrefs.SetInt(SkipJumpscaresKey, skip ? 1 : 0);
+    }
+
     /// <summary>
     /// Fired after every state change as (oldState, newState). UIManager listens to this.
     /// </summary>
@@ -111,6 +124,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         MouseSensitivity = PlayerPrefs.GetFloat(SensitivityKey, 1f);
+        SkipJumpscares = PlayerPrefs.GetInt(SkipJumpscaresKey, 0) == 1;
 
         // Keeps this object alive when switching scenes
         DontDestroyOnLoad(gameObject);
@@ -350,7 +364,8 @@ public class GameManager : MonoBehaviour
         // for when we have jumpscare audio
         // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
 
-        yield return UIManager.Instance.PlayJumpscare(frames, fps);
+        if (!SkipJumpscares)
+            yield return UIManager.Instance.PlayJumpscare(frames, fps);
 
         losePanel.SetActive(true);
         // free the cursor so the lose panel's buttons can be clicked
