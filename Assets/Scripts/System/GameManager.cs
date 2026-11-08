@@ -27,6 +27,25 @@ public class GameManager : MonoBehaviour
 
     [Header("Level Info")]
     private int currentLevelIndex;
+
+    private GameState _state = GameState.DEFAULT;
+    public GameState state
+    {
+        get => _state;
+        set => RequestStateChange(value);
+    }
+
+    private GameState _stateBeforePause = GameState.DEFAULT;
+
+    public enum GameState
+    {
+        MAIN_MENU,
+        PAUSED,
+        DEFAULT,
+        CAMERA,
+        NOTEBOOK,
+        LOST
+    }
     
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
@@ -40,6 +59,19 @@ public class GameManager : MonoBehaviour
     {
         MouseSensitivity = value;
         PlayerPrefs.SetFloat(SensitivityKey, value);
+    }
+
+    private const string SkipJumpscaresKey = "SkipJumpscares";
+    public bool SkipJumpscares { get; private set; }
+
+    /// <summary>
+    /// Saved to PlayerPrefs so the choice survives restarts. Hooked to the settings toggle.
+    /// </summary>
+    /// <param name="skip">true skips jumpscares</param>
+    public void SetSkipJumpscares(bool skip)
+    {
+        SkipJumpscares = skip;
+        PlayerPrefs.SetInt(SkipJumpscaresKey, skip ? 1 : 0);
     }
 
     /// <summary>
@@ -82,23 +114,6 @@ public class GameManager : MonoBehaviour
     }
 
     public static bool IsRebinding { get; set; }
-    private GameState _state = GameState.DEFAULT;
-    public GameState state
-    {
-        get => _state;
-        set => RequestStateChange(value);
-    }
-
-    private GameState _stateBeforePause = GameState.DEFAULT;
-
-    public enum GameState
-    {
-        MAIN_MENU,
-        PAUSED,
-        DEFAULT,
-        CAMERA,
-        NOTEBOOK
-    }
 
     private void Awake()
     {
@@ -111,6 +126,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         MouseSensitivity = PlayerPrefs.GetFloat(SensitivityKey, 1f);
+        SkipJumpscares = PlayerPrefs.GetInt(SkipJumpscaresKey, 0) == 1;
 
         // Keeps this object alive when switching scenes
         DontDestroyOnLoad(gameObject);
@@ -136,7 +152,8 @@ public class GameManager : MonoBehaviour
         {
             losePanel.SetActive(false);
             UIManager.Instance.HideJumpscare();
-            Time.timeScale = 1f;
+            // Time.timeScale = 1f;
+            SetState(GameState.DEFAULT); // handles timeScale too
         }
         hasLost = false;
 
@@ -215,6 +232,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleEscape()
     {
+        if (_state == GameState.LOST) return;
         if (_state == GameState.NOTEBOOK)
         {
             var notebook = UIManager.Instance.Notebook;
@@ -293,6 +311,7 @@ public class GameManager : MonoBehaviour
         // While paused, only TogglePause can leave the state. This stops things like
         // releasing right-click (which sets DEFAULT) from silently unpausing the game.
         if (_state == GameState.PAUSED && newState != GameState.PAUSED) return;
+        if (_state == GameState.LOST) return;
         SetState(newState);
     }
 
@@ -316,7 +335,7 @@ public class GameManager : MonoBehaviour
         if (newState == GameState.PAUSED) _stateBeforePause = old;
  
         _state = newState;
-        Time.timeScale = (newState == GameState.PAUSED) ? 0f : 1f;
+        Time.timeScale = (newState == GameState.PAUSED || newState == GameState.LOST) ? 0f : 1f;
  
         StateChanged?.Invoke(old, newState);
     }
@@ -346,11 +365,13 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
     {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
-        Time.timeScale = 0f;
+        // Time.timeScale = 0f;
+        SetState(GameState.LOST); //deal with timescale in setstate
         // for when we have jumpscare audio
         // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
 
-        yield return UIManager.Instance.PlayJumpscare(frames, fps);
+        if (!SkipJumpscares)
+            yield return UIManager.Instance.PlayJumpscare(frames, fps);
 
         losePanel.SetActive(true);
         // free the cursor so the lose panel's buttons can be clicked

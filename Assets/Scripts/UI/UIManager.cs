@@ -86,7 +86,7 @@ public class UIManager : MonoBehaviour
         documentModeIcon = transform.Find("CameraView/DocumentModeIcon").gameObject;
 
         cameraModeIcon.SetActive(cameraMode == PhotoCameraController.CameraMode.Photo);
-        documentModeIcon.SetActive(cameraMode == PhotoCameraController.CameraMode.Document);
+        documentModeIcon.SetActive(false);
 
         
         snapOverlay.canvasRenderer.SetAlpha(0f);
@@ -173,12 +173,15 @@ public class UIManager : MonoBehaviour
             case GameManager.GameState.PAUSED:
                 Show(UIGroupId.Pause);
                 break;
+            case GameManager.GameState.LOST:
+                break;
         }
 
         // Cursor + player control follow the state
         bool uiOpen = state == GameManager.GameState.MAIN_MENU
                 || state == GameManager.GameState.PAUSED
-                || state == GameManager.GameState.NOTEBOOK;
+                || state == GameManager.GameState.NOTEBOOK
+                || state == GameManager.GameState.LOST;
 
         Cursor.lockState = uiOpen ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = uiOpen;
@@ -279,14 +282,6 @@ public class UIManager : MonoBehaviour
         {
             cameraModeLabel.text = "[PHOTO MODE]";
             cameraModeIcon.SetActive(true);
-            documentModeIcon.SetActive(false);
-            
-        }
-
-        else if (cameraMode == PhotoCameraController.CameraMode.Document) {
-            cameraModeLabel.text = "[DOCUMENT MODE]";
-            documentModeIcon.SetActive(true);
-            cameraModeIcon.SetActive(false);
         }
     }
 
