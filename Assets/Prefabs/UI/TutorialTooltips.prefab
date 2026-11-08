@@ -151,6 +151,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialManager
   promptText: {fileID: 914365772190382192}
+  promptBackground: {fileID: 0}
+  backgroundPadding: {x: 24, y: 16}
+  backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+  keyHighlightColor: {r: 0.98823535, g: 0.48627454, b: 0.23529413, a: 0.11764706}
   fadeDuration: 0.4
   amplitude: 10
   moveSpeed: 1
+  notebookOpenY: 350

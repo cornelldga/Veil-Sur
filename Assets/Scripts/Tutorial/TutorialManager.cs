@@ -11,7 +11,14 @@ public class TutorialManager : MonoBehaviour
 {
     [Tooltip("Text that displays the current tutorial prompt")]
     [SerializeField] private TMP_Text promptText;
-    
+
+    [Tooltip("background color")]
+    [SerializeField] private Color backgroundColor = Color.white;
+    [Tooltip("padding")]
+    [SerializeField] private Vector4 backgroundPadding = new(16f, 16f, 8f, 8f);
+    [Tooltip("highlight color behind key names")]
+    [SerializeField] private Color keyHighlightColor = new(0.9f, 0.5f, 0.1f, 1f);
+
     [Tooltip("Seconds for the prompt to fade in or out")]
     [SerializeField] private float fadeDuration = 0.4f;
     [Tooltip("How far it moves up and down")]
@@ -57,16 +64,28 @@ public class TutorialManager : MonoBehaviour
             case 21: return "Close your notebook.";
             // Maybe in the above ^ prompt we'll include a picture of the interact icon.
             // Pause isn't an input action (GameManager reads the ESC key directly), so it can't be looked up like the others.
-            case 22: return "You can always pause by pressing <mark=#FFFFFF18 padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
+            case 22: return $"You can always pause by pressing <mark={KeyMarkHex} padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
 
             default: return "";
         }
     }
 
+    private string KeyMarkHex => "#" + ColorUtility.ToHtmlStringRGBA(keyHighlightColor);
+    private string BackgroundMarkHex => "#" + ColorUtility.ToHtmlStringRGBA(backgroundColor);
+
+    /// <summary>
+    /// whole prompt with background color and padding
+    /// </summary>
+    private string WrapWithBackground(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        return $"<mark={BackgroundMarkHex} padding=\"{backgroundPadding.x},{backgroundPadding.y},{backgroundPadding.z},{backgroundPadding.w}\">{text}</mark>";
+    }
+
     /// <summary>
     /// Readable name of the key(s) currently bound to an action, from the shared (rebindable) controls.
     /// </summary>
-    private static string KeyName(InputAction action)
+    private string KeyName(InputAction action)
     {
         var parts = new List<string>();
 
@@ -87,9 +106,9 @@ public class TutorialManager : MonoBehaviour
 
         // Several bindings on one action (e.g. duplicate defaults) shouldn't repeat the same name.
         parts = parts.Distinct().ToList();
-        // Highlight the whole key list (separators included) with a 15% opacity white box (TMP rich text).
+        // Highlight the whole key list (separators included) with the key-highlight color (TMP rich text).
         string keys = parts.Count == 0 ? "[unbound]" : string.Join(parts.Count == 4 ? "/" : " or ", parts);
-        return $"<mark=#FFFFFF18 padding=\"6,6,1,1\">{keys}</mark>";
+        return $"<mark={KeyMarkHex} padding=\"6,6,1,1\">{keys}</mark>";
     }
 
     private int step;
@@ -290,7 +309,7 @@ public class TutorialManager : MonoBehaviour
     /// </summary>
     private void UpdatePromptFade()
     {
-        string wantedText = step < PromptCount ? GetPrompt(step) : "";
+        string wantedText = step < PromptCount ? WrapWithBackground(GetPrompt(step)) : "";
         float fadeStep = Time.unscaledDeltaTime / fadeDuration;
 
         if (promptText.text != wantedText)
