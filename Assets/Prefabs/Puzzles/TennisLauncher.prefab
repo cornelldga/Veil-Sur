@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TennisLauncher
   launchDistance: 12
-  launchSpeed: 12
+  launchHeight: 2
   ballVolume: 12
   tennisBallPrefab: {fileID: 7602840015324086209, guid: d84bfbdaeac71a1498095b0de467a412, type: 3}
 --- !u!1 &4343725287459559675

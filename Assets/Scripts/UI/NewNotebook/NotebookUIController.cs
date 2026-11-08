@@ -45,6 +45,7 @@ public class NotebookUIController : SoundEvent
     private Vector2 shakeOrigin;
     private readonly Dictionary<QuestionDefinition, NotebookPage> questionPages = new();
     private readonly HashSet<PuzzleInteractable> puzzles = new();
+    private int newlyUnlockedCount;
 
     [Header("Developer Stuff")]
     [Tooltip("When enabled, the notebook will always allow uploads and whether questions are correct.")]
@@ -222,7 +223,11 @@ public class NotebookUIController : SoundEvent
     {
         question.Solved -= OnQuestionSolved;
         foreach (var futureQuestion in question.FutureQuestions)
-            if (futureQuestion.CanUnlock) questionPages[futureQuestion].pendingQuestions.Enqueue(futureQuestion);
+        {
+            // Use the page whose upload unlocked the question, rather than the
+            // page inherited from the first prerequisite during initialization.
+            QueueUnlockedQuestion(futureQuestion, questionPages[question]);
+        }
         ShowPendingQuestions();
         RefreshPageFeedback();
     }
@@ -241,8 +246,30 @@ public class NotebookUIController : SoundEvent
     private void OnPuzzleInteracted(PuzzleInteractable puzzle)
     {
         foreach (var futureQuestion in puzzle.FutureQuestions)
-            if (futureQuestion.CanUnlock) questionPages[futureQuestion].pendingQuestions.Enqueue(futureQuestion);
+            QueueUnlockedQuestion(futureQuestion, questionPages[futureQuestion]);
         ShowPendingQuestions();
+        NotifyQuestionsUnlocked();
+    }
+
+    private void QueueUnlockedQuestion(QuestionDefinition question, NotebookPage page)
+    {
+        if (question.IsCorrect || !question.CanUnlock) return;
+        if (pages.Any(candidate => candidate.pendingQuestions.Contains(question) ||
+            candidate.questionSlots.Any(slot => slot != null && slot.Definition == question))) return;
+
+        questionPages[question] = page;
+        page.pendingQuestions.Enqueue(question);
+        newlyUnlockedCount++;
+    }
+
+    /// <summary>Shows one notification for all questions unlocked by an upload or interaction.</summary>
+    internal void NotifyQuestionsUnlocked()
+    {
+        if (newlyUnlockedCount == 0) return;
+
+        int count = newlyUnlockedCount;
+        newlyUnlockedCount = 0;
+        ErrorNotifier.Show($"{count} question{(count == 1 ? "" : "s")} unlocked in notebook");
     }
 
     /// <summary>Reveals an empty view first, then reuses a solved one. Returns false when all slots are in use.</summary>
