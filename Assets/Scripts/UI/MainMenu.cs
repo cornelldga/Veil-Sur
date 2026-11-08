@@ -14,10 +14,7 @@ public class MainMenu : UIScreen
     /// </summary>
     public void PlayGame()
     {
-        // or alternatively SceneManagement.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
-        //change logic so that gamemanger loads levels
-        // GameManager.Instance.GoToLevel("TutorialLevel");
-        GameManager.Instance.StartFresh("TutorialLevel");
+        GameManager.Instance.GoToLevel("TutorialLevel");
 
     }
     
