@@ -15,7 +15,6 @@ public class NotebookUIController : SoundEvent
         [Tooltip("Question views for this page. Unassigned entries are ignored.")]
         public QuestionNote[] questionSlots = System.Array.Empty<QuestionNote>();
         internal readonly Queue<QuestionDefinition> pendingQuestions = new();
-        // TODO(Claire): TEMP FIX until you redo your LINKS INCORRECT fix (undone by merge). Delete everything tagged TEMP FIX.
         internal bool uploaded;
     }
 
@@ -46,6 +45,7 @@ public class NotebookUIController : SoundEvent
     private Vector2 shakeOrigin;
     private readonly Dictionary<QuestionDefinition, NotebookPage> questionPages = new();
     private readonly HashSet<PuzzleInteractable> puzzles = new();
+    private int newlyUnlockedCount;
 
     [Header("Developer Stuff")]
     [Tooltip("When enabled, the notebook will always allow uploads and whether questions are correct.")]
@@ -83,7 +83,6 @@ public class NotebookUIController : SoundEvent
     /// <summary>Shows whether the current page's links are correct, or nothing until that page has been uploaded.</summary>
     internal void RefreshPageFeedback()
     {
-        // TODO(Claire): TEMP FIX
         if (!pages[CurrentPageIndex].uploaded)
         {
             numberCorrectText.text = "";
@@ -166,7 +165,9 @@ public class NotebookUIController : SoundEvent
                 slot.gameObject.SetActive(false);
             }
 
-            foreach (var question in page.startQuestions) page.pendingQuestions.Enqueue(question);
+            // A  question that other questions unlock waits before being shown
+            foreach (var question in page.startQuestions)
+                if (!question.HasPrerequisites || question.CanUnlock) page.pendingQuestions.Enqueue(question);
             ShowPendingQuestions(page);
         }
         ShowPage(0);
@@ -222,7 +223,9 @@ public class NotebookUIController : SoundEvent
     {
         question.Solved -= OnQuestionSolved;
         foreach (var futureQuestion in question.FutureQuestions)
-            if (futureQuestion.CanUnlock) questionPages[futureQuestion].pendingQuestions.Enqueue(futureQuestion);
+        {
+            QueueUnlockedQuestion(futureQuestion, questionPages[futureQuestion]);
+        }
         ShowPendingQuestions();
         RefreshPageFeedback();
     }
@@ -241,8 +244,30 @@ public class NotebookUIController : SoundEvent
     private void OnPuzzleInteracted(PuzzleInteractable puzzle)
     {
         foreach (var futureQuestion in puzzle.FutureQuestions)
-            if (futureQuestion.CanUnlock) questionPages[futureQuestion].pendingQuestions.Enqueue(futureQuestion);
+            QueueUnlockedQuestion(futureQuestion, questionPages[futureQuestion]);
         ShowPendingQuestions();
+        NotifyQuestionsUnlocked();
+    }
+
+    private void QueueUnlockedQuestion(QuestionDefinition question, NotebookPage page)
+    {
+        if (question.IsCorrect || !question.CanUnlock) return;
+        if (pages.Any(candidate => candidate.pendingQuestions.Contains(question) ||
+            candidate.questionSlots.Any(slot => slot != null && slot.Definition == question))) return;
+
+        questionPages[question] = page;
+        page.pendingQuestions.Enqueue(question);
+        newlyUnlockedCount++;
+    }
+
+    /// <summary>Shows one notification for all questions unlocked by an upload or interaction.</summary>
+    internal void NotifyQuestionsUnlocked()
+    {
+        if (newlyUnlockedCount == 0) return;
+
+        int count = newlyUnlockedCount;
+        newlyUnlockedCount = 0;
+        ErrorNotifier.Show($"{count} question{(count == 1 ? "" : "s")} unlocked in notebook");
     }
 
     /// <summary>Reveals an empty view first, then reuses a solved one. Returns false when all slots are in use.</summary>
@@ -262,7 +287,6 @@ public class NotebookUIController : SoundEvent
         slot.Bind(question);
         slot.gameObject.SetActive(true);
         numberCorrectText.text = "";
-        // TODO(Claire): TEMP FIX
         page.uploaded = false;
         slot.gameObject.SetActive(page == pages[CurrentPageIndex]);
         RefreshPageFeedback();

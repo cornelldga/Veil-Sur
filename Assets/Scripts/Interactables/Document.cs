@@ -1,30 +1,29 @@
 using UnityEngine;
 using TMPro;
-using System;
-using System.Runtime.CompilerServices;
 
 [System.Serializable]
 public class DocData
 {
     public string text;
+    // optional: one entry per line, joined with newlines. Easier to edit than one long text string.
+    public string[] lines;
 }
 
 
 public class Document : MonoBehaviour, Interactable
 {
     [Header("UI Features")]
-    
+
     [Tooltip("The name of the JSON file in Resources/")]
     [SerializeField] private TextAsset jsonFile;
-    
+
     private DocData docData;
     private TMP_Text docTextAreaUI;
     private GameObject docCanvas;
 
+    private PhotographableObject subject;
     private PlayerState playerStateController;
     private bool isOpen = false;
-    // True when opened via Interact() rather than the camera's document reader
-    private bool openedByInteract = false;
 
     /// <summary>
     /// Awake() loads all of the JSON text into this document to display
@@ -33,6 +32,7 @@ public class Document : MonoBehaviour, Interactable
     private void Awake()
     {
         LoadDocData();
+        subject = GetComponent<PhotographableObject>();
     }
 
     private void Start()
@@ -49,7 +49,6 @@ public class Document : MonoBehaviour, Interactable
     /// </summary>
     private void LoadDocData()
     {
-        // docData = JsonUtility.FromJson<DocData>(jsonFile.text);
         if (jsonFile == null)
         {
             Debug.LogWarning($"Document '{name}' has no JSON file assigned.", this);
@@ -63,20 +62,22 @@ public class Document : MonoBehaviour, Interactable
         catch (System.ArgumentException e)
         {
             Debug.LogWarning($"Document '{name}' has invalid JSON: {e.Message}", this);
+            return;
         }
+
+        // Multi-line documents use a "lines" array; join it into the single text the viewer shows.
+        if (docData != null && docData.lines != null && docData.lines.Length > 0)
+            docData.text = string.Join("\n", docData.lines);
     }
 
     /// <summary>
-    /// Opens or closes the doc viewer, showing this document's contents the
-    /// same way the camera's document reader does.
+    /// Opens or closes the doc viewer on interaction.
     /// </summary>
     public void Interact()
     {
         if (!isOpen)
         {
             OpenDoc();
-            // openedByInteract = true;
-            openedByInteract = isOpen;
         }
         else
         {
@@ -90,26 +91,23 @@ public class Document : MonoBehaviour, Interactable
         docTextAreaUI.text = docData.text;
         docCanvas.SetActive(true);
         isOpen = true;
-        openedByInteract = false;
-        playerStateController.SetDocOpen(true);
+        // Default to no ID if no photographable object attached
+        playerStateController.SetDocOpen(true, subject != null ? subject.SubjectId : "");
     }
     public void CloseDoc()
     {
         docCanvas.SetActive(false);
         isOpen = false;
-        openedByInteract = false;
         playerStateController.SetDocOpen(false);
     }
 
     private void Update()
     {
-        if (isOpen && playerStateController.GetMoving())
+        if (isOpen && (playerStateController.GetMoving() || playerStateController.GetLookTarget() != (Interactable) this))
         {
             CloseDoc();
         }
-        // The camera reader manages its own docs, so only close interact-opened
-        // docs when the camera or notebook takes over the screen
-        else if (openedByInteract && (playerStateController.GetPhotoMode() || playerStateController.GetNotebookOpen()))
+        else if (isOpen && (playerStateController.GetPhotoMode() || playerStateController.GetNotebookOpen()))
         {
             CloseDoc();
         }
