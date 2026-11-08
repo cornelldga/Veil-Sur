@@ -224,9 +224,7 @@ public class NotebookUIController : SoundEvent
         question.Solved -= OnQuestionSolved;
         foreach (var futureQuestion in question.FutureQuestions)
         {
-            // Use the page whose upload unlocked the question, rather than the
-            // page inherited from the first prerequisite during initialization.
-            QueueUnlockedQuestion(futureQuestion, questionPages[question]);
+            QueueUnlockedQuestion(futureQuestion, questionPages[futureQuestion]);
         }
         ShowPendingQuestions();
         RefreshPageFeedback();
