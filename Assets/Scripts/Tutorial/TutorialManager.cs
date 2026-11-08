@@ -47,14 +47,14 @@ public class TutorialManager : MonoBehaviour
             case 11: return "Drag your plant photo onto its question to connect it.";
             case 12: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
             case 13: return "Close your notebook.";
-            case 14: return $"Look at a document and press {KeyName(c.PlayerMovement.Interact)} to read it.";
-            case 15: return $"Documents can't be photographed, they must be scanned. {KeyName(c.PlayerMovement.TakePicture)} while reading one to scan it into your notebook.";
-            case 16: return "Open your notebook again.";
-            case 17: return "You scanned the document! Drag it onto the document question to fill its answer slot.";
-            case 18: return "Click upload to check how many of your links are correct.";
-            case 19: return "New questions appeared! Click the arrow to turn to the next page of your notebook.";
-            case 20: return "Close your notebook.";
-            case 21: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
+            case 14: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon.";
+            case 15: return $"You can also look at a document and press {KeyName(c.PlayerMovement.Interact)} to read it.";
+            case 16: return $"Documents can't be photographed, they must be scanned. {KeyName(c.PlayerMovement.TakePicture)} while reading one to scan it into your notebook.";
+            case 17: return "Open your notebook again.";
+            case 18: return "You scanned the document! Drag it onto the document question to fill its answer slot.";
+            case 19: return "Click upload to check how many of your links are correct.";
+            case 20: return "New questions appeared! Click the arrow to turn to the next page of your notebook.";
+            case 21: return "Close your notebook.";
             // Maybe in the above ^ prompt we'll include a picture of the interact icon.
             // Pause isn't an input action (GameManager reads the ESC key directly), so it can't be looked up like the others.
             case 22: return "You can always pause by pressing <mark=#FFFFFF18 padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
@@ -266,16 +266,16 @@ public class TutorialManager : MonoBehaviour
             case 11: return UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.QuestionSlots.Any(q => q.Photo != null);
             case 12: return PhotoStorage.Instance.GetTotalOwnedPhotoCount() < photoCountAtStepStart;
             case 13: return state != GameManager.GameState.NOTEBOOK;
-            case 14: return playerState.GetDocOpen();
-            case 15: return playerState.GetDocOpen() && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
-            case 16: return state == GameManager.GameState.NOTEBOOK;
-            case 17: return AllQuestionSlotsFilled();
-            case 18: return uploadClicked;
+            case 14: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
+            case 15: return playerState.GetDocOpen();
+            case 16: return playerState.GetDocOpen() && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
+            case 17: return state == GameManager.GameState.NOTEBOOK;
+            case 18: return AllQuestionSlotsFilled();
+            case 19: return uploadClicked;
             // closing the notebook also moves on, so the player can't get stuck if no second page has questions yet
-            case 19: return state != GameManager.GameState.NOTEBOOK ||
+            case 20: return state != GameManager.GameState.NOTEBOOK ||
                 (UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.CurrentPageIndex > 0);
-            case 20: return state != GameManager.GameState.NOTEBOOK;
-            case 21: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf;
+            case 21: return state != GameManager.GameState.NOTEBOOK;
             case 22: return state == GameManager.GameState.PAUSED; // ESC pauses the game
             default: return false;
         }
