@@ -1,5 +1,6 @@
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Level : MonoBehaviour
 {
@@ -14,5 +15,18 @@ public class Level : MonoBehaviour
     private void Awake()
     {
         current_level = this;
+    }
+
+    private void OnEnable()
+    {
+        current_level = this;
+    }
+
+    private void Update()
+    {
+        if (!SaveManager.Instance.HasCurrentLevelSave())
+        {
+            SaveManager.Instance.SaveGame();
+        }
     }
 }

@@ -17,7 +17,17 @@ public abstract class PuzzleInteractable : MonoBehaviour, Interactable
     internal void IncreaseQuestionsRemaining() { questionsRemaining++; }
     internal void DecreaseQuestionsRemaining() { questionsRemaining--; }
 
-    public bool IsSolved() { return questionsRemaining == 0; }
+    public virtual bool IsSolved() { return questionsRemaining == 0; }
+
+    [SerializeField] private bool debugSolve;
+
+    void Update()
+    {
+        if (debugSolve)
+        {
+            SuccessBehavior();
+        }
+    }
 
     public void Interact()
     {

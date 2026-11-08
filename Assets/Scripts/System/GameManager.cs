@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System;
+using System.Collections;
 using UnityEngine.InputSystem; 
 
 public class GameManager : MonoBehaviour
@@ -22,16 +23,36 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
-    [SerializeField] private bool isDebugMode = false;
     [SerializeField] GameObject losePanel;
 
+    [Header("Level Info")]
+    private int currentLevelIndex;
+    
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
+    /// <summary>
+    /// Player's pose relative to the Elevator
+    /// </summary>
+    public Pose ArrivalPose { get; set; }
+    private bool hasLost = false;
 
     public void SetMouseSensitivity(float value)
     {
         MouseSensitivity = value;
         PlayerPrefs.SetFloat(SensitivityKey, value);
+    }
+
+    private const string SkipJumpscaresKey = "SkipJumpscares";
+    public bool SkipJumpscares { get; private set; }
+
+    /// <summary>
+    /// Saved to PlayerPrefs so the choice survives restarts. Hooked to the settings toggle.
+    /// </summary>
+    /// <param name="skip">true skips jumpscares</param>
+    public void SetSkipJumpscares(bool skip)
+    {
+        SkipJumpscares = skip;
+        PlayerPrefs.SetInt(SkipJumpscaresKey, skip ? 1 : 0);
     }
 
     /// <summary>
@@ -103,6 +124,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         MouseSensitivity = PlayerPrefs.GetFloat(SensitivityKey, 1f);
+        SkipJumpscares = PlayerPrefs.GetInt(SkipJumpscaresKey, 0) == 1;
 
         // Keeps this object alive when switching scenes
         DontDestroyOnLoad(gameObject);
@@ -123,6 +145,15 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // undo the lose state, e.g. after loading the last save from the lose panel
+        if (hasLost)
+        {
+            losePanel.SetActive(false);
+            UIManager.Instance.HideJumpscare();
+            Time.timeScale = 1f;
+        }
+        hasLost = false;
+
         if (scene.name == titleSceneName)
             SetState(GameState.MAIN_MENU);        // entering the title scene
         else if (_state == GameState.MAIN_MENU)
@@ -136,7 +167,6 @@ public class GameManager : MonoBehaviour
 
     private void HandleSceneAmbience(string sceneName)
     {
-        Debug.Log($"HandleSceneAmbience('{sceneName}')");
         AudioManager.Instance.StopAmbience();
 
         if (sceneName == "LevelOne")
@@ -149,7 +179,7 @@ public class GameManager : MonoBehaviour
         if (kb == null || _state == GameState.MAIN_MENU || IsRebinding) return;
 
         if (kb.escapeKey.wasPressedThisFrame)
-            TogglePause();
+            HandleEscape();
     }
 
     private void InitializeGame()
@@ -161,24 +191,110 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.PlayMusic(lobbyMusic);
     }
 
+    /// <summary>
+    /// Leaves the title screen by discarding this GameManager, so the next scene's
+    /// own GameManager takes over exactly as if that scene had been the first one run.
+    /// </summary>
+    public void StartFresh(string sceneName)
+    {
+        Instance = null;
+        Destroy(gameObject);
+        SceneManager.LoadScene(sceneName);
+    }
+
     public async void GoToLevel(string sceneName)
     {
         await LoadSceneAsync(sceneName);
     }
     
-    public async Task LoadSceneAsync(string sceneName)
+    /// <summary>
+    /// Loads a scene by name and completes once the new scene is active.
+    /// Returns false if the scene isn't in Build Settings.
+    /// </summary>
+    public async Task<bool> LoadSceneAsync(string sceneName)
     {
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         if (op == null)
         {
             Debug.LogError($"Scene '{sceneName}' could not be loaded. Is it in Build Settings?");
-            return;
+            return false;
         }
 
         while (!op.isDone)
             await Task.Yield();
 
         HandleSceneMusic(sceneName);
+        return true;
+    }
+
+    private void HandleEscape()
+    {
+        if (_state == GameState.NOTEBOOK)
+        {
+            var notebook = UIManager.Instance.Notebook;
+            if (notebook != null && notebook.IsPhotoPreviewOpen)
+                notebook.ClosePhotoPreview();     // enlarged photo -> normal notebook view
+            else
+                SetState(GameState.DEFAULT);      // notebook -> game
+        }
+        else
+            TogglePause();
+    }
+
+    /// <summary>
+    /// True when the Player is loading in the new scene 
+    /// by elevator (post-Tutorial). The Elevator in the next scene
+    /// will read this.
+    /// </summary>
+    public bool ArrivingByElevator { get; set; }
+
+    private AsyncOperation preloadOperation;
+    private string preloadSceneName;
+
+    /// <summary>
+    /// True when the PreloadScene has finished loading.
+    /// Progress above 90% is held until the scene transition is activated.
+    /// </summary>
+    public bool IsScenePreloaded => preloadOperation != null && preloadOperation.progress >= 0.9f;
+
+    /// <summary>
+    /// Start loading the scene in the background BUT DONT switch
+    /// (this is the prime difference from LoadScene and GoToLevel).
+    /// Call ActivatePreloadedScene() to transition to the next scene.
+    /// </summary>
+    /// <param name="sceneName">String of the scene to load</param>
+    public void PreloadScene(string sceneName)
+    {
+        if (preloadOperation != null) return;
+
+        preloadOperation = SceneManager.LoadSceneAsync(sceneName);
+        if (preloadOperation == null)
+        {
+            Debug.LogError($"Scene '{sceneName} was not loaded. Check Build Settings and names");
+            return;
+        }
+        preloadOperation.allowSceneActivation = false; // will not switch to scene
+
+        preloadSceneName = sceneName;
+    }
+
+    /// <summary>
+    /// Activate the preloaded scene.
+    /// May pivot to the modern Unity Awaitable. Need to look into this.
+    /// </summary>
+    public async Task ActivatePreloadedScene()
+    {
+        if (preloadOperation == null) return; // nothing to activate
+
+        AsyncOperation op = preloadOperation;
+        preloadOperation = null;
+
+        op.allowSceneActivation = true;
+
+        while (!op.isDone)
+        {
+            await Task.Yield();
+        }
     }
 
     /// <summary>
@@ -220,15 +336,41 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// The temporary lose state for the game. 
-    /// Stops time for the game and enables the lose panel 
-    /// to be seen for the player.
+    /// The temporary lose state for the game.
+    /// Plays the catching mutant's jumpscare, then shows the lose panel.
+    /// Only the first call per run does anything.
     /// </summary>
-    public void LoseGame()
+    /// <param name="frames">the jumpscare frames of the mutant that caught the player</param>
+    /// <param name="fps">playback speed of the jumpscare frames</param>
+    /// <param name="audio">the jumpscare sound, null until mutants have one</param>
+    public void LoseGame(Sprite[] frames, float fps, AudioClip audio)
     {
-        losePanel.SetActive(true);
-        Time.timeScale = 0f;
+        if (hasLost) return;
+        hasLost = true;
+        StartCoroutine(LoseSequence(frames, fps, audio));
+    }
+
+    /// <summary>
+    /// Freezes the game and removes player control, waits for the jumpscare
+    /// to finish, then shows the lose panel.
+    /// </summary>
+    /// <param name="frames">the jumpscare frames to play</param>
+    /// <param name="fps">playback speed of the jumpscare frames</param>
+    /// <param name="audio">the jumpscare sound, currently unused</param>
+    private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
+    {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
+        Time.timeScale = 0f;
+        // for when we have jumpscare audio
+        // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+
+        if (!SkipJumpscares)
+            yield return UIManager.Instance.PlayJumpscare(frames, fps);
+
+        losePanel.SetActive(true);
+        // free the cursor so the lose panel's buttons can be clicked
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     /// <summary>
@@ -249,5 +391,71 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// Returns the name of the current scene.
+    /// </summary>
+    public string CurrentLevelName()
+    {
+        return SceneManager.GetActiveScene().name;
+    }
+
+
+    /// <summary>
+    /// To be called by levels when they are done, asking the game to load the next level.
+    /// </summary>
+    public void NextLevel()
+    {
+        int next = SceneManager.GetActiveScene().buildIndex + 1;
+
+        if (next < SceneManager.sceneCountInBuildSettings)
+            SceneManager.LoadScene(next);
+    }
+
+    /// <summary>
+    /// Loads a level based on its build index.
+    /// </summary>
+    public void LoadLevel(int levelNumber)
+    {
+        if (levelNumber < 0 || levelNumber >= SceneManager.sceneCountInBuildSettings)
+        {
+            Debug.LogError($"Level index {levelNumber} is out of range.");
+            return;
+        }
+
+        SceneManager.LoadScene(levelNumber);
+    }
+
+    public float GetPlayerStamina()
+    {
+        if (PlayerInstance == null)
+        {
+            return 0f;
+        }
+
+        StaminaController stamina = PlayerInstance.GetComponent<StaminaController>();
+        if (stamina == null)
+        {
+            return 0f;
+        }
+
+        return stamina.currentStamina;
+    }
+
+    public float GetStaminaPercentage()
+    {
+        if (PlayerInstance == null)
+        {
+            return 1f;
+        }
+
+        StaminaController stamina = PlayerInstance.GetComponent<StaminaController>();
+
+        if (stamina == null)
+        {
+            return 1f;
+        }
+
+        return stamina.StaminaPercent;
+    }
+
 }

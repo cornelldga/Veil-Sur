@@ -155,6 +155,7 @@ GameObject:
   - component: {fileID: 28695803084452280}
   - component: {fileID: 7648119910814920436}
   - component: {fileID: 3314498800505621458}
+  - component: {fileID: 131139320717189774}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -197,8 +198,8 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.8
-  m_Radius: 0.4
+  m_Height: 1.65
+  m_Radius: 0.45
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -236,12 +237,18 @@ MonoBehaviour:
   mouseSens: 0.15
   minLookDown: -85
   maxLookUp: 85
-  standHeight: 1.8
+  standHeight: 1.65
   crouchHeight: 0.75
   crouchTransitionSpeed: 15
   ceilingCheckMask:
     serializedVersion: 2
     m_Bits: 1
+  sprintingFOV: 124
+  fovChangeSpeed: 5
+  footstepClip: {fileID: 8300000, guid: b8a56b0e433024a0f894fc309ac4e7aa, type: 3}
+  walkStepPitch: 1
+  sprintStepPitch: 1.4
+  stepVolume: 0.5
   playerCamera: {fileID: 827428221439690476}
   crouchClip: {fileID: 8300000, guid: 2da580f5d2bc245828a4e0c962d75ba4, type: 3}
 --- !u!114 &3942358293781664924
@@ -259,19 +266,17 @@ MonoBehaviour:
   normalFOV: 60
   zoomedFOV: 30
   zoomSpeed: 10
+  photoCooldown: 0.79
   toggleZoom: 0
   maxPhotoRange: 10
-  maxDocReadRange: 3
   photoOcclusionMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  innerRayRadius: 0.07
-  outerRayRadius: 0.21
-  minRayCasts: 7
   blurRangePastMax: 2
-  storageFullShakeDuration: 0.25
-  storageFullShakeMagnitude: 0.1
   shutterClip: {fileID: 8300000, guid: 2a5906470f95e4dcdacd7761937ab0ec, type: 3}
+  shutterDelay: 0.1
+  detectRadius: 20
+  stunRadius: 30
   maxRadius: 17.5
   coneAngle: 60
   targetMask:
@@ -300,7 +305,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2.0368152
+  m_Height: 1.65
   m_Direction: 1
   m_Center: {x: 0, y: -0.0075130463, z: 0}
 --- !u!114 &2431328312245338117
@@ -316,10 +321,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoudnessControl
   loudnessDetectorCollider: {fileID: 3284144128573982454}
-  crouchRadius: 2
-  walkRadius: 5
-  runRadius: 10
-  cameraRadius: 10
+  crouchRadius: 3
+  walkRadius: 8
+  runRadius: 20
+  cameraRadius: 20
 --- !u!114 &28695803084452280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,7 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eb97cb2b860d49678c659b10d0f0986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
-  rayLength: 5
+  rayLength: 2
 --- !u!114 &7648119910814920436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,6 +367,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NotebookController
   notebookOpenClip: {fileID: 8300000, guid: 0fafff80f0a1b97499e14fa718fe40f1, type: 3}
+--- !u!114 &131139320717189774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805399525289963691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d39e09005c8fa034b8543077868e3f12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DocumentScanner
+  documentScanSfx: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
+  captureProgress: 0.8
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0

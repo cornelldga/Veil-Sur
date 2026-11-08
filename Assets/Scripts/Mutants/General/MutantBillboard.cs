@@ -22,7 +22,8 @@ public class MutantBillboard : MonoBehaviour
 
     [Tooltip("Agent speed above which the mutant counts as moving")]
     [SerializeField] private float moveThreshold = 0.1f;
-
+    
+    public bool IsShowingFront { get; private set; }
     private Animator animator;
     private Transform root;
     private NavMeshAgent agent;
@@ -55,7 +56,10 @@ public class MutantBillboard : MonoBehaviour
 
         transform.rotation = Quaternion.LookRotation(-toCamera);
 
-        animator.SetFloat(DirectionParam, GetDirectionIndex(toCamera));
+        int direction = GetDirectionIndex(toCamera);
+        IsShowingFront = true ? direction == 0 : false;
+
+        animator.SetFloat(DirectionParam, direction);
         animator.SetBool(IsMovingParam, agent.velocity.magnitude > moveThreshold);
         animator.SetBool(IsAlertParam, searchlight.CurrentState == EnemySearchlight.AlertState.Alert);
         animator.SetBool(IsNoticingParam, mover.IsNoticePausing);

@@ -1,0 +1,132 @@
+# Blender 5.2.2 LTS MTL File: 'VEILSURM0.blend'
+# www.blender.org
+
+newmtl Material.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/leaf.004 Base Color.png
+
+newmtl Material.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/leaf.005 Base Color.png
+
+newmtl Material.003
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/leaf.001 Base Color.png
+
+newmtl Material.004
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/leaf.002 Base Color.png
+
+newmtl Material.005
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/leaf.003 Base Color.png
+
+newmtl Material.006
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/leaf Base Color.png
+
+newmtl Material.007
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/Cylinder Base Color.png
+
+newmtl Material.008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/Material.008 Base Color.png
+map_Ns /Users/ajh365/flowerleaf Roughness.png
+
+newmtl Material.009
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/lobe.001 Base Color.png
+
+newmtl Material.010
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/lobe Base Color.png
+
+newmtl Material.011
+Ns 30.071173
+Ka 1.000000 1.000000 1.000000
+Kd 0.100000 0.320000 0.070000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 2.200000
+d 1.000000
+illum 2
+
+newmtl Material.012
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/developer/personal/Veil-Sur/Assets/Art/Environment/Textures/SnapdragonPlant/Soil.png
+
+newmtl Material.013
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /Users/ajh365/developer/personal/Veil-Sur/Assets/Art/Environment/Textures/SnapdragonPlant/Pot.png

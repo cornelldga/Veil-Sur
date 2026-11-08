@@ -16,11 +16,11 @@ TagManager:
   - 
   - Player
   - Environment
+  - Mutant
+  - Door
   - 
-  - 
-  - 
-  - 
-  - 
+  - PhotographableNoCollision
+  - CameraIgnore
   - 
   - 
   - 

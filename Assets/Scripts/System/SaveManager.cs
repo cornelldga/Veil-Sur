@@ -1,21 +1,40 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class SaveManager : MonoBehaviour
 {
     [System.Serializable]
+    public class PhotoSaveData
+    {
+        public string fileName;
+        public string subjectId;
+        public int slot;
+    }
+
+    [System.Serializable]
     public class SaveData
     {
+        public string sceneName;
         public Vector3 playerPosition;
+        public Quaternion playerRotation = Quaternion.identity;
+        public float cameraVerticalLook;
+        public List<PhotoSaveData> photos = new();
+        public bool tutorialStarted;
+        public int tutorialStep;
+        public List<string> playedDialogue = new();
     }
     string savePath;
 
     public static SaveManager Instance;
     private void Awake()
     {
+        // GameManager destroys duplicate copies of its prefab, so don't let one take over Instance
+        if (Instance != null && Instance != this)
+            return;
+
         controls = new PlayerControls();
         Instance = this;
         savePath = Application.persistentDataPath + "/save.json";
@@ -28,20 +47,71 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void SaveGame()
     {
-        Debug.Log("load");
         SaveData data = new SaveData();
 
-        data.playerPosition = Level.current_level.player.transform.position;
+        data.sceneName = GameManager.Instance.CurrentLevelName();
+
+        if (Level.current_level.player != null)
+        {
+            data.playerPosition = Level.current_level.player.transform.position;
+            data.playerRotation = Level.current_level.player.transform.rotation;
+
+            FirstPersonController fpc = Level.current_level.player.GetComponent<FirstPersonController>();
+            if (fpc != null) data.cameraVerticalLook = fpc.VerticalLook;
+        }
+
+        string photoFolder = Path.Combine(Application.persistentDataPath, "Photos");
+
+        if (!Directory.Exists(photoFolder))
+            Directory.CreateDirectory(photoFolder);
+
+        // Clear old images
+        foreach (string file in Directory.GetFiles(photoFolder))
+            File.Delete(file);
+
+        for (int i = 0; i < PhotoStorage.Instance.Photos.Count; i++)
+        {
+            Photo photo = PhotoStorage.Instance.Photos[i];
+
+            if (photo == null)
+                continue;
+
+            Texture2D tex = photo.ImageTexture as Texture2D;
+
+            if (tex == null)
+                continue;
+
+            string fileName = $"photo_{i}.png";
+            string fullPath = Path.Combine(photoFolder, fileName);
+
+            byte[] bytes = tex.EncodeToPNG();
+            File.WriteAllBytes(fullPath, bytes);
+
+            data.photos.Add(new PhotoSaveData
+            {
+                fileName = fileName,
+                subjectId = photo.SubjectId(),
+                slot = i
+            });
+        }
+
+        if (TutorialManager.Instance != null)
+        {
+            data.tutorialStarted = TutorialManager.Instance.TutorialStarted;
+            data.tutorialStep = TutorialManager.Instance.Step;
+        }
+
+        if (DialogueManager.Instance != null)
+            data.playedDialogue = DialogueManager.Instance.GetPlayedSections();
 
         string json = JsonUtility.ToJson(data, true);
-
         File.WriteAllText(savePath, json);
     }
 
     /// <summary>
     /// Loads the game from the current save file. If no save exists, creates a new one
     /// </summary>
-    public void LoadGame()
+    public async void LoadGame()
     {
         if (!File.Exists(savePath))
         {
@@ -50,13 +120,68 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(savePath);
 
         SaveData data = JsonUtility.FromJson<SaveData>(json);
-        Debug.Log(Level.current_level.player.transform.position);
-        Debug.Log(data.playerPosition);
+        // saves from before scenes were saved by name have no sceneName
+        if (data == null || string.IsNullOrEmpty(data.sceneName))
+        {
+            Debug.LogWarning("Save file is missing a scene name, ignoring it.");
+            return;
+        }
 
-        //disabling is necessary so player controller doesn't override the load location
+        // wait for the scene to finish loading so we apply the save to the new level's player,
+        // and so GameManager's scene-load ClearAll runs before we restore photos
+        if (!await GameManager.Instance.LoadSceneAsync(data.sceneName))
+            return;
+
+        // load player first
         Level.current_level.player.SetActive(false);
         Level.current_level.player.transform.position = data.playerPosition;
+        Level.current_level.player.transform.rotation = data.playerRotation;
         Level.current_level.player.SetActive(true);
+
+        FirstPersonController fpc = Level.current_level.player.GetComponent<FirstPersonController>();
+        if (fpc != null) fpc.SetVerticalLook(data.cameraVerticalLook);
+
+        // load photos
+        LoadPhotos(data);
+
+        // wait a frame so the new scene's Start methods (which load the level's dialogue) have run
+        await Awaitable.NextFrameAsync();
+
+        // load dialogue progress
+        if (DialogueManager.Instance != null)
+            DialogueManager.Instance.RestorePlayedSections(data.playedDialogue);
+
+        // load tutorial progress, after photos so the tutorial counts from the restored photos
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.RestoreProgress(data.tutorialStep, data.tutorialStarted);
+    }
+
+    private void LoadPhotos(SaveData data)
+    {
+        PhotoStorage.Instance.ClearAll();
+
+        string photoFolder = Path.Combine(Application.persistentDataPath, "Photos");
+
+        foreach (PhotoSaveData savePhoto in data.photos)
+        {
+            string path = Path.Combine(photoFolder, savePhoto.fileName);
+
+            if (!File.Exists(path))
+                continue;
+
+            byte[] bytes = File.ReadAllBytes(path);
+
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(bytes);
+
+            GameObject photoObj = new GameObject("Photo");
+            Photo photo = photoObj.AddComponent<Photo>();
+
+            photo.SetImage(tex);
+            photo.SetSubject(savePhoto.subjectId);
+
+            PhotoStorage.Instance.AddPhoto(photo);
+        }
     }
 
     //NOTE: this is all temporary code until GameManager has UI for loading. Just having a temporary binding until
@@ -64,12 +189,14 @@ public class SaveManager : MonoBehaviour
 
     private void OnEnable()
     {
+        if (Instance != this) return; // duplicate about to be destroyed
         controls.General.Enable();
         controls.General.Load.performed += OnLoad;
     }
 
     private void OnDisable()
     {
+        if (Instance != this) return;
         controls.General.Disable();
         controls.General.Load.performed -= OnLoad;
     }
@@ -77,5 +204,22 @@ public class SaveManager : MonoBehaviour
     private void OnLoad(InputAction.CallbackContext ctx)
     {
         LoadGame();
+    }
+
+    /// <summary>
+    /// Returns true if there is already a save for the current level.
+    /// </summary>
+    public bool HasCurrentLevelSave()
+    {
+        if (!File.Exists(savePath))
+            return false;
+
+        string json = File.ReadAllText(savePath);
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+        if (data == null)
+            return false;
+
+        return data.sceneName == GameManager.Instance.CurrentLevelName();
     }
 }

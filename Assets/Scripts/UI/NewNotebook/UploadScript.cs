@@ -1,5 +1,4 @@
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
@@ -7,11 +6,14 @@ using UnityEngine.UI;
 [RequireComponent(typeof(RawImage))]
 public class UploadScript : MonoBehaviour
 {
-    [Tooltip("Text component that displays the number of correct questions on the notebook page.")]
-    [SerializeField] private TextMeshProUGUI numberCorrectText;
     private bool developerMode => UIManager.Instance != null && UIManager.Instance.Notebook != null && UIManager.Instance.Notebook.developerMode;
     private Button button;
-    public bool AllCorrect { get; private set; }
+    public bool AllCorrect => UIManager.Instance.Notebook.AllCurrentQuestionsCorrect;
+
+    /// <summary>
+    /// raised each time the player uploads and the answers are checked
+    /// </summary>
+    public static event System.Action Uploaded;
 
     private void Awake()
     {
@@ -34,7 +36,7 @@ public class UploadScript : MonoBehaviour
         {
             if (slot == null || !slot.isActiveAndEnabled || slot.Definition == null) continue;
             hasQuestions = true;
-            if (slot.Photo == null) return false;
+            if (!slot.AllPhotoSlotsFilled) return false;
         }
         return hasQuestions;
     }
@@ -49,12 +51,15 @@ public class UploadScript : MonoBehaviour
         GetComponent<RawImage>().color = tmp;
     }
 
+    /// <summary>Marks the current notebook page as uploaded, checks its answers, and verifies them when all are correct.</summary>
     public void Upload()
     {
         if (!developerMode && !CanUpload()) return;
+        // TODO(Claire): TEMP FIX
+        UIManager.Instance.Notebook.MarkCurrentPageUploaded();
 
         var questions = UIManager.Instance.Notebook.QuestionSlots
-            .Where(slot => slot.isActiveAndEnabled && slot.Definition != null)
+            .Where(slot => slot != null && slot.isActiveAndEnabled && slot.Definition != null)
             .Select(slot => slot.Definition)
             .ToArray();
 
@@ -65,19 +70,23 @@ public class UploadScript : MonoBehaviour
         }
 
         int correctCount = questions.Count(q => q.CheckAnswer());
-        AllCorrect = questions.Length > 0 && correctCount == questions.Length;
-        Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {AllCorrect}");
+        bool allCorrect = questions.Length > 0 && correctCount == questions.Length;
+        Debug.Log($"Upload: {correctCount}/{questions.Length} correct. All correct: {allCorrect}");
+        UIManager.Instance.Notebook.PlayUploadResult(allCorrect);
         if (correctCount < questions.Length)
-            UIManager.Instance.Notebook.ShakeIncorrectAnswer();
-
-        if (AllCorrect)
         {
-            numberCorrectText.text = "ALL LINKS CORRECT";
+            UIManager.Instance.Notebook.ShakeIncorrectAnswer();
+        }
 
-            if (developerMode) return;
+        Uploaded?.Invoke();
+
+        if (allCorrect && !developerMode)
+        {
             foreach (var question in questions)
                 question.Verify();
         }
+        UIManager.Instance.Notebook.RefreshPageFeedback();
+        UIManager.Instance.Notebook.NotifyQuestionsUnlocked();
     }
 
     private void OnDestroy()

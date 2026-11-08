@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1633495502405049379, guid: 6f85ec8d833356f4bbef69371df6f543, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: dafc29104dc474a28a1700f007960787, type: 2}
     - target: {fileID: 2184192572823106185, guid: 6f85ec8d833356f4bbef69371df6f543, type: 3}
       propertyPath: m_Name
       value: Owl Mutant

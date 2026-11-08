@@ -10,9 +10,19 @@ public class Settings : UIScreen
     [SerializeField] private Slider musicSlider;  
     [SerializeField] private Slider sensitivitySlider;
     [SerializeField] private Slider ambienceSlider;
+    [SerializeField] private Toggle jumpscareToggle;
     public void OnBackPressed()
     {
         UIManager.Instance.Back();
+    }
+
+    /// <summary>
+    /// Passes the jumpscare toggle's value to GameManager, which lives outside this prefab.
+    /// </summary>
+    /// <param name="skip">true skips jumpscares</param>
+    public void OnJumpscareToggled(bool skip)
+    {
+        GameManager.Instance.SetSkipJumpscares(skip);
     }
 
     public override void Show() //override so sliders reflect current values every time this opens
@@ -23,6 +33,7 @@ public class Settings : UIScreen
         musicSlider.value = AudioManager.Instance.GetMusicVolume();
         sensitivitySlider.value = GameManager.Instance.MouseSensitivity;
         ambienceSlider.value = AudioManager.Instance.GetAmbienceVolume();
+        jumpscareToggle.SetIsOnWithoutNotify(GameManager.Instance.SkipJumpscares);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

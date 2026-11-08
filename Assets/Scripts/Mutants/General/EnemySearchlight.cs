@@ -20,6 +20,8 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected float viewDistance = 10f;
     [SerializeField] protected float viewAngle = 60f;      // cone angle
     [SerializeField] protected float eyeHeight;     // raycast origin offset up from pivot
+    [SerializeField] protected float coneHeight = -0.96f; // cone mesh offset up from pivot, kept near the floor
+    [SerializeField] protected float chaseTurnSpeed = 540f;
 
     [Header("Sweep (Patrol)")]
     [SerializeField] protected float sweepAngle = 45f; 
@@ -31,6 +33,7 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected float suspicionDecayRate = 1f; 
     [SerializeField] protected float maxDetectionMultiplier = 3f; 
     [SerializeField] protected float loseAlertAfter = 3f; 
+    [SerializeField] protected float chaseLostGrace = 0.75f;
     
     [SerializeField] protected float proximityDetection = 2f; // During chase, if player is within this distance, doesn't lose alert
     
@@ -40,6 +43,7 @@ public class EnemySearchlight : MonoBehaviour
     [Header("Stun Settings")]
     [SerializeField] protected float stunDuration = 1f; // How long stun lasts
     [SerializeField] protected float stunCooldown = 10f; // Time between stuns
+    [SerializeField] private ParticleSystem stunEffects; // Stun VFX
 
     [Header("Visuals")]
     [SerializeField] protected Light spotLight;
@@ -74,6 +78,7 @@ public class EnemySearchlight : MonoBehaviour
     protected Priority currentPriority = Priority.None;
 
     protected Vector3 lastPosition; // Used to determine where to face while moving
+    protected MutantBillboard billboard; // Null on mutants without 8-direction art
 
 
     protected virtual void Start()
@@ -82,6 +87,9 @@ public class EnemySearchlight : MonoBehaviour
         baseFacingAngle = transform.eulerAngles.y;
         lastPosition = transform.position;
         timeSinceLastStun = stunCooldown + stunDuration;
+        billboard = GetComponentInChildren<MutantBillboard>();
+        stunEffects.Stop();
+        stunEffects.Clear();
 
         if (showConeMesh && coneMeshFilter != null)
         {
@@ -101,6 +109,7 @@ public class EnemySearchlight : MonoBehaviour
     }
 
     protected Vector3 EyePosition => transform.position + Vector3.up * eyeHeight;
+    protected Vector3 PlayerHeadPosition => GameManager.PlayerCamera.transform.position;
 
     protected void SweepSearchlight() // Currently not used
     {
@@ -126,27 +135,48 @@ public class EnemySearchlight : MonoBehaviour
     /** When patrolling, search cone is in direction of mutant movement. */
     protected void FaceTowardsMovement()
     {
-        // Calculate the movement direction direction vector
-        Vector3 direction = transform.position - lastPosition;
+        Vector3 movement = transform.position - lastPosition;
+        lastPosition = transform.position;
 
-        // Flatten the Y-axis if you don't want the object tilting up/down on slopes
-        // direction.y = 0; 
-        
+        if (CurrentState == AlertState.Stun)
+            return;
+
+        Vector3 direction =
+            CurrentState == AlertState.Alert
+                ? LastKnownPlayerPosition - transform.position
+                : movement;
+
+        direction.y = 0f;
+
         if (direction.sqrMagnitude > 0.000001f)
         {
-            // Smoothly rotate towards the target direction
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            // transform.rotation = targetRotation;
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
-        }
-        else if (CurrentState == AlertState.Idle) 
-        {
-            Quaternion targetRotation = Quaternion.Euler(0, idleFacingYAngle, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * sweepSpeed);
-        }
 
-        // Store the position for the next frame
-        lastPosition = transform.position;
+            if (CurrentState == AlertState.Alert)
+            {
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation,
+                    targetRotation,
+                    chaseTurnSpeed * Time.deltaTime);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    targetRotation,
+                    sweepSpeed * Time.deltaTime);
+            }
+        }
+        else if (CurrentState == AlertState.Idle)
+        {
+            Quaternion targetRotation =
+                Quaternion.Euler(0f, idleFacingYAngle, 0f);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                sweepSpeed * Time.deltaTime);
+        }
     }
 
     protected bool CanSeePlayer()
@@ -157,7 +187,7 @@ public class EnemySearchlight : MonoBehaviour
         }
 
         Vector3 eye = EyePosition;
-        Vector3 toPlayer = player.position - eye;
+        Vector3 toPlayer = PlayerHeadPosition - eye;
         distanceToPlayer = toPlayer.magnitude;
         if (distanceToPlayer > viewDistance || CurrentState == AlertState.Stun)
         {
@@ -170,16 +200,21 @@ public class EnemySearchlight : MonoBehaviour
             return false;
         }
 
-        if (Physics.Raycast(eye, toPlayer.normalized, out RaycastHit hit, distanceToPlayer, obstacleMask | playerMask))
+        // The camera sits on top of the player's capsule,
+        // so only walls should block the line of sight.
+        if (Physics.Raycast(
+            eye,
+            toPlayer.normalized,
+            distanceToPlayer,
+            obstacleMask,
+            QueryTriggerInteraction.Ignore))
         {
-            if (((1 << hit.collider.gameObject.layer) & playerMask) != 0)
-            {
-                LastKnownPlayerPosition = player.position;
-                hasKnownPlayerPosition = true;
-                return true;
-            }
+            return false;
         }
-        return false;
+
+        LastKnownPlayerPosition = player.position;
+        hasKnownPlayerPosition = true;
+        return true;
     }
 
     protected virtual void UpdateAlertState(bool canSeePlayer)
@@ -225,18 +260,21 @@ public class EnemySearchlight : MonoBehaviour
                     ResetSuspicion();
                 }
                 break;
-
             case AlertState.Alert:
-                // Arriving at the last known spot ends the chase too, so the mutant never idles out the timer there.
-                bool lostPlayer = lastSeenTimer > 0f;
-                if (lostPlayer && (lastSeenTimer >= loseAlertAfter || GetComponent<EnemyMover>().ReachedDestination()))
+            {
+                bool lostTooLong = lastSeenTimer >= loseAlertAfter;
+
+                bool reachedLastSeenPosition =
+                    lastSeenTimer >= chaseLostGrace &&
+                    GetComponent<EnemyMover>().ReachedDestination();
+
+                if (lostTooLong || reachedLastSeenPosition)
                 {
-                    // GetComponent<EnemyMover>()
-                    //     .RegisterDetectionEvent(LastKnownPlayerPosition);
                     SetState(AlertState.Suspicious);
                     ReportSense(LastKnownPlayerPosition, Priority.Sight, "Player");
                 }
                 break;
+            }
             case AlertState.LookAround:
                 if (canSeePlayer && detectionMeter >= timeToAlert)
                 {
@@ -251,6 +289,8 @@ public class EnemySearchlight : MonoBehaviour
             case AlertState.Stun:
                 if (timeSinceLastStun >= stunDuration)
                 {
+                    stunEffects.Stop();
+                    stunEffects.Clear();
                     if (hasKnownPlayerPosition)
                     {
                         SetState(AlertState.Suspicious);
@@ -326,7 +366,9 @@ public class EnemySearchlight : MonoBehaviour
         // Vector3 eyeLocal = Vector3.up * eyeHeight;
         // vertices[0] = eyeLocal;
         Vector3 eyeWorld = EyePosition;
-        vertices[0] = coneMeshFilter.transform.InverseTransformPoint(eyeWorld);
+        // Rays start at the eyes so low walls don't cut the cone; the mesh is drawn lower, at coneHeight.
+        Vector3 eyeToCone = Vector3.up * (coneHeight - eyeHeight);
+        vertices[0] = coneMeshFilter.transform.InverseTransformPoint(eyeWorld + eyeToCone);
 
         float startAngle = -viewAngle * 0.5f;
         float angleStep = viewAngle / coneRayCount;
@@ -341,7 +383,7 @@ public class EnemySearchlight : MonoBehaviour
             {
                 dist = hit.distance;
             }
-            Vector3 worldPoint = eyeWorld + dir * dist;
+            Vector3 worldPoint = eyeWorld + dir * dist + eyeToCone;
             vertices[i + 1] =
                 coneMeshFilter.transform.InverseTransformPoint(worldPoint);        
         }
@@ -425,7 +467,7 @@ public class EnemySearchlight : MonoBehaviour
         if (player == null || CurrentState == AlertState.Stun)
             return false;
 
-        Vector3 toPlayer = player.position - EyePosition;
+        Vector3 toPlayer = PlayerHeadPosition - EyePosition;
         float distance = toPlayer.magnitude;
 
         if (distance > proximityDetection)
@@ -441,16 +483,30 @@ public class EnemySearchlight : MonoBehaviour
             QueryTriggerInteraction.Ignore);
     }
     /// <summary>
-    /// Called on camera flash to stun the mutant during chase. 
+    /// Called on camera flash to stun the mutant during chase.
+    /// Billboarded mutants only get stunned while showing their front sprite.
     /// </summary>
     public void Stun()
     {
+        if (canSeePlayer && timeSinceLastStun >= stunCooldown + stunDuration)
+        {
+            // Debug.Log("Successful stun!");
+            timeSinceLastStun = 0;
+            SetState(AlertState.Stun);
+            stunEffects.Play();
+            ResetSuspicion();
+            
+        }
+        return;
+        if (billboard != null && !billboard.IsShowingFront) return;
+
         if ((CurrentState == AlertState.Alert || CurrentState == AlertState.Suspicious)
         && timeSinceLastStun >= stunCooldown + stunDuration)
         {
-            Debug.Log("Successful stun!");
+            // Debug.Log("Successful stun!");
             timeSinceLastStun = 0;
             SetState(AlertState.Stun);
+            stunEffects.Play();
             ResetSuspicion();
         }
     }
