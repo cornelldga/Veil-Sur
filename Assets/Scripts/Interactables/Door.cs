@@ -10,7 +10,10 @@ public class Door : MonoBehaviour, Interactable
     [Header("Movement Settings")]
     [Tooltip("Magnitude of the swing angle in degrees (e.g. 90)")]
     [SerializeField] private float openAngle = 90f;
-    [SerializeField] private float openSpeed = 2.5f;
+    [SerializeField] private float minOpenSpeed = 2.5f;
+    [SerializeField] private float maxOpenSpeed = 7.5f;
+    [SerializeField] private float minOpenSpeedVelocity = 5f;
+    [SerializeField] private float maxOpenSpeedVelocity = 10f;
 
     [Tooltip("Check this if the door opens toward you instead of pushing away")]
     [SerializeField] private bool invertSwingDirection = false;
@@ -20,6 +23,7 @@ public class Door : MonoBehaviour, Interactable
     [SerializeField] private bool autoClose = true;
     [Tooltip("Seconds to wait before the door begins automatically closing")]
     [SerializeField] private float autoCloseDelay = 8f;
+    [SerializeField] private float closeSpeed = 5f;
 
     [Header("Mutant Interactions")]
     [Tooltip("What layer mutants are on")]
@@ -30,6 +34,11 @@ public class Door : MonoBehaviour, Interactable
     [SerializeField] private float mutantOpenDistance = 3f;
     [Tooltip("The height at which an obstruction-checking raycast begins")]
     [SerializeField] private float raycastHeight = 1f;
+    [Tooltip("TVision blocker collider to prevent dog from seeing thru small gaps between door & walls")]
+    [SerializeField] private Collider visionBlocker;
+    
+    // Door must open this far before vision through the doorway is allowed.
+    [SerializeField] private float visionClearAngle = 10f;
 
     private Quaternion openRotation;
     private Quaternion closedRotation;
@@ -38,6 +47,8 @@ public class Door : MonoBehaviour, Interactable
     private bool isOpen = false;
     private bool isForcedOpen = false;    
     private bool isFullyClosed = true;
+
+    private float openSpeed;
 
     private Transform frameTransform;
 
@@ -68,6 +79,16 @@ public class Door : MonoBehaviour, Interactable
                 autoCloseCoroutine == null)
         {
             autoCloseCoroutine = StartCoroutine(AutoCloseRoutine());
+        }
+
+        if (visionBlocker != null && doorSlab != null)
+        {
+            float currentAngle = Quaternion.Angle(
+                closedRotation,
+                doorSlab.localRotation
+            );
+
+            visionBlocker.enabled = currentAngle < visionClearAngle;
         }
     }
 
@@ -102,6 +123,13 @@ public class Door : MonoBehaviour, Interactable
         {
             // Open away from the player using transform.right (perpendicular doorway vector)
             Transform playerTransform = GameManager.PlayerInstance.transform;
+            float playerSpeed = playerTransform.gameObject.GetComponent<FirstPersonController>().getSpeed();
+            float adjustedSpeed = Mathf.Clamp(playerSpeed, minOpenSpeedVelocity, maxOpenSpeedVelocity);
+            openSpeed = 
+            ((adjustedSpeed - minOpenSpeedVelocity) 
+            / (maxOpenSpeedVelocity - minOpenSpeedVelocity)
+            * (maxOpenSpeed - minOpenSpeed)) + minOpenSpeed;
+            
             Open(playerTransform);
            
         }
@@ -167,7 +195,12 @@ public class Door : MonoBehaviour, Interactable
                     StopCoroutine(rotateCoroutine);
                     rotateCoroutine = null;
                 }
-
+                float mutantSpeed = mutant.gameObject.GetComponent<EnemyMover>().getSpeed();
+                float adjustedSpeed = Mathf.Clamp(mutantSpeed, minOpenSpeedVelocity, maxOpenSpeedVelocity);
+                openSpeed = 
+                ((adjustedSpeed - minOpenSpeedVelocity) 
+                / (maxOpenSpeedVelocity - minOpenSpeedVelocity)
+                * (maxOpenSpeed - minOpenSpeed)) + minOpenSpeed;
                 Open(mutant);
             }
 
@@ -224,6 +257,7 @@ public class Door : MonoBehaviour, Interactable
         // Ensure StartCoroutine assigns its handle before this
         // routine can finish and clear that handle.
         yield return null;
+        float rotationSpeed = targetRotation == openRotation ? openSpeed : closeSpeed;
 
         while (Quaternion.Angle(
             doorSlab.localRotation,
@@ -232,7 +266,7 @@ public class Door : MonoBehaviour, Interactable
             doorSlab.localRotation = Quaternion.Slerp(
                 doorSlab.localRotation,
                 targetRotation,
-                Time.deltaTime * openSpeed
+                Time.deltaTime * rotationSpeed
             );
 
             yield return null;
