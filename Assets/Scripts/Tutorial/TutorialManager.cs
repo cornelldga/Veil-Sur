@@ -152,7 +152,9 @@ public class TutorialManager : MonoBehaviour
         promptRect = promptText.rectTransform;
         basePosition = promptRect.anchoredPosition;
         playerState = GameManager.PlayerInstance.GetComponent<PlayerState>();
-        promptText.gameObject.SetActive(true);
+        promptText.text = "";
+        promptText.alpha = 0f;
+        promptText.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -168,6 +170,7 @@ public class TutorialManager : MonoBehaviour
             {
                 tutorialStarted = true;
                 photoCountAtStepStart = PhotoStorage.Instance.GetTotalOwnedPhotoCount();
+                promptText.gameObject.SetActive(true);
             }
             else
             {
