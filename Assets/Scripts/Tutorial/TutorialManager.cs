@@ -151,15 +151,13 @@ public class TutorialManager : MonoBehaviour
         Instance = this;
         // Shared instance, so the player's rebinds apply. Other scripts own its enable/disable state.
         controls = GameManager.Controls;
-        // The prompt is display-only; don't let it swallow clicks meant for UI underneath it (e.g. the notebook's page arrow).
-        promptText.raycastTarget = false;
-        promptRect = promptText.rectTransform;
-        basePosition = promptRect.anchoredPosition;
     }
 
     private void Start()
     {
         promptText = UIManager.Instance.tutorialText;
+        // The prompt is display-only; don't let it swallow clicks meant for UI underneath it (e.g. the notebook's page arrow).
+        promptText.raycastTarget = false;
         promptRect = promptText.rectTransform;
         basePosition = promptRect.anchoredPosition;
         playerState = GameManager.PlayerInstance.GetComponent<PlayerState>();
