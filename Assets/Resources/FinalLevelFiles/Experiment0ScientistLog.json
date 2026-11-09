@@ -1,12 +1,13 @@
 {
   "lines": [
-    "<size=50%><u>EXPERIMENT 0 - SCIENTISTS' LOG #1</u>",
-    "We have commenced Project RAT. We aim to add rats as a new branch of [SURVEILLANCE SYSTEM].",
-    "The rats live in a 10 cm x 10 cm cage. We nourish them via IV. They do not require exercise.",
-    "We have administered [SEDATIVE DRUG] to the rats and implanted [IMPLANT] to connect it with [SURVEILLANCE SYSTEM].",
+    "<size=50%><u>EXPERIMENT 0 - SCIENTISTS' LOG </u></size>",
+    "<size=40%>",
+    "We have commenced Project RAT. We aim to add rats as a new branch of [SURVEILLANCE SYSTEM]. The rats live in a 10 cm x 10 cm cage. We nourish them via IV. They do not require exercise. We have administered [SEDATIVE DRUG] to the rats and implanted [IMPLANT] to connect it with [SURVEILLANCE SYSTEM].",
+    "",
     "I have been tasked with checking on the rats every hour. The task, although dull, has been proceeding smoothly.",
+    "",
     "But I have observed an odd behavior in RAT-8. Whenever I look at it, it backs into a corner and covers its face, like a shy school-girl. The other rats follow suit.",
-    "We will have to investigate further.",
-    "</size>"
+    "",
+    "We will have to investigate further.</size>"
   ]
 }
