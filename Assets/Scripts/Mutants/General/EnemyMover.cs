@@ -276,5 +276,14 @@ public class EnemyMover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns the speed of the mutant.
+    /// </summary>
+    /// <returns>Mutant speed</returns>
+    public float getSpeed()
+    {
+        return agent.speed;
+    }
+
    
 }

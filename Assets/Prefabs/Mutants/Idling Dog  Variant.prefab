@@ -115,7 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IdleDogStates
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 35328
   playerMask:
     serializedVersion: 2
     m_Bits: 256
