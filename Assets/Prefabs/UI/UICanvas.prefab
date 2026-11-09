@@ -413,7 +413,7 @@ MonoBehaviour:
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
-  m_fontSizeMax: 24
+  m_fontSizeMax: 48
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -1778,10 +1778,6 @@ PrefabInstance:
     - target: {fileID: 3029584162233113666, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3272032798394900424, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5781908069694159774, guid: bd8f0c9854b7ba54cad8ec3d46c1f386, type: 3}
       propertyPath: m_Name

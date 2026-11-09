@@ -175,12 +175,15 @@ public class UIManager : MonoBehaviour
             case GameManager.GameState.PAUSED:
                 Show(UIGroupId.Pause);
                 break;
+            case GameManager.GameState.LOST:
+                break;
         }
 
         // Cursor + player control follow the state
         bool uiOpen = state == GameManager.GameState.MAIN_MENU
                 || state == GameManager.GameState.PAUSED
-                || state == GameManager.GameState.NOTEBOOK;
+                || state == GameManager.GameState.NOTEBOOK
+                || state == GameManager.GameState.LOST;
 
         Cursor.lockState = uiOpen ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = uiOpen;
