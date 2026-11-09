@@ -787,6 +787,18 @@ PrefabInstance:
       propertyPath: m_margin.w
       value: -65.9538
       objectReference: {fileID: 0}
+    - target: {fileID: 6789889644223272605, guid: d067728027c7f424b9908d338093eaaf, type: 3}
+      propertyPath: m_margin.x
+      value: -3.5292969
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789889644223272605, guid: d067728027c7f424b9908d338093eaaf, type: 3}
+      propertyPath: m_margin.y
+      value: -11.131348
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789889644223272605, guid: d067728027c7f424b9908d338093eaaf, type: 3}
+      propertyPath: m_margin.z
+      value: -224.70667
+      objectReference: {fileID: 0}
     - target: {fileID: 8041912876880657967, guid: d067728027c7f424b9908d338093eaaf, type: 3}
       propertyPath: m_Name
       value: Question Visual Four Slots Variant
