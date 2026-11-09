@@ -94,7 +94,6 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     /// <param name="sectionID"> the corresponding ID for that section of dialogue </param>
     public void StartDialogue(string sectionID) {
-        Debug.Log($"StartDialogue({sectionID}) levelSections null={levelSections == null}, active={isDialogueActive}, played={played.Contains(sectionID)}");
         if (levelSections == null) return;
         if (!levelSections.TryGetValue(sectionID, out DialogueSection section)) return;
         if (isDialogueActive || played.Contains(sectionID)) return; //if played already then fade
@@ -240,7 +239,6 @@ public class DialogueManager : MonoBehaviour {
     /// </summary>
     private void EndDialogue()
     {
-        Debug.Log("EndDialogue called\n" + System.Environment.StackTrace);
         isDialogueActive = false;
         currentSection = null;
         HideClickPrompt();
@@ -253,7 +251,6 @@ public class DialogueManager : MonoBehaviour {
     public void ShowDialogue()
     {
         dialogueBox.SetActive(true);
-        Debug.Log($"ShowDialogue: activeSelf={dialogueBox.activeSelf}, inHierarchy={dialogueBox.activeInHierarchy}", dialogueBox);
     }
 
     /// <summary>
