@@ -166,7 +166,7 @@ Transform:
   m_GameObject: {fileID: 911446516936161387}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.2, z: 5}
+  m_LocalPosition: {x: 1, y: 1, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -194,6 +194,7 @@ MonoBehaviour:
   levelOneAmbience: {fileID: 8300000, guid: 7132bdf75a9964f13b3a6840b490e044, type: 3}
   titleSceneName: TitleScreen
   losePanel: {fileID: 4679233136749169115}
+  currentSceneName: 
 --- !u!114 &7000000000000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0

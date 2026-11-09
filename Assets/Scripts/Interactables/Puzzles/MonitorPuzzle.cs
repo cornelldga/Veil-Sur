@@ -41,17 +41,18 @@ public class MonitorPuzzle : PuzzleInteractable
     {
         screen.material = staticScreen;
         feedSubject.SetActive(false);
-        if (idQuestion != null) idQuestion.Solved += OnIdQuestionSolved;
+        if (idQuestion != null) idQuestion.AnswerChanged += OnIdQuestionChanged;
     }
 
     private void OnDestroy()
     {
-        if (idQuestion != null) idQuestion.Solved -= OnIdQuestionSolved;
+        if (idQuestion != null) idQuestion.AnswerChanged -= OnIdQuestionChanged;
     }
 
-    private void OnIdQuestionSolved(QuestionDefinition question)
+    // AnswerChanged rather than Solved so a question restored as solved from a save also gives access
+    private void OnIdQuestionChanged()
     {
-        Access();
+        if (idQuestion.IsCorrect) Access();
     }
 
     /// <summary>

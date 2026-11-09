@@ -160,6 +160,16 @@ public class QuestionDefinition : MonoBehaviour
             photos.All(photo => photo == null || PhotoStorage.Instance.Owns(photo));
     }
 
+    /// <summary>Marks the question solved when loading a save. Doesn't unlock future questions, since the save restores those itself.</summary>
+    internal void RestoreSolved()
+    {
+        if (IsCorrect) return;
+        IsCorrect = true;
+        HasBeenUploaded = true;
+        foreach (var puzzle in futurePuzzles) puzzle.DecreaseQuestionsRemaining();
+        AnswerChanged?.Invoke();
+    }
+
     public void Verify()
     {
         if (IsCorrect) return;

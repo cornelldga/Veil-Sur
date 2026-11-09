@@ -17,6 +17,9 @@ public abstract class PuzzleInteractable : MonoBehaviour, Interactable
     internal void IncreaseQuestionsRemaining() { questionsRemaining++; }
     internal void DecreaseQuestionsRemaining() { questionsRemaining--; }
 
+    /// <summary>Marks the puzzle as interacted with when loading a save, without replaying its success behavior or unlocking its questions again.</summary>
+    internal void RestoreInteracted() { HasBeenInteractedWith = true; }
+
     public virtual bool IsSolved() { return questionsRemaining == 0; }
 
     [SerializeField] private bool debugSolve;

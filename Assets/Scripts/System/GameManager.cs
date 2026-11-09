@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
+    public string currentSceneName;
     private int currentLevelIndex;
 
     private GameState _state = GameState.DEFAULT;
@@ -54,7 +55,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public Pose ArrivalPose { get; set; }
     private bool hasLost = false;
-
     public void SetMouseSensitivity(float value)
     {
         MouseSensitivity = value;
@@ -147,6 +147,7 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        currentSceneName = scene.name;
         // undo the lose state, e.g. after loading the last save from the lose panel
         if (hasLost)
         {
@@ -192,17 +193,6 @@ public class GameManager : MonoBehaviour
         //HandleSceneMusic("MainMenu");
         // This is TEMPORARY
         AudioManager.Instance.PlayMusic(lobbyMusic);
-    }
-
-    /// <summary>
-    /// Leaves the title screen by discarding this GameManager, so the next scene's
-    /// own GameManager takes over exactly as if that scene had been the first one run.
-    /// </summary>
-    public void StartFresh(string sceneName)
-    {
-        Instance = null;
-        Destroy(gameObject);
-        SceneManager.LoadScene(sceneName);
     }
 
     public async void GoToLevel(string sceneName)
