@@ -5,9 +5,15 @@ using UnityEngine;
 
 /// <summary>Question data, submitted evidence, and validation. Has no UI dependencies.</summary>
 public class QuestionDefinition : MonoBehaviour
-{
+{   
+    [Tooltip("Whether we check photos by subject IDs or actual objects.")]
+    [SerializeField] private bool requireIDs = false;
     [SerializeField] private List<PhotographableObject> required_objects = new();
     [SerializeField] private bool requireAllObjects = true;
+    [Tooltip("If requireIDs is true, this is the list of subject IDs required.")]
+    [SerializeField] private List<string> requiredSubjectIds = new();
+    [Tooltip("If requireIDs is true, whether we need ALL IDs in the list to be present.")]
+    [SerializeField] private bool requireAllIDs= true;
     [TextArea]
     [SerializeField] private string questionText;
     [TextArea]
@@ -42,6 +48,8 @@ public class QuestionDefinition : MonoBehaviour
         : prerequisiteQuestions.Any(question => question.IsCorrect) ||
             prerequisitePuzzles.Any(puzzle => puzzle.HasBeenInteractedWith);
 
+    internal bool HasPrerequisites => prerequisiteQuestions.Count > 0 || prerequisitePuzzles.Count > 0;
+
     internal void RegisterPrerequisite(QuestionDefinition question)
     {
         prerequisiteQuestions.Add(question);
@@ -63,20 +71,34 @@ public class QuestionDefinition : MonoBehaviour
     }
     private void CheckPhotos()
     {
-        if (photos.RemoveAll(photo => photo == null || !storage.Owns(photo)) > 0) ResetResult();
+        bool changed = false;
+        for (int i = 0; i < photos.Count; i++)
+        {
+            if (photos[i] == null || storage.Owns(photos[i])) continue;
+            photos[i] = null;
+            changed = true;
+        }
+        if (changed) ResetResult();
     }
 
-    public void SetPhoto(Photo photo)
+    public Photo GetPhoto(int index)
     {
-        if (IsCorrect) return;
-        if (photo != null) PhotoStorage.Instance.MoveToQuestion(photo, this);
-        else if (Photo != null) PhotoStorage.Instance.ReturnPhoto(Photo);
+        return index >= 0 && index < photos.Count ? photos[index] : null;
     }
 
-    internal void AssignPhoto(Photo photo)
+    internal int GetPhotoIndex(Photo photo) => photos.IndexOf(photo);
+
+    public void SetPhoto(Photo photo, int index = 0)
     {
-        photos.Clear();
-        if (photo != null) photos.Add(photo);
+        if (IsCorrect || index < 0) return;
+        if (photo != null) PhotoStorage.Instance.MoveToQuestion(photo, this, index);
+        else if (GetPhoto(index) != null) PhotoStorage.Instance.ReturnPhoto(GetPhoto(index));
+    }
+
+    internal void AssignPhoto(Photo photo, int index = 0)
+    {
+        while (photos.Count <= index) photos.Add(null);
+        photos[index] = photo;
         ResetResult();
     }
     public void AttachPhoto(Photo photo)
@@ -85,7 +107,9 @@ public class QuestionDefinition : MonoBehaviour
     }
     public void RemovePhoto(Photo photo)
     {
-        if (Photo == photo) SetPhoto(null);
+        if (photo == null) return;
+        int index = GetPhotoIndex(photo);
+        if (index >= 0) SetPhoto(null, index);
     }
     public bool isSolved() { return IsCorrect; }
 
@@ -101,14 +125,49 @@ public class QuestionDefinition : MonoBehaviour
     /// <summary>Checks the current answer without locking it or unlocking future questions.</summary>
     public bool CheckAnswer()
     {
+        if (requireIDs)
+        {
+            return CheckAnswerIDs();
+        }
         return IsCorrect || (HasStoredPhotos() && required_objects.Count > 0 &&
-            (requireAllObjects ? required_objects.All(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId))) : required_objects.Any(obj => obj != null && photos.Any(photo => photo.HasSubject(obj.SubjectId)))));
+            (requireAllObjects ? required_objects.All(obj => obj != null && photos.Any(photo => photo != null && photo.HasSubject(obj.SubjectId))) : required_objects.Any(obj => obj != null && photos.Any(photo => photo != null && photo.HasSubject(obj.SubjectId)))));
+    }
+
+    /// <summary>
+    /// Same function as CheckAnswer(), but for IDs
+    /// </summary>
+    /// <returns>Whether the linked photos contain all required subject IDs</returns>
+    public bool CheckAnswerIDs() {
+        if (IsCorrect) return true;
+
+        if (!HasStoredPhotos() || requiredSubjectIds.Count == 0)
+            return false;
+
+        bool Matches(string subjectId)
+        {
+            return !string.IsNullOrWhiteSpace(subjectId) &&
+                photos.Any(photo => photo != null && photo.HasSubject(subjectId));
+        }
+
+        return requireAllIDs
+            ? requiredSubjectIds.All(Matches)
+            : requiredSubjectIds.Any(Matches);
     }
 
     private bool HasStoredPhotos()
     {
-        return photos.Count > 0 && PhotoStorage.Instance != null &&
-            photos.All(photo => photo != null && PhotoStorage.Instance.Owns(photo));
+        return photos.Any(photo => photo != null) && PhotoStorage.Instance != null &&
+            photos.All(photo => photo == null || PhotoStorage.Instance.Owns(photo));
+    }
+
+    /// <summary>Marks the question solved when loading a save. Doesn't unlock future questions, since the save restores those itself.</summary>
+    internal void RestoreSolved()
+    {
+        if (IsCorrect) return;
+        IsCorrect = true;
+        HasBeenUploaded = true;
+        foreach (var puzzle in futurePuzzles) puzzle.DecreaseQuestionsRemaining();
+        AnswerChanged?.Invoke();
     }
 
     public void Verify()

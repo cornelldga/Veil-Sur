@@ -23,19 +23,60 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
+
+    [Header("Debug Settings")]
+    [SerializeField] private bool debugMode = true;
+    [SerializeField] private Key reloadKey = Key.Y;
+
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
+    public string currentSceneName;
     private int currentLevelIndex;
+
+    private GameState _state = GameState.DEFAULT;
+    public GameState state
+    {
+        get => _state;
+        set => RequestStateChange(value);
+    }
+
+    private GameState _stateBeforePause = GameState.DEFAULT;
+
+    public enum GameState
+    {
+        MAIN_MENU,
+        PAUSED,
+        DEFAULT,
+        CAMERA,
+        NOTEBOOK,
+        LOST
+    }
     
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
+    /// <summary>
+    /// Player's pose relative to the Elevator
+    /// </summary>
+    public Pose ArrivalPose { get; set; }
     private bool hasLost = false;
-
     public void SetMouseSensitivity(float value)
     {
         MouseSensitivity = value;
         PlayerPrefs.SetFloat(SensitivityKey, value);
+    }
+
+    private const string SkipJumpscaresKey = "SkipJumpscares";
+    public bool SkipJumpscares { get; private set; }
+
+    /// <summary>
+    /// Saved to PlayerPrefs so the choice survives restarts. Hooked to the settings toggle.
+    /// </summary>
+    /// <param name="skip">true skips jumpscares</param>
+    public void SetSkipJumpscares(bool skip)
+    {
+        SkipJumpscares = skip;
+        PlayerPrefs.SetInt(SkipJumpscaresKey, skip ? 1 : 0);
     }
 
     /// <summary>
@@ -78,23 +119,6 @@ public class GameManager : MonoBehaviour
     }
 
     public static bool IsRebinding { get; set; }
-    private GameState _state = GameState.DEFAULT;
-    public GameState state
-    {
-        get => _state;
-        set => RequestStateChange(value);
-    }
-
-    private GameState _stateBeforePause = GameState.DEFAULT;
-
-    public enum GameState
-    {
-        MAIN_MENU,
-        PAUSED,
-        DEFAULT,
-        CAMERA,
-        NOTEBOOK
-    }
 
     private void Awake()
     {
@@ -107,6 +131,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         MouseSensitivity = PlayerPrefs.GetFloat(SensitivityKey, 1f);
+        SkipJumpscares = PlayerPrefs.GetInt(SkipJumpscaresKey, 0) == 1;
 
         // Keeps this object alive when switching scenes
         DontDestroyOnLoad(gameObject);
@@ -127,12 +152,23 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        currentSceneName = scene.name;
         // undo the lose state, e.g. after loading the last save from the lose panel
         if (hasLost)
         {
-            losePanel.SetActive(false);
+            if (losePanel != null)
+            {
+                losePanel.SetActive(false);
+                Transform staminaTransform = losePanel.transform.parent != null 
+                    ? losePanel.transform.parent.Find("StaminaUI") 
+                    : null;
+
+                staminaTransform?.gameObject.SetActive(true);
+            }
+
             UIManager.Instance.HideJumpscare();
-            Time.timeScale = 1f;
+            // Time.timeScale = 1f;
+            SetState(GameState.DEFAULT); // handles timeScale too
         }
         hasLost = false;
 
@@ -157,11 +193,16 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (debugMode)
+        {
+            HandleDebugInput();
+        }
+        
         var kb = Keyboard.current;
         if (kb == null || _state == GameState.MAIN_MENU || IsRebinding) return;
 
         if (kb.escapeKey.wasPressedThisFrame)
-            TogglePause();
+            HandleEscape();
     }
 
     private void InitializeGame()
@@ -171,17 +212,6 @@ public class GameManager : MonoBehaviour
         //HandleSceneMusic("MainMenu");
         // This is TEMPORARY
         AudioManager.Instance.PlayMusic(lobbyMusic);
-    }
-
-    /// <summary>
-    /// Leaves the title screen by discarding this GameManager, so the next scene's
-    /// own GameManager takes over exactly as if that scene had been the first one run.
-    /// </summary>
-    public void StartFresh(string sceneName)
-    {
-        Instance = null;
-        Destroy(gameObject);
-        SceneManager.LoadScene(sceneName);
     }
 
     public async void GoToLevel(string sceneName)
@@ -209,6 +239,77 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
+    private void HandleEscape()
+    {
+        if (_state == GameState.LOST) return;
+        if (_state == GameState.NOTEBOOK)
+        {
+            var notebook = UIManager.Instance.Notebook;
+            if (notebook != null && notebook.IsPhotoPreviewOpen)
+                notebook.ClosePhotoPreview();     // enlarged photo -> normal notebook view
+            else
+                SetState(GameState.DEFAULT);      // notebook -> game
+        }
+        else
+            TogglePause();
+    }
+
+    /// <summary>
+    /// True when the Player is loading in the new scene 
+    /// by elevator (post-Tutorial). The Elevator in the next scene
+    /// will read this.
+    /// </summary>
+    public bool ArrivingByElevator { get; set; }
+
+    private AsyncOperation preloadOperation;
+    private string preloadSceneName;
+
+    /// <summary>
+    /// True when the PreloadScene has finished loading.
+    /// Progress above 90% is held until the scene transition is activated.
+    /// </summary>
+    public bool IsScenePreloaded => preloadOperation != null && preloadOperation.progress >= 0.9f;
+
+    /// <summary>
+    /// Start loading the scene in the background BUT DONT switch
+    /// (this is the prime difference from LoadScene and GoToLevel).
+    /// Call ActivatePreloadedScene() to transition to the next scene.
+    /// </summary>
+    /// <param name="sceneName">String of the scene to load</param>
+    public void PreloadScene(string sceneName)
+    {
+        if (preloadOperation != null) return;
+
+        preloadOperation = SceneManager.LoadSceneAsync(sceneName);
+        if (preloadOperation == null)
+        {
+            Debug.LogError($"Scene '{sceneName} was not loaded. Check Build Settings and names");
+            return;
+        }
+        preloadOperation.allowSceneActivation = false; // will not switch to scene
+
+        preloadSceneName = sceneName;
+    }
+
+    /// <summary>
+    /// Activate the preloaded scene.
+    /// May pivot to the modern Unity Awaitable. Need to look into this.
+    /// </summary>
+    public async Task ActivatePreloadedScene()
+    {
+        if (preloadOperation == null) return; // nothing to activate
+
+        AsyncOperation op = preloadOperation;
+        preloadOperation = null;
+
+        op.allowSceneActivation = true;
+
+        while (!op.isDone)
+        {
+            await Task.Yield();
+        }
+    }
+
     /// <summary>
     /// Requests the game manager to change the state.
     /// There is no guarantee that the change actually happens.
@@ -219,6 +320,7 @@ public class GameManager : MonoBehaviour
         // While paused, only TogglePause can leave the state. This stops things like
         // releasing right-click (which sets DEFAULT) from silently unpausing the game.
         if (_state == GameState.PAUSED && newState != GameState.PAUSED) return;
+        if (_state == GameState.LOST) return;
         SetState(newState);
     }
 
@@ -242,7 +344,7 @@ public class GameManager : MonoBehaviour
         if (newState == GameState.PAUSED) _stateBeforePause = old;
  
         _state = newState;
-        Time.timeScale = (newState == GameState.PAUSED) ? 0f : 1f;
+        Time.timeScale = (newState == GameState.PAUSED || newState == GameState.LOST) ? 0f : 1f;
  
         StateChanged?.Invoke(old, newState);
     }
@@ -272,11 +374,19 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
     {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
-        Time.timeScale = 0f;
+        // Time.timeScale = 0f;
+        SetState(GameState.LOST); //deal with timescale in setstate
         // for when we have jumpscare audio
         // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
 
-        yield return UIManager.Instance.PlayJumpscare(frames, fps);
+        if (losePanel != null && losePanel.transform.parent != null)
+        {
+            Transform staminaTransform = losePanel.transform.parent.Find("StaminaUI");
+            staminaTransform?.gameObject.SetActive(false);
+        }
+
+        if (!SkipJumpscares)
+            yield return UIManager.Instance.PlayJumpscare(frames, fps);
 
         losePanel.SetActive(true);
         // free the cursor so the lose panel's buttons can be clicked
@@ -334,6 +444,57 @@ public class GameManager : MonoBehaviour
         }
 
         SceneManager.LoadScene(levelNumber);
+    }
+
+    public float GetPlayerStamina()
+    {
+        if (PlayerInstance == null)
+        {
+            return 0f;
+        }
+
+        StaminaController stamina = PlayerInstance.GetComponent<StaminaController>();
+        if (stamina == null)
+        {
+            return 0f;
+        }
+
+        return stamina.currentStamina;
+    }
+
+    public float GetStaminaPercentage()
+    {
+        if (PlayerInstance == null)
+        {
+            return 1f;
+        }
+
+        StaminaController stamina = PlayerInstance.GetComponent<StaminaController>();
+
+        if (stamina == null)
+        {
+            return 1f;
+        }
+
+        return stamina.StaminaPercent;
+    }
+
+    private void HandleDebugInput()
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        // Uses the serialized Key enum from the Inspector
+        if (keyboard[reloadKey].wasPressedThisFrame)
+        {
+            RestartCurrentScene();
+        }
+    }
+
+    private void RestartCurrentScene()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 }

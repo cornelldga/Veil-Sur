@@ -4,12 +4,14 @@ public class StaminaController : MonoBehaviour
 {
     [Header("Stamina Parameters")]
     private float playerStamina;
+    public float currentStamina => playerStamina;
     public bool isExhausted = false;
     [SerializeField] private float maxStamina = 100.0f;
 
     [Header("Stamina Regen Parameters")]
     [SerializeField] private float staminaDrain = 25f;
     [SerializeField] private float staminaRegen = 45f;
+    public float StaminaPercent => playerStamina/maxStamina;
 
     void Start()
     {
@@ -31,7 +33,7 @@ public class StaminaController : MonoBehaviour
     {
         if (playerStamina < maxStamina)
         {
-            playerStamina += staminaRegen * Time.deltaTime;
+            playerStamina += staminaRegen * Time.unscaledDeltaTime;
             playerStamina = Mathf.Clamp(playerStamina, 0f, maxStamina);
 
             // Once fully recovered, clear the exhausted state

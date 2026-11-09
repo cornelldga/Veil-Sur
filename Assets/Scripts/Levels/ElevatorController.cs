@@ -30,13 +30,18 @@ public enum ElevatorDirection
 ///
 /// THE RIDE:
 ///
-///     Once the doors close, the ride runs for rideDuration. A point light
-///     sweeps from the bottom of the elevator to the top to simulate travel
-///     through an elevator shaft of the facility, sweepCount times, while
-///     the ride sound plays.
+///     Once the doors close, the ride runs for rideDuration. A wide emissive
+///     panel (with an optional Point Light) sweeps from the bottom of the
+///     elevator to the top to simulate travel through an elevator shaft of
+///     the facility, sweepCount times, while the ride sound plays. The same
+///     ride plays when the Player arrives from another scene.
 ///
-///     The light's top and bottom should be transforms positioned above and
-///     below the front door of the elevator (natural enter and exit) in prefab
+///     The panel is wider than the door window, so it always covers the gap.
+///     Its top and bottom should be transforms positioned above and below
+///     the door window (natural enter and exit) in prefab. Select the
+///     elevator to see the panel outlined at both ends.
+///
+///     The whole effect is hidden except during the ride.
 ///
 /// This script should be put on the GameObject that contains a BOX COLLIDER
 /// with TRIGGER that is the interior of the elevator.
@@ -67,16 +72,22 @@ public class ElevatorController : MonoBehaviour
     [SerializeField] private float autoCloseDelay = 8f;
     [SerializeField] private BoxCollider doorCollider;
 
-    [Header("Ride")]
+    [Header("Player Ride")]
     [Tooltip("Total seconds the ride lasts")]
     [SerializeField] private float rideDuration = 5f;
+    [Tooltip("Where the Player is walked to inside the Elevator prefab. Should be where they start Levels.")]
+    [SerializeField] private Transform playerStandPoint;
+    [Tooltip("Seconds it will take to walk the Player to playerStandPoint and make them face the doors")]
+    [SerializeField] private float scriptedDuration = 1.2f;
+    [Tooltip("Camera pitch while standing in the elevator, in degrees. Positive looks down.")]
+    [SerializeField] private float lookPitch = 15f;
 
     [Header("Elevator Lighting")]
-    [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride (hopefully this time)")]
+    [Tooltip("Root of the moving light effect. Put a wide emissive panel (and optionally a Point Light) under it. Hidden except during the ride.")]
     [SerializeField] private Transform shaftLight;
-    [Tooltip("Start of light sweep, place an Empty Game Object below the elevator door (in front of it)")]
+    [Tooltip("Start of light sweep. Place an Empty Game Object so the whole panel sits below the door window (outside it).")]
     [SerializeField] private Transform lightBottom;
-    [Tooltip("End of light sweep, place an Empty Game Object above the elevator door (in front of it)")]
+    [Tooltip("End of light sweep. Place an Empty Game Object so the whole panel sits above the door window (outside it).")]
     [SerializeField] private Transform lightTop;
     [Tooltip("Number of times that the light travels bottom to top during the ride. Each sweep lasts rideDuration / sweepCount. MUST BE 1+")]
     [SerializeField] private int sweepCount = 4;
@@ -115,9 +126,16 @@ public class ElevatorController : MonoBehaviour
 
         state = State.Closed;
 
+        // Hides the whole light effect (panel and light) until a ride needs it
         if (shaftLight != null)
         {
             shaftLight.gameObject.SetActive(false);
+        }
+
+        if (GameManager.Instance.ArrivingByElevator)
+        {
+            GameManager.Instance.ArrivingByElevator = false; 
+            StartCoroutine(ArrivalSequence());
         }
     }
 
@@ -156,11 +174,15 @@ public class ElevatorController : MonoBehaviour
     }
 
     /// <summary>
-    /// Opens the doors if closed.
+    /// Opens the doors if closed. Also clears the dialogue and tutorial prompt, since the level is over.
     /// </summary>
     public void OpenDoors()
     {
         if (traveling || state != State.Closed) return;
+
+        if (DialogueManager.Instance != null) DialogueManager.Instance.CancelDialogue();
+        if (TutorialManager.Instance != null) TutorialManager.Instance.Hide();
+
         StartCoroutine(OpenDoorsRoutine());
     }
 
@@ -249,11 +271,83 @@ public class ElevatorController : MonoBehaviour
             yield break;
         }
 
+        GameManager.Instance.GoToLevel(targetScene);
+
+        Coroutine scriptedCentering = StartCoroutine(CenterPlayer());
         yield return SetDoorsAnimated(false);
         yield return RunRide();
 
-        GameManager.Instance.GoToLevel(targetScene); // Should always go to TutorialLevel right now.
-        // Might need to make the position of the elevator at the origin across all levels
+        // Waiting in Elevator UNTIL scene is loaded (even if default ride duration has ended)
+        yield return new WaitUntil(() => GameManager.Instance.IsScenePreloaded);
+
+        SavePlayerPose();
+        GameManager.Instance.ArrivingByElevator = true;
+        _ = GameManager.Instance.ActivatePreloadedScene();
+    }
+
+    /// <summary>
+    /// Coroutine that takes control of the Player and eases them to the stand
+    /// point, turning them to face the doors.
+    /// </summary>
+    private IEnumerator CenterPlayer()
+    {
+        FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
+        player.BeginScriptedMovement();
+
+        float startYaw = player.Yaw;
+        float startPitch = player.Pitch;
+        Vector3 startPos = player.transform.position;
+        Vector3 targetPos = playerStandPoint.position;
+        float targetYaw = playerStandPoint.eulerAngles.y;
+
+        for (float t = 0f; t < scriptedDuration; t += Time.deltaTime)
+        {
+            float k = Mathf.SmoothStep(0f, 1f, t / scriptedDuration);
+
+            Vector3 dest = Vector3.Lerp(startPos, targetPos, k);
+            Vector3 delta = dest - player.transform.position;
+            delta.y = 0f;
+
+            player.GuidePlayerBy(delta, Mathf.LerpAngle(startYaw, targetYaw, k), Mathf.Lerp(startPitch, lookPitch, k));
+
+            yield return null;
+        }
+    }
+
+    /// <summary>
+    /// Coroutine that runs when the Player arrives by the elevator.
+    /// Doors start closed and open after doorOpenCloseDelay.
+    /// Used before stepping into the next level.
+    /// </summary>
+    private IEnumerator ArrivalSequence()
+    {
+        FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
+
+        Pose pose = GameManager.Instance.ArrivalPose;
+        Vector3 position = transform.TransformPoint(pose.position);
+        float yaw = (transform.rotation * pose.rotation).eulerAngles.y;
+        player.PlacePositionAt(position, yaw, lookPitch);
+        
+        player.BeginScriptedMovement();
+
+        yield return RunRide();
+        yield return new WaitForSeconds(doorOpenCloseDelay);
+        
+        player.EndScriptedMovement();
+        OpenDoors();
+    }
+
+    /// <summary>
+    /// Stores where the Player is standing relative to this Elevator object.
+    /// The Elevator in the next scene will use this pose to place the Player.
+    /// </summary>
+    private void SavePlayerPose()
+    {
+        Transform player = GameManager.PlayerInstance.transform;
+
+        GameManager.Instance.ArrivalPose = new Pose(
+            transform.InverseTransformPoint(player.position), 
+            Quaternion.Inverse(transform.rotation) * player.rotation);
     }
 
     /// <summary>
@@ -263,7 +357,7 @@ public class ElevatorController : MonoBehaviour
     /// the light goes from lightBottom to lightTop to simulate travel.
     ///
     /// The sweep resets and starts back at lightBottom for the amount of
-    /// sweeps that there are.
+    /// sweeps that there are. The effect is only visible while this runs.
     /// </summary>
     private IEnumerator RunRide()
     {
@@ -422,13 +516,24 @@ public class ElevatorController : MonoBehaviour
         return !string.IsNullOrEmpty(sceneName);
     }
  
+    /// <summary>
+    /// Draws the sweep path, and outlines the panel at both ends of it, when the
+    /// elevator is selected. This way the ends can be lined up with the door
+    /// window without turning the light on.
+    /// </summary>
     private void OnDrawGizmosSelected()
     {
         if (lightBottom == null || lightTop == null) return;
+
+        Renderer panel = shaftLight != null ? shaftLight.GetComponentInChildren<Renderer>(true) : null;
+        Vector3 size = panel != null ? panel.bounds.size : Vector3.zero;
+        if (size == Vector3.zero) size = Vector3.one * 0.4f;
+
+        Vector3 offset = panel != null ? panel.bounds.center - shaftLight.position : Vector3.zero;
  
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(lightBottom.position, lightTop.position);
-        Gizmos.DrawWireSphere(lightBottom.position, 0.2f);
-        Gizmos.DrawWireSphere(lightTop.position, 0.2f);
+        Gizmos.DrawWireCube(lightBottom.position + offset, size);
+        Gizmos.DrawWireCube(lightTop.position + offset, size);
     }
 }

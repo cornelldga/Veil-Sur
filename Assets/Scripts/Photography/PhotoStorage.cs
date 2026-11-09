@@ -94,6 +94,25 @@ public class PhotoStorage : MonoBehaviour
        return true;
    }
 
+   /// <summary>
+   /// Creates a Photo in the notebook from a given image texture and adds it to the storage.
+   /// If the storage is at maximum capacity, returns 'false' and destroys the created photo.
+   /// </summary>
+   public bool CreatePhoto(Texture2D image, string subjectId)
+   {
+       Photo photo = new GameObject("Photo").AddComponent<Photo>();
+       photo.SetSubject(subjectId);
+       photo.SetImage(image);
+
+       if (!AddPhoto(photo))
+       {
+           Destroy(photo.gameObject);
+           Destroy(image);
+           return false;
+       }
+       return true;
+   }
+
    private int FindOpenSlot()
    {
        for (int i = 0; i < maxCapacity; i++)
@@ -108,15 +127,17 @@ public class PhotoStorage : MonoBehaviour
    }
 
    /// <summary>Moves a photo into a question, returning displaced evidence to its source.</summary>
-   public bool MoveToQuestion(Photo photo, QuestionDefinition destination)
+   public bool MoveToQuestion(Photo photo, QuestionDefinition destination, int index = 0)
    {
-       if (photo == null || destination == null || !Owns(photo)) return false;
+       if (photo == null || destination == null || index < 0 || destination.IsCorrect || !Owns(photo)) return false;
        assignedQuestions.TryGetValue(photo, out var source);
-       if (source == destination) return true;
+       int sourceIndex = source != null ? source.GetPhotoIndex(photo) : -1;
+       if (source == destination && sourceIndex == index) return true;
+       if (source != null && (source.IsCorrect || sourceIndex < 0)) return false;
        int storageSlot = photos.IndexOf(photo);
-       Photo displaced = destination.Photo;
+       Photo displaced = destination.GetPhoto(index);
 
-       if (source != null) source.AssignPhoto(displaced);
+       if (source != null) source.AssignPhoto(displaced, sourceIndex);
        else photos[storageSlot] = displaced;
 
        if (displaced != null)
@@ -125,7 +146,7 @@ public class PhotoStorage : MonoBehaviour
            else assignedQuestions.Remove(displaced);
        }
        assignedQuestions[photo] = destination;
-       destination.AssignPhoto(photo);
+       destination.AssignPhoto(photo, index);
        PhotosChanged?.Invoke();
        IncrementCounter();
        return true;
@@ -139,7 +160,7 @@ public class PhotoStorage : MonoBehaviour
        if (slot < 0 || slot >= maxCapacity || (slot < photos.Count && photos[slot] != null)) return false;
 
        assignedQuestions.Remove(photo);
-       source.AssignPhoto(null);
+       source.AssignPhoto(null, source.GetPhotoIndex(photo));
        PutInSlot(photo, slot);
        PhotosChanged?.Invoke();
        IncrementCounter();
@@ -160,7 +181,7 @@ public class PhotoStorage : MonoBehaviour
        if (assignedQuestions.TryGetValue(photo, out var question))
        {
            assignedQuestions.Remove(photo);
-           question.AssignPhoto(null);
+           question.AssignPhoto(null, question.GetPhotoIndex(photo));
        }
        if (removed)
        {
@@ -171,6 +192,38 @@ public class PhotoStorage : MonoBehaviour
        }
        return removed;
    }
+
+    /// <summary>
+    /// Swaps the photos in two different slots
+    /// </summary>
+   public bool SwapPhotos(int slotOne, int slotTwo)
+    {
+        if (slotOne < 0 || slotOne >= maxCapacity || slotTwo < 0 || slotTwo >= maxCapacity)
+        {
+            return false;
+        }
+
+        if (slotOne == slotTwo)
+        {
+            return true;
+        }
+
+        while (photos.Count <= slotOne)
+        {
+            photos.Add(null);
+        }
+        while (photos.Count <= slotTwo)
+        {
+            photos.Add(null);
+        }
+
+        Photo temp = photos[slotOne];
+        photos[slotOne] = photos[slotTwo];
+        photos[slotTwo] = temp;
+
+        PhotosChanged?.Invoke();
+        return true;
+    }
 
    /// <summary>
    /// Destroys photos and deletes photo storage.
