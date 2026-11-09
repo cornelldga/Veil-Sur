@@ -71,6 +71,9 @@ public class UIManager : MonoBehaviour
     [Header("Interact Popup")]
     [SerializeField] public RawImage interact;
 
+    [Header("Tutorial Text")]
+    [SerializeField] public TMP_Text tutorialText;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -136,7 +139,6 @@ public class UIManager : MonoBehaviour
     {
         if (Instance != this) return;
 
-        if (Notebook != null) Notebook.Initialize();
         var photoTab = Notebook != null ? Notebook.PhotoTab : null;
         if (photoTab != null && PhotoStorage.Instance != null) PhotoStorage.Instance.SetCapacity(photoTab.SlotCount);
         ShowInteractPrompt(false);
@@ -173,12 +175,15 @@ public class UIManager : MonoBehaviour
             case GameManager.GameState.PAUSED:
                 Show(UIGroupId.Pause);
                 break;
+            case GameManager.GameState.LOST:
+                break;
         }
 
         // Cursor + player control follow the state
         bool uiOpen = state == GameManager.GameState.MAIN_MENU
                 || state == GameManager.GameState.PAUSED
-                || state == GameManager.GameState.NOTEBOOK;
+                || state == GameManager.GameState.NOTEBOOK
+                || state == GameManager.GameState.LOST;
 
         Cursor.lockState = uiOpen ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = uiOpen;
