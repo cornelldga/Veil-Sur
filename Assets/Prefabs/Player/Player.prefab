@@ -237,6 +237,8 @@ MonoBehaviour:
   mouseSens: 0.15
   minLookDown: -85
   maxLookUp: 85
+  cameraStandHeight: 1.65
+  cameraCrouchHeight: 0.75
   standHeight: 1.65
   crouchHeight: 0.75
   crouchTransitionSpeed: 15
