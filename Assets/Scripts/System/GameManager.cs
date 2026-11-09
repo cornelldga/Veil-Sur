@@ -23,6 +23,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
+
+    [Header("Debug Settings")]
+    [SerializeField] private bool debugMode = true;
+    [SerializeField] private Key reloadKey = Key.Y;
+
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
@@ -151,7 +156,16 @@ public class GameManager : MonoBehaviour
         // undo the lose state, e.g. after loading the last save from the lose panel
         if (hasLost)
         {
-            losePanel.SetActive(false);
+            if (losePanel != null)
+            {
+                losePanel.SetActive(false);
+                Transform staminaTransform = losePanel.transform.parent != null 
+                    ? losePanel.transform.parent.Find("StaminaUI") 
+                    : null;
+
+                staminaTransform?.gameObject.SetActive(true);
+            }
+
             UIManager.Instance.HideJumpscare();
             // Time.timeScale = 1f;
             SetState(GameState.DEFAULT); // handles timeScale too
@@ -179,6 +193,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (debugMode)
+        {
+            HandleDebugInput();
+        }
+        
         var kb = Keyboard.current;
         if (kb == null || _state == GameState.MAIN_MENU || IsRebinding) return;
 
@@ -360,6 +379,12 @@ public class GameManager : MonoBehaviour
         // for when we have jumpscare audio
         // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
 
+        if (losePanel != null && losePanel.transform.parent != null)
+        {
+            Transform staminaTransform = losePanel.transform.parent.Find("StaminaUI");
+            staminaTransform?.gameObject.SetActive(false);
+        }
+
         if (!SkipJumpscares)
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
 
@@ -452,6 +477,24 @@ public class GameManager : MonoBehaviour
         }
 
         return stamina.StaminaPercent;
+    }
+
+    private void HandleDebugInput()
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        // Uses the serialized Key enum from the Inspector
+        if (keyboard[reloadKey].wasPressedThisFrame)
+        {
+            RestartCurrentScene();
+        }
+    }
+
+    private void RestartCurrentScene()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 }

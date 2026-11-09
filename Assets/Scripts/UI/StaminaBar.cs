@@ -15,6 +15,17 @@ public class StaminaBar : MonoBehaviour
 
     private float hideTimer;
     private float fadeTimer;
+
+    [Header("Dimming Settings")]
+    [Tooltip("Alpha applied while stamina is recovering.")]
+    [SerializeField] private float rechargingAlpha = 0.45f;
+    [Tooltip("Speed of transition between dimmed and full opacity.")]
+    [SerializeField] private float dimFadeSpeed = 6f;
+
+    private float lastStaminaPercent = 1f;
+    private float currentDimAlpha = 1f;
+
+
     private bool isFading;
     private bool usedStamina;
 
@@ -24,19 +35,22 @@ public class StaminaBar : MonoBehaviour
         staminaBar = transform.Find("StaminaBar").GetComponent<RectTransform>();
 
         staminaUI.alpha = 0f;
+        currentDimAlpha = 0.5f;
     }
 
     private void Update()
     {
         float staminaPercent = GameManager.Instance.GetStaminaPercentage();
 
-        UpdateStaminaBar();
+        UpdateStaminaBar(staminaPercent);
 
         if (usedStamina && staminaPercent >= 1f)
         {
             if (hideTimer > 0f)
             {
                 hideTimer -= Time.deltaTime;
+                currentDimAlpha = Mathf.MoveTowards(currentDimAlpha, 1f, dimFadeSpeed * Time.deltaTime);
+                staminaUI.alpha = currentDimAlpha;
             } else
             {
                 if (!isFading)
@@ -49,17 +63,23 @@ public class StaminaBar : MonoBehaviour
                 staminaUI.alpha = Mathf.Clamp01(fadeTimer/fadeTime);
             }
         }
+        lastStaminaPercent = staminaPercent;
     }
-    private void UpdateStaminaBar()
+    private void UpdateStaminaBar(float staminaPercent)
     {
-        float staminaPercent = GameManager.Instance.GetStaminaPercentage();
 
         if (staminaPercent < 1f)
         {
             usedStamina = true;
             hideTimer = hideDelay;
             fadeTimer = fadeTime;
-            staminaUI.alpha = 1f;
+            isFading = false;
+
+            bool isRecharging = staminaPercent > lastStaminaPercent;
+            float targetAlpha = isRecharging ? rechargingAlpha : 1f;
+
+            currentDimAlpha = Mathf.MoveTowards(currentDimAlpha, targetAlpha, dimFadeSpeed * Time.deltaTime);
+            staminaUI.alpha = currentDimAlpha;
         }
 
         float newLength = barMaxLength * staminaPercent;
