@@ -260,7 +260,7 @@ public class PhotoCameraController : SoundEvent
         targetCamera.targetTexture = captureRT;
         targetCamera.Render();
 
-        RectInt captureRect = new RectInt(0, 0, Screen.width, Screen.height);
+        RectInt captureRect = GetCaptureScreenRect(captureRT.width, captureRT.height);
 
         RenderTexture.active = captureRT;
         var photo = new Texture2D(captureRect.width, captureRect.height, TextureFormat.RGB24, false);
@@ -270,6 +270,16 @@ public class PhotoCameraController : SoundEvent
         RenderTexture.active = null;
         targetCamera.targetTexture = previousTarget;
         return photo;
+    }
+
+    /// <summary>
+    /// Returns the screen-space rect (in pixels) that crops the final photo.
+    /// </summary>
+    private RectInt GetCaptureScreenRect(int screenWidth, int screenHeight)
+    {
+        int width = screenHeight * 198 / 137;
+        int xOffset = (screenWidth - width) / 2;
+        return new RectInt(xOffset, 0, width, screenHeight);
     }
 
     /// <summary>
