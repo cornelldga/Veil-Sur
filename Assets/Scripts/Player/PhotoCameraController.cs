@@ -251,9 +251,7 @@ public class PhotoCameraController : SoundEvent
     }
 
     /// <summary>
-    /// Returns a square Texture2D (not a Sprite) of the center of
-    /// the screen of targetCamera, cropping the sides but keeping
-    /// the full height.
+    /// Returns a Texture2D (not a Sprite) of the screen of targetCamera.
     /// </summary>
     private Texture2D CapturePhoto(RenderTexture captureRT)
     {
@@ -275,14 +273,13 @@ public class PhotoCameraController : SoundEvent
     }
 
     /// <summary>
-    /// Returns the screen-space rect (in pixels) that gets cropped into the
-    /// final photo: full height, centered horizontally.
+    /// Returns the screen-space rect (in pixels) that crops the final photo.
     /// </summary>
     private RectInt GetCaptureScreenRect(int screenWidth, int screenHeight)
     {
-        int squareSize = screenHeight;
-        int xOffset = (screenWidth - squareSize) / 2;
-        return new RectInt(xOffset, 0, squareSize, squareSize);
+        int width = screenHeight * 198 / 137;
+        int xOffset = (screenWidth - width) / 2;
+        return new RectInt(xOffset, 0, width, screenHeight);
     }
 
     /// <summary>

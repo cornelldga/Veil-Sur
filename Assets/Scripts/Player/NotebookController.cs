@@ -53,6 +53,11 @@ public class NotebookController : MonoBehaviour
         {
             photoCameraController.CancelCamera();
             AudioManager.Instance.PlaySfxAtPosition(notebookOpenClip, transform.position);
+
+            if (UIManager.Instance != null && UIManager.Instance.notebookGroup != null)
+            {
+                UIManager.Instance.notebookGroup.transform.SetAsLastSibling();
+            }
         }
 
         playerState.SetPlayerHasControl(!notebookOpen);
