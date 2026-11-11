@@ -223,7 +223,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     /// <summary>
-    /// true once every visible question slot in the notebook has a photo, which is what enables upload
+    /// true once every visible question is solved or has all its photo slots filled, which enables upload
     /// </summary>
     private static bool AllQuestionSlotsFilled()
     {
@@ -234,7 +234,7 @@ public class TutorialManager : MonoBehaviour
         {
             if (slot == null || !slot.isActiveAndEnabled || slot.Definition == null) continue;
             hasQuestions = true;
-            if (!slot.AllPhotoSlotsFilled) return false;
+            if (!slot.IsCorrect && !slot.AllPhotoSlotsFilled) return false;
         }
         return hasQuestions;
     }
