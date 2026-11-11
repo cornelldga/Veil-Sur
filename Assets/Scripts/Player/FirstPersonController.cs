@@ -44,6 +44,7 @@ public class FirstPersonController : MonoBehaviour
     private StaminaController staminaController;
     private SprintVignette sprintVignette;
 
+    private float speed;
     private float verticalLookClamped;
     private float verticalVelocity;
     private float currentHeight;
@@ -143,7 +144,7 @@ public class FirstPersonController : MonoBehaviour
         playerState.SetSprinting(isSprinting);
         HandleFootsteps(isMoving);
 
-        float speed;
+        speed = 0;
 
         if (playerState.GetCrouching())
         {
@@ -362,6 +363,15 @@ public class FirstPersonController : MonoBehaviour
     {
         controller.Move(delta);
         SetLook(yaw, pitch);
+    }
+
+    /// <summary>
+    /// Returns the current speed of the player.
+    /// </summary>
+    /// <returns>Player's speed</returns>
+    public float getSpeed()
+    {
+        return speed;
     }
 
     // private void OnDestroy()

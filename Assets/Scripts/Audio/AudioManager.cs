@@ -67,6 +67,22 @@ public class AudioManager : MonoBehaviour
 
     private readonly Queue<AudioSource> availableSources = new Queue<AudioSource>();
 
+    private void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        StopAllCoroutines();
+    }
+
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -191,11 +207,6 @@ public class AudioManager : MonoBehaviour
         PlayOnSource(source, clip, volume, pitch);
     }
 
-    public void PlayUiSfx(AudioClip clip)
-    {
-        PlaySfxAtPosition(clip, Camera.main.transform.position);
-    }
-
     /// <summary>
     /// Plays a one-shot 3D sound effect that follows a moving transform (e.g.
     /// footsteps) by parenting a pooled AudioSource to it for the duration of playback.
@@ -260,7 +271,12 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator ReclaimWhenFinished(AudioSource source)
     {
-        yield return new WaitWhile(() => source.isPlaying);
+        yield return new WaitWhile(() => source != null && source.isPlaying);
+
+        if (source == null)
+        {
+            yield break;
+        }
 
         source.transform.SetParent(transform);
         source.transform.localPosition = Vector3.zero;
@@ -268,4 +284,5 @@ public class AudioManager : MonoBehaviour
         source.clip = null;
         availableSources.Enqueue(source);
     }
+
 }

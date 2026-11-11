@@ -11,11 +11,11 @@ public class NotebookUIController : SoundEvent
     [System.Serializable]
     public class NotebookPage
     {
-        public QuestionDefinition[] startQuestions = System.Array.Empty<QuestionDefinition>();
+        // Assigned per level by LevelQuestions.
+        [System.NonSerialized] public QuestionDefinition[] startQuestions = System.Array.Empty<QuestionDefinition>();
         [Tooltip("Question views for this page. Unassigned entries are ignored.")]
         public QuestionNote[] questionSlots = System.Array.Empty<QuestionNote>();
         internal readonly Queue<QuestionDefinition> pendingQuestions = new();
-        // TODO(Claire): TEMP FIX until you redo your LINKS INCORRECT fix (undone by merge). Delete everything tagged TEMP FIX.
         internal bool uploaded;
     }
 
@@ -84,7 +84,6 @@ public class NotebookUIController : SoundEvent
     /// <summary>Shows whether the current page's links are correct, or nothing until that page has been uploaded.</summary>
     internal void RefreshPageFeedback()
     {
-        // TODO(Claire): TEMP FIX
         if (!pages[CurrentPageIndex].uploaded)
         {
             numberCorrectText.text = "";
@@ -154,7 +153,31 @@ public class NotebookUIController : SoundEvent
         if (shakeTarget != null) shakeTarget.anchoredPosition = shakeOrigin;
     }
 
-    internal void Initialize()
+    /// <summary>Replaces the previous level's questions with this level's and resets notebook progress.</summary>
+    public void Load(LevelQuestions level)
+    {
+        if (level.PageCount > pages.Length)
+            Debug.LogWarning($"{level.name} defines {level.PageCount} pages but the notebook only has {pages.Length}.", level);
+
+        ClearLevel();
+        for (int i = 0; i < pages.Length; i++) pages[i].startQuestions = level.GetStartQuestions(i);
+        Initialize();
+    }
+
+    private void ClearLevel()
+    {
+        UnsubscribeAll();
+        questionPages.Clear();
+        puzzles.Clear();
+        newlyUnlockedCount = 0;
+        foreach (var page in pages)
+        {
+            page.pendingQuestions.Clear();
+            page.uploaded = false;
+        }
+    }
+
+    private void Initialize()
     {
         RegisterPrerequisites();
 
@@ -167,7 +190,9 @@ public class NotebookUIController : SoundEvent
                 slot.gameObject.SetActive(false);
             }
 
-            foreach (var question in page.startQuestions) page.pendingQuestions.Enqueue(question);
+            // A  question that other questions unlock waits before being shown
+            foreach (var question in page.startQuestions)
+                if (!question.HasPrerequisites || question.CanUnlock) page.pendingQuestions.Enqueue(question);
             ShowPendingQuestions(page);
         }
         ShowPage(0);
@@ -211,7 +236,9 @@ public class NotebookUIController : SoundEvent
         }
     }
 
-    private void OnDestroy()
+    private void OnDestroy() { UnsubscribeAll(); }
+
+    private void UnsubscribeAll()
     {
         foreach (var slot in pages.SelectMany(page => page.questionSlots))
             if (slot != null && slot.Definition != null) slot.Definition.Solved -= OnQuestionSolved;
@@ -224,9 +251,7 @@ public class NotebookUIController : SoundEvent
         question.Solved -= OnQuestionSolved;
         foreach (var futureQuestion in question.FutureQuestions)
         {
-            // Use the page whose upload unlocked the question, rather than the
-            // page inherited from the first prerequisite during initialization.
-            QueueUnlockedQuestion(futureQuestion, questionPages[question]);
+            QueueUnlockedQuestion(futureQuestion, questionPages[futureQuestion]);
         }
         ShowPendingQuestions();
         RefreshPageFeedback();
@@ -272,6 +297,26 @@ public class NotebookUIController : SoundEvent
         ErrorNotifier.Show($"{count} question{(count == 1 ? "" : "s")} unlocked in notebook");
     }
 
+    /// <summary>Index of the page a question is shown or waiting on, or -1 if it isn't unlocked in the notebook.</summary>
+    public int UnlockedPage(QuestionDefinition question)
+    {
+        for (int i = 0; i < pages.Length; i++)
+            if (pages[i].pendingQuestions.Contains(question) ||
+                pages[i].questionSlots.Any(slot => slot != null && slot.Definition == question))
+                return i;
+        return -1;
+    }
+
+    /// <summary>Unlocks a question onto a page when loading a save, skipping its prerequisite checks.</summary>
+    public void RestoreUnlocked(QuestionDefinition question, int page)
+    {
+        if (question == null || page < 0 || page >= pages.Length || UnlockedPage(question) >= 0) return;
+
+        questionPages[question] = pages[page];
+        pages[page].pendingQuestions.Enqueue(question);
+        ShowPendingQuestions(pages[page]);
+    }
+
     /// <summary>Reveals an empty view first, then reuses a solved one. Returns false when all slots are in use.</summary>
     /// <param name="question">Question to show on the page it belongs to.</param>
     /// <returns>False if that page has no free or solved slot; otherwise true.</returns>
@@ -289,7 +334,6 @@ public class NotebookUIController : SoundEvent
         slot.Bind(question);
         slot.gameObject.SetActive(true);
         numberCorrectText.text = "";
-        // TODO(Claire): TEMP FIX
         page.uploaded = false;
         slot.gameObject.SetActive(page == pages[CurrentPageIndex]);
         RefreshPageFeedback();

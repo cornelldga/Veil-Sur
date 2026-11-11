@@ -27,8 +27,14 @@ public class EnemyMover : MonoBehaviour
     [Tooltip("Seconds the mutant stands still on first becoming suspicious. Match the notice animation length.")]
     [FormerlySerializedAs("alertPauseDuration")]
     [SerializeField] protected float noticePauseDuration = 0f;
+    [Tooltip("Degrees per second the mutant turns toward the player before the notice animation plays.")]
+    [SerializeField] protected float noticeTurnSpeed = 360f;
     protected EnemySearchlight.AlertState previousState;
     protected float noticePauseUntil;
+    protected bool isTurningToNotice;
+
+    // Half of one billboard slice (360 / 8 / 2), so the camera sees the front-facing clip.
+    private const float FacingToleranceDegrees = 22.5f;
 
     public bool IsNoticePausing => Time.time < noticePauseUntil;
 
@@ -81,13 +87,20 @@ public class EnemyMover : MonoBehaviour
         bool justNoticed = state == EnemySearchlight.AlertState.Suspicious &&
             (previousState == EnemySearchlight.AlertState.Patrol || previousState == EnemySearchlight.AlertState.LookAround
             || previousState == EnemySearchlight.AlertState.Idle);
-        if (justNoticed)
+        if (justNoticed && noticePauseDuration > 0f)
         {
-            noticePauseUntil = Time.time + noticePauseDuration;
+            isTurningToNotice = true;
             agent.velocity = Vector3.zero;
         }
         previousState = state;
-        agent.isStopped = IsNoticePausing;
+
+        if (state != EnemySearchlight.AlertState.Suspicious) isTurningToNotice = false;
+        if (isTurningToNotice && TurnTowards(searchlight.LastKnownPlayerPosition))
+        {
+            isTurningToNotice = false;
+            noticePauseUntil = Time.time + noticePauseDuration;
+        }
+        agent.isStopped = isTurningToNotice || IsNoticePausing;
 
         bool chasing = searchlight.CurrentState == EnemySearchlight.AlertState.Alert;
         agent.acceleration = chasing ? chaseAcceleration : normalAcceleration;
@@ -201,6 +214,22 @@ public class EnemyMover : MonoBehaviour
     //     Debug.Log("Now investigating " + pos);
     // }
 
+    /// <summary>
+    /// Rotates toward a point at noticeTurnSpeed. Returns true once facing it.
+    /// </summary>
+    /// <param name="target">world position to face</param>
+    protected bool TurnTowards(Vector3 target)
+    {
+        Vector3 direction = target - transform.position;
+        direction.y = 0f;
+        if (direction.sqrMagnitude < 0.0001f) return true;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.RotateTowards(
+            transform.rotation, targetRotation, noticeTurnSpeed * Time.deltaTime);
+        return Quaternion.Angle(transform.rotation, targetRotation) <= FacingToleranceDegrees;
+    }
+
     public void StartLookAround()
     {
         // Debug.Log("Beginning to look around");
@@ -241,6 +270,15 @@ public class EnemyMover : MonoBehaviour
         {
            isCollidingPlayer = false;
         }
+    }
+
+    /// <summary>
+    /// Returns the speed of the mutant.
+    /// </summary>
+    /// <returns>Mutant speed</returns>
+    public float getSpeed()
+    {
+        return agent.speed;
     }
 
    
