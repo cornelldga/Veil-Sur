@@ -14,12 +14,8 @@ public class MainMenu : UIScreen
     /// </summary>
     public void PlayGame()
     {
-        // or alternatively SceneManagement.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
-        //change logic so that gamemanger loads levels
-        // GameManager.Instance.GoToLevel("TutorialLevel");
-
-       // GameManager.Instance.StartFresh("IntroCutscene"); This is for when we have an actual intro cutscene
-        GameManager.Instance.StartFresh("TutorialLevel");
+        // TODO: Load "IntroCutscene" here once the real cutscene exists
+        GameManager.Instance.GoToLevel("TutorialLevel");
 
     }
     

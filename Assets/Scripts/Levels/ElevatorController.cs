@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -31,13 +30,18 @@ public enum ElevatorDirection
 ///
 /// THE RIDE:
 ///
-///     Once the doors close, the ride runs for rideDuration. A point light
-///     sweeps from the bottom of the elevator to the top to simulate travel
-///     through an elevator shaft of the facility, sweepCount times, while
-///     the ride sound plays.
+///     Once the doors close, the ride runs for rideDuration. A wide emissive
+///     panel (with an optional Point Light) sweeps from the bottom of the
+///     elevator to the top to simulate travel through an elevator shaft of
+///     the facility, sweepCount times, while the ride sound plays. The same
+///     ride plays when the Player arrives from another scene.
 ///
-///     The light's top and bottom should be transforms positioned above and
-///     below the front door of the elevator (natural enter and exit) in prefab
+///     The panel is wider than the door window, so it always covers the gap.
+///     Its top and bottom should be transforms positioned above and below
+///     the door window (natural enter and exit) in prefab. Select the
+///     elevator to see the panel outlined at both ends.
+///
+///     The whole effect is hidden except during the ride.
 ///
 /// This script should be put on the GameObject that contains a BOX COLLIDER
 /// with TRIGGER that is the interior of the elevator.
@@ -79,11 +83,11 @@ public class ElevatorController : MonoBehaviour
     [SerializeField] private float lookPitch = 15f;
 
     [Header("Elevator Lighting")]
-    [Tooltip("The light that sweeps up and down. Point Light with an emissive mesh as a child. Turned off except during the ride (hopefully this time)")]
+    [Tooltip("Root of the moving light effect. Put a wide emissive panel (and optionally a Point Light) under it. Hidden except during the ride.")]
     [SerializeField] private Transform shaftLight;
-    [Tooltip("Start of light sweep, place an Empty Game Object below the elevator door (in front of it)")]
+    [Tooltip("Start of light sweep. Place an Empty Game Object so the whole panel sits below the door window (outside it).")]
     [SerializeField] private Transform lightBottom;
-    [Tooltip("End of light sweep, place an Empty Game Object above the elevator door (in front of it)")]
+    [Tooltip("End of light sweep. Place an Empty Game Object so the whole panel sits above the door window (outside it).")]
     [SerializeField] private Transform lightTop;
     [Tooltip("Number of times that the light travels bottom to top during the ride. Each sweep lasts rideDuration / sweepCount. MUST BE 1+")]
     [SerializeField] private int sweepCount = 4;
@@ -122,6 +126,7 @@ public class ElevatorController : MonoBehaviour
 
         state = State.Closed;
 
+        // Hides the whole light effect (panel and light) until a ride needs it
         if (shaftLight != null)
         {
             shaftLight.gameObject.SetActive(false);
@@ -266,7 +271,7 @@ public class ElevatorController : MonoBehaviour
             yield break;
         }
 
-        GameManager.Instance.StartFresh(targetScene);
+        GameManager.Instance.GoToLevel(targetScene);
 
         Coroutine scriptedCentering = StartCoroutine(CenterPlayer());
         yield return SetDoorsAnimated(false);
@@ -280,7 +285,10 @@ public class ElevatorController : MonoBehaviour
         _ = GameManager.Instance.ActivatePreloadedScene();
     }
 
-
+    /// <summary>
+    /// Coroutine that takes control of the Player and eases them to the stand
+    /// point, turning them to face the doors.
+    /// </summary>
     private IEnumerator CenterPlayer()
     {
         FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
@@ -316,12 +324,13 @@ public class ElevatorController : MonoBehaviour
         FirstPersonController player = GameManager.PlayerInstance.GetComponent<FirstPersonController>();
 
         Pose pose = GameManager.Instance.ArrivalPose;
-        Vector3 posititon = transform.TransformPoint(pose.position);
+        Vector3 position = transform.TransformPoint(pose.position);
         float yaw = (transform.rotation * pose.rotation).eulerAngles.y;
-        player.PlacePositionAt(posititon, yaw, lookPitch);
+        player.PlacePositionAt(position, yaw, lookPitch);
         
         player.BeginScriptedMovement();
 
+        yield return RunRide();
         yield return new WaitForSeconds(doorOpenCloseDelay);
         
         player.EndScriptedMovement();
@@ -348,7 +357,7 @@ public class ElevatorController : MonoBehaviour
     /// the light goes from lightBottom to lightTop to simulate travel.
     ///
     /// The sweep resets and starts back at lightBottom for the amount of
-    /// sweeps that there are.
+    /// sweeps that there are. The effect is only visible while this runs.
     /// </summary>
     private IEnumerator RunRide()
     {
@@ -507,13 +516,24 @@ public class ElevatorController : MonoBehaviour
         return !string.IsNullOrEmpty(sceneName);
     }
  
+    /// <summary>
+    /// Draws the sweep path, and outlines the panel at both ends of it, when the
+    /// elevator is selected. This way the ends can be lined up with the door
+    /// window without turning the light on.
+    /// </summary>
     private void OnDrawGizmosSelected()
     {
         if (lightBottom == null || lightTop == null) return;
+
+        Renderer panel = shaftLight != null ? shaftLight.GetComponentInChildren<Renderer>(true) : null;
+        Vector3 size = panel != null ? panel.bounds.size : Vector3.zero;
+        if (size == Vector3.zero) size = Vector3.one * 0.4f;
+
+        Vector3 offset = panel != null ? panel.bounds.center - shaftLight.position : Vector3.zero;
  
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(lightBottom.position, lightTop.position);
-        Gizmos.DrawWireSphere(lightBottom.position, 0.2f);
-        Gizmos.DrawWireSphere(lightTop.position, 0.2f);
+        Gizmos.DrawWireCube(lightBottom.position + offset, size);
+        Gizmos.DrawWireCube(lightTop.position + offset, size);
     }
 }

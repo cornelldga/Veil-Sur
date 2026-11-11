@@ -23,10 +23,35 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
+
+    [Header("Debug Settings")]
+    [SerializeField] private bool debugMode = true;
+    [SerializeField] private Key reloadKey = Key.Y;
+
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
+    public string currentSceneName;
     private int currentLevelIndex;
+
+    private GameState _state = GameState.DEFAULT;
+    public GameState state
+    {
+        get => _state;
+        set => RequestStateChange(value);
+    }
+
+    private GameState _stateBeforePause = GameState.DEFAULT;
+
+    public enum GameState
+    {
+        MAIN_MENU,
+        PAUSED,
+        DEFAULT,
+        CAMERA,
+        NOTEBOOK,
+        LOST
+    }
     
     private const string SensitivityKey = "MouseSensitivity";
     public float MouseSensitivity { get; private set; } = 1f;
@@ -35,7 +60,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public Pose ArrivalPose { get; set; }
     private bool hasLost = false;
-
     public void SetMouseSensitivity(float value)
     {
         MouseSensitivity = value;
@@ -95,23 +119,6 @@ public class GameManager : MonoBehaviour
     }
 
     public static bool IsRebinding { get; set; }
-    private GameState _state = GameState.DEFAULT;
-    public GameState state
-    {
-        get => _state;
-        set => RequestStateChange(value);
-    }
-
-    private GameState _stateBeforePause = GameState.DEFAULT;
-
-    public enum GameState
-    {
-        MAIN_MENU,
-        PAUSED,
-        DEFAULT,
-        CAMERA,
-        NOTEBOOK
-    }
 
     private void Awake()
     {
@@ -145,12 +152,23 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        currentSceneName = scene.name;
         // undo the lose state, e.g. after loading the last save from the lose panel
         if (hasLost)
         {
-            losePanel.SetActive(false);
+            if (losePanel != null)
+            {
+                losePanel.SetActive(false);
+                Transform staminaTransform = losePanel.transform.parent != null 
+                    ? losePanel.transform.parent.Find("StaminaUI") 
+                    : null;
+
+                staminaTransform?.gameObject.SetActive(true);
+            }
+
             UIManager.Instance.HideJumpscare();
-            Time.timeScale = 1f;
+            // Time.timeScale = 1f;
+            SetState(GameState.DEFAULT); // handles timeScale too
         }
         hasLost = false;
 
@@ -175,6 +193,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (debugMode)
+        {
+            HandleDebugInput();
+        }
+        
         var kb = Keyboard.current;
         if (kb == null || _state == GameState.MAIN_MENU || IsRebinding) return;
 
@@ -189,17 +212,6 @@ public class GameManager : MonoBehaviour
         //HandleSceneMusic("MainMenu");
         // This is TEMPORARY
         AudioManager.Instance.PlayMusic(lobbyMusic);
-    }
-
-    /// <summary>
-    /// Leaves the title screen by discarding this GameManager, so the next scene's
-    /// own GameManager takes over exactly as if that scene had been the first one run.
-    /// </summary>
-    public void StartFresh(string sceneName)
-    {
-        Instance = null;
-        Destroy(gameObject);
-        SceneManager.LoadScene(sceneName);
     }
 
     public async void GoToLevel(string sceneName)
@@ -229,6 +241,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleEscape()
     {
+        if (_state == GameState.LOST) return;
         if (_state == GameState.NOTEBOOK)
         {
             var notebook = UIManager.Instance.Notebook;
@@ -307,6 +320,7 @@ public class GameManager : MonoBehaviour
         // While paused, only TogglePause can leave the state. This stops things like
         // releasing right-click (which sets DEFAULT) from silently unpausing the game.
         if (_state == GameState.PAUSED && newState != GameState.PAUSED) return;
+        if (_state == GameState.LOST) return;
         SetState(newState);
     }
 
@@ -330,7 +344,7 @@ public class GameManager : MonoBehaviour
         if (newState == GameState.PAUSED) _stateBeforePause = old;
  
         _state = newState;
-        Time.timeScale = (newState == GameState.PAUSED) ? 0f : 1f;
+        Time.timeScale = (newState == GameState.PAUSED || newState == GameState.NOTEBOOK || newState == GameState.LOST) ? 0f : 1f;
  
         StateChanged?.Invoke(old, newState);
     }
@@ -360,9 +374,16 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
     {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
-        Time.timeScale = 0f;
+        // Time.timeScale = 0f;
+        SetState(GameState.LOST); //deal with timescale in setstate
         // for when we have jumpscare audio
         // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+
+        if (losePanel != null && losePanel.transform.parent != null)
+        {
+            Transform staminaTransform = losePanel.transform.parent.Find("StaminaUI");
+            staminaTransform?.gameObject.SetActive(false);
+        }
 
         if (!SkipJumpscares)
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
@@ -456,6 +477,24 @@ public class GameManager : MonoBehaviour
         }
 
         return stamina.StaminaPercent;
+    }
+
+    private void HandleDebugInput()
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        // Uses the serialized Key enum from the Inspector
+        if (keyboard[reloadKey].wasPressedThisFrame)
+        {
+            RestartCurrentScene();
+        }
+    }
+
+    private void RestartCurrentScene()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 }
