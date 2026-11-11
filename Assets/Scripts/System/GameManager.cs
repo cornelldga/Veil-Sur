@@ -358,7 +358,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="frames">the jumpscare frames of the mutant that caught the player</param>
     /// <param name="fps">playback speed of the jumpscare frames</param>
-    /// <param name="audio">the jumpscare sound, null until mutants have one</param>
+    /// <param name="audio">the jumpscare sound of the mutant that caught the player</param>
     /// <param name="mutant">the mutant that caught the player</param>
     public void LoseGame(Sprite[] frames, float fps, AudioClip audio, GameObject mutant)
     {
@@ -373,15 +373,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="frames">the jumpscare frames to play</param>
     /// <param name="fps">playback speed of the jumpscare frames</param>
-    /// <param name="audio">the jumpscare sound, currently unused</param>
+    /// <param name="audio">the jumpscare sound, skipped along with the frames</param>
     /// <param name="mutant">the mutant to turn toward, then hide</param>
     private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio, GameObject mutant)
     {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
-        // Time.timeScale = 0f;
-        SetState(GameState.LOST); //deal with timescale in setstate
-        // for when we have jumpscare audio
-        // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+        SetState(GameState.LOST); // also sets timeScale to 0
+        AudioManager.Instance.StopMusic();
 
         if (losePanel != null && losePanel.transform.parent != null)
         {
@@ -393,7 +391,9 @@ public class GameManager : MonoBehaviour
         {
             yield return TurnPlayerToward(mutant.transform.position);
             mutant.SetActive(false);
+            AudioSource jumpscareSource = AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
+            if (jumpscareSource != null) jumpscareSource.Stop();
         }
 
         losePanel.SetActive(true);
