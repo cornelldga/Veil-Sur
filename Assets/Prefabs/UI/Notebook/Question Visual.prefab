@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -460, y: -59}
-  m_SizeDelta: {x: 185, y: 125}
+  m_SizeDelta: {x: 198, y: 137}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5540046751846923828
 CanvasRenderer:
@@ -132,6 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestionSlotScript
   question: {fileID: 7245702035306161035}
+  slotIndex: 0
   preview: {fileID: 5403378235437109458}
 --- !u!1 &7371927760877527512
 GameObject:
@@ -377,8 +378,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Question?
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6541dbb1f9ed4c9468c24062d0076634, type: 2}
+  m_sharedMaterial: {fileID: 879180977257963670, guid: 6541dbb1f9ed4c9468c24062d0076634, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -402,8 +403,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -415,7 +416,7 @@ MonoBehaviour:
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -30
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -441,7 +442,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -216.06482, w: -64.09021}
+  m_margin: {x: 0, y: -9.95105, z: -223.52246, w: -64.08563}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

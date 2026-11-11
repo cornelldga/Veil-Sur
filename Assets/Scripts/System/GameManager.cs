@@ -344,7 +344,7 @@ public class GameManager : MonoBehaviour
         if (newState == GameState.PAUSED) _stateBeforePause = old;
  
         _state = newState;
-        Time.timeScale = (newState == GameState.PAUSED || newState == GameState.LOST) ? 0f : 1f;
+        Time.timeScale = (newState == GameState.PAUSED || newState == GameState.NOTEBOOK || newState == GameState.LOST) ? 0f : 1f;
  
         StateChanged?.Invoke(old, newState);
     }
