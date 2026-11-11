@@ -48,6 +48,10 @@ public class UIManager : MonoBehaviour
 
     [Header("Jumpscare")]
     [SerializeField] private Image jumpscareImage;
+    [Tooltip("Max camera offset in world units at the start of the jumpscare")]
+    [SerializeField, Min(0f)] private float jumpscareCameraShake = 0.05f;
+    [Tooltip("Max frame offset in pixels; the overlay canvas ignores the camera, so the dog shakes separately")]
+    [SerializeField, Min(0f)] private float jumpscareFrameShake = 30f;
 
     // Runtime instances, created once and kept for the manager's lifetime
     public UIScreen MainMenu { get; private set; }
@@ -335,20 +339,33 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Shows the jumpscare image and steps through the frames once.
-    /// Uses real time so it still plays while the game is frozen.
+    /// Shows the jumpscare image and steps through the frames once while
+    /// shaking the camera and the frames. Uses real time so it still plays
+    /// while the game is frozen.
     /// </summary>
     /// <param name="frames">the sprites to play, in order</param>
     /// <param name="fps">frames shown per second</param>
     public IEnumerator PlayJumpscare(Sprite[] frames, float fps)
     {
         jumpscareImage.gameObject.SetActive(true);
-        foreach (Sprite frame in frames)
+        Transform cam = GameManager.PlayerCamera.transform;
+        Vector3 camOrigin = cam.localPosition;
+        RectTransform frameRect = jumpscareImage.rectTransform;
+        Vector2 frameOrigin = frameRect.anchoredPosition;
+
+        float duration = frames.Length / fps;
+        for (float elapsed = 0f; elapsed < duration; elapsed += Time.unscaledDeltaTime)
         {
-            jumpscareImage.sprite = frame;
-            yield return new WaitForSecondsRealtime(1f / fps);
+            jumpscareImage.sprite = frames[(int)(elapsed * fps)];
+
+            Vector2 shake = Random.insideUnitCircle * (1f - elapsed / duration);
+            cam.localPosition = camOrigin + cam.localRotation * (Vector3)(shake * jumpscareCameraShake);
+            frameRect.anchoredPosition = frameOrigin + shake * jumpscareFrameShake;
+            yield return null;
         }
 
+        cam.localPosition = camOrigin;
+        frameRect.anchoredPosition = frameOrigin;
     }
 
     /// <summary>
