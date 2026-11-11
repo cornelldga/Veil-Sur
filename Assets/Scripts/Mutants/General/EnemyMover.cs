@@ -259,6 +259,7 @@ public class EnemyMover : MonoBehaviour
             {
                 // null for audio for right now since we have no jumpscare audio
                 GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+                gameObject.SetActive(false);
             }
             
         }
