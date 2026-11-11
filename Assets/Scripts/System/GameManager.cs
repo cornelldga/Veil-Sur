@@ -209,9 +209,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
-        //HandleSceneMusic("MainMenu");
-        // This is TEMPORARY
-        AudioManager.Instance.PlayMusic(lobbyMusic);
+        HandleSceneMusic(SceneManager.GetActiveScene().name);
     }
 
     public async void GoToLevel(string sceneName)
@@ -402,8 +400,14 @@ public class GameManager : MonoBehaviour
     {
         switch (sceneName)
         {
+            case "TitleScreen":
             case "TutorialLevel":
                 AudioManager.Instance.PlayMusic(lobbyMusic);
+                break;
+
+            // The video carries its own sound, so the title music has to stop
+            case "IntroCutscene":
+                AudioManager.Instance.StopMusic();
                 break;
 
             default:
