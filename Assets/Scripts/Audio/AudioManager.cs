@@ -67,6 +67,22 @@ public class AudioManager : MonoBehaviour
 
     private readonly Queue<AudioSource> availableSources = new Queue<AudioSource>();
 
+    private void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        StopAllCoroutines();
+    }
+
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -255,7 +271,12 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator ReclaimWhenFinished(AudioSource source)
     {
-        yield return new WaitWhile(() => source.isPlaying);
+        yield return new WaitWhile(() => source != null && source.isPlaying);
+
+        if (source == null)
+        {
+            yield break;
+        }
 
         source.transform.SetParent(transform);
         source.transform.localPosition = Vector3.zero;
@@ -263,4 +284,5 @@ public class AudioManager : MonoBehaviour
         source.clip = null;
         availableSources.Enqueue(source);
     }
+
 }
