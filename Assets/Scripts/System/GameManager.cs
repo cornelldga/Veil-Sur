@@ -385,8 +385,9 @@ public class GameManager : MonoBehaviour
 
         if (!SkipJumpscares)
         {
-            AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+            AudioSource jumpscareSource = AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
+            if (jumpscareSource != null) jumpscareSource.Stop();
         }
 
         losePanel.SetActive(true);
