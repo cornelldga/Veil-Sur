@@ -308,6 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1f2f87315d96c140b5c45fcede2d8ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestionNote
+  slotCount: 1
   resultGraphic: {fileID: 3563165285333291781}
   questionLabel: {fileID: 6789889644223272605}
   feedbackLabel: {fileID: 0}
@@ -442,7 +443,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: -9.95105, z: -223.52246, w: -64.08563}
+  m_margin: {x: -1.0004883, y: -9.95105, z: -223.52246, w: -64.08563}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
