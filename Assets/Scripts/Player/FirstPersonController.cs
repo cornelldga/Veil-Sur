@@ -20,6 +20,12 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float minLookDown = -85f;
     [SerializeField] private float maxLookUp = 85f;
 
+    [Header("Camera Height")]
+    [Tooltip("Camera local Y position while standing, independent of collider height.")]
+    [SerializeField] private float cameraStandHeight = 1.8f;
+    [Tooltip("Camera local Y position while crouching, independent of collider height.")]
+    [SerializeField] private float cameraCrouchHeight = .75f;
+
     [Header("Crouch")]
     [SerializeField] private float standHeight = 1.8f;
     [SerializeField] private float crouchHeight = .75f;
@@ -48,8 +54,6 @@ public class FirstPersonController : MonoBehaviour
     private float verticalLookClamped;
     private float verticalVelocity;
     private float currentHeight;
-    private Vector3 cameraStandLocalPos;
-    private Vector3 cameraCrouchLocalPos;
     private bool isSprinting;
 
     public Camera playerCamera;
@@ -86,13 +90,10 @@ public class FirstPersonController : MonoBehaviour
         currentHeight = standHeight;
         controller.height = standHeight;
 
-        cameraStandLocalPos = new Vector3(0f, standHeight, 0f);
-        cameraCrouchLocalPos = new Vector3(0f, crouchHeight, 0f);
-
         playerCamera = Camera.main;
         if (playerCamera != null)
         {
-            playerCamera.transform.localPosition = cameraStandLocalPos;
+            playerCamera.transform.localPosition = new Vector3(0f, cameraStandHeight, 0f);
             normalFOV = playerCamera.fieldOfView;
         }
 
@@ -272,8 +273,11 @@ public class FirstPersonController : MonoBehaviour
 
         if (playerCamera != null)
         {
-            Vector3 targetCamPos = Vector3.Lerp(cameraCrouchLocalPos, cameraStandLocalPos,
-                (currentHeight - crouchHeight) / (standHeight - crouchHeight));
+            float standingAmount = Mathf.Approximately(standHeight, crouchHeight)
+                ? (crouchHeld ? 0f : 1f)
+                : Mathf.InverseLerp(crouchHeight, standHeight, currentHeight);
+            Vector3 targetCamPos = new Vector3(0f,
+                Mathf.Lerp(cameraCrouchHeight, cameraStandHeight, standingAmount), 0f);
             playerCamera.transform.localPosition = Vector3.Lerp(
                 playerCamera.transform.localPosition, targetCamPos, crouchTransitionSpeed * Time.deltaTime);
         }
