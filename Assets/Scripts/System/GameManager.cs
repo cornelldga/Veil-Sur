@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Key reloadKey = Key.Y;
 
     [SerializeField] GameObject losePanel;
+    [Tooltip("Seconds the player takes to turn and face the mutant that caught them")]
+    [SerializeField, Min(0f)] private float loseTurnDuration = 0.3f;
 
     [Header("Level Info")]
     public string currentSceneName;
@@ -357,11 +359,12 @@ public class GameManager : MonoBehaviour
     /// <param name="frames">the jumpscare frames of the mutant that caught the player</param>
     /// <param name="fps">playback speed of the jumpscare frames</param>
     /// <param name="audio">the jumpscare sound, null until mutants have one</param>
-    public void LoseGame(Sprite[] frames, float fps, AudioClip audio)
+    /// <param name="mutant">the mutant that caught the player</param>
+    public void LoseGame(Sprite[] frames, float fps, AudioClip audio, GameObject mutant)
     {
         if (hasLost) return;
         hasLost = true;
-        StartCoroutine(LoseSequence(frames, fps, audio));
+        StartCoroutine(LoseSequence(frames, fps, audio, mutant));
     }
 
     /// <summary>
@@ -371,7 +374,8 @@ public class GameManager : MonoBehaviour
     /// <param name="frames">the jumpscare frames to play</param>
     /// <param name="fps">playback speed of the jumpscare frames</param>
     /// <param name="audio">the jumpscare sound, currently unused</param>
-    private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
+    /// <param name="mutant">the mutant to turn toward, then hide</param>
+    private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio, GameObject mutant)
     {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
         // Time.timeScale = 0f;
@@ -386,12 +390,39 @@ public class GameManager : MonoBehaviour
         }
 
         if (!SkipJumpscares)
+        {
+            yield return TurnPlayerToward(mutant.transform.position);
+            mutant.SetActive(false);
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
+        }
 
         losePanel.SetActive(true);
         // free the cursor so the lose panel's buttons can be clicked
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    /// <summary>
+    /// Turns the player to face a point and levels their view.
+    /// Uses real time so it still runs while the game is frozen.
+    /// </summary>
+    /// <param name="target">the world position to face</param>
+    private IEnumerator TurnPlayerToward(Vector3 target)
+    {
+        FirstPersonController controller = PlayerInstance.GetComponent<FirstPersonController>();
+        Vector3 toTarget = target - PlayerInstance.transform.position;
+        float startYaw = controller.Yaw;
+        float startPitch = controller.Pitch;
+        float endYaw = Mathf.Atan2(toTarget.x, toTarget.z) * Mathf.Rad2Deg;
+
+        for (float elapsed = 0f; elapsed < loseTurnDuration; elapsed += Time.unscaledDeltaTime)
+        {
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / loseTurnDuration);
+            controller.SetLook(Mathf.LerpAngle(startYaw, endYaw, t), Mathf.Lerp(startPitch, 0f, t));
+            yield return null;
+        }
+
+        controller.SetLook(endYaw, 0f);
     }
 
     /// <summary>

@@ -81,7 +81,7 @@ public class EnemyMover : MonoBehaviour
         searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
         {
             // null for audio for right now since we have no jumpscare audio
-            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null, gameObject);
         }
 
         EnemySearchlight.AlertState state = searchlight.CurrentState;
@@ -258,7 +258,7 @@ public class EnemyMover : MonoBehaviour
             if (searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
             {
                 // null for audio for right now since we have no jumpscare audio
-                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null, gameObject);
                 gameObject.SetActive(false);
             }
             
