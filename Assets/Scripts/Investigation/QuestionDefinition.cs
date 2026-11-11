@@ -25,6 +25,8 @@ public class QuestionDefinition : MonoBehaviour
     [InspectorName("Require All Prerequisites")]
     [Tooltip("When enabled, all incoming questions must be answered and all incoming puzzles successfully interacted with. Otherwise, any one is enough.")]
     [SerializeField] private bool requireAllPrerequisiteQuestions = true;
+    [Tooltip("Check during Play mode to solve this question without photos. Resets automatically after use.")]
+    [SerializeField] private bool debugSolve;
     private readonly HashSet<QuestionDefinition> prerequisiteQuestions = new();
     private readonly HashSet<PuzzleInteractable> prerequisitePuzzles = new();
     private readonly List<Photo> photos = new();
@@ -65,6 +67,14 @@ public class QuestionDefinition : MonoBehaviour
         storage = PhotoStorage.Instance;
         if (storage != null) storage.PhotosChanged += CheckPhotos;
     }
+
+    private void Update()
+    {
+        if (!debugSolve) return;
+        debugSolve = false;
+        Verify(true);
+    }
+
     private void OnDestroy()
     {
         if (storage != null) storage.PhotosChanged -= CheckPhotos;
@@ -170,11 +180,13 @@ public class QuestionDefinition : MonoBehaviour
         AnswerChanged?.Invoke();
     }
 
-    public void Verify()
+    public void Verify() => Verify(false);
+
+    private void Verify(bool forceCorrect)
     {
         if (IsCorrect) return;
         bool stored = HasStoredPhotos();
-        IsCorrect = CheckAnswer();
+        IsCorrect = forceCorrect || CheckAnswer();
         // FeedbackText = !stored ? "Select a photo for this question." : IsCorrect ? "Correct." : DefaultFeedback;
         HasBeenUploaded = true;
         if (IsCorrect)

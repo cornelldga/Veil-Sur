@@ -124,9 +124,13 @@ PrefabInstance:
       propertyPath: m_margin.w
       value: -131.89389
       objectReference: {fileID: 0}
+    - target: {fileID: 6789889644223272605, guid: d067728027c7f424b9908d338093eaaf, type: 3}
+      propertyPath: m_margin.x
+      value: -4.4588623
+      objectReference: {fileID: 0}
     - target: {fileID: 8041912876880657967, guid: d067728027c7f424b9908d338093eaaf, type: 3}
       propertyPath: m_Name
-      value: Question (1) Variant
+      value: Question Visual Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
