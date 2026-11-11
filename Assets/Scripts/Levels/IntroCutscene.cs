@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
 public class IntroCutscene : MonoBehaviour
@@ -21,7 +20,9 @@ public class IntroCutscene : MonoBehaviour
 
         Cursor.visible = false;
         videoPlayer.loopPointReached += _ => Leave();
-        videoPlayer.Play();
+        // Decoding isn't ready on the first frame, so playing immediately skips the start to catch up
+        videoPlayer.prepareCompleted += source => source.Play();
+        videoPlayer.Prepare();
     }
 
     private void Update()
@@ -36,6 +37,6 @@ public class IntroCutscene : MonoBehaviour
     {
         if (isLeaving) return;
         isLeaving = true;
-        SceneManager.LoadScene(nextSceneName);
+        GameManager.Instance.GoToLevel(nextSceneName);
     }
 }
