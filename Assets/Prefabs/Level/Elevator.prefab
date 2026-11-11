@@ -927,6 +927,7 @@ MonoBehaviour:
   debugSolve: 0
   elevator: {fileID: 8395548920367012387}
   direction: 0
+  buttonSound: {fileID: 8300000, guid: 8f5f84c6606597245a7092b377f7ba0f, type: 3}
 --- !u!1 &6297566055225889992 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6732023657111804401, guid: b2207f908e8c32443bb6fe5b7cea6a7b, type: 3}
