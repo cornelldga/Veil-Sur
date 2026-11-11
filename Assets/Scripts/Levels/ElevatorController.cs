@@ -94,6 +94,14 @@ public class ElevatorController : MonoBehaviour
     [Tooltip("How fast the light is moving per sweep. Linear movement")]
     [SerializeField] private AnimationCurve sweepCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 
+    [Header("Shaft Cover")]
+    [Tooltip("Dark cube that hides the level during the ride. Hidden except during the ride.")]
+    [SerializeField] private Transform shaftCover;
+    [Tooltip("Travel distance that is at least the cube's height.")]
+    [SerializeField] private float coverTravelDistance = 4f;
+    [Tooltip("Time to rise. MUST BE above 0 and below rideDuration.")]
+    [SerializeField] private float coverRiseDuration = 2f;
+
     [Header("SFX")]
     [Tooltip("Played once when the ride starts. Ideally about as long as rideDuration.")]
     [SerializeField] private AudioClip rideSfx;
@@ -101,6 +109,7 @@ public class ElevatorController : MonoBehaviour
     private bool playerInside;
     private bool traveling;
     private Coroutine autoCloseRoutine;
+    private Vector3 coverHome; // World position where the cover covers the window
     public ElevatorDirection? QueuedFloor => queuedFloor;
     private bool HasShaftLight => shaftLight != null && lightBottom != null && lightTop != null;
     private State _state;
@@ -126,13 +135,22 @@ public class ElevatorController : MonoBehaviour
 
         state = State.Closed;
 
-        // Hides the whole light effect (panel and light) until a ride needs it
+        bool arriving = GameManager.Instance.ArrivingByElevator;
+
+        // Hides the light effect until a ride needs it
         if (shaftLight != null)
         {
             shaftLight.gameObject.SetActive(false);
         }
 
-        if (GameManager.Instance.ArrivingByElevator)
+        // Hides the cover too, EXCEPT on arrival
+        if (shaftCover != null)
+        {
+            coverHome = shaftCover.position;
+            shaftCover.gameObject.SetActive(arriving);
+        }
+
+        if (arriving)
         {
             GameManager.Instance.ArrivingByElevator = false; 
             StartCoroutine(ArrivalSequence());
@@ -254,7 +272,8 @@ public class ElevatorController : MonoBehaviour
 
     /// <summary>
     /// Coroutine that closes the doors, runs the ride,
-    /// and transitions to the target scene.
+    /// and transitions to the target scene. The scene loads in the background
+    /// during the ride and is only switched to once the ride has finished.
     /// </summary>
     private IEnumerator TravelSequence(string targetScene)
     {
@@ -271,11 +290,11 @@ public class ElevatorController : MonoBehaviour
             yield break;
         }
 
-        GameManager.Instance.GoToLevel(targetScene);
+        GameManager.Instance.PreloadScene(targetScene);
 
         Coroutine scriptedCentering = StartCoroutine(CenterPlayer());
         yield return SetDoorsAnimated(false);
-        yield return RunRide();
+        yield return RunRide(true);
 
         // Waiting in Elevator UNTIL scene is loaded (even if default ride duration has ended)
         yield return new WaitUntil(() => GameManager.Instance.IsScenePreloaded);
@@ -330,7 +349,7 @@ public class ElevatorController : MonoBehaviour
         
         player.BeginScriptedMovement();
 
-        yield return RunRide();
+        yield return RunRide(false);
         yield return new WaitForSeconds(doorOpenCloseDelay);
         
         player.EndScriptedMovement();
@@ -358,8 +377,13 @@ public class ElevatorController : MonoBehaviour
     ///
     /// The sweep resets and starts back at lightBottom for the amount of
     /// sweeps that there are. The effect is only visible while this runs.
+    ///
+    /// The shaft cover moves alongside the lights. When leaving, it stays in
+    /// place at the end, since the old scene is about to be replaced. When
+    /// arriving, it rises out of the way and is hidden again.
     /// </summary>
-    private IEnumerator RunRide()
+    /// <param name="leaving">True when leaving this level, false when arriving at it</param>
+    private IEnumerator RunRide(bool leaving)
     {
         float sweepDuration = rideDuration / sweepCount;
 
@@ -367,6 +391,12 @@ public class ElevatorController : MonoBehaviour
         {
             shaftLight.position = lightBottom.position;
             shaftLight.gameObject.SetActive(true);
+        }
+
+        if (shaftCover != null)
+        {
+            shaftCover.position = CoverPositionAt(0f, leaving);
+            shaftCover.gameObject.SetActive(true);
         }
 
         if (AudioManager.Instance != null && rideSfx != null)
@@ -393,6 +423,11 @@ public class ElevatorController : MonoBehaviour
                 shaftLight.position = Vector3.LerpUnclamped(lightBottom.position, lightTop.position, eased);
             }
 
+            if (shaftCover != null)
+            {
+                shaftCover.position = CoverPositionAt(elapsed, leaving);
+            }
+
             yield return null;
         }
 
@@ -401,6 +436,30 @@ public class ElevatorController : MonoBehaviour
             shaftLight.gameObject.SetActive(false);
             shaftLight.position = lightBottom.position;
         }
+
+        // Leaving, the cover stays up so the window stays dark until the scene switches
+        if (!leaving && shaftCover != null)
+        {
+            shaftCover.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Returns where the shaft cover should be at a moment in the ride.
+    /// Leaving, it rises from below the window.
+    /// Arriving, it starts covering the window and then rises.
+    /// </summary>
+    /// <param name="elapsed">Seconds since the ride started</param>
+    /// <param name="leaving">True when leaving this level, false when arriving at it</param>
+    private Vector3 CoverPositionAt(float elapsed, bool leaving)
+    {
+        Vector3 offset = Vector3.up * coverTravelDistance;
+        float riseStart = leaving ? 0f : rideDuration - coverRiseDuration;
+        float progress = Mathf.SmoothStep(0f, 1f, (elapsed - riseStart) / coverRiseDuration);
+
+        return leaving
+            ? Vector3.Lerp(coverHome - offset, coverHome, progress)
+            : Vector3.Lerp(coverHome, coverHome + offset, progress);
     }
 
     /// <summary>

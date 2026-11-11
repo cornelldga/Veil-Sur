@@ -602,7 +602,7 @@ GameObject:
   - component: {fileID: 5855617805147343886}
   - component: {fileID: 5481514539815546504}
   m_Layer: 0
-  m_Name: LevelCover
+  m_Name: ElevatorShaft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -705,32 +705,15 @@ MonoBehaviour:
     m_ManualUV: 0
     elementGroup: -1
     m_TextureGroup: -1
-  - m_Indexes: 120000001300000011000000120000001100000010000000
-    m_SmoothingGroup: 0
-    m_Uv:
-      m_UseWorldSpace: 0
-      m_FlipU: 0
-      m_FlipV: 0
-      m_SwapUV: 0
-      m_Fill: 1
-      m_Scale: {x: 1, y: 1}
-      m_Offset: {x: 0, y: 0}
-      m_Rotation: 0
-      m_Anchor: 0
-    m_Material: {fileID: 0}
-    m_SubmeshIndex: 0
-    m_ManualUV: 0
-    elementGroup: -1
-    m_TextureGroup: -1
   m_SharedVertices:
   - m_Vertices: 000000000d000000
   - m_Vertices: 0100000004000000
-  - m_Vertices: 020000000f00000010000000
-  - m_Vertices: 030000000600000011000000
+  - m_Vertices: 020000000f000000
+  - m_Vertices: 0300000006000000
   - m_Vertices: 0500000008000000
-  - m_Vertices: 070000000a00000013000000
+  - m_Vertices: 070000000a000000
   - m_Vertices: 090000000c000000
-  - m_Vertices: 0b0000000e00000012000000
+  - m_Vertices: 0b0000000e000000
   m_SharedTextures: []
   m_Positions:
   - {x: -2, y: -2, z: 2}
@@ -749,10 +732,6 @@ MonoBehaviour:
   - {x: -2, y: -2, z: 2}
   - {x: -2, y: 2, z: -2}
   - {x: -2, y: 2, z: 2}
-  - {x: -2, y: 2, z: 2}
-  - {x: 2, y: 2, z: 2}
-  - {x: -2, y: 2, z: -2}
-  - {x: 2, y: 2, z: -2}
   m_Textures0:
   - {x: 0, y: -3}
   - {x: 4, y: -3}
@@ -770,10 +749,6 @@ MonoBehaviour:
   - {x: 4, y: -3}
   - {x: 0, y: 1}
   - {x: 4, y: 1}
-  - {x: 4, y: 1}
-  - {x: 0, y: 1}
-  - {x: 4, y: -3}
-  - {x: 0, y: -3}
   m_Textures2: []
   m_Textures3: []
   m_Tangents:
@@ -793,10 +768,6 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 1, w: -1}
   - {x: 0, y: 0, z: 1, w: -1}
   - {x: 0, y: 0, z: 1, w: -1}
-  - {x: -1, y: 0, z: 0, w: -1}
-  - {x: -1, y: 0, z: 0, w: -1}
-  - {x: -1, y: 0, z: 0, w: -1}
-  - {x: -1, y: 0, z: 0, w: -1}
   m_Colors: []
   m_UnwrapParameters:
     m_HardAngle: 88
@@ -806,7 +777,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5109
+  m_VersionIndex: 5112
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1419,6 +1390,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  shaftCover: {fileID: 2326498910241079804}
+  coverTravelDistance: 4
+  coverRiseDuration: 2
   rideSfx: {fileID: 8300000, guid: e3c3a83be5d5f4e4e9bc7ebee3ae437c, type: 3}
 --- !u!65 &6197473286405554737
 BoxCollider:
