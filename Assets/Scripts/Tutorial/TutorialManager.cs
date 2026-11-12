@@ -290,7 +290,7 @@ public class TutorialManager : MonoBehaviour
             case 13: return state != GameManager.GameState.NOTEBOOK;
             case 14: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf &&
                 playerState.GetLookTarget() is PlantInteraction;
-            case 15: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && playerState.GetDocOpen();
+            case 15: return playerState.GetDocOpen();
             case 16: return playerState.GetDocOpen() && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
             case 17: return state == GameManager.GameState.NOTEBOOK;
             case 18: return AllQuestionSlotsFilled();
@@ -332,7 +332,11 @@ public class TutorialManager : MonoBehaviour
     /// </summary>
     private void MoveUpandDown()
     {
-        float y = GameManager.Instance.state == GameManager.GameState.NOTEBOOK ? notebookOpenY : basePosition.y;
+        bool notebookOpen = GameManager.Instance.state == GameManager.GameState.NOTEBOOK;
+        // Opening the notebook moves it to the top of the canvas (NotebookController), which would cover the prompt, so stay above it.
+        if (notebookOpen && transform.parent != null && transform.GetSiblingIndex() != transform.parent.childCount - 1)
+            transform.SetAsLastSibling();
+        float y = notebookOpen ? notebookOpenY : basePosition.y;
         float offset = Mathf.Sin(Time.unscaledTime * moveSpeed * Mathf.PI * 2f) * amplitude;
         promptRect.anchoredPosition = new Vector2(basePosition.x, y) + new Vector2(0f, offset);
     }

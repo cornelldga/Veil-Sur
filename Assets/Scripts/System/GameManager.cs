@@ -23,9 +23,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string titleSceneName = "TitleScreen";
 
     [Header("Game Settings")]
+
+    [Header("Debug Settings")]
+    [SerializeField] private bool debugMode = true;
+    [SerializeField] private Key reloadKey = Key.Y;
+
     [SerializeField] GameObject losePanel;
 
     [Header("Level Info")]
+    public string currentSceneName;
     private int currentLevelIndex;
 
     private GameState _state = GameState.DEFAULT;
@@ -54,7 +60,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public Pose ArrivalPose { get; set; }
     private bool hasLost = false;
-
     public void SetMouseSensitivity(float value)
     {
         MouseSensitivity = value;
@@ -147,10 +152,20 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        currentSceneName = scene.name;
         // undo the lose state, e.g. after loading the last save from the lose panel
         if (hasLost)
         {
-            losePanel.SetActive(false);
+            if (losePanel != null)
+            {
+                losePanel.SetActive(false);
+                Transform staminaTransform = losePanel.transform.parent != null 
+                    ? losePanel.transform.parent.Find("StaminaUI") 
+                    : null;
+
+                staminaTransform?.gameObject.SetActive(true);
+            }
+
             UIManager.Instance.HideJumpscare();
             // Time.timeScale = 1f;
             SetState(GameState.DEFAULT); // handles timeScale too
@@ -178,6 +193,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (debugMode)
+        {
+            HandleDebugInput();
+        }
+        
         var kb = Keyboard.current;
         if (kb == null || _state == GameState.MAIN_MENU || IsRebinding) return;
 
@@ -192,17 +212,6 @@ public class GameManager : MonoBehaviour
         //HandleSceneMusic("MainMenu");
         // This is TEMPORARY
         AudioManager.Instance.PlayMusic(lobbyMusic);
-    }
-
-    /// <summary>
-    /// Leaves the title screen by discarding this GameManager, so the next scene's
-    /// own GameManager takes over exactly as if that scene had been the first one run.
-    /// </summary>
-    public void StartFresh(string sceneName)
-    {
-        Instance = null;
-        Destroy(gameObject);
-        SceneManager.LoadScene(sceneName);
     }
 
     public async void GoToLevel(string sceneName)
@@ -335,7 +344,7 @@ public class GameManager : MonoBehaviour
         if (newState == GameState.PAUSED) _stateBeforePause = old;
  
         _state = newState;
-        Time.timeScale = (newState == GameState.PAUSED || newState == GameState.LOST) ? 0f : 1f;
+        Time.timeScale = (newState == GameState.PAUSED || newState == GameState.NOTEBOOK || newState == GameState.LOST) ? 0f : 1f;
  
         StateChanged?.Invoke(old, newState);
     }
@@ -369,6 +378,12 @@ public class GameManager : MonoBehaviour
         SetState(GameState.LOST); //deal with timescale in setstate
         // for when we have jumpscare audio
         // AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
+
+        if (losePanel != null && losePanel.transform.parent != null)
+        {
+            Transform staminaTransform = losePanel.transform.parent.Find("StaminaUI");
+            staminaTransform?.gameObject.SetActive(false);
+        }
 
         if (!SkipJumpscares)
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
@@ -462,6 +477,24 @@ public class GameManager : MonoBehaviour
         }
 
         return stamina.StaminaPercent;
+    }
+
+    private void HandleDebugInput()
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        // Uses the serialized Key enum from the Inspector
+        if (keyboard[reloadKey].wasPressedThisFrame)
+        {
+            RestartCurrentScene();
+        }
+    }
+
+    private void RestartCurrentScene()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 }

@@ -33,7 +33,7 @@ public class StaminaController : MonoBehaviour
     {
         if (playerStamina < maxStamina)
         {
-            playerStamina += staminaRegen * Time.deltaTime;
+            playerStamina += staminaRegen * Time.unscaledDeltaTime;
             playerStamina = Mathf.Clamp(playerStamina, 0f, maxStamina);
 
             // Once fully recovered, clear the exhausted state
