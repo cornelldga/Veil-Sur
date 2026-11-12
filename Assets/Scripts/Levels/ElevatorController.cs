@@ -16,65 +16,51 @@ public enum ElevatorDirection
 ///     direction, queue the floor to be traveled to and open the doors.
 ///     The doors close again on their own if the Player never gets in.
 ///
-///     When the Player walks in, they're temporarily frozen and the doors close
-///     as the level is loaded (currently scene transition).
+///     When the Player walks in, they lose control and are eased to the
+///     center of the elevator (playerStandPoint), turned to face the doors,
+///     while the doors close and the next scene loads in the background.
+///
+///     In the next scene, the Player starts at the same spot relative to the
+///     elevator, and gets control back as the doors open.
 ///
 ///     If there is no next or previous level, buttons do nothing.
 ///     If no button has been pressed, then walking in does nothing.
 ///
-/// DOORS:
+/// THIS SCRIPT is now the logic: what is queued, when the doors open or close,
+/// and the trip itself. It hands the details off to two companions:
 ///
-///     Moved the Animator logic into this script, to properly function 
-///     with the lights and transition atmosphere. Elevator and ElevatorButton 
-///     now function as interactables.
+///     ElevatorDoors        Door animation and open/closed state
+///     ElevatorRideEffects  Shaft lights, shaft cover, and ride sound
 ///
 /// THE RIDE:
 ///
-///     Once the doors close, the ride runs for rideDuration. A wide emissive
-///     panel (with an optional Point Light) sweeps from the bottom of the
-///     elevator to the top to simulate travel through an elevator shaft of
-///     the facility, sweepCount times, while the ride sound plays. The same
-///     ride plays when the Player arrives from another scene.
-///
-///     The panel is wider than the door window, so it always covers the gap.
-///     Its top and bottom should be transforms positioned above and below
-///     the door window (natural enter and exit) in prefab. Select the
-///     elevator to see the panel outlined at both ends.
-///
-///     The whole effect is hidden except during the ride.
+///     Once the doors close, the ride runs for rideDuration. The same ride
+///     plays when the Player arrives from another scene.
 ///
 /// This script should be put on the GameObject that contains a BOX COLLIDER
-/// with TRIGGER that is the interior of the elevator.
+/// with TRIGGER that is the interior of the elevator. ElevatorDoors and
+/// ElevatorRideEffects go on that same GameObject.
 ///
 /// </summary>
+[RequireComponent(typeof(ElevatorDoors))]
+[RequireComponent(typeof(ElevatorRideEffects))]
 public class ElevatorController : MonoBehaviour
 {
-    private enum State
-    {
-        Closed,
-        Opening,
-        Open,
-        Closing
-    }
-
     [Header("Go To:")]
     [Tooltip("Scene to be loaded when traveling Up. TBD: Replace with level ID once loading is functional")]
     [SerializeField] private string nextScene;
     [Tooltip("Scene to be loaded when traveling Down.")]
     [SerializeField] private string prevScene;
 
-    [Header("Door Logic")]
-    [Tooltip("Animator on the elevator model with Open and Close triggers.")]
-    [SerializeField] private Animator doorAnimator;
-    [Tooltip("Seconds between the Player walking in and the doors closing")]
+    [Header("Timing")]
+    [Tooltip("Seconds between the Player walking in and the doors closing. Also the pause before the doors open on arrival.")]
     [SerializeField] private float doorOpenCloseDelay;
     [Tooltip("Seconds the doors stay open before closing again if the Player never gets in.")]
     [SerializeField] private float autoCloseDelay = 8f;
-    [SerializeField] private BoxCollider doorCollider;
-
-    [Header("Player Ride")]
     [Tooltip("Total seconds the ride lasts")]
     [SerializeField] private float rideDuration = 5f;
+
+    [Header("Player Placement")]
     [Tooltip("Where the Player is walked to inside the Elevator prefab. Should be where they start Levels.")]
     [SerializeField] private Transform playerStandPoint;
     [Tooltip("Seconds it will take to walk the Player to playerStandPoint and make them face the doors")]
@@ -82,73 +68,25 @@ public class ElevatorController : MonoBehaviour
     [Tooltip("Camera pitch while standing in the elevator, in degrees. Positive looks down.")]
     [SerializeField] private float lookPitch = 15f;
 
-    [Header("Elevator Lighting")]
-    [Tooltip("Root of the moving light effect. Put a wide emissive panel (and optionally a Point Light) under it. Hidden except during the ride.")]
-    [SerializeField] private Transform shaftLight;
-    [Tooltip("Start of light sweep. Place an Empty Game Object so the whole panel sits below the door window (outside it).")]
-    [SerializeField] private Transform lightBottom;
-    [Tooltip("End of light sweep. Place an Empty Game Object so the whole panel sits above the door window (outside it).")]
-    [SerializeField] private Transform lightTop;
-    [Tooltip("Number of times that the light travels bottom to top during the ride. Each sweep lasts rideDuration / sweepCount. MUST BE 1+")]
-    [SerializeField] private int sweepCount = 4;
-    [Tooltip("How fast the light is moving per sweep. Linear movement")]
-    [SerializeField] private AnimationCurve sweepCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-
-    [Header("Shaft Cover")]
-    [Tooltip("Dark cube that hides the level during the ride. Hidden except during the ride.")]
-    [SerializeField] private Transform shaftCover;
-    [Tooltip("Travel distance that is at least the cube's height.")]
-    [SerializeField] private float coverTravelDistance = 4f;
-    [Tooltip("Time to rise. MUST BE above 0 and below rideDuration.")]
-    [SerializeField] private float coverRiseDuration = 2f;
-
-    [Header("SFX")]
-    [Tooltip("Played once when the ride starts. Ideally about as long as rideDuration.")]
-    [SerializeField] private AudioClip rideSfx;
+    private ElevatorDoors doors;
+    private ElevatorRideEffects effects;
     private ElevatorDirection? queuedFloor;
     private bool playerInside;
     private bool traveling;
     private Coroutine autoCloseRoutine;
-    private Vector3 coverHome; // World position where the cover covers the window
     public ElevatorDirection? QueuedFloor => queuedFloor;
-    private bool HasShaftLight => shaftLight != null && lightBottom != null && lightTop != null;
-    private State _state;
-    private State state
-    {
-        get => _state;
-        set
-        {
-            _state = value;
-            if (doorCollider != null)
-            {
-                doorCollider.enabled = _state != State.Open;
-            }
-        }
-    }
 
+    /// <summary>
+    /// Finds the companion components, hides the ride effects, and starts the
+    /// arrival if the Player came here by elevator.
+    /// </summary>
     private void Start()
     {
-        if (doorAnimator == null)
-        {
-            doorAnimator = GetComponentInChildren<Animator>();
-        }
-
-        state = State.Closed;
+        doors = GetComponent<ElevatorDoors>();
+        effects = GetComponent<ElevatorRideEffects>();
 
         bool arriving = GameManager.Instance.ArrivingByElevator;
-
-        // Hides the light effect until a ride needs it
-        if (shaftLight != null)
-        {
-            shaftLight.gameObject.SetActive(false);
-        }
-
-        // Hides the cover too, EXCEPT on arrival
-        if (shaftCover != null)
-        {
-            coverHome = shaftCover.position;
-            shaftCover.gameObject.SetActive(arriving);
-        }
+        effects.Prepare(arriving);
 
         if (arriving)
         {
@@ -164,9 +102,11 @@ public class ElevatorController : MonoBehaviour
     /// direction. This way, we can allow the player to travel back up
     /// (which I think was intended at the end).
     /// </summary>
+    /// <param name="direction">Which way the button points</param>
+    /// <returns>True if a floor was queued, false if there is no floor that way or the elevator is busy</returns>
     public bool QueueFloor(ElevatorDirection direction)
     {
-        if (traveling || state == State.Closing)
+        if (traveling || doors.IsClosing)
         {
             return false;
         }
@@ -179,7 +119,7 @@ public class ElevatorController : MonoBehaviour
 
         queuedFloor = direction;
 
-        if (state == State.Open)
+        if (doors.IsOpen)
         {
             RestartAutoClose(); // Pressed again while open, so give the Player more time
         }
@@ -196,7 +136,7 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     public void OpenDoors()
     {
-        if (traveling || state != State.Closed) return;
+        if (traveling || !doors.IsClosed) return;
 
         if (DialogueManager.Instance != null) DialogueManager.Instance.CancelDialogue();
         if (TutorialManager.Instance != null) TutorialManager.Instance.Hide();
@@ -209,14 +149,14 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     public void CloseDoors()
     {
-        if (traveling || state != State.Open) return;
+        if (traveling || !doors.IsOpen) return;
         StopAutoClose();
-        StartCoroutine(SetDoorsAnimated(false));
+        StartCoroutine(doors.Close());
     }
 
     /// <summary>
     /// Checks for Player inside, and starts the trip if the doors
-    /// are open and a floor has been queued. TBD: Lock movement
+    /// are open and a floor has been queued.
     /// </summary>
     private void OnTriggerEnter(Collider other)
     {
@@ -224,7 +164,7 @@ public class ElevatorController : MonoBehaviour
 
         playerInside = true;
 
-        if (traveling || state != State.Open || !queuedFloor.HasValue)
+        if (traveling || !doors.IsOpen || !queuedFloor.HasValue)
         {
             return;
         }
@@ -232,6 +172,9 @@ public class ElevatorController : MonoBehaviour
         StartCoroutine(TravelSequence(GetSceneFor(queuedFloor.Value)));
     }
 
+    /// <summary>
+    /// Records that the Player left the elevator.
+    /// </summary>
     private void OnTriggerExit(Collider other)
     {
         if (IsPlayer(other))
@@ -258,7 +201,7 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     private IEnumerator OpenDoorsRoutine()
     {
-        yield return SetDoorsAnimated(true);
+        yield return doors.Open();
 
         if (playerInside && queuedFloor.HasValue)
         {
@@ -275,6 +218,7 @@ public class ElevatorController : MonoBehaviour
     /// and transitions to the target scene. The scene loads in the background
     /// during the ride and is only switched to once the ride has finished.
     /// </summary>
+    /// <param name="targetScene">Name of the scene to travel to</param>
     private IEnumerator TravelSequence(string targetScene)
     {
         traveling = true;
@@ -293,8 +237,8 @@ public class ElevatorController : MonoBehaviour
         GameManager.Instance.PreloadScene(targetScene);
 
         Coroutine scriptedCentering = StartCoroutine(CenterPlayer());
-        yield return SetDoorsAnimated(false);
-        yield return RunRide(true);
+        yield return doors.Close();
+        yield return effects.Play(rideDuration, true);
 
         // Waiting in Elevator UNTIL scene is loaded (even if default ride duration has ended)
         yield return new WaitUntil(() => GameManager.Instance.IsScenePreloaded);
@@ -335,8 +279,8 @@ public class ElevatorController : MonoBehaviour
 
     /// <summary>
     /// Coroutine that runs when the Player arrives by the elevator.
-    /// Doors start closed and open after doorOpenCloseDelay.
-    /// Used before stepping into the next level.
+    /// Places the Player where they stood in the last elevator, runs the
+    /// ride, and opens the doors after doorOpenCloseDelay.
     /// </summary>
     private IEnumerator ArrivalSequence()
     {
@@ -349,7 +293,7 @@ public class ElevatorController : MonoBehaviour
         
         player.BeginScriptedMovement();
 
-        yield return RunRide(false);
+        yield return effects.Play(rideDuration, false);
         yield return new WaitForSeconds(doorOpenCloseDelay);
         
         player.EndScriptedMovement();
@@ -370,99 +314,6 @@ public class ElevatorController : MonoBehaviour
     }
 
     /// <summary>
-    /// Coroutine that runs the Ride logic
-    ///
-    /// The ride is split into sweepCount movements of light. For each sweep,
-    /// the light goes from lightBottom to lightTop to simulate travel.
-    ///
-    /// The sweep resets and starts back at lightBottom for the amount of
-    /// sweeps that there are. The effect is only visible while this runs.
-    ///
-    /// The shaft cover moves alongside the lights. When leaving, it stays in
-    /// place at the end, since the old scene is about to be replaced. When
-    /// arriving, it rises out of the way and is hidden again.
-    /// </summary>
-    /// <param name="leaving">True when leaving this level, false when arriving at it</param>
-    private IEnumerator RunRide(bool leaving)
-    {
-        float sweepDuration = rideDuration / sweepCount;
-
-        if (HasShaftLight)
-        {
-            shaftLight.position = lightBottom.position;
-            shaftLight.gameObject.SetActive(true);
-        }
-
-        if (shaftCover != null)
-        {
-            shaftCover.position = CoverPositionAt(0f, leaving);
-            shaftCover.gameObject.SetActive(true);
-        }
-
-        if (AudioManager.Instance != null && rideSfx != null)
-        {
-            AudioManager.Instance.PlaySfxAtPosition(rideSfx, transform.position);
-        }
-
-        int lastSweep = -1;
-
-        for (float elapsed = 0f; elapsed < rideDuration; elapsed += Time.deltaTime)
-        {
-            float sweepProgress = elapsed / sweepDuration;
-            int sweepIndex = Mathf.Min(Mathf.FloorToInt(sweepProgress), sweepCount - 1);
-            float t = Mathf.Clamp01(sweepProgress - sweepIndex);
-
-            if (sweepIndex != lastSweep)
-            {
-                lastSweep = sweepIndex;
-            }
-
-            if (HasShaftLight)
-            {
-                float eased = sweepCurve.Evaluate(t);
-                shaftLight.position = Vector3.LerpUnclamped(lightBottom.position, lightTop.position, eased);
-            }
-
-            if (shaftCover != null)
-            {
-                shaftCover.position = CoverPositionAt(elapsed, leaving);
-            }
-
-            yield return null;
-        }
-
-        if (HasShaftLight)
-        {
-            shaftLight.gameObject.SetActive(false);
-            shaftLight.position = lightBottom.position;
-        }
-
-        // Leaving, the cover stays up so the window stays dark until the scene switches
-        if (!leaving && shaftCover != null)
-        {
-            shaftCover.gameObject.SetActive(false);
-        }
-    }
-
-    /// <summary>
-    /// Returns where the shaft cover should be at a moment in the ride.
-    /// Leaving, it rises from below the window.
-    /// Arriving, it starts covering the window and then rises.
-    /// </summary>
-    /// <param name="elapsed">Seconds since the ride started</param>
-    /// <param name="leaving">True when leaving this level, false when arriving at it</param>
-    private Vector3 CoverPositionAt(float elapsed, bool leaving)
-    {
-        Vector3 offset = Vector3.up * coverTravelDistance;
-        float riseStart = leaving ? 0f : rideDuration - coverRiseDuration;
-        float progress = Mathf.SmoothStep(0f, 1f, (elapsed - riseStart) / coverRiseDuration);
-
-        return leaving
-            ? Vector3.Lerp(coverHome - offset, coverHome, progress)
-            : Vector3.Lerp(coverHome, coverHome + offset, progress);
-    }
-
-    /// <summary>
     /// Coroutine that will automatically close the doors 
     /// if the Player has not entered. However, the doors will not close
     /// if the Player is inside and there is no available floor.
@@ -473,7 +324,7 @@ public class ElevatorController : MonoBehaviour
         yield return new WaitUntil(() => !playerInside);
 
         queuedFloor = null;
-        yield return SetDoorsAnimated(false);
+        yield return doors.Close();
 
         autoCloseRoutine = null;
     }
@@ -504,64 +355,9 @@ public class ElevatorController : MonoBehaviour
     }
 
     /// <summary>
-    /// Coroutine that plays the open or close animation and waits for it to
-    /// finish. Both triggers are cleared first so a leftover trigger can never
-    /// replay an old animation.
-    /// </summary>
-    /// <param name="open">True to open the doors, false to close them</param>
-    private IEnumerator SetDoorsAnimated(bool open)
-    {
-        if (doorAnimator == null)
-        {
-            state = open ? State.Open : State.Closed;
-            yield break;
-        }
-
-        state = open ? State.Opening : State.Closing;
-
-        doorAnimator.ResetTrigger("Open");
-        doorAnimator.ResetTrigger("Close");
-        doorAnimator.SetTrigger(open ? "Open" : "Close");
-
-        yield return WaitForDoors(open);
-
-        state = open ? State.Open : State.Closed;
-    }
-
-    /// <summary>
-    /// Coroutine that waits until the Animator finishes opening or closing.
-    /// Opening is done when the Open state has played through. Closing is done
-    /// when the Animator returns to the Closed state. Gives up after
-    /// doorWaitTimeout seconds.
-    /// </summary>
-    /// <param name="open">True to wait for the doors to finish opening, false for closing</param>
-    private IEnumerator WaitForDoors(bool open)
-    {
-        string targetState = open ? "Open" : "Closed";
-
-        yield return null;
-
-        // 6 is arbirtrary here. Just waiting until the animations are done
-        // This way, the ride doesn't run WHILE an animation is happening.
-        for (float waited = 0f; waited < 6f; waited += Time.deltaTime)
-        {
-            AnimatorStateInfo info = doorAnimator.GetCurrentAnimatorStateInfo(0);
-
-            bool inTargetState = info.IsName(targetState) && !doorAnimator.IsInTransition(0);
-            bool finished = !open || info.normalizedTime >= 1f;
-
-            if (inTargetState && finished)
-            {
-                yield break;
-            }
-
-            yield return null;
-        }
-    }
-
-    /// <summary>
     /// Returns the scene for a direction
     /// </summary>
+    /// <param name="direction">Direction of travel</param>
     private string GetSceneFor(ElevatorDirection direction)
     {
         return direction == ElevatorDirection.Up ? nextScene : prevScene;
@@ -570,29 +366,9 @@ public class ElevatorController : MonoBehaviour
     /// <summary>
     /// Returns whether sceneName is a valid, reachable scene
     /// </summary>
+    /// <param name="sceneName">Scene name to check</param>
     private bool CanTravelTo(string sceneName)
     {
         return !string.IsNullOrEmpty(sceneName);
-    }
- 
-    /// <summary>
-    /// Draws the sweep path, and outlines the panel at both ends of it, when the
-    /// elevator is selected. This way the ends can be lined up with the door
-    /// window without turning the light on.
-    /// </summary>
-    private void OnDrawGizmosSelected()
-    {
-        if (lightBottom == null || lightTop == null) return;
-
-        Renderer panel = shaftLight != null ? shaftLight.GetComponentInChildren<Renderer>(true) : null;
-        Vector3 size = panel != null ? panel.bounds.size : Vector3.zero;
-        if (size == Vector3.zero) size = Vector3.one * 0.4f;
-
-        Vector3 offset = panel != null ? panel.bounds.center - shaftLight.position : Vector3.zero;
- 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(lightBottom.position, lightTop.position);
-        Gizmos.DrawWireCube(lightBottom.position + offset, size);
-        Gizmos.DrawWireCube(lightTop.position + offset, size);
     }
 }
