@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class Printer : MonoBehaviour, Interactable
 {
+    [Header("Printer Settings")]
     [Tooltip("The page that is printed.")]
     [SerializeField] private GameObject page;
 
@@ -22,6 +23,7 @@ public class Printer : MonoBehaviour, Interactable
     [Tooltip("Delay before page begins printing.")]
     [SerializeField] private float printDelay = 0.5f;
 
+    [Header("Audio")]
     [Tooltip("Sound played when printer starts up.")]
     [SerializeField] private AudioClip startSound;
 
@@ -32,6 +34,9 @@ public class Printer : MonoBehaviour, Interactable
     private bool hasPrinted;
 
 
+    /// <summary>
+    /// Hides the page.
+    /// </summary>
     private void Start()
     {
         page.SetActive(false);
