@@ -269,3 +269,4 @@ MonoBehaviour:
   raycastHeight: 1
   visionBlocker: {fileID: 5824806083294752936}
   visionClearAngle: 15
+  doorSound: {fileID: 8300000, guid: 807d9fee358f6e9488746a6deb76468f, type: 3}

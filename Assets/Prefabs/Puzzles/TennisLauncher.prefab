@@ -52,6 +52,7 @@ MonoBehaviour:
   launchHeight: 2
   ballVolume: 12
   tennisBallPrefab: {fileID: 7602840015324086209, guid: d84bfbdaeac71a1498095b0de467a412, type: 3}
+  launchSound: {fileID: 8300000, guid: 36994115ef936eb49889b31e1eda9c76, type: 3}
 --- !u!1 &4343725287459559675
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,10 +11,12 @@ public class TennisLauncher : PuzzleInteractable
     [SerializeField] GameObject tennisBallPrefab;
     [Tooltip("Spawn height")]
     [SerializeField] Vector3 spawnOffset = Vector3.zero;
+    [SerializeField] AudioClip launchSound;
 
     public override void SuccessBehavior()
     {
         Trigger(launchDistance);
+        AudioManager.Instance.PlaySfxAtPosition(launchSound, transform.position);
     }
 
     public override void FailBehavior()
