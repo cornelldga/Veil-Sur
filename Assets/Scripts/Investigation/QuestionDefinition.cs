@@ -47,6 +47,17 @@ public class QuestionDefinition : MonoBehaviour
     public event Action AnswerChanged;
     public event Action<QuestionDefinition> Solved;
 
+    public enum PagePlacement
+    {
+        CurrentPage,
+        AuthoredPage
+    }
+
+    [SerializeField]
+    private PagePlacement pagePlacement = PagePlacement.CurrentPage;
+
+    public PagePlacement Placement => pagePlacement;
+
     internal bool CanUnlock => requireAllPrerequisiteQuestions
         ? prerequisiteQuestions.All(question => question.IsCorrect) &&
             prerequisitePuzzles.All(puzzle => puzzle.HasBeenInteractedWith)

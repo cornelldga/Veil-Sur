@@ -251,7 +251,7 @@ public class NotebookUIController : SoundEvent
         question.Solved -= OnQuestionSolved;
         foreach (var futureQuestion in question.FutureQuestions)
         {
-            QueueUnlockedQuestion(futureQuestion, questionPages[futureQuestion]);
+            QueueUnlockedQuestion(futureQuestion, question.Placement == QuestionDefinition.PagePlacement.AuthoredPage ? questionPages[futureQuestion] : pages[CurrentPageIndex]);
             // QueueUnlockedQuestion(futureQuestion, pages[CurrentPageIndex]);
         }
         ShowPendingQuestions();

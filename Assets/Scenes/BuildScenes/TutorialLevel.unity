@@ -17293,6 +17293,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1180308275939020150, guid: ddef6672a69d49c29ad4d10812bde9a8, type: 3}
+      propertyPath: pages.Array.data[1].startQuestions.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1180308275939020150, guid: ddef6672a69d49c29ad4d10812bde9a8, type: 3}
       propertyPath: 'pages.Array.data[0].startQuestions.Array.data[0]'
       value: 
       objectReference: {fileID: 2200000012}
@@ -17300,10 +17304,6 @@ PrefabInstance:
       propertyPath: 'pages.Array.data[0].startQuestions.Array.data[1]'
       value: 
       objectReference: {fileID: 2200000022}
-    - target: {fileID: 1180308275939020150, guid: ddef6672a69d49c29ad4d10812bde9a8, type: 3}
-      propertyPath: pages.Array.data[1].startQuestions.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 1180308275939020150, guid: ddef6672a69d49c29ad4d10812bde9a8, type: 3}
       propertyPath: 'pages.Array.data[1].startQuestions.Array.data[0]'
       value: 
@@ -18101,6 +18101,10 @@ PrefabInstance:
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: questionText
       value: What day is it today?
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: pagePlacement
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: futurePuzzles.Array.size
@@ -19390,6 +19394,10 @@ PrefabInstance:
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: questionText
       value: What is the elevator code?
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: pagePlacement
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: futurePuzzles.Array.size
@@ -40340,6 +40348,10 @@ PrefabInstance:
       value: Take a picture of a plant.
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: pagePlacement
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireAllObjects
       value: 0
       objectReference: {fileID: 0}
@@ -40491,6 +40503,10 @@ PrefabInstance:
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: questionText
       value: Scan any document in document mode.
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: pagePlacement
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireAllObjects
