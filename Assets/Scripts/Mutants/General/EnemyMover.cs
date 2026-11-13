@@ -113,7 +113,7 @@ public class EnemyMover : MonoBehaviour
         {
             case EnemySearchlight.AlertState.Idle:
                 agent.SetDestination(idlePosition);
-                Debug.Log(agent.destination);
+                // Debug.Log(agent.destination);
                 if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
                 {
                     agent.speed = 0;
