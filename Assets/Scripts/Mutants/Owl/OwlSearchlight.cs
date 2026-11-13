@@ -18,9 +18,27 @@ public class OwlSearchlight : EnemySearchlight
     /// </summary>
     protected override void Update()
     {
-        FaceTowardsMovement();
+        FaceWalkingDirection();
         canSeePlayer = CanSeePlayer(); // Not relevant whether mutant can actually see player, but updates distance to player
         UpdateAlertState(canSeePlayer);
+    }
+
+    /// <summary>
+    /// Turns the body toward where the owl walks and holds that facing while frozen.
+    /// The owl art always looks at the player, so the body never turns toward the player itself.
+    /// </summary>
+    private void FaceWalkingDirection()
+    {
+        Vector3 movement = transform.position - lastPosition;
+        lastPosition = transform.position;
+        movement.y = 0f;
+
+        if (movement.sqrMagnitude < 0.000001f) return;
+
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            Quaternion.LookRotation(movement),
+            sweepSpeed * Time.deltaTime);
     }
 
     /// <summary>
