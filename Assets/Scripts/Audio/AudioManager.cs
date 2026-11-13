@@ -210,15 +210,17 @@ public class AudioManager : MonoBehaviour
     /// <summary>
     /// Plays a one-shot 3D sound effect that follows a moving transform (e.g.
     /// footsteps) by parenting a pooled AudioSource to it for the duration of playback.
+    /// Returns the playing source so the caller can stop it early, or null if nothing played.
     /// </summary>
-    public void PlaySfxAttached(AudioClip clip, Transform attachTo, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfxAttached(AudioClip clip, Transform attachTo, float volume = 1f, float pitch = 1f)
     {
-        if (clip == null || attachTo == null) return;
+        if (clip == null || attachTo == null) return null;
 
         AudioSource source = GetAvailableSource();
         source.transform.SetParent(attachTo, false);
         source.transform.localPosition = Vector3.zero;
         PlayOnSource(source, clip, volume, pitch);
+        return source;
     }
 
     private AudioSource CreatePooledSource()

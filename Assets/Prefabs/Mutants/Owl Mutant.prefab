@@ -147,7 +147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.68
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -155,7 +155,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -33.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -210,6 +210,11 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8898669246296371032, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
   m_PrefabInstance: {fileID: 7995602606138057094}
   m_PrefabAsset: {fileID: 0}
+--- !u!82 &1602365800527961449 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8703955053834140911, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+  m_PrefabInstance: {fileID: 7995602606138057094}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2184192572823106185 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8122762717042905871, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
@@ -253,6 +258,10 @@ MonoBehaviour:
   stunCooldown: 10
   stunEffects: {fileID: 5158779933127667209}
   spotLight: {fileID: 0}
+  soundSource: {fileID: 1602365800527961449}
+  idleSound: {fileID: 0}
+  alertSound: {fileID: 0}
+  stunSound: {fileID: 0}
   showConeMesh: 1
   coneMeshFilter: {fileID: 8374119217000137589}
   coneMeshRenderer: {fileID: 1551625025796951774}
@@ -279,10 +288,12 @@ MonoBehaviour:
   chaseSpeed: 5
   chaseAcceleration: 40
   noticePauseDuration: 0
+  noticeTurnSpeed: 360
   waitTime: 2
   wanderRadius: 5
   jumpscareFrames: []
   jumpscareFps: 8
+  jumpscareSound: {fileID: 8300000, guid: 9898a8da3f0e141b1ad76a9f122a54d1, type: 3}
   farSpeed: 1.5
   closeSpeed: 6
   targetObject: {fileID: 0}

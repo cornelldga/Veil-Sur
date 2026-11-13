@@ -52,6 +52,12 @@ public class EnemySearchlight : MonoBehaviour
     protected Color alertColor = Color.red;
     protected Color stunColor = Color.pink;
 
+    [Header("Sounds")]
+    [SerializeField] protected AudioSource soundSource;
+    [SerializeField] protected AudioClip idleSound;
+    [SerializeField] protected AudioClip alertSound; // TODO
+    [SerializeField] protected AudioClip stunSound; // TODO
+
     [Header("Cone Mesh (visible in Game view)")]
     [SerializeField] protected bool showConeMesh = true;
     [SerializeField] protected MeshFilter coneMeshFilter;   // child object's MeshFilter
@@ -95,6 +101,13 @@ public class EnemySearchlight : MonoBehaviour
         {
             coneMesh = new Mesh { name = "VisionCone" };
             coneMeshFilter.mesh = coneMesh;
+        }
+
+        if (soundSource != null && idleSound != null)
+        {
+            soundSource.clip = idleSound;
+            soundSource.loop = true;
+            soundSource.Play();
         }
     }
 
@@ -336,8 +349,61 @@ public class EnemySearchlight : MonoBehaviour
         if (CurrentState == newState) return;
         AlertState previousState = CurrentState;
         CurrentState = newState;
-        if (newState == AlertState.Patrol) sweepTimer = 0f;
-        else if (newState == AlertState.Suspicious && previousState != AlertState.LookAround) timesLookedAround = 0;
+        
+        switch(newState)
+        {
+            case AlertState.Idle:
+            case AlertState.Patrol:
+                sweepTimer = 0f;
+                if (soundSource != null && idleSound != null)
+                {
+                    soundSource.Stop();
+                    soundSource.clip = idleSound;
+                    soundSource.loop = true;
+                    soundSource.Play();
+                }
+                break;
+            case AlertState.Suspicious:
+                if (previousState != AlertState.LookAround)
+                {
+                    timesLookedAround = 0;
+                }
+                if (soundSource != null && alertSound != null)
+                {
+                    soundSource.Stop();
+                    soundSource.clip = alertSound;
+                    soundSource.loop = true;
+                    soundSource.Play();
+                }
+                break;
+            //  case AlertState.LookAround:
+            //     if (soundSource != null && alertSound != null)
+            //     {
+            //         soundSource.Stop();
+            //         soundSource.clip = alertSound;
+            //         soundSource.loop = true;
+            //         soundSource.Play();
+            //     }
+            //     break;  
+            //  case AlertState.Alert:
+            //     if (soundSource != null && alertSound != null)
+            //     {
+            //         soundSource.Stop();
+            //         soundSource.clip = alertSound;
+            //         soundSource.loop = true;
+            //         soundSource.Play();
+            //     }
+            //     break;          
+            case AlertState.Stun:
+                if (soundSource != null && stunSound != null)
+                {
+                    soundSource.Stop();
+                    soundSource.clip = stunSound;
+                    soundSource.loop = true;
+                    soundSource.Play();
+                }
+                break;
+        }
     }
 
     /// <summary>
