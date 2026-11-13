@@ -3,6 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Drives first-person control through CharacterController
 /// </summary>
+[DefaultExecutionOrder(-100)] // runs before the other Player scripts so a spawn-point copy can switch off before they set up
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerState))]
 [RequireComponent(typeof(StaminaController))]
@@ -74,11 +75,28 @@ public class FirstPersonController : MonoBehaviour
     private void Start()
     {
         // Moved this to a Start() function 
-        Level.current_level.player = gameObject;
+        if (Level.current_level != null) Level.current_level.player = gameObject;
     }
 
     private void Awake()
     {
+        // The Player is kept between levels. This level's Player is just the spawn point:
+        // move the kept Player here and remove this one.
+        GameObject kept = GameManager.PlayerInstance;
+        if (kept != null && kept != gameObject)
+        {
+            gameObject.SetActive(false);
+            CharacterController keptController = kept.GetComponent<CharacterController>();
+            keptController.enabled = false;
+            kept.transform.position = transform.position;
+            keptController.enabled = true;
+            Destroy(gameObject);
+            return;
+        }
+
+        // Keep the Player alive when a new level loads
+        DontDestroyOnLoad(gameObject);
+
         controller = GetComponent<CharacterController>();
         // controls = new PlayerControls();
         //switch to this for key binds
