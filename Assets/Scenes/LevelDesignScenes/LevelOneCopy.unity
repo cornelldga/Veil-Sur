@@ -36207,7 +36207,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
       propertyPath: launchHeight
-      value: 4
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
+      propertyPath: spawnOffset.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
+      propertyPath: spawnOffset.z
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
       propertyPath: tennisBallPrefab
