@@ -9,10 +9,12 @@ public class TennisLauncher : PuzzleInteractable
     [SerializeField] float launchHeight = 2f;
     [SerializeField] float ballVolume = 100f;
     [SerializeField] GameObject tennisBallPrefab;
+    [SerializeField] AudioClip launchSound;
 
     public override void SuccessBehavior()
     {
         Trigger(launchDistance);
+        AudioManager.Instance.PlaySfxAtPosition(launchSound, transform.position);
     }
 
     public override void FailBehavior()
