@@ -261,11 +261,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b36787f488568a45b14faa6536131da, type: 3}
---- !u!4 &86227986 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-  m_PrefabInstance: {fileID: 9114927521720490728}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &97431456
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2314,7 +2309,7 @@ GameObject:
   - component: {fileID: 337116088}
   - component: {fileID: 337116087}
   - component: {fileID: 337116086}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: OuterShell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4315,7 +4310,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 395014754}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: WestHall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6701,7 +6696,7 @@ GameObject:
   - component: {fileID: 614161071}
   - component: {fileID: 614161070}
   - component: {fileID: 614161069}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: OuterShell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9652,7 +9647,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 86227986}
   - {fileID: 1167595319}
   - {fileID: 2056451261}
   - {fileID: 1573630691}
@@ -11579,7 +11573,7 @@ GameObject:
   - component: {fileID: 982515612}
   - component: {fileID: 982515611}
   - component: {fileID: 982515610}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: OuterShell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13451,7 +13445,7 @@ GameObject:
   - component: {fileID: 1089882401}
   - component: {fileID: 1089882400}
   - component: {fileID: 1089882399}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: OuterShell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16259,7 +16253,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1150834057}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EastHall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18497,7 +18491,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1260834975}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Halls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18536,7 +18530,7 @@ GameObject:
   - component: {fileID: 1263735858}
   - component: {fileID: 1263735857}
   - component: {fileID: 1263735856}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HallwayInterior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19686,7 +19680,7 @@ GameObject:
   - component: {fileID: 1338035140}
   - component: {fileID: 1338035139}
   - component: {fileID: 1338035138}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Connector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20678,7 +20672,7 @@ GameObject:
   - component: {fileID: 1367333159}
   - component: {fileID: 1367333158}
   - component: {fileID: 1367333157}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HallwayInterior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21559,7 +21553,7 @@ GameObject:
   - component: {fileID: 1409248144}
   - component: {fileID: 1409248143}
   - component: {fileID: 1409248142}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteriorWalls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23029,7 +23023,7 @@ GameObject:
   - component: {fileID: 1443595205}
   - component: {fileID: 1443595204}
   - component: {fileID: 1443595203}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Connector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23720,8 +23714,8 @@ GameObject:
   - component: {fileID: 1457889734}
   - component: {fileID: 1457889733}
   - component: {fileID: 1457889732}
-  m_Layer: 0
-  m_Name: Cube
+  m_Layer: 9
+  m_Name: InteriorWalls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25136,7 +25130,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1524800793}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: NorthHall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25173,7 +25167,7 @@ GameObject:
   - component: {fileID: 1536848070}
   - component: {fileID: 1536848069}
   - component: {fileID: 1536848068}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteriorWalls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27483,7 +27477,7 @@ GameObject:
   - component: {fileID: 1671620448}
   - component: {fileID: 1671620447}
   - component: {fileID: 1671620446}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HallwayInterior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29193,7 +29187,7 @@ GameObject:
   - component: {fileID: 1851051524}
   - component: {fileID: 1851051523}
   - component: {fileID: 1851051522}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteriorWalls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31007,7 +31001,7 @@ GameObject:
   - component: {fileID: 1988302731}
   - component: {fileID: 1988302730}
   - component: {fileID: 1988302729}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteriorWalls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32326,8 +32320,8 @@ GameObject:
   - component: {fileID: 2004601589}
   - component: {fileID: 2004601588}
   - component: {fileID: 2004601587}
-  m_Layer: 0
-  m_Name: Cube (1)
+  m_Layer: 9
+  m_Name: OuterShell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36053,67 +36047,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54226feaa49e940e099abd49e833b1c6, type: 3}
---- !u!1001 &9114927521720490728
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 804385441}
-    m_Modifications:
-    - target: {fileID: 8393607545503559745, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_Name
-      value: Prop_TennisBall_A
-      objectReference: {fileID: 0}
-    - target: {fileID: 8393607545503559745, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.9857094
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.9196595
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 7.7724705
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167012428015692539, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
