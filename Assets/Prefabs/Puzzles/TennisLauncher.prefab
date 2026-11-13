@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d080a72c2688cb45a968a5ba6e99154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TennisLauncher
+  futureQuestions: []
+  debugSolve: 0
   launchDistance: 12
   launchHeight: 2
   ballVolume: 12
