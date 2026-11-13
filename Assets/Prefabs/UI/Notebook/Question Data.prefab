@@ -48,7 +48,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b13442846c6592645930d44e20f28458, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestionDefinition
+  requireIDs: 0
   required_objects: []
+  requireAllObjects: 1
+  requiredSubjectIds: []
+  requireAllIDs: 1
   questionText: 
   defaultFeedback: Incorrect photo.
   futureQuestions: []
+  futurePuzzles: []
+  requireAllPrerequisiteQuestions: 1
+  debugSolve: 0
