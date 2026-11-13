@@ -286,6 +286,18 @@ public class ElevatorController : MonoBehaviour
     }
 
     /// <summary>
+    /// The next level loads during the ride and unloads this elevator before the ride
+    /// ends, so give the (kept) Player their control back here.
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (traveling && GameManager.PlayerInstance != null)
+        {
+            GameManager.PlayerInstance.GetComponent<FirstPersonController>().EndScriptedMovement();
+        }
+    }
+
+    /// <summary>
     /// Coroutine that takes control of the Player and eases them to the stand
     /// point, turning them to face the doors.
     /// </summary>
