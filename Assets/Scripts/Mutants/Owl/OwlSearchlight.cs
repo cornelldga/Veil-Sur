@@ -13,6 +13,18 @@ public class OwlSearchlight : EnemySearchlight
     [Header("Owl-Specific")]
     [SerializeField] protected float speedupDist = 20f; // Distance at which mutant uses closeSpeed
 
+    private static readonly int DistanceParam = Animator.StringToHash("Distance");
+    private Animator spriteAnimator;
+
+    /// <summary>
+    /// Caches the sprite child's Animator, which picks the Far, Close, or Closer art from Distance.
+    /// </summary>
+    protected override void Start()
+    {
+        base.Start();
+        spriteAnimator = GetComponentInChildren<Animator>();
+    }
+
     /// <summary>
     /// Do everything in parent update except for drawing the cone mesh
     /// </summary>
@@ -21,6 +33,7 @@ public class OwlSearchlight : EnemySearchlight
         FaceWalkingDirection();
         canSeePlayer = CanSeePlayer(); // Not relevant whether mutant can actually see player, but updates distance to player
         UpdateAlertState(canSeePlayer);
+        spriteAnimator.SetFloat(DistanceParam, distanceToPlayer);
     }
 
     /// <summary>
