@@ -252,6 +252,7 @@ public class NotebookUIController : SoundEvent
         foreach (var futureQuestion in question.FutureQuestions)
         {
             QueueUnlockedQuestion(futureQuestion, questionPages[futureQuestion]);
+            // QueueUnlockedQuestion(futureQuestion, pages[CurrentPageIndex]);
         }
         ShowPendingQuestions();
         RefreshPageFeedback();

@@ -47,6 +47,7 @@ public class ErrorBox : MonoBehaviour
     /// <param name="message">Text to display in the error box.</param>
     private void ShowError(string message)
     {
+        transform.SetAsLastSibling();
         AudioManager.Instance.PlayUISFX(errorAudioClip);
         image.color = Color.white;
         if (errorText != null)
