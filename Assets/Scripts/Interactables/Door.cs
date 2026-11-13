@@ -36,9 +36,12 @@ public class Door : MonoBehaviour, Interactable
     [SerializeField] private float raycastHeight = 1f;
     [Tooltip("TVision blocker collider to prevent dog from seeing thru small gaps between door & walls")]
     [SerializeField] private Collider visionBlocker;
-    
     // Door must open this far before vision through the doorway is allowed.
     [SerializeField] private float visionClearAngle = 10f;
+
+    [Header("SFX")]
+    [SerializeField] private AudioClip doorSound;
+    
 
     private Quaternion openRotation;
     private Quaternion closedRotation;
@@ -117,6 +120,7 @@ public class Door : MonoBehaviour, Interactable
         {
             // Close the door
             isOpen = false;
+            AudioManager.Instance.PlaySfxAtPosition(doorSound, transform.position, 1.5f);
             rotateCoroutine = StartCoroutine(AnimateDoor(closedRotation));
         }
         else
@@ -129,7 +133,9 @@ public class Door : MonoBehaviour, Interactable
             ((adjustedSpeed - minOpenSpeedVelocity) 
             / (maxOpenSpeedVelocity - minOpenSpeedVelocity)
             * (maxOpenSpeed - minOpenSpeed)) + minOpenSpeed;
-            
+
+            // Maybe make dogs also create a sound? And have volume based on dist to player?
+            AudioManager.Instance.PlaySfxAtPosition(doorSound, transform.position, 1.5f);
             Open(playerTransform);
            
         }

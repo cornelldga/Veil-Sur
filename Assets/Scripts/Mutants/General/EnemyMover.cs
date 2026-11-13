@@ -47,8 +47,7 @@ public class EnemyMover : MonoBehaviour
     [Header("Jumpscare")]
     [SerializeField] private Sprite[] jumpscareFrames;
     [SerializeField] private float jumpscareFps = 8f;
-    // For when we have audio for the jumpscares
-    // [SerializeField] private AudioClip jumpscareSound;
+    [SerializeField] private AudioClip jumpscareSound;
 
     protected UnityEngine.AI.NavMeshAgent agent;
     protected EnemySearchlight searchlight;
@@ -71,6 +70,7 @@ public class EnemyMover : MonoBehaviour
     protected virtual void Start()
     {
         player = GameManager.PlayerInstance.transform;
+        idlePosition = transform.position;
 
     }
 
@@ -80,8 +80,7 @@ public class EnemyMover : MonoBehaviour
         if (isCollidingPlayer && 
         searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
         {
-            // null for audio for right now since we have no jumpscare audio
-            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound);
         }
 
         EnemySearchlight.AlertState state = searchlight.CurrentState;
@@ -112,6 +111,7 @@ public class EnemyMover : MonoBehaviour
         {
             case EnemySearchlight.AlertState.Idle:
                 agent.SetDestination(idlePosition);
+                // Debug.Log(agent.destination);
                 if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
                 {
                     agent.speed = 0;
@@ -257,10 +257,8 @@ public class EnemyMover : MonoBehaviour
             isCollidingPlayer = true;
             if (searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
             {
-                // null for audio for right now since we have no jumpscare audio
-                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, null);
+                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound);
             }
-            
         }
     }
 
