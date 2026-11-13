@@ -27226,6 +27226,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TennisLauncher
       objectReference: {fileID: 0}
+    - target: {fileID: 3892626070090860166, guid: 1b36787f488568a45b14faa6536131da, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5819644583766385608, guid: 1b36787f488568a45b14faa6536131da, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.07
@@ -34242,34 +34246,11 @@ Transform:
   - {fileID: 762584267}
   m_Father: {fileID: 949263977}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2056451260 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5774610475039511898, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
-  m_PrefabInstance: {fileID: 3531868281478124999}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2056451261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6586612368913633248, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
   m_PrefabInstance: {fileID: 3531868281478124999}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2056451262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2056451260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d080a72c2688cb45a968a5ba6e99154, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TennisLauncher
-  futureQuestions: []
-  debugSolve: 0
-  launchDistance: 12
-  launchHeight: 2
-  ballVolume: 12
-  tennisBallPrefab: {fileID: 8393607545503559745, guid: 1f93b39b3b560cd4a8fa12afe7c0247d, type: 3}
 --- !u!1001 &2069327146
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35865,6 +35846,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 804385441}
     m_Modifications:
+    - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
+      propertyPath: launchHeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
+      propertyPath: spawnOffset.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
+      propertyPath: spawnOffset.z
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
+      propertyPath: tennisBallPrefab
+      value: 
+      objectReference: {fileID: 7602840015324086209, guid: d84bfbdaeac71a1498095b0de467a412, type: 3}
     - target: {fileID: 5774610475039511898, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
       propertyPath: m_Name
       value: TennisBallLaucher
@@ -35909,13 +35906,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8196935358986881177, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -2432090755550338912, guid: f884aeaa267127f43a202fb5e927487c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5774610475039511898, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2056451262}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
 --- !u!1001 &6282797560218728846
 PrefabInstance:
