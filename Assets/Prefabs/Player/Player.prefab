@@ -277,7 +277,6 @@ MonoBehaviour:
   shutterDelay: 0.1
   detectRadius: 20
   stunRadius: 30
-  maxRadius: 17.5
   coneAngle: 60
   targetMask:
     serializedVersion: 2
@@ -354,6 +353,8 @@ MonoBehaviour:
   maxStamina: 100
   staminaDrain: 25
   staminaRegen: 45
+  exhaustClip: {fileID: 8300000, guid: 60e1ad60dc64f48a79f5a677644369a9, type: 3}
+  exhaustVolume: 0.8
 --- !u!114 &3314498800505621458
 MonoBehaviour:
   m_ObjectHideFlags: 0
