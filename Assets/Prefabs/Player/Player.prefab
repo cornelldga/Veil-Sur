@@ -237,6 +237,8 @@ MonoBehaviour:
   mouseSens: 0.15
   minLookDown: -85
   maxLookUp: 85
+  cameraStandHeight: 1.65
+  cameraCrouchHeight: 0.75
   standHeight: 1.65
   crouchHeight: 0.75
   crouchTransitionSpeed: 15
@@ -353,6 +355,8 @@ MonoBehaviour:
   maxStamina: 100
   staminaDrain: 25
   staminaRegen: 45
+  exhaustClip: {fileID: 8300000, guid: 60e1ad60dc64f48a79f5a677644369a9, type: 3}
+  exhaustVolume: 0.8
 --- !u!114 &3314498800505621458
 MonoBehaviour:
   m_ObjectHideFlags: 0

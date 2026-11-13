@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class SaveTerminal : MonoBehaviour, HoldInteractable
 {
@@ -14,6 +15,7 @@ public class SaveTerminal : MonoBehaviour, HoldInteractable
     [SerializeField] private TerminalScreen screen;
     [Tooltip("Seconds the interact key must be held to save.")]
     [SerializeField] private float holdDuration = 2f;
+    [SerializeField] private AudioClip saveSound;
 
     public float HoldDuration => holdDuration;
 
@@ -31,6 +33,7 @@ public class SaveTerminal : MonoBehaviour, HoldInteractable
     {
         // Add a save game function to the GameManager and call it here to save the game when the player interacts with a save terminal.
         SaveManager.Instance.SaveGame();
+        AudioManager.Instance.PlaySfxAtPosition(saveSound, transform.position, 2f);
         if (screen != null) screen.ShowSaved();
 
         // Other interactables linked to save terminal

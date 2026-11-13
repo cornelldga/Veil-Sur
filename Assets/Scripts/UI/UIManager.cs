@@ -16,18 +16,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject cameraGroup;
     [SerializeField] public Image snapOverlay;
     private PhotoCameraController.CameraMode cameraMode;
-    [Tooltip("Seconds of black shutter effect before flash.")]
-    [SerializeField] private float shutterTime = 0.06f;
-    [Tooltip("Opacity of the shutter effect.")]
-    [SerializeField] private float shutterOpacity = 0.52f;
     [Tooltip("How bright the flash gets at its maximum.")]
     [SerializeField] private float maxFlash = 0.3f;
     [Tooltip("How long the flash effect lasts.")]
     [SerializeField] private float flashTime = 0.04f;
     [Tooltip("How long it takes for the flash effect to fade.")]
     [SerializeField] private float flashFade = 0.34f;
-    [Tooltip("Amount of time to wait after shutter.")]
-    [SerializeField] private float waitTime = 0.34f;
     private Coroutine flashCoroutine;
 
     private TMP_Text cameraModeLabel;
@@ -303,20 +297,12 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Camera effect upon taking a photo. First has a "shutter" black blinking, then brief pause at maximum flash.
-    /// then fade back out.
+    /// Camera effect upon taking a photo. Brief pause at maximum flash, then fade back out.
     /// </summary>
     /// <returns></returns>
     private IEnumerator FlashCoroutine()
     {
         yield return new WaitForSecondsRealtime(0.01f);
-        snapOverlay.color = Color.black;
-        snapOverlay.canvasRenderer.SetAlpha(shutterOpacity);
-        yield return new WaitForSecondsRealtime(shutterTime);
-        snapOverlay.canvasRenderer.SetAlpha(0f);
-
-        // Short pause before flash
-        yield return new WaitForSecondsRealtime(waitTime);
 
         // Flash is held for a moment
         snapOverlay.color = Color.white;

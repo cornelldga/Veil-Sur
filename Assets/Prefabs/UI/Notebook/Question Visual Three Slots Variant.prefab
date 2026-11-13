@@ -466,6 +466,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 264
       objectReference: {fileID: 0}
+    - target: {fileID: 2892441799883252044, guid: d067728027c7f424b9908d338093eaaf, type: 3}
+      propertyPath: slotCount
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3170367431556557136, guid: d067728027c7f424b9908d338093eaaf, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -486,6 +490,10 @@ PrefabInstance:
       propertyPath: m_Texture
       value: 
       objectReference: {fileID: 2800000, guid: f8acaa0328deb4dba971364f043bf928, type: 3}
+    - target: {fileID: 3563165285333291781, guid: d067728027c7f424b9908d338093eaaf, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4910486145722627946, guid: d067728027c7f424b9908d338093eaaf, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -579,8 +587,16 @@ PrefabInstance:
       value: -70.28549
       objectReference: {fileID: 0}
     - target: {fileID: 6789889644223272605, guid: d067728027c7f424b9908d338093eaaf, type: 3}
+      propertyPath: m_margin.x
+      value: 0.6912842
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789889644223272605, guid: d067728027c7f424b9908d338093eaaf, type: 3}
       propertyPath: m_margin.z
       value: -222.64746
+      objectReference: {fileID: 0}
+    - target: {fileID: 7245702035306161035, guid: d067728027c7f424b9908d338093eaaf, type: 3}
+      propertyPath: slotCount
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8041912876880657967, guid: d067728027c7f424b9908d338093eaaf, type: 3}
       propertyPath: m_Name

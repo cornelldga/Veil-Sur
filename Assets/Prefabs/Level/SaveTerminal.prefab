@@ -121,6 +121,7 @@ MonoBehaviour:
   linkedInteracts: []
   screen: {fileID: 7413602915837201006}
   holdDuration: 2
+  saveSound: {fileID: 8300000, guid: d616a54b7e4bbe6478aaa750f660b2de, type: 3}
 --- !u!1 &7413602915837201001
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,15 +30,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 23.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.27
+      value: 1.67
       objectReference: {fileID: 0}
     - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -139,6 +139,10 @@ MonoBehaviour:
   stunCooldown: 5
   stunEffects: {fileID: 1733657104015836177}
   spotLight: {fileID: 0}
+  soundSource: {fileID: 5306431972337956721}
+  idleSound: {fileID: 8300000, guid: 58bc504aa93206b48939334fd3242e2a, type: 3}
+  alertSound: {fileID: 0}
+  stunSound: {fileID: 0}
   showConeMesh: 1
   coneMeshFilter: {fileID: 3147556511448721773}
   coneMeshRenderer: {fileID: 5337045153766270150}
@@ -147,6 +151,11 @@ MonoBehaviour:
   acceptedSenseSources:
   - 
   - Ball
+--- !u!82 &5306431972337956721 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 1602365800527961449, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
+  m_PrefabInstance: {fileID: 6888401827181537816}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &5337045153766270150 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1551625025796951774, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
