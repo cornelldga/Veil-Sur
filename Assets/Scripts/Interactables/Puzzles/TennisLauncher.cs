@@ -9,6 +9,8 @@ public class TennisLauncher : PuzzleInteractable
     [SerializeField] float launchHeight = 2f;
     [SerializeField] float ballVolume = 100f;
     [SerializeField] GameObject tennisBallPrefab;
+    [Tooltip("Spawn height")]
+    [SerializeField] Vector3 spawnOffset = Vector3.zero;
 
     public override void SuccessBehavior()
     {
@@ -26,7 +28,8 @@ public class TennisLauncher : PuzzleInteractable
     /// </summary>
     void Trigger(float dist)
     {
-        GameObject ball = Instantiate(tennisBallPrefab, transform.position, transform.rotation);
+        Vector3 spawnPosition = transform.TransformPoint(spawnOffset);
+        GameObject ball = Instantiate(tennisBallPrefab, spawnPosition, transform.rotation);
         TennisBall ballScript = ball.GetComponent<TennisBall>();
         ballScript.SetVolume(ballVolume);
         ballScript.IgnoreCollisions(GetComponentsInChildren<Collider>());
