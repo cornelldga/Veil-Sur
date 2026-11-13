@@ -13,14 +13,45 @@ public class OwlSearchlight : EnemySearchlight
     [Header("Owl-Specific")]
     [SerializeField] protected float speedupDist = 20f; // Distance at which mutant uses closeSpeed
 
+    private static readonly int DistanceParam = Animator.StringToHash("Distance");
+    private Animator spriteAnimator;
+
+    /// <summary>
+    /// Caches the sprite child's Animator, which picks the Far, Close, or Closer art from Distance.
+    /// </summary>
+    protected override void Start()
+    {
+        base.Start();
+        spriteAnimator = GetComponentInChildren<Animator>();
+    }
+
     /// <summary>
     /// Do everything in parent update except for drawing the cone mesh
     /// </summary>
     protected override void Update()
     {
-        FaceTowardsMovement();
+        FaceWalkingDirection();
         canSeePlayer = CanSeePlayer(); // Not relevant whether mutant can actually see player, but updates distance to player
         UpdateAlertState(canSeePlayer);
+        spriteAnimator.SetFloat(DistanceParam, distanceToPlayer);
+    }
+
+    /// <summary>
+    /// Turns the body toward where the owl walks and holds that facing while frozen.
+    /// The owl art always looks at the player, so the body never turns toward the player itself.
+    /// </summary>
+    private void FaceWalkingDirection()
+    {
+        Vector3 movement = transform.position - lastPosition;
+        lastPosition = transform.position;
+        movement.y = 0f;
+
+        if (movement.sqrMagnitude < 0.000001f) return;
+
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            Quaternion.LookRotation(movement),
+            sweepSpeed * Time.deltaTime);
     }
 
     /// <summary>
