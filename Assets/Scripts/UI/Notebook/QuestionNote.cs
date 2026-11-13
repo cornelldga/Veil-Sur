@@ -7,6 +7,8 @@ using UnityEngine.UI;
 /// <summary>Reusable question view that displays data from its bound QuestionDefinition.</summary>
 public class QuestionNote : MonoBehaviour
 {
+    [Tooltip("Number of photo slots in this visual. Must match the definition's Slot Count and this visual's photo slot children.")]
+    [SerializeField, Min(1)] private int slotCount = 1;
     [FormerlySerializedAs("image")]
     [SerializeField] private Graphic resultGraphic;
     [Tooltip("UI text component in this variant that displays the definition's question text.")]
@@ -18,6 +20,7 @@ public class QuestionNote : MonoBehaviour
     private QuestionSlotScript[] photoSlots = Array.Empty<QuestionSlotScript>();
 
     public QuestionDefinition Definition => definition;
+    public int SlotCount => slotCount;
     public Photo Photo => definition != null ? definition.Photo : null;
     public bool AllPhotoSlotsFilled => definition != null && photoSlots.Length > 0 &&
         Array.TrueForAll(photoSlots, slot => slot.Photo != null);

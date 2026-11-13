@@ -6,6 +6,8 @@ using UnityEngine;
 /// <summary>Question data, submitted evidence, and validation. Has no UI dependencies.</summary>
 public class QuestionDefinition : MonoBehaviour
 {   
+    [Tooltip("Number of photo slots required. Only visuals with the same Slot Count can display this question.")]
+    [SerializeField, Min(1)] private int slotCount = 1;
     [Tooltip("Whether we check photos by subject IDs or actual objects.")]
     [SerializeField] private bool requireIDs = false;
     [SerializeField] private List<PhotographableObject> required_objects = new();
@@ -34,6 +36,7 @@ public class QuestionDefinition : MonoBehaviour
 
     public Photo Photo => photos.Count > 0 ? photos[0] : null;
     public IReadOnlyList<Photo> Photos => photos;
+    public int SlotCount => slotCount;
     public bool IsCorrect { get; private set; }
     public bool HasBeenUploaded { get; private set; }
     public string QuestionText => questionText;
@@ -43,6 +46,17 @@ public class QuestionDefinition : MonoBehaviour
     public string FeedbackText { get; private set; } = "";
     public event Action AnswerChanged;
     public event Action<QuestionDefinition> Solved;
+
+    public enum PagePlacement
+    {
+        CurrentPage,
+        AuthoredPage
+    }
+
+    [SerializeField]
+    private PagePlacement pagePlacement = PagePlacement.CurrentPage;
+
+    public PagePlacement Placement => pagePlacement;
 
     internal bool CanUnlock => requireAllPrerequisiteQuestions
         ? prerequisiteQuestions.All(question => question.IsCorrect) &&
