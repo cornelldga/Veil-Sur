@@ -35726,6 +35726,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 804385441}
     m_Modifications:
     - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
+      propertyPath: ballVolume
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885131704534322263, guid: fc818733080d1fe4bb9f4f981e60d7da, type: 3}
       propertyPath: launchHeight
       value: 2
       objectReference: {fileID: 0}
