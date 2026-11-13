@@ -148,10 +148,6 @@ PrefabInstance:
       value: 19.2
       objectReference: {fileID: 0}
     - target: {fileID: 2760159835493762482, guid: 6f85ec8d833356f4bbef69371df6f543, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 36ef12622a7e342648dfeeefda596763, type: 3}
-    - target: {fileID: 2760159835493762482, guid: 6f85ec8d833356f4bbef69371df6f543, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
@@ -1547,6 +1543,10 @@ PrefabInstance:
     - target: {fileID: 911446516936161387, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4316216645541462601, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7316898121491863721, guid: 7dc46f0cab84a41d388fd0ac36380fce, type: 3}
       propertyPath: maxFilmCount
