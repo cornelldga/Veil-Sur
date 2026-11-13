@@ -188,13 +188,7 @@ Transform:
   - {fileID: 572393935}
   - {fileID: 1988526625}
   - {fileID: 301426777}
-  - {fileID: 878345278}
-  - {fileID: 802885768}
-  - {fileID: 1134248214}
-  - {fileID: 1591601848}
-  - {fileID: 610675315}
-  - {fileID: 1936275220}
-  - {fileID: 386746794}
+  - {fileID: 494471232}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &39640897 stripped
@@ -4119,12 +4113,12 @@ GameObject:
   m_Component:
   - component: {fileID: 386746794}
   m_Layer: 0
-  m_Name: Monitor Room
+  m_Name: old Monitor Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &386746794
 Transform:
   m_ObjectHideFlags: 0
@@ -4139,7 +4133,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 904407988}
-  m_Father: {fileID: 17950259}
+  m_Father: {fileID: 494471232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &391296729
 Mesh:
@@ -6352,6 +6346,44 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &494471231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 494471232}
+  m_Layer: 0
+  m_Name: old rooms
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &494471232
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494471231}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 802885768}
+  - {fileID: 1134248214}
+  - {fileID: 1591601848}
+  - {fileID: 610675315}
+  - {fileID: 1936275220}
+  - {fileID: 386746794}
+  - {fileID: 878345278}
+  m_Father: {fileID: 17950259}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &505493030
 GameObject:
   m_ObjectHideFlags: 0
@@ -6778,12 +6810,12 @@ GameObject:
   m_Component:
   - component: {fileID: 610675315}
   m_Layer: 0
-  m_Name: North Hallway
+  m_Name: old North Hallway
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &610675315
 Transform:
   m_ObjectHideFlags: 0
@@ -6797,7 +6829,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 17950259}
+  m_Father: {fileID: 494471232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &614161067
 GameObject:
@@ -9712,12 +9744,12 @@ GameObject:
   m_Component:
   - component: {fileID: 802885768}
   m_Layer: 0
-  m_Name: Lab Room
+  m_Name: old Lab Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &802885768
 Transform:
   m_ObjectHideFlags: 0
@@ -9732,7 +9764,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 852957373}
-  m_Father: {fileID: 17950259}
+  m_Father: {fileID: 494471232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &804385440
 GameObject:
@@ -10030,7 +10062,7 @@ GameObject:
   m_Component:
   - component: {fileID: 878345278}
   m_Layer: 0
-  m_Name: Entrance Room
+  m_Name: oldEntrance Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10051,7 +10083,7 @@ Transform:
   m_Children:
   - {fileID: 413350249}
   - {fileID: 548744817}
-  m_Father: {fileID: 17950259}
+  m_Father: {fileID: 494471232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &888685247
 PrefabInstance:
@@ -16336,7 +16368,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1134248214
 Transform:
   m_ObjectHideFlags: 0
@@ -16352,7 +16384,7 @@ Transform:
   m_Children:
   - {fileID: 1175191723}
   - {fileID: 267947240}
-  m_Father: {fileID: 17950259}
+  m_Father: {fileID: 494471232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1150834056
 GameObject:
@@ -27251,12 +27283,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1591601848}
   m_Layer: 0
-  m_Name: Break Room
+  m_Name: old Break Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1591601848
 Transform:
   m_ObjectHideFlags: 0
@@ -27271,7 +27303,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 583746588}
-  m_Father: {fileID: 17950259}
+  m_Father: {fileID: 494471232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1627959820 stripped
 RectTransform:
@@ -30943,12 +30975,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1936275220}
   m_Layer: 0
-  m_Name: Cage Room
+  m_Name: old Cage Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1936275220
 Transform:
   m_ObjectHideFlags: 0
@@ -30964,7 +30996,7 @@ Transform:
   m_Children:
   - {fileID: 1858130670}
   - {fileID: 683328602}
-  m_Father: {fileID: 17950259}
+  m_Father: {fileID: 494471232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1936541109
 PrefabInstance:
