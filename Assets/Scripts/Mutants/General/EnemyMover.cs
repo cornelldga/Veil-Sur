@@ -71,6 +71,7 @@ public class EnemyMover : MonoBehaviour
     protected virtual void Start()
     {
         player = GameManager.PlayerInstance.transform;
+        idlePosition = transform.position;
 
     }
 
@@ -112,6 +113,7 @@ public class EnemyMover : MonoBehaviour
         {
             case EnemySearchlight.AlertState.Idle:
                 agent.SetDestination(idlePosition);
+                Debug.Log(agent.destination);
                 if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
                 {
                     agent.speed = 0;
