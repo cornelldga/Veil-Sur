@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Owl Idle Front
+  m_Name: Owl Far Right
   serializedVersion: 8
   m_Legacy: 0
   m_Compressed: 0
@@ -21,7 +21,7 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 1884447160, guid: e86d126df743d49cf99685b50a3afbe0, type: 3}
+      value: {fileID: 21300000, guid: 02407eb968ccc42fcb16890a0a7573f3, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -45,7 +45,7 @@ AnimationClip:
       isSerializeReferenceCurve: 0
       metaData: 0
     pptrCurveMapping:
-    - {fileID: 1884447160, guid: e86d126df743d49cf99685b50a3afbe0, type: 3}
+    - {fileID: 21300000, guid: 02407eb968ccc42fcb16890a0a7573f3, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
