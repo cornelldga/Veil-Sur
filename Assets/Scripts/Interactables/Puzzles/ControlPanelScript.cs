@@ -1,61 +1,62 @@
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class ControlPanelScript : MonoBehaviour, Interactable
+public class ControlPanelScript : MonoBehaviour, HoldInteractable
 {
     [SerializeField] private PhotographableObject photographableObject;
-    [SerializeField] private TextMeshProUGUI textDisplay;
-    [SerializeField] private float timeAllowedBetweenInteractions = 0.5f;
-    [SerializeField] private int interactionsNeeded = 4;
+    [SerializeField] private TerminalScreen textDisplay;
+    [SerializeField] private Image fillBar;
+    [SerializeField] private float holdTime = 2f;
     [SerializeField] private float disableAfterSeconds = 5f;
-    float timeSinceLastInteraction = 0f;
-    int interactionCount = 0;
-    
+    [SerializeField] private string displayText = "Hold to activate";
+    [SerializeField] private string activatedText = "5162";
+
+    private bool isHolding;
+    private float drainSpeed;
+
+    public float HoldDuration => holdTime;
+    public float HoldProgress => fillBar.fillAmount;
+
     void Start()
     {
         photographableObject.enabled = false;
-        textDisplay.SetText("Interact {0} times to activate", interactionsNeeded - interactionCount);
+        fillBar.fillAmount = 0f;
+        textDisplay.SetText(displayText);
     }
 
-    void Update()   
+    void Update()
     {
-        timeSinceLastInteraction += Time.deltaTime; 
-        if (timeSinceLastInteraction > timeAllowedBetweenInteractions)
+        if (isHolding || fillBar.fillAmount <= 0f) return;
+
+        fillBar.fillAmount = Mathf.MoveTowards(fillBar.fillAmount, 0f, drainSpeed * Time.deltaTime);
+        if (fillBar.fillAmount <= 0f)
         {
-            interactionCount = 0;
-            if (!photographableObject.enabled)
-            {
-                textDisplay.SetText("Interact {0} times to activate", interactionsNeeded - interactionCount);
-            }
+            photographableObject.enabled = false;
+            textDisplay.SetText(displayText);
         }
+    }
+
+    public void OnHoldProgress(float progress)
+    {
+        isHolding = true;
+        fillBar.fillAmount = Mathf.Clamp01(progress);
+    }
+
+    public void OnHoldReleased()
+    {
+        isHolding = false;
+        float duration = photographableObject.enabled
+            ? disableAfterSeconds * fillBar.fillAmount
+            : holdTime * (1f - fillBar.fillAmount);
+
+        drainSpeed = duration > 0f ? fillBar.fillAmount / duration : float.MaxValue;
     }
 
     public void Interact()
     {
-        if (photographableObject.enabled)
-        {
-            return;
-        }
-
-        timeSinceLastInteraction = 0f;
-        interactionCount++;
-        
-        if (interactionCount >= interactionsNeeded)
-        {
-            photographableObject.enabled = true;
-            interactionCount = 0;
-            textDisplay.SetText("5162");
-            StartCoroutine(DisableAfterDelay(disableAfterSeconds));
-        } else 
-        {
-            textDisplay.SetText("Interact {0} times to activate", interactionsNeeded - interactionCount);
-        }
-    }
-
-    private System.Collections.IEnumerator DisableAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        photographableObject.enabled = false;
-        textDisplay.SetText("Interact {0} times to activate", interactionsNeeded - interactionCount);
+        photographableObject.enabled = true;
+        fillBar.fillAmount = 1f;
+        textDisplay.SetText(activatedText);
+        OnHoldReleased();
     }
 }

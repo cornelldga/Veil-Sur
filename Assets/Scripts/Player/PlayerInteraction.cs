@@ -42,6 +42,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         controls.PlayerMovement.Disable();
         SetHighlight(null);
+        ResetHold();
     }
 
     /// <summary>
@@ -123,23 +124,24 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     /// <summary>
-    /// Advances the hold timer while the interact key is held on a HoldInteractable,
-    /// and interacts once the hold duration is reached. The key must be released
+    /// Resumes from the target's progress and advances while interact is held,
+    /// then interacts once the hold duration is reached. The key must be released
     /// before the same hold can trigger again.
     /// </summary>
     /// <param name="holdable">the hold interactable currently being looked at</param>
     private void UpdateHold(HoldInteractable holdable)
     {
-        if (holdable != heldTarget)
-        {
-            ResetHold();
-            heldTarget = holdable;
-        }
-
         if (!controls.PlayerMovement.Interact.IsPressed())
         {
             ResetHold();
             return;
+        }
+
+        if (holdable != heldTarget)
+        {
+            ResetHold();
+            heldTarget = holdable;
+            holdTimer = Mathf.Clamp01(holdable.HoldProgress) * holdable.HoldDuration;
         }
 
         if (holdCompleted) return;
