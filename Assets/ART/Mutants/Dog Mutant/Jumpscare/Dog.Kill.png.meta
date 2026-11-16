@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Dog.Kill_0
+      name: Dog.kill_0
       rect:
         serializedVersion: 2
         x: 0
@@ -112,14 +112,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a61bfaed34c8b409aa973a70d8ed4ca4
-      internalID: 563236054
+      spriteID: ef9a538a336474da2bd3aba8d538c1fb
+      internalID: -940060582
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.Kill_1
+      name: Dog.kill_1
       rect:
         serializedVersion: 2
         x: 1920
@@ -134,14 +134,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 099e2860e3d0241cdb3531964d775a99
-      internalID: 978819451
+      spriteID: 3a4af915072aa476bbb9c818c8acf187
+      internalID: -1907795652
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.Kill_2
+      name: Dog.kill_2
       rect:
         serializedVersion: 2
         x: 3840
@@ -156,14 +156,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5b37ffd15d3534cba987427e7ddc844d
-      internalID: -719035679
+      spriteID: d806e10d6464541e4b9f39d9a70ae35c
+      internalID: -1898766639
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.Kill_3
+      name: Dog.kill_3
       rect:
         serializedVersion: 2
         x: 5760
@@ -178,14 +178,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 009add541d6d44ba089ec72695c3c62c
-      internalID: 222130464
+      spriteID: f212752ee45ee4be5a56618c52552d8c
+      internalID: -875198503
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.Kill_4
+      name: Dog.kill_4
       rect:
         serializedVersion: 2
         x: 7680
@@ -200,14 +200,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0b3916190e74e46b2b0c72ecf12b444b
-      internalID: -2081358363
+      spriteID: 86cfa44ac9eab417e947f070360471d5
+      internalID: -554341647
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.Kill_5
+      name: Dog.kill_5
       rect:
         serializedVersion: 2
         x: 9600
@@ -222,14 +222,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f4cd2561697574002965230846fe7687
-      internalID: 1940749507
+      spriteID: 8ef8d70a16cf5493799accff8632ad47
+      internalID: 2056720882
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.Kill_6
+      name: Dog.kill_6
       rect:
         serializedVersion: 2
         x: 11520
@@ -244,14 +244,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2301abd5f5a564437b4cd227c2a79498
-      internalID: 1847946114
+      spriteID: 683de31aee71144189861114e3f48b99
+      internalID: -1747366938
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dog.Kill_7
+      name: Dog.kill_7
       rect:
         serializedVersion: 2
         x: 13440
@@ -266,8 +266,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 467e625e6747f44bb9e433d817774ef0
-      internalID: -1146593764
+      spriteID: 60b72d97420cf4668a61e5f04cb09601
+      internalID: 1047429254
       vertices: []
       indices: 
       edges: []
@@ -276,7 +276,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e4c6df60ee7864efb9ba0b65e576e29b
+    spriteID: f5ad27946288a406caa1b2ec523cd6bf
     internalID: 0
     vertices: []
     indices: 
@@ -288,14 +288,14 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":1920.0,"y":1080.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Dog.Kill_0: 563236054
-      Dog.Kill_1: 978819451
-      Dog.Kill_2: -719035679
-      Dog.Kill_3: 222130464
-      Dog.Kill_4: -2081358363
-      Dog.Kill_5: 1940749507
-      Dog.Kill_6: 1847946114
-      Dog.Kill_7: -1146593764
+      Dog.kill_0: -940060582
+      Dog.kill_1: -1907795652
+      Dog.kill_2: -1898766639
+      Dog.kill_3: -875198503
+      Dog.kill_4: -554341647
+      Dog.kill_5: 2056720882
+      Dog.kill_6: -1747366938
+      Dog.kill_7: 1047429254
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
