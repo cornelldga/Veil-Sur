@@ -16,6 +16,9 @@ public class PotionCabinet : MonoBehaviour
     }
 
     [Tooltip("Animator on the potion cabinet model with Open and Close triggers. If left empty, it is found in the children on Start.")]
+    [SerializeField] private Animator doorAnimator;
+    [Tooltip("Collider that blocks the cabinet while the doors are not fully open.")]
+    [SerializeField] private BoxCollider doorCollider;
 
     private State _state;
     private State state
