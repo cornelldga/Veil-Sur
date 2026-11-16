@@ -80,7 +80,7 @@ public class EnemyMover : MonoBehaviour
         if (isCollidingPlayer && 
         searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
         {
-            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound);
+            GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound, gameObject);
         }
 
         EnemySearchlight.AlertState state = searchlight.CurrentState;
@@ -257,7 +257,7 @@ public class EnemyMover : MonoBehaviour
             isCollidingPlayer = true;
             if (searchlight.CurrentState != EnemySearchlight.AlertState.Stun)
             {
-                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound);
+                GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound, gameObject);
             }
         }
     }
