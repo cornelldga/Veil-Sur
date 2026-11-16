@@ -18,6 +18,7 @@ public class SaveTerminal : MonoBehaviour, HoldInteractable
     [SerializeField] private AudioClip saveSound;
 
     public float HoldDuration => holdDuration;
+    public float HoldProgress => 0f;
 
     public void OnHoldProgress(float progress)
     {
