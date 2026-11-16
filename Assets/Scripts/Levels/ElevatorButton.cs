@@ -12,6 +12,8 @@ public class ElevatorButton : PuzzleInteractable
     [SerializeField] private ElevatorController elevator;
     [Tooltip("Direction this button queues. Nothing happens if there is no floor that way.")]
     [SerializeField] private ElevatorDirection direction;
+    [Tooltip("Button SFX when elevator is called")]
+    [SerializeField] private AudioClip buttonSound;
 
     /// <summary>
     /// Queues the floor in this button's direction. QueueFloor returns false
@@ -22,6 +24,7 @@ public class ElevatorButton : PuzzleInteractable
         if (elevator != null)
         {
             elevator.QueueFloor(direction);
+            AudioManager.Instance.PlaySfxAtPosition(buttonSound, transform.position);
         }
     }
 

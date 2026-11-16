@@ -251,7 +251,8 @@ public class NotebookUIController : SoundEvent
         question.Solved -= OnQuestionSolved;
         foreach (var futureQuestion in question.FutureQuestions)
         {
-            QueueUnlockedQuestion(futureQuestion, questionPages[futureQuestion]);
+            QueueUnlockedQuestion(futureQuestion, question.Placement == QuestionDefinition.PagePlacement.AuthoredPage ? questionPages[futureQuestion] : pages[CurrentPageIndex]);
+            // QueueUnlockedQuestion(futureQuestion, pages[CurrentPageIndex]);
         }
         ShowPendingQuestions();
         RefreshPageFeedback();
@@ -264,8 +265,13 @@ public class NotebookUIController : SoundEvent
 
     private void ShowPendingQuestions(NotebookPage page)
     {
-        while (page.pendingQuestions.Count > 0 && ShowQuestion(page.pendingQuestions.Peek()))
-            page.pendingQuestions.Dequeue();
+        // A question waiting for one visual size must not block other sizes.
+        int pendingCount = page.pendingQuestions.Count;
+        for (int i = 0; i < pendingCount; i++)
+        {
+            var question = page.pendingQuestions.Dequeue();
+            if (!ShowQuestion(question)) page.pendingQuestions.Enqueue(question);
+        }
     }
 
     private void OnPuzzleInteracted(PuzzleInteractable puzzle)
@@ -317,17 +323,17 @@ public class NotebookUIController : SoundEvent
         ShowPendingQuestions(pages[page]);
     }
 
-    /// <summary>Reveals an empty view first, then reuses a solved one. Returns false when all slots are in use.</summary>
+    /// <summary>Reveals an empty matching view first, then reuses a solved matching view.</summary>
     /// <param name="question">Question to show on the page it belongs to.</param>
-    /// <returns>False if that page has no free or solved slot; otherwise true.</returns>
+    /// <returns>False if that page has no free or solved visual with the required slot count; otherwise true.</returns>
     public bool ShowQuestion(QuestionDefinition question)
     {
         var page = questionPages[question];
         var questionSlots = page.questionSlots;
         if (question.IsCorrect || questionSlots.Any(view => view != null && view.Definition == question)) return true;
 
-        var slot = questionSlots.FirstOrDefault(view => view != null && view.Definition == null)
-            ?? questionSlots.FirstOrDefault(view => view != null && view.IsCorrect);
+        var slot = questionSlots.FirstOrDefault(view => view != null && view.SlotCount == question.SlotCount && view.Definition == null)
+            ?? questionSlots.FirstOrDefault(view => view != null && view.SlotCount == question.SlotCount && view.IsCorrect);
         if (slot == null) return false;
 
         question.Solved += OnQuestionSolved;

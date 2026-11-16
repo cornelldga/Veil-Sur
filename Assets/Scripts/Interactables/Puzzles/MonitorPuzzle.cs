@@ -79,7 +79,8 @@ public class MonitorPuzzle : PuzzleInteractable
             return;
         }
 
-        ErrorNotifier.Show($"1 active, {inactiveCount} inactive (replace with normal popup rather than error later)");
+        // ErrorNotifier.Show($"1 active, {inactiveCount} inactive (replace with normal popup rather than error later)");
+        Access();
     }
 
     public override void FailBehavior()

@@ -218,6 +218,10 @@ PrefabInstance:
       propertyPath: eyeHeight
       value: 0.4
       objectReference: {fileID: 0}
+    - target: {fileID: 2144063137804506192, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
+      propertyPath: idleSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 58bc504aa93206b48939334fd3242e2a, type: 3}
     - target: {fileID: 4518189308850699757, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -236,15 +240,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.68
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.27
+      value: 1.67
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -33.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6729979933643099939, guid: 361c5c10384cd404eb0e46abba80abfd, type: 3}
       propertyPath: m_LocalRotation.w

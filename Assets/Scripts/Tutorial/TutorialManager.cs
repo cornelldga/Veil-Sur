@@ -3,15 +3,22 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 /// <summary>
 /// Shows a tutorial prompt at a time 
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
-    private TMP_Text promptText;
-    
+    [Tooltip("Text that displays the current tutorial prompt")]
+    [SerializeField] private TMP_Text promptText;
+
+    [Tooltip("background color")]
+    [SerializeField] private Color backgroundColor = Color.white;
+    [Tooltip("padding")]
+    [SerializeField] private Vector4 backgroundPadding = new(16f, 16f, 8f, 8f);
+    [Tooltip("highlight color behind key names")]
+    [SerializeField] private Color keyHighlightColor = new(0.9f, 0.5f, 0.1f, 1f);
+
     [Tooltip("Seconds for the prompt to fade in or out")]
     [SerializeField] private float fadeDuration = 0.4f;
     [Tooltip("How far it moves up and down")]
@@ -57,16 +64,28 @@ public class TutorialManager : MonoBehaviour
             case 21: return "Close your notebook.";
             // Maybe in the above ^ prompt we'll include a picture of the interact icon.
             // Pause isn't an input action (GameManager reads the ESC key directly), so it can't be looked up like the others.
-            case 22: return "You can always pause by pressing <mark=#FFFFFF18 padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
+            case 22: return $"You can always pause by pressing <mark={KeyMarkHex} padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
 
             default: return "";
         }
     }
 
+    private string KeyMarkHex => "#" + ColorUtility.ToHtmlStringRGBA(keyHighlightColor);
+    private string BackgroundMarkHex => "#" + ColorUtility.ToHtmlStringRGBA(backgroundColor);
+
+    /// <summary>
+    /// whole prompt with background color and padding
+    /// </summary>
+    private string WrapWithBackground(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        return $"<mark={BackgroundMarkHex} padding=\"{backgroundPadding.x},{backgroundPadding.y},{backgroundPadding.z},{backgroundPadding.w}\">{text}</mark>";
+    }
+
     /// <summary>
     /// Readable name of the key(s) currently bound to an action, from the shared (rebindable) controls.
     /// </summary>
-    private static string KeyName(InputAction action)
+    private string KeyName(InputAction action)
     {
         var parts = new List<string>();
 
@@ -87,9 +106,9 @@ public class TutorialManager : MonoBehaviour
 
         // Several bindings on one action (e.g. duplicate defaults) shouldn't repeat the same name.
         parts = parts.Distinct().ToList();
-        // Highlight the whole key list (separators included) with a 15% opacity white box (TMP rich text).
+        // Highlight the whole key list (separators included) with the key-highlight color (TMP rich text).
         string keys = parts.Count == 0 ? "[unbound]" : string.Join(parts.Count == 4 ? "/" : " or ", parts);
-        return $"<mark=#FFFFFF18 padding=\"6,6,1,1\">{keys}</mark>";
+        return $"<mark={KeyMarkHex} padding=\"6,6,1,1\">{keys}</mark>";
     }
 
     private int step;
@@ -102,6 +121,9 @@ public class TutorialManager : MonoBehaviour
     private bool tutorialStarted;
     private bool uploadClicked;
     private PlayerState playerState;
+
+    [Tooltip("y position the tutorial prompt moves to when notebook open")]
+    [SerializeField] private float notebookOpenY = 350f;
 
     /// <summary>
     /// how other scripts can reach the tutorial (null in levels without one)
@@ -151,19 +173,17 @@ public class TutorialManager : MonoBehaviour
         Instance = this;
         // Shared instance, so the player's rebinds apply. Other scripts own its enable/disable state.
         controls = GameManager.Controls;
-    }
-
-    private void Start()
-    {
-        promptText = UIManager.Instance.tutorialText;
         // The prompt is display-only; don't let it swallow clicks meant for UI underneath it (e.g. the notebook's page arrow).
         promptText.raycastTarget = false;
         promptRect = promptText.rectTransform;
         basePosition = promptRect.anchoredPosition;
+    }
+
+    private void Start()
+    {
         playerState = GameManager.PlayerInstance.GetComponent<PlayerState>();
         promptText.text = "";
         promptText.alpha = 0f;
-        promptText.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -179,7 +199,6 @@ public class TutorialManager : MonoBehaviour
             {
                 tutorialStarted = true;
                 photoCountAtStepStart = PhotoStorage.Instance.GetTotalOwnedPhotoCount();
-                promptText.gameObject.SetActive(true);
             }
             else
             {
@@ -223,7 +242,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     /// <summary>
-    /// true once every visible question is solved or has all its photo slots filled, which enables upload
+    /// true once every visible question slot in the notebook has a photo, which is what enables upload
     /// </summary>
     private static bool AllQuestionSlotsFilled()
     {
@@ -234,7 +253,7 @@ public class TutorialManager : MonoBehaviour
         {
             if (slot == null || !slot.isActiveAndEnabled || slot.Definition == null) continue;
             hasQuestions = true;
-            if (!slot.IsCorrect && !slot.AllPhotoSlotsFilled) return false;
+            if (!slot.AllPhotoSlotsFilled) return false;
         }
         return hasQuestions;
     }
@@ -271,7 +290,7 @@ public class TutorialManager : MonoBehaviour
             case 13: return state != GameManager.GameState.NOTEBOOK;
             case 14: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && UIManager.Instance.interact.gameObject.activeSelf &&
                 playerState.GetLookTarget() is PlantInteraction;
-            case 15: return controls.PlayerMovement.Interact.WasPerformedThisFrame() && playerState.GetDocOpen();
+            case 15: return playerState.GetDocOpen();
             case 16: return playerState.GetDocOpen() && PhotoStorage.Instance.GetTotalOwnedPhotoCount() > photoCountAtStepStart;
             case 17: return state == GameManager.GameState.NOTEBOOK;
             case 18: return AllQuestionSlotsFilled();
@@ -290,7 +309,7 @@ public class TutorialManager : MonoBehaviour
     /// </summary>
     private void UpdatePromptFade()
     {
-        string wantedText = step < PromptCount ? GetPrompt(step) : "";
+        string wantedText = step < PromptCount ? WrapWithBackground(GetPrompt(step)) : "";
         float fadeStep = Time.unscaledDeltaTime / fadeDuration;
 
         if (promptText.text != wantedText)
@@ -313,8 +332,13 @@ public class TutorialManager : MonoBehaviour
     /// </summary>
     private void MoveUpandDown()
     {
+        bool notebookOpen = GameManager.Instance.state == GameManager.GameState.NOTEBOOK;
+        // Opening the notebook moves it to the top of the canvas (NotebookController), which would cover the prompt, so stay above it.
+        if (notebookOpen && transform.parent != null && transform.GetSiblingIndex() != transform.parent.childCount - 1)
+            transform.SetAsLastSibling();
+        float y = notebookOpen ? notebookOpenY : basePosition.y;
         float offset = Mathf.Sin(Time.unscaledTime * moveSpeed * Mathf.PI * 2f) * amplitude;
-        promptRect.anchoredPosition = basePosition + new Vector2(0f, offset);
+        promptRect.anchoredPosition = new Vector2(basePosition.x, y) + new Vector2(0f, offset);
     }
 
 }

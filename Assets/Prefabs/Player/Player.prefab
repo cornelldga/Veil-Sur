@@ -65,7 +65,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.2
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -237,6 +237,8 @@ MonoBehaviour:
   mouseSens: 0.15
   minLookDown: -85
   maxLookUp: 85
+  cameraStandHeight: 1.65
+  cameraCrouchHeight: 0.75
   standHeight: 1.65
   crouchHeight: 0.75
   crouchTransitionSpeed: 15
@@ -277,7 +279,6 @@ MonoBehaviour:
   shutterDelay: 0.1
   detectRadius: 20
   stunRadius: 30
-  maxRadius: 17.5
   coneAngle: 60
   targetMask:
     serializedVersion: 2
@@ -354,6 +355,8 @@ MonoBehaviour:
   maxStamina: 100
   staminaDrain: 25
   staminaRegen: 45
+  exhaustClip: {fileID: 8300000, guid: 60e1ad60dc64f48a79f5a677644369a9, type: 3}
+  exhaustVolume: 0.8
 --- !u!114 &3314498800505621458
 MonoBehaviour:
   m_ObjectHideFlags: 0

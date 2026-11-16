@@ -122,7 +122,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6789889644223272605, guid: d067728027c7f424b9908d338093eaaf, type: 3}
       propertyPath: m_margin.x
-      value: -4.352722
+      value: -1.4715576
       objectReference: {fileID: 0}
     - target: {fileID: 6789889644223272605, guid: d067728027c7f424b9908d338093eaaf, type: 3}
       propertyPath: m_margin.y

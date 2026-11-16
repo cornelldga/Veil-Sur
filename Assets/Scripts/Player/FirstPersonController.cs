@@ -3,6 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Drives first-person control through CharacterController
 /// </summary>
+[DefaultExecutionOrder(-100)] // runs before the other Player scripts so a spawn-point copy can switch off before they set up
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerState))]
 [RequireComponent(typeof(StaminaController))]
@@ -19,6 +20,12 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float mouseSens = 0.15f;
     [SerializeField] private float minLookDown = -85f;
     [SerializeField] private float maxLookUp = 85f;
+
+    [Header("Camera Height")]
+    [Tooltip("Camera local Y position while standing, independent of collider height.")]
+    [SerializeField] private float cameraStandHeight = 1.8f;
+    [Tooltip("Camera local Y position while crouching, independent of collider height.")]
+    [SerializeField] private float cameraCrouchHeight = .75f;
 
     [Header("Crouch")]
     [SerializeField] private float standHeight = 1.8f;
@@ -48,8 +55,6 @@ public class FirstPersonController : MonoBehaviour
     private float verticalLookClamped;
     private float verticalVelocity;
     private float currentHeight;
-    private Vector3 cameraStandLocalPos;
-    private Vector3 cameraCrouchLocalPos;
     private bool isSprinting;
 
     public Camera playerCamera;
@@ -70,11 +75,28 @@ public class FirstPersonController : MonoBehaviour
     private void Start()
     {
         // Moved this to a Start() function 
-        Level.current_level.player = gameObject;
+        if (Level.current_level != null) Level.current_level.player = gameObject;
     }
 
     private void Awake()
     {
+        // The Player is kept between levels. This level's Player is just the spawn point:
+        // move the kept Player here and remove this one.
+        GameObject kept = GameManager.PlayerInstance;
+        if (kept != null && kept != gameObject)
+        {
+            gameObject.SetActive(false);
+            CharacterController keptController = kept.GetComponent<CharacterController>();
+            keptController.enabled = false;
+            kept.transform.position = transform.position;
+            keptController.enabled = true;
+            Destroy(gameObject);
+            return;
+        }
+
+        // Keep the Player alive when a new level loads
+        DontDestroyOnLoad(gameObject);
+
         controller = GetComponent<CharacterController>();
         // controls = new PlayerControls();
         //switch to this for key binds
@@ -86,13 +108,10 @@ public class FirstPersonController : MonoBehaviour
         currentHeight = standHeight;
         controller.height = standHeight;
 
-        cameraStandLocalPos = new Vector3(0f, standHeight, 0f);
-        cameraCrouchLocalPos = new Vector3(0f, crouchHeight, 0f);
-
         playerCamera = Camera.main;
         if (playerCamera != null)
         {
-            playerCamera.transform.localPosition = cameraStandLocalPos;
+            playerCamera.transform.localPosition = new Vector3(0f, cameraStandHeight, 0f);
             normalFOV = playerCamera.fieldOfView;
         }
 
@@ -272,8 +291,11 @@ public class FirstPersonController : MonoBehaviour
 
         if (playerCamera != null)
         {
-            Vector3 targetCamPos = Vector3.Lerp(cameraCrouchLocalPos, cameraStandLocalPos,
-                (currentHeight - crouchHeight) / (standHeight - crouchHeight));
+            float standingAmount = Mathf.Approximately(standHeight, crouchHeight)
+                ? (crouchHeld ? 0f : 1f)
+                : Mathf.InverseLerp(crouchHeight, standHeight, currentHeight);
+            Vector3 targetCamPos = new Vector3(0f,
+                Mathf.Lerp(cameraCrouchHeight, cameraStandHeight, standingAmount), 0f);
             playerCamera.transform.localPosition = Vector3.Lerp(
                 playerCamera.transform.localPosition, targetCamPos, crouchTransitionSpeed * Time.deltaTime);
         }

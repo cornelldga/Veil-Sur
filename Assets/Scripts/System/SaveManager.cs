@@ -70,12 +70,13 @@ public class SaveManager : MonoBehaviour
 
         data.sceneName = GameManager.Instance.CurrentLevelName();
 
-        if (Level.current_level.player != null)
+        GameObject player = GameManager.PlayerInstance;
+        if (player != null)
         {
-            data.playerPosition = Level.current_level.player.transform.position;
-            data.playerRotation = Level.current_level.player.transform.rotation;
+            data.playerPosition = player.transform.position;
+            data.playerRotation = player.transform.rotation;
 
-            FirstPersonController fpc = Level.current_level.player.GetComponent<FirstPersonController>();
+            FirstPersonController fpc = player.GetComponent<FirstPersonController>();
             if (fpc != null) data.cameraVerticalLook = fpc.VerticalLook;
         }
 
@@ -158,13 +159,14 @@ public class SaveManager : MonoBehaviour
         if (!await GameManager.Instance.LoadSceneAsync(data.sceneName))
             return;
 
-        // load player first
-        Level.current_level.player.SetActive(false);
-        Level.current_level.player.transform.position = data.playerPosition;
-        Level.current_level.player.transform.rotation = data.playerRotation;
-        Level.current_level.player.SetActive(true);
+        // load player first (the Player is kept between levels)
+        GameObject player = GameManager.PlayerInstance;
+        player.SetActive(false);
+        player.transform.position = data.playerPosition;
+        player.transform.rotation = data.playerRotation;
+        player.SetActive(true);
 
-        FirstPersonController fpc = Level.current_level.player.GetComponent<FirstPersonController>();
+        FirstPersonController fpc = player.GetComponent<FirstPersonController>();
         if (fpc != null) fpc.SetVerticalLook(data.cameraVerticalLook);
 
         // load photos
