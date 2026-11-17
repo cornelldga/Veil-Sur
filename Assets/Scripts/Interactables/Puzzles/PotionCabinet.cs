@@ -21,9 +21,11 @@ public class PotionCabinet : MonoBehaviour, Interactable
     /// </summary>
     public void Interact()
     {
+        Debug.Log($"[PotionCabinet] Interact called. animator={(doorAnimator != null ? doorAnimator.name : "NULL")}", this);
         if (doorAnimator == null || doorAnimator.IsInTransition(0)) return;
 
         AnimatorStateInfo info = doorAnimator.GetCurrentAnimatorStateInfo(0);
+        Debug.Log($"[PotionCabinet] Interact. animator on '{doorAnimator.gameObject.name}', enabled={doorAnimator.enabled}, Closed={info.IsName("Closed")}, Door_Open={info.IsName("Door_Open")}, t={info.normalizedTime:F2}", this);
 
         if (info.IsName("Closed"))
         {
