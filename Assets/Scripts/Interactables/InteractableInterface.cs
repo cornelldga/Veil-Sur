@@ -9,6 +9,18 @@ public interface Interactable
 }
 
 /// <summary>
+/// Optional. Lets an Interactable glow a different object (e.g. a child mesh)
+/// instead of everything under the object that holds the Interactable script.
+/// </summary>
+public interface IHighlightOverride
+{
+    /// <summary>
+    /// The object whose renderers should glow, or null to use the default.
+    /// </summary>
+    GameObject HighlightObject { get; }
+}
+
+/// <summary>
 /// An interactable that requires the interact key to be held down. Interact()
 /// is called once the key has been held for HoldDuration seconds.
 /// </summary>

@@ -111,8 +111,13 @@ public class PlayerInteraction : MonoBehaviour
         InteractableHighlight next = null;
         if (target is Component c)
         {
-            next = c.GetComponent<InteractableHighlight>();
-            if (next == null) next = c.gameObject.AddComponent<InteractableHighlight>();
+            GameObject host = c.gameObject;
+            if (target is IHighlightOverride over && over.HighlightObject != null)
+            {
+                host = over.HighlightObject;
+            }
+            next = host.GetComponent<InteractableHighlight>();
+            if (next == null) next = host.AddComponent<InteractableHighlight>();
         }
 
         if (next == currentHighlight) return;

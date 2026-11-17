@@ -1214,15 +1214,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
       insertIndex: -1
       addedObject: {fileID: 149669390}
-    - targetCorrespondingSourceObject: {fileID: 5148817236446094103, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1457214261}
-    - targetCorrespondingSourceObject: {fileID: 5148817236446094103, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1457214260}
-    - targetCorrespondingSourceObject: {fileID: 5148817236446094103, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1457214262}
   m_SourcePrefab: {fileID: 100100000, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
 --- !u!4 &149669384 stripped
 Transform:
@@ -1253,8 +1244,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0094237, y: 2.0230975, z: 0.93502194}
-  m_Center: {x: -0.0047120727, y: 0.98688096, z: -0.29139724}
+  m_Size: {x: 1.0094237, y: 2.0345783, z: 0.9350219}
+  m_Center: {x: -0.004712072, y: 0.9926211, z: -0.29139724}
 --- !u!95 &149669389
 Animator:
   serializedVersion: 7
@@ -1284,12 +1275,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 149669385}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f4ddf766d7f2e046a4b337b7c0be49a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PotionCabinet
   doorAnimator: {fileID: 149669389}
+  highlightObject: {fileID: 1457214256}
 --- !u!1 &176324364
 GameObject:
   m_ObjectHideFlags: 0
@@ -25621,62 +25613,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5148817236446094103, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
   m_PrefabInstance: {fileID: 149669383}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1457214260
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1457214256}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f4ddf766d7f2e046a4b337b7c0be49a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PotionCabinet
-  doorAnimator: {fileID: 1457214261}
---- !u!95 &1457214261
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1457214256}
-  m_Enabled: 0
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f5e259bcd621be544aae34beac95e01a, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!65 &1457214262
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1457214256}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 0.009256884, y: 0.0011335098, z: 0.013507015}
-  m_Center: {x: 0.004628458, y: -0.00025026192, z: 0.0002917354}
 --- !u!1 &1457889730
 GameObject:
   m_ObjectHideFlags: 0

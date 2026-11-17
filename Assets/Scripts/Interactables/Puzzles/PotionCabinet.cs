@@ -3,10 +3,15 @@ using UnityEngine;
 /// <summary>
 /// Potion cabinet that opens and closes its doors each time the Player interacts with it.
 /// </summary>
-public class PotionCabinet : MonoBehaviour, Interactable
+public class PotionCabinet : MonoBehaviour, Interactable, IHighlightOverride
 {
     [Tooltip("Animator on the potion cabinet model with Open and Close triggers.")]
     [SerializeField] private Animator doorAnimator;
+
+    [Tooltip("Object that glows when looked at (the Door child). Leave empty to glow the whole cabinet.")]
+    [SerializeField] private GameObject highlightObject;
+
+    public GameObject HighlightObject => highlightObject;
 
     private void Start()
     {
@@ -21,11 +26,9 @@ public class PotionCabinet : MonoBehaviour, Interactable
     /// </summary>
     public void Interact()
     {
-        Debug.Log($"[PotionCabinet] Interact called. animator={(doorAnimator != null ? doorAnimator.name : "NULL")}", this);
         if (doorAnimator == null || doorAnimator.IsInTransition(0)) return;
 
         AnimatorStateInfo info = doorAnimator.GetCurrentAnimatorStateInfo(0);
-        Debug.Log($"[PotionCabinet] Interact. animator on '{doorAnimator.gameObject.name}', enabled={doorAnimator.enabled}, Closed={info.IsName("Closed")}, Door_Open={info.IsName("Door_Open")}, t={info.normalizedTime:F2}", this);
 
         if (info.IsName("Closed"))
         {
