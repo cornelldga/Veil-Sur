@@ -1181,13 +1181,37 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -7146521406498821007, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -516098083770646512, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
       propertyPath: m_Name
       value: potion_cabinet
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 5148817236446094103, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
       propertyPath: m_Name
       value: Plane.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148817236446094103, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8416272007918961125, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7760,19 +7784,19 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 878345278}
+    m_TransformParent: {fileID: 989489084}
     m_Modifications:
     - target: {fileID: 1103956441043280053, guid: 47f4e871dd1fa63458f09b18ff1cd868, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.544
+      value: 1.9999802
       objectReference: {fileID: 0}
     - target: {fileID: 1103956441043280053, guid: 47f4e871dd1fa63458f09b18ff1cd868, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0.15673018
       objectReference: {fileID: 0}
     - target: {fileID: 1103956441043280053, guid: 47f4e871dd1fa63458f09b18ff1cd868, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.133
+      value: -3.06
       objectReference: {fileID: 0}
     - target: {fileID: 1103956441043280053, guid: 47f4e871dd1fa63458f09b18ff1cd868, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7780,15 +7804,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1103956441043280053, guid: 47f4e871dd1fa63458f09b18ff1cd868, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1103956441043280053, guid: 47f4e871dd1fa63458f09b18ff1cd868, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1103956441043280053, guid: 47f4e871dd1fa63458f09b18ff1cd868, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1103956441043280053, guid: 47f4e871dd1fa63458f09b18ff1cd868, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -10811,6 +10835,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bc97efb5c9f0214f83658c06103a1f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1176272081}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bc97efb5c9f0214f83658c06103a1f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1176272082}
   m_SourcePrefab: {fileID: 100100000, guid: 5bc97efb5c9f0214f83658c06103a1f0, type: 3}
 --- !u!4 &697499543 stripped
 Transform:
@@ -11569,7 +11596,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 413350249}
-  - {fileID: 548744817}
   m_Father: {fileID: 494471232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &888685247
@@ -14964,6 +14990,7 @@ Transform:
   - {fileID: 1716681605}
   - {fileID: 1095364447}
   - {fileID: 2130517731}
+  - {fileID: 548744817}
   m_Father: {fileID: 286408027}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1000642172
@@ -18503,6 +18530,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
   subjectId: redPotion
+--- !u!64 &1176272082
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176272078}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3163171260390484736, guid: 5bc97efb5c9f0214f83658c06103a1f0, type: 3}
 --- !u!1 &1186306618
 GameObject:
   m_ObjectHideFlags: 0
@@ -23664,6 +23713,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2134026381}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2134026382}
   m_SourcePrefab: {fileID: 100100000, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
 --- !u!1 &1409248141
 GameObject:
@@ -28805,11 +28857,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: debugSolve
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireIDs
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: questionText
@@ -28817,11 +28869,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireAllIDs
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireAllObjects
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: futureQuestions.Array.size
@@ -28837,7 +28889,7 @@ PrefabInstance:
       objectReference: {fileID: 2069327147}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requiredSubjectIds.Array.size
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'required_objects.Array.data[0]'
@@ -33221,6 +33273,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 80a101a0dbfb7e64f9d2a34f923aa6fa, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1868195426}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 80a101a0dbfb7e64f9d2a34f923aa6fa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1868195427}
   m_SourcePrefab: {fileID: 100100000, guid: 80a101a0dbfb7e64f9d2a34f923aa6fa, type: 3}
 --- !u!4 &1868195423 stripped
 Transform:
@@ -33240,6 +33295,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
   subjectId: greenPotion
+--- !u!64 &1868195427
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328905301}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6239881831769578202, guid: 80a101a0dbfb7e64f9d2a34f923aa6fa, type: 3}
 --- !u!1001 &1901038679
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38598,6 +38675,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
   subjectId: bluePotion
+--- !u!64 &2134026382
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845583328}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7387706064836869012, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
 --- !u!1001 &3531868281478124999
 PrefabInstance:
   m_ObjectHideFlags: 0
