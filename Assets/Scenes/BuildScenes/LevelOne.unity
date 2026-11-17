@@ -38847,13 +38847,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monitor
       objectReference: {fileID: 0}
+    - target: {fileID: 3035953793934675408, guid: 54226feaa49e940e099abd49e833b1c6, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.4395
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035953793934675408, guid: 54226feaa49e940e099abd49e833b1c6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.278
+      objectReference: {fileID: 0}
     - target: {fileID: 3103505370201800098, guid: 54226feaa49e940e099abd49e833b1c6, type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1346096817}
     - target: {fileID: 3103505370201800098, guid: 54226feaa49e940e099abd49e833b1c6, type: 3}
       propertyPath: m_VersionIndex
-      value: 119
+      value: 179
       objectReference: {fileID: 0}
     - target: {fileID: 3167418225272662629, guid: 54226feaa49e940e099abd49e833b1c6, type: 3}
       propertyPath: m_LocalPosition.x
