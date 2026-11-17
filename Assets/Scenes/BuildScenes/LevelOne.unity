@@ -1200,10 +1200,10 @@ PrefabInstance:
       addedObject: {fileID: 697499543}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2134026378}
+      addedObject: {fileID: 1861794306}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1861794306}
+      addedObject: {fileID: 2134026378}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 477857a3db7aee448af5eaea3d339656, type: 3}
       insertIndex: -1
@@ -10807,7 +10807,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bc97efb5c9f0214f83658c06103a1f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1176272081}
   m_SourcePrefab: {fileID: 100100000, guid: 5bc97efb5c9f0214f83658c06103a1f0, type: 3}
 --- !u!4 &697499543 stripped
 Transform:
@@ -18482,6 +18485,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2192988105589541080, guid: 1b36787f488568a45b14faa6536131da, type: 3}
   m_PrefabInstance: {fileID: 61531587}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1176272078 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bc97efb5c9f0214f83658c06103a1f0, type: 3}
+  m_PrefabInstance: {fileID: 697499542}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1176272081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176272078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
+  subjectId: redPotion
 --- !u!1 &1186306618
 GameObject:
   m_ObjectHideFlags: 0
@@ -21690,6 +21711,11 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &1328905301 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 80a101a0dbfb7e64f9d2a34f923aa6fa, type: 3}
+  m_PrefabInstance: {fileID: 1868195422}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1338035137
 GameObject:
   m_ObjectHideFlags: 0
@@ -23589,7 +23615,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.6249
+      value: 0.1566
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
       propertyPath: m_LocalPosition.z
@@ -23634,7 +23660,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2134026381}
   m_SourcePrefab: {fileID: 100100000, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
 --- !u!1 &1409248141
 GameObject:
@@ -28780,7 +28809,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireIDs
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: questionText
@@ -28788,7 +28817,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireAllIDs
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireAllObjects
@@ -28800,7 +28829,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: required_objects.Array.size
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'futureQuestions.Array.data[0]'
@@ -28808,23 +28837,35 @@ PrefabInstance:
       objectReference: {fileID: 2069327147}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requiredSubjectIds.Array.size
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'required_objects.Array.data[0]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1868195426}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'required_objects.Array.data[1]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1176272081}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: 'required_objects.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2134026381}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: requireAllPrerequisiteQuestions
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: 'requiredSubjectIds.Array.data[0]'
-      value: DogMutant
+      value: greenPotion
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: 'requiredSubjectIds.Array.data[1]'
+      value: bluePotion
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898255821070414225, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
+      propertyPath: 'requiredSubjectIds.Array.data[2]'
+      value: redPotion
       objectReference: {fileID: 0}
     - target: {fileID: 4200086836180689366, guid: 43f055e18611d41299eaede6da1fb1ff, type: 3}
       propertyPath: m_Name
@@ -31760,6 +31801,11 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &1845583328 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
+  m_PrefabInstance: {fileID: 1403861821}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1851051521
 GameObject:
   m_ObjectHideFlags: 0
@@ -33171,13 +33217,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 80a101a0dbfb7e64f9d2a34f923aa6fa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1868195426}
   m_SourcePrefab: {fileID: 100100000, guid: 80a101a0dbfb7e64f9d2a34f923aa6fa, type: 3}
 --- !u!4 &1868195423 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 80a101a0dbfb7e64f9d2a34f923aa6fa, type: 3}
   m_PrefabInstance: {fileID: 1868195422}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1868195426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328905301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
+  subjectId: greenPotion
 --- !u!1001 &1901038679
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36883,7 +36945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 75f0c62a9c4217044bbffd548af2805b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.1566
+      value: 0.6249
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 75f0c62a9c4217044bbffd548af2805b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -38523,6 +38585,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cfe6a08da2d6bdb4685f22b71a614c91, type: 3}
   m_PrefabInstance: {fileID: 1403861821}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2134026381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845583328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca7e08d520c58f40937c8f48d4dc48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotographableObject
+  subjectId: bluePotion
 --- !u!1001 &3531868281478124999
 PrefabInstance:
   m_ObjectHideFlags: 0
