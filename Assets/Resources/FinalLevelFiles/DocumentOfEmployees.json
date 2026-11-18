@@ -1,0 +1,22 @@
+{
+  "lines": [
+    "<size=60%><u>Main Scientists</u></size>",
+    "<color=#696969><size=35%><i>Payroll - Fiscal Year 2087 - CONFIDENTIAL</i></size></color>",
+    "<size=40%>",
+    "<b>Name<pos=40%>Position<pos=78%>Salary</b>",
+    "",
+    "Dr. Mosk<pos=40%>Lead Scientist<pos=78%>$142,000",
+    "",
+    "Dr. Bosquez<pos=40%>Neuroscientist<pos=78%>$118,500",
+    "",
+    "Dr. Zimmerman<pos=40%>Biochemist<pos=78%>$112,000",
+    "",
+    "Dr. Black<pos=40%>Surgeon<pos=78%>$127,250",
+    "",
+    "John Carmack<pos=40%>Systems Eng.<pos=78%>$98,000",
+    "",
+    "<b>Total<pos=78%>$597,750</b>",
+    "",
+    "<color=#696969><i>Bonuses for Project RAT staff pending results.</i></color></size>"
+  ]
+}
