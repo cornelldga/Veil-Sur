@@ -193,6 +193,10 @@ MonoBehaviour:
   lobbyMusic: {fileID: 8300000, guid: 15fa748d12eb64188ab39c63581a6253, type: 3}
   levelOneAmbience: {fileID: 8300000, guid: 7132bdf75a9964f13b3a6840b490e044, type: 3}
   titleSceneName: TitleScreen
+  minTextScale: 0.75
+  maxTextScale: 1.05
+  debugMode: 1
+  reloadKey: 39
   losePanel: {fileID: 4679233136749169115}
   currentSceneName: 
 --- !u!114 &7000000000000000001
@@ -860,6 +864,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7450253034250995934}
     m_Modifications:
+    - target: {fileID: 546930251723931703, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_margin.x
+      value: 8.953857
+      objectReference: {fileID: 0}
+    - target: {fileID: 3587451472995090732, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3587451472995090732, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4753256464433304071, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
       propertyPath: m_Name
       value: Question1
@@ -960,13 +976,54 @@ PrefabInstance:
       propertyPath: m_Name
       value: UICanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 7382856903343906501, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 7382856903343906501, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 502
+      objectReference: {fileID: 0}
     - target: {fileID: 7952118862770769384, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
       propertyPath: rule
       value: 
       objectReference: {fileID: 11400000, guid: e6f5bd8f3a5704c0fac070d2709240e1, type: 2}
+    - target: {fileID: 8815186615307013559, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_text
+      value: I'VE LOADED A FEW OF THE BASICS INTO YOUR HEAD FOR A QUICK SYSTEMS CHECK.
+        GET TO WORK
+      objectReference: {fileID: 0}
+    - target: {fileID: 8815186615307013559, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_margin.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9031140940237842476, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
       propertyPath: m_text
       value: "<b>\xA7</b> What is the elevator code?"
+      objectReference: {fileID: 0}
+    - target: {fileID: 9087392324226403560, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9087392324226403560, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_Pivot.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9087392324226403560, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 929.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9087392324226403560, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 103.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 9087392324226403560, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -527.2999
+      objectReference: {fileID: 0}
+    - target: {fileID: 9087392324226403560, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 9.130188
       objectReference: {fileID: 0}
     - target: {fileID: 9187735233016442674, guid: d24fe17c0e964c44db219b4abf21ace3, type: 3}
       propertyPath: m_AnchoredPosition.x
