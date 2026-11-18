@@ -14,6 +14,12 @@ public class HeartMonitor : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float loudestVolume = 1f;
 
     private float timeSinceBeep;
+    private ProximityVignette vignette;
+
+    private void Start()
+    {
+        vignette = FindFirstObjectByType<ProximityVignette>();
+    }
 
     private void Update()
     {
@@ -21,10 +27,12 @@ public class HeartMonitor : MonoBehaviour
         if (nearest > range)
         {
             timeSinceBeep = slowestInterval;
+            vignette.Hide();
             return;
         }
 
         float closeness = 1f - nearest / range;
+        vignette.Show(closeness);
         float interval = Mathf.Lerp(slowestInterval, fastestInterval, closeness);
 
         timeSinceBeep += Time.deltaTime;
@@ -32,6 +40,7 @@ public class HeartMonitor : MonoBehaviour
         {
             float volume = Mathf.Lerp(quietestVolume, loudestVolume, closeness);
             AudioManager.Instance.PlayUISFX(beepClip, volume);
+            vignette.Pulse();
             timeSinceBeep = 0f;
         }
     }
