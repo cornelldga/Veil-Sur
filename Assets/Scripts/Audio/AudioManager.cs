@@ -67,6 +67,10 @@ public class AudioManager : MonoBehaviour
 
     private readonly Queue<AudioSource> availableSources = new Queue<AudioSource>();
 
+    // Music volume as set in the prefab. The fade changes the source volume and puts it back after.
+    private float musicBaseVolume = 1f;
+    private Coroutine musicFade;
+
     private void OnEnable()
     {
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
@@ -80,6 +84,12 @@ public class AudioManager : MonoBehaviour
     private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
     {
         StopAllCoroutines();
+
+        // A music fade cut off by the scene change was going to end in silence anyway,
+        // so finish it: stop the music and put the volume back for the next track.
+        if (musicFade != null && musicSource != null) musicSource.Stop();
+        musicFade = null;
+        if (musicSource != null) musicSource.volume = musicBaseVolume;
     }
 
 
@@ -97,6 +107,7 @@ public class AudioManager : MonoBehaviour
         {
             musicSource.outputAudioMixerGroup = musicGroup;
             musicSource.playOnAwake = false;
+            musicBaseVolume = musicSource.volume;
         }
 
         if (ambienceSource != null)
@@ -154,6 +165,8 @@ public class AudioManager : MonoBehaviour
     {
         if (clip == null || musicSource == null) return;
 
+        CancelFade(ref musicFade);
+        musicSource.volume = musicBaseVolume;
         musicSource.clip = clip;
         musicSource.loop = true;
         musicSource.Play();
@@ -162,7 +175,45 @@ public class AudioManager : MonoBehaviour
     public void StopMusic()
     {
         if (musicSource == null) return;
+        CancelFade(ref musicFade);
         musicSource.Stop();
+        musicSource.volume = musicBaseVolume;
+    }
+
+    /// <summary>
+    /// Fades the music out over <paramref name="duration"/> seconds, then stops it.
+    /// Returns the fade so a caller can yield on it, or null if no music is playing.
+    /// </summary>
+    public Coroutine FadeOutMusic(float duration)
+    {
+        if (musicSource == null || !musicSource.isPlaying) return null;
+
+        CancelFade(ref musicFade);
+        musicFade = StartCoroutine(FadeOutMusicRoutine(duration));
+        return musicFade;
+    }
+
+    private IEnumerator FadeOutMusicRoutine(float duration)
+    {
+        float startVolume = musicSource.volume;
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            musicSource.volume = Mathf.Lerp(startVolume, 0f, t / duration);
+            yield return null;
+        }
+
+        musicSource.Stop();
+        musicSource.volume = musicBaseVolume;
+        musicFade = null;
+    }
+
+    private void CancelFade(ref Coroutine fade)
+    {
+        if (fade != null)
+        {
+            StopCoroutine(fade);
+            fade = null;
+        }
     }
 
     public void SetAmbienceVolume(float linearVolume)
