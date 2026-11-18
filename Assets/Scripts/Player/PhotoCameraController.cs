@@ -42,7 +42,7 @@ public class PhotoCameraController : SoundEvent
     [SerializeField] private float stunRadius = 10f; // How far the stun cone extends
     [Header("Mutant Stun Settings")]
     [Range(0, 360)]
-    [SerializeField] private float coneAngle = 60f; // Total width of the cone in degrees
+    [SerializeField] private float coneAngle = 160f; // Total width of the cone in degrees
     [SerializeField] private LayerMask targetMask; // Layer containing enemies or interactable items
     [SerializeField] private LayerMask obstacleMask; // Layer containing walls/blocking objects
 
@@ -326,7 +326,11 @@ public class PhotoCameraController : SoundEvent
             Transform target = targetsInRadius[i].transform;
             Vector3 dirToTarget = (target.position - transform.position).normalized;
             EnemySearchlight mutant = target.gameObject.GetComponent<EnemySearchlight>();
-            mutant.Stun();
+
+            if (Vector3.Angle(transform.forward, dirToTarget) < coneAngle / 2)
+            {
+                mutant.Stun();
+            }
             // Debug.Log("Attempted stun");
 
             // 2. Check if the target is within the forward alignment angle
