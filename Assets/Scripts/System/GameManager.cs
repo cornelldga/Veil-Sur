@@ -165,12 +165,6 @@ public class GameManager : MonoBehaviour
             if (!_baseFontSizes.ContainsKey(tmp))
             {
                 _baseFontSizes[tmp] = tmp.fontSize;
-
-                if (tmp.textInfo.lineCount <= 1 && !tmp.text.Contains("\n"))
-                {
-                    tmp.textWrappingMode = TextWrappingModes.NoWrap;
-                    tmp.overflowMode = TextOverflowModes.Overflow;
-                }
             }
             ApplyScaleToText(tmp);
         }
