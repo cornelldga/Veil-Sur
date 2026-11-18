@@ -7,6 +7,8 @@ using System;
 public class IdleDogStates : EnemySearchlight
 {
     [SerializeField] protected string[] acceptedSenseSources;
+    [Tooltip("Maximum range at which an idle dog will react to a player sound")]
+    [SerializeField] protected float acceptPlayerSoundDist;
 
     protected override void Start()
     {
@@ -110,7 +112,17 @@ public class IdleDogStates : EnemySearchlight
         // Only react to accepted stimuli while idle
         if (CurrentState == AlertState.Idle && 
         GetComponent<EnemyMover>().ReachedDestination() && 
-        Array.IndexOf(acceptedSenseSources, source) == -1) return;
+        Array.IndexOf(acceptedSenseSources, source) == -1)
+        {   
+            // Debug.Log("Can see player: " + canSeePlayer);
+            // Debug.Log("Dist to player: " + distanceToPlayer);
+            // If you're close & in view, the dog still reacts to your sounds
+            if (!source.Equals("Player") || !hasLineOfSight || distanceToPlayer > acceptPlayerSoundDist)
+            {
+                return;
+            }
+        }
+
 
         LastKnownPlayerPosition = position;
         detectionMeter = Mathf.Max(detectionMeter, timeToSuspicious);
