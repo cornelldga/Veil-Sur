@@ -279,7 +279,7 @@ MonoBehaviour:
   shutterDelay: 0.1
   detectRadius: 20
   stunRadius: 30
-  coneAngle: 60
+  coneAngle: 120
   targetMask:
     serializedVersion: 2
     m_Bits: 4294967295
