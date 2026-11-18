@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Key reloadKey = Key.Y;
 
     [SerializeField] GameObject losePanel;
+    [SerializeField] private AudioClip flatlineClip;
     [Tooltip("Seconds the player takes to turn and face the mutant that caught them")]
     [SerializeField, Min(0f)] private float loseTurnDuration = 0.3f;
 
@@ -394,6 +395,7 @@ public class GameManager : MonoBehaviour
             if (jumpscareSource != null) jumpscareSource.Stop();
         }
 
+        AudioManager.Instance.PlayUISFX(flatlineClip);
         losePanel.SetActive(true);
         // free the cursor so the lose panel's buttons can be clicked
         Cursor.lockState = CursorLockMode.None;

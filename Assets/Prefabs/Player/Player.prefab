@@ -397,8 +397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79790ccaaa16146c0a2279c3128deebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeartMonitor
-  beepClip: {fileID: 0}
-  range: 12
+  beepClip: {fileID: 8300000, guid: a77e9b2a3e49440229211759ab5f52a6, type: 3}
+  range: 24
   slowestInterval: 1.2
   fastestInterval: 0.2
   quietestVolume: 0.15
