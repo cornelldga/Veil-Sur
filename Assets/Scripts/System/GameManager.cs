@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Key reloadKey = Key.Y;
 
     [SerializeField] GameObject losePanel;
+    [Tooltip("Seconds the player takes to turn and face the mutant that caught them")]
+    [SerializeField, Min(0f)] private float loseTurnDuration = 0.3f;
 
     [Header("Level Info")]
     public string currentSceneName;
@@ -209,9 +211,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager Initialized. Setting up systems...");
         // Setup sound, saving profiles, loading data, etc.
-        //HandleSceneMusic("MainMenu");
-        // This is TEMPORARY
-        AudioManager.Instance.PlayMusic(lobbyMusic);
+        HandleSceneMusic(SceneManager.GetActiveScene().name);
     }
 
     public async void GoToLevel(string sceneName)
@@ -357,11 +357,12 @@ public class GameManager : MonoBehaviour
     /// <param name="frames">the jumpscare frames of the mutant that caught the player</param>
     /// <param name="fps">playback speed of the jumpscare frames</param>
     /// <param name="audio">the jumpscare sound of the mutant that caught the player</param>
-    public void LoseGame(Sprite[] frames, float fps, AudioClip audio)
+    /// <param name="mutant">the mutant that caught the player</param>
+    public void LoseGame(Sprite[] frames, float fps, AudioClip audio, GameObject mutant)
     {
         if (hasLost) return;
         hasLost = true;
-        StartCoroutine(LoseSequence(frames, fps, audio));
+        StartCoroutine(LoseSequence(frames, fps, audio, mutant));
     }
 
     /// <summary>
@@ -371,7 +372,8 @@ public class GameManager : MonoBehaviour
     /// <param name="frames">the jumpscare frames to play</param>
     /// <param name="fps">playback speed of the jumpscare frames</param>
     /// <param name="audio">the jumpscare sound, skipped along with the frames</param>
-    private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio)
+    /// <param name="mutant">the mutant to turn toward, then hide</param>
+    private IEnumerator LoseSequence(Sprite[] frames, float fps, AudioClip audio, GameObject mutant)
     {
         PlayerInstance.GetComponent<PlayerState>().SetPlayerHasControl(false);
         SetState(GameState.LOST); // also sets timeScale to 0
@@ -385,6 +387,8 @@ public class GameManager : MonoBehaviour
 
         if (!SkipJumpscares)
         {
+            yield return TurnPlayerToward(mutant.transform.position);
+            mutant.SetActive(false);
             AudioSource jumpscareSource = AudioManager.Instance.PlaySfxAttached(audio, PlayerCamera.transform);
             yield return UIManager.Instance.PlayJumpscare(frames, fps);
             if (jumpscareSource != null) jumpscareSource.Stop();
@@ -397,6 +401,29 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Turns the player to face a point and levels their view.
+    /// Uses real time so it still runs while the game is frozen.
+    /// </summary>
+    /// <param name="target">the world position to face</param>
+    private IEnumerator TurnPlayerToward(Vector3 target)
+    {
+        FirstPersonController controller = PlayerInstance.GetComponent<FirstPersonController>();
+        Vector3 toTarget = target - PlayerInstance.transform.position;
+        float startYaw = controller.Yaw;
+        float startPitch = controller.Pitch;
+        float endYaw = Mathf.Atan2(toTarget.x, toTarget.z) * Mathf.Rad2Deg;
+
+        for (float elapsed = 0f; elapsed < loseTurnDuration; elapsed += Time.unscaledDeltaTime)
+        {
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / loseTurnDuration);
+            controller.SetLook(Mathf.LerpAngle(startYaw, endYaw, t), Mathf.Lerp(startPitch, 0f, t));
+            yield return null;
+        }
+
+        controller.SetLook(endYaw, 0f);
+    }
+
+    /// <summary>
     /// Plays the correct music clip based on the scene.
     /// </summary>
     /// <param name="sceneName">the scene we're transitioning to</param>
@@ -404,8 +431,14 @@ public class GameManager : MonoBehaviour
     {
         switch (sceneName)
         {
+            case "TitleScreen":
             case "TutorialLevel":
                 AudioManager.Instance.PlayMusic(lobbyMusic);
+                break;
+
+            // The video carries its own sound, so the title music has to stop
+            case "IntroCutscene":
+                AudioManager.Instance.StopMusic();
                 break;
 
             default:

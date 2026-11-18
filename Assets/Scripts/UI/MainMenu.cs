@@ -14,6 +14,7 @@ public class MainMenu : UIScreen
     /// </summary>
     public void PlayGame()
     {
+        // TODO: Load "IntroCutscene" here once the real cutscene exists
         GameManager.Instance.GoToLevel("TutorialLevel");
 
     }

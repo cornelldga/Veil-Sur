@@ -68,6 +68,8 @@ public class ElevatorController : MonoBehaviour
     [Tooltip("Camera pitch while standing in the elevator, in degrees. Positive looks down.")]
     [SerializeField] private float lookPitch = 15f;
 
+    private bool arrivalInProgress;
+    private bool doorsOpening;
     private ElevatorDoors doors;
     private ElevatorRideEffects effects;
     private ElevatorDirection? queuedFloor;
@@ -91,6 +93,7 @@ public class ElevatorController : MonoBehaviour
         if (arriving)
         {
             GameManager.Instance.ArrivingByElevator = false; 
+            arrivalInProgress = true;
             StartCoroutine(ArrivalSequence());
         }
     }
@@ -201,7 +204,9 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     private IEnumerator OpenDoorsRoutine()
     {
+        doorsOpening = true;
         yield return doors.Open();
+        doorsOpening = false;
 
         if (playerInside && queuedFloor.HasValue)
         {
@@ -309,6 +314,7 @@ public class ElevatorController : MonoBehaviour
         yield return new WaitForSeconds(doorOpenCloseDelay);
         
         player.EndScriptedMovement();
+        arrivalInProgress = false;
         OpenDoors();
     }
 
@@ -382,5 +388,15 @@ public class ElevatorController : MonoBehaviour
     private bool CanTravelTo(string sceneName)
     {
         return !string.IsNullOrEmpty(sceneName);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (doors == null) return;
+        if (traveling || arrivalInProgress || doorsOpening || !doors.IsClosed) return;
+        if (!IsPlayer(other)) return;
+
+        playerInside = true;
+        OpenDoors();
     }
 }
