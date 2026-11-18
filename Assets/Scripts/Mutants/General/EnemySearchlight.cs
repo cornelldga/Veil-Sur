@@ -41,6 +41,7 @@ public class EnemySearchlight : MonoBehaviour
     [SerializeField] protected int investigateCount = 3; 
 
     [Header("Stun Settings")]
+    [SerializeField] protected float guaranteedStunDist = 3f; // Stun mutant close-up even if it's not looking
     [SerializeField] protected float stunDuration = 1f; // How long stun lasts
     [SerializeField] protected float stunCooldown = 10f; // Time between stuns
     [SerializeField] private ParticleSystem stunEffects; // Stun VFX
@@ -74,6 +75,7 @@ public class EnemySearchlight : MonoBehaviour
 
 
     [Header("Protected States")]
+    protected bool hasLineOfSight;
     protected float baseFacingAngle;
     protected float sweepTimer;
     protected float detectionMeter;
@@ -202,16 +204,6 @@ public class EnemySearchlight : MonoBehaviour
         Vector3 eye = EyePosition;
         Vector3 toPlayer = PlayerHeadPosition - eye;
         distanceToPlayer = toPlayer.magnitude;
-        if (distanceToPlayer > viewDistance || CurrentState == AlertState.Stun)
-        {
-            return false;
-        }
-
-        float angleToPlayer = Vector3.Angle(transform.forward, toPlayer);
-        if (angleToPlayer > viewAngle * 0.5f)
-        {
-            return false;
-        }
 
         // The camera sits on top of the player's capsule,
         // so only walls should block the line of sight.
@@ -221,6 +213,19 @@ public class EnemySearchlight : MonoBehaviour
             distanceToPlayer,
             obstacleMask,
             QueryTriggerInteraction.Ignore))
+        {
+            hasLineOfSight = false;
+            return false;
+        }
+        hasLineOfSight = true;
+
+        if (distanceToPlayer > viewDistance || CurrentState == AlertState.Stun)
+        {
+            return false;
+        }
+
+        float angleToPlayer = Vector3.Angle(transform.forward, toPlayer);
+        if (angleToPlayer > viewAngle * 0.5f)
         {
             return false;
         }
@@ -554,7 +559,8 @@ public class EnemySearchlight : MonoBehaviour
     /// </summary>
     public void Stun()
     {
-        if (canSeePlayer && timeSinceLastStun >= stunCooldown + stunDuration)
+        if ((canSeePlayer || distanceToPlayer <= guaranteedStunDist) 
+        && timeSinceLastStun >= stunCooldown + stunDuration)
         {
             // Debug.Log("Successful stun!");
             timeSinceLastStun = 0;

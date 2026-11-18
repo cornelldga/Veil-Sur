@@ -151,6 +151,7 @@ MonoBehaviour:
   acceptedSenseSources:
   - 
   - Ball
+  acceptPlayerSoundDist: 7
 --- !u!82 &5306431972337956721 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 1602365800527961449, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
