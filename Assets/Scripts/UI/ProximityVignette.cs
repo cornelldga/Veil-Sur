@@ -1,28 +1,36 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
-/// Screen-edge darkness that closes in as a heartbeat mutant nears and throbs on each beep.
+/// Screen-edge darkness that grows inward as a heartbeat mutant nears and throbs on each beep.
 /// Driven by HeartMonitor.
 /// </summary>
-[RequireComponent(typeof(CanvasGroup))]
 public class ProximityVignette : MonoBehaviour
 {
-    [SerializeField, Range(0f, 1f)] private float farOpacity = 0.5f;
-    [SerializeField, Range(0f, 1f)] private float nearOpacity = 0.95f;
-    [SerializeField, Min(1f)] private float farScale = 1.8f;
-    [SerializeField, Min(1f)] private float nearScale = 1.15f;
+    [SerializeField, Range(0f, 1f)] private float farIntensity = 0f;
+    [SerializeField, Range(0f, 1f)] private float nearIntensity = 0.55f;
+    [SerializeField, Range(0.01f, 1f)] private float smoothness = 0.5f;
     [SerializeField] private float pulseSize = 0.1f;
     [SerializeField] private float pulseFadeSpeed = 5f;
 
-    private CanvasGroup canvasGroup;
+    private Volume volume;
+    private Vignette vignette;
     private bool isShowing;
     private float closeness;
     private float pulse;
 
     private void Awake()
     {
-        canvasGroup = GetComponent<CanvasGroup>();
-        canvasGroup.alpha = 0f;
+        VolumeProfile profile = ScriptableObject.CreateInstance<VolumeProfile>();
+        vignette = profile.Add<Vignette>(true);
+        vignette.smoothness.value = smoothness;
+
+        volume = gameObject.AddComponent<Volume>();
+        volume.isGlobal = true;
+        volume.priority = 100f;
+        volume.weight = 0f;
+        volume.sharedProfile = profile;
     }
 
     public void Show(float newCloseness)
@@ -45,15 +53,13 @@ public class ProximityVignette : MonoBehaviour
     {
         pulse = Mathf.MoveTowards(pulse, 0f, pulseFadeSpeed * Time.deltaTime);
 
+        volume.weight = isShowing ? 1f : 0f;
         if (!isShowing)
         {
-            canvasGroup.alpha = 0f;
             return;
         }
 
-        canvasGroup.alpha = Mathf.Lerp(farOpacity, nearOpacity, closeness);
-
-        float scale = Mathf.Lerp(farScale, nearScale, closeness) - pulseSize * pulse * closeness;
-        transform.localScale = Vector3.one * Mathf.Max(scale, 1f);
+        float intensity = Mathf.Lerp(farIntensity, nearIntensity, closeness);
+        vignette.intensity.value = intensity + pulseSize * pulse * closeness;
     }
 }
