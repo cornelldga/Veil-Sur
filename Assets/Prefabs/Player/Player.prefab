@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 7648119910814920436}
   - component: {fileID: 3314498800505621458}
   - component: {fileID: 131139320717189774}
+  - component: {fileID: 4001725359899536014}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -384,6 +385,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DocumentScanner
   documentScanSfx: {fileID: 8300000, guid: c59f0631418cd4cf8a84d1bd92b3df0f, type: 3}
   captureProgress: 0.8
+--- !u!114 &4001725359899536014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805399525289963691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79790ccaaa16146c0a2279c3128deebf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeartMonitor
+  beepClip: {fileID: 8300000, guid: a77e9b2a3e49440229211759ab5f52a6, type: 3}
+  range: 24
+  slowestInterval: 1.2
+  fastestInterval: 0.2
+  quietestVolume: 0.15
+  loudestVolume: 1
 --- !u!1 &5457027851315915008
 GameObject:
   m_ObjectHideFlags: 0
