@@ -507,6 +507,12 @@ public class GameManager : MonoBehaviour
                 AudioManager.Instance.StopMusic();
                 break;
 
+            // Lobby music only carries into LevelOne through the elevator ride (which doesn't
+            // come through here). Loading it any other way, e.g. from a save, starts it quiet.
+            case "LevelOne":
+                AudioManager.Instance.StopMusic();
+                break;
+
             default:
                 Debug.LogWarning($"No music assigned for scene: {sceneName}");
                 break;
