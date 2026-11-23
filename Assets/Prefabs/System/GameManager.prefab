@@ -198,6 +198,8 @@ MonoBehaviour:
   debugMode: 1
   reloadKey: 39
   losePanel: {fileID: 4679233136749169115}
+  flatlineClip: {fileID: 8300000, guid: c068513ac69aa456383f79d7e9a44391, type: 3}
+  loseTurnDuration: 0.3
   currentSceneName: 
 --- !u!114 &7000000000000000001
 MonoBehaviour:
