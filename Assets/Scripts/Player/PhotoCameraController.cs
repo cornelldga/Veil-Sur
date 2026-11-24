@@ -110,7 +110,8 @@ public class PhotoCameraController : SoundEvent
         depthOfField.mode.value = DepthOfFieldMode.Gaussian;
 
         depthOfField.gaussianStart.overrideState = true;
-        depthOfField.gaussianStart.value = maxPhotoRange - 1.5f;
+        depthOfField.gaussianStart.value = maxPhotoRange;
+        // depthOfField.gaussianStart.value = maxPhotoRange - 1.5f;
 
         depthOfField.gaussianEnd.overrideState = true;
         depthOfField.gaussianEnd.value = maxPhotoRange + blurRangePastMax;
