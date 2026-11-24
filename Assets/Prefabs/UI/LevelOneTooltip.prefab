@@ -150,5 +150,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e88788773bd47639ef252ead0d68a25, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimedTooltip
+  m_EditorClassIdentifier: Assembly-CSharp::LevelOneTooltip
   disappearAfterSeconds: 15
+  amplitude: 7.5
+  moveSpeed: 1
