@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Key reloadKey = Key.Y;
 
     [SerializeField] GameObject losePanel;
+    [SerializeField] private AudioClip flatlineClip;
     [Tooltip("Seconds the player takes to turn and face the mutant that caught them")]
     [SerializeField, Min(0f)] private float loseTurnDuration = 0.3f;
 
@@ -460,6 +461,7 @@ public class GameManager : MonoBehaviour
             if (jumpscareSource != null) jumpscareSource.Stop();
         }
 
+        AudioManager.Instance.PlayUISFX(flatlineClip);
         losePanel.SetActive(true);
         // free the cursor so the lose panel's buttons can be clicked
         Cursor.lockState = CursorLockMode.None;
@@ -504,6 +506,12 @@ public class GameManager : MonoBehaviour
 
             // The video carries its own sound, so the title music has to stop
             case "IntroCutscene":
+                AudioManager.Instance.StopMusic();
+                break;
+
+            // Lobby music only carries into LevelOne through the elevator ride (which doesn't
+            // come through here). Loading it any other way, e.g. from a save, starts it quiet.
+            case "LevelOne":
                 AudioManager.Instance.StopMusic();
                 break;
 

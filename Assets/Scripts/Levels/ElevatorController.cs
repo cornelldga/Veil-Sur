@@ -68,6 +68,12 @@ public class ElevatorController : MonoBehaviour
     [Tooltip("Camera pitch while standing in the elevator, in degrees. Positive looks down.")]
     [SerializeField] private float lookPitch = 15f;
 
+    [Header("Audio")]
+    [Tooltip("Fade out the music when the Player rides this elevator to the next level. Leave off for the Tutorial elevator so the Lobby music carries into LevelOne.")]
+    [SerializeField] private bool fadeMusicOnDeparture = false;
+    [Tooltip("Seconds the music takes to fade out when leaving on this elevator. (On arrival, the music fades over the ride so it's gone when the doors open.)")]
+    [SerializeField] private float musicFadeOutDuration = 2f;
+
     private bool arrivalInProgress;
     private bool doorsOpening;
     private ElevatorDoors doors;
@@ -241,6 +247,11 @@ public class ElevatorController : MonoBehaviour
 
         GameManager.Instance.PreloadScene(targetScene);
 
+        if (fadeMusicOnDeparture)
+        {
+            AudioManager.Instance.FadeOutMusic(musicFadeOutDuration);
+        }
+
         Coroutine scriptedCentering = StartCoroutine(CenterPlayer());
         yield return doors.Close();
         yield return effects.Play(rideDuration, true);
@@ -309,6 +320,10 @@ public class ElevatorController : MonoBehaviour
         player.PlacePositionAt(position, yaw, lookPitch);
         
         player.BeginScriptedMovement();
+
+        // The level's ambience already started on load. Fade out the music carried over
+        // from the last level across the ride, so it's gone right as the doors open.
+        AudioManager.Instance.FadeOutMusic(rideDuration + doorOpenCloseDelay);
 
         yield return effects.Play(rideDuration, false);
         yield return new WaitForSeconds(doorOpenCloseDelay);
