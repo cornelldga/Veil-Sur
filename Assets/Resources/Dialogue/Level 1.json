@@ -2,8 +2,11 @@
       "welcome": {
         "puzzle": null,
         "lines": [
-          "You made it",
-          "Let's figure out more about what OYO is doing here."
+          "You made it!",
+          "I've gathered some intel that there might be other beings on this floor.",
+          "Aisha, you shohuld remember that your camera flash might be able to distract them.",
+          "You got this. Let's figure out more about what OYO is doing here."
+
         ]
       }
 }
