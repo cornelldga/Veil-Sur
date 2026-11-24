@@ -11,6 +11,10 @@ public class Settings : UIScreen
     [SerializeField] private Slider sensitivitySlider;
     [SerializeField] private Slider ambienceSlider;
     [SerializeField] private Toggle jumpscareToggle;
+
+    [Header("Accessibility")]
+    [SerializeField] private Slider textScaleSlider;
+
     public void OnBackPressed()
     {
         UIManager.Instance.Back();
@@ -29,11 +33,21 @@ public class Settings : UIScreen
     {
         base.Show();
 
+        GameManager.Instance.RegisterAndScaleAllText();
+
+
         sfxSlider.value = AudioManager.Instance.GetSfxVolume();
         musicSlider.value = AudioManager.Instance.GetMusicVolume();
         sensitivitySlider.value = GameManager.Instance.MouseSensitivity;
         ambienceSlider.value = AudioManager.Instance.GetAmbienceVolume();
         jumpscareToggle.SetIsOnWithoutNotify(GameManager.Instance.SkipJumpscares);
+
+        if (textScaleSlider != null)
+        {
+            textScaleSlider.minValue = GameManager.Instance.MinTextScale;
+            textScaleSlider.maxValue = GameManager.Instance.MaxTextScale;
+            textScaleSlider.SetValueWithoutNotify(GameManager.Instance.TextScale);
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -43,6 +57,14 @@ public class Settings : UIScreen
         musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
         sensitivitySlider.onValueChanged.AddListener(GameManager.Instance.SetMouseSensitivity);
         ambienceSlider.onValueChanged.AddListener(AudioManager.Instance.SetAmbienceVolume);
+
+        if (textScaleSlider != null)
+        {
+            textScaleSlider.minValue = GameManager.Instance.MinTextScale;
+            textScaleSlider.maxValue = GameManager.Instance.MaxTextScale;
+            textScaleSlider.SetValueWithoutNotify(GameManager.Instance.TextScale);
+            textScaleSlider.onValueChanged.AddListener(GameManager.Instance.SetTextScale);
+        }
     }
 
     /// <summary>

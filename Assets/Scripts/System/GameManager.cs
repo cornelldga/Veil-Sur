@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System;
 using System.Collections;
 using UnityEngine.InputSystem; 
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,11 +25,23 @@ public class GameManager : MonoBehaviour
 
     [Header("Game Settings")]
 
+    [Header("Text Scaling")]
+    [SerializeField] private float minTextScale = 0.75f;
+    [SerializeField] private float maxTextScale = 1.05f;
+
+    private const string TextScaleKey = "TextScale";
+    public float TextScale { get; private set; } = 1f;
+    public float MinTextScale => minTextScale;
+    public float MaxTextScale => maxTextScale;
+
+    private readonly Dictionary<TMP_Text, float> _baseFontSizes = new Dictionary<TMP_Text, float>();
+
     [Header("Debug Settings")]
     [SerializeField] private bool debugMode = true;
     [SerializeField] private Key reloadKey = Key.Y;
 
     [SerializeField] GameObject losePanel;
+    [SerializeField] private AudioClip flatlineClip;
     [Tooltip("Seconds the player takes to turn and face the mutant that caught them")]
     [SerializeField, Min(0f)] private float loseTurnDuration = 0.3f;
 
@@ -120,6 +133,57 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.DeleteKey(RebindsKey);
     }
 
+    public void SetTextScale(float scale)
+    {
+        TextScale = Mathf.Clamp(scale, minTextScale, maxTextScale);
+        PlayerPrefs.SetFloat(TextScaleKey, TextScale);
+
+        foreach (var kvp in _baseFontSizes)
+        {
+            if (kvp.Key != null)
+            {
+                ApplyScaleToText(kvp.Key);
+            }
+        }
+    }
+
+    public void RegisterAndScaleAllText()
+    {
+        // Remove destroyed objects from previous scenes instead of wiping persistent ones
+        var deadKeys = new List<TMP_Text>();
+        foreach (var key in _baseFontSizes.Keys)
+        {
+            if (key == null) deadKeys.Add(key);
+        }
+        foreach (var key in deadKeys)
+        {
+            _baseFontSizes.Remove(key);
+        }
+
+        TMP_Text[] allTexts = FindObjectsByType<TMP_Text>(FindObjectsInactive.Include);
+
+        foreach (TMP_Text tmp in allTexts)
+        {
+            // Only record baseFontSize the very first time we ever see this TMP_Text
+            if (!_baseFontSizes.ContainsKey(tmp))
+            {
+                _baseFontSizes[tmp] = tmp.fontSize;
+            }
+            ApplyScaleToText(tmp);
+        }
+    }
+
+    private void ApplyScaleToText(TMP_Text tmp)
+    {
+        float baseSize = _baseFontSizes[tmp];
+        tmp.fontSize = baseSize * TextScale;
+
+        if (tmp.enableAutoSizing)
+        {
+            tmp.fontSizeMax = baseSize * TextScale;
+        }
+    }
+
     public static bool IsRebinding { get; set; }
 
     private void Awake()
@@ -134,6 +198,7 @@ public class GameManager : MonoBehaviour
 
         MouseSensitivity = PlayerPrefs.GetFloat(SensitivityKey, 1f);
         SkipJumpscares = PlayerPrefs.GetInt(SkipJumpscaresKey, 0) == 1;
+        TextScale = Mathf.Clamp(PlayerPrefs.GetFloat(TextScaleKey, 1f), minTextScale, maxTextScale);
 
         // Keeps this object alive when switching scenes
         DontDestroyOnLoad(gameObject);
@@ -183,6 +248,8 @@ public class GameManager : MonoBehaviour
         if (PhotoStorage.Instance != null) PhotoStorage.Instance.ClearAll();
 
         HandleSceneAmbience(scene.name);
+        
+        RegisterAndScaleAllText();
     }
 
     private void HandleSceneAmbience(string sceneName)
@@ -394,6 +461,7 @@ public class GameManager : MonoBehaviour
             if (jumpscareSource != null) jumpscareSource.Stop();
         }
 
+        AudioManager.Instance.PlayUISFX(flatlineClip);
         losePanel.SetActive(true);
         // free the cursor so the lose panel's buttons can be clicked
         Cursor.lockState = CursorLockMode.None;
@@ -438,6 +506,12 @@ public class GameManager : MonoBehaviour
 
             // The video carries its own sound, so the title music has to stop
             case "IntroCutscene":
+                AudioManager.Instance.StopMusic();
+                break;
+
+            // Lobby music only carries into LevelOne through the elevator ride (which doesn't
+            // come through here). Loading it any other way, e.g. from a save, starts it quiet.
+            case "LevelOne":
                 AudioManager.Instance.StopMusic();
                 break;
 
