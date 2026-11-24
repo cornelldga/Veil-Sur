@@ -256,7 +256,7 @@ MonoBehaviour:
   minOpenSpeedVelocity: 5
   maxOpenSpeedVelocity: 10
   invertSwingDirection: 0
-  autoClose: 1
+  autoClose: 0
   autoCloseDelay: 4
   closeSpeed: 5
   mutantLayer:
