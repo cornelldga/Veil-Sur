@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 502, y: -457}
+  m_AnchoredPosition: {x: -711, y: 3}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &113620137579113712
@@ -151,9 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialManager
   promptText: {fileID: 914365772190382192}
-  promptBackground: {fileID: 0}
-  backgroundPadding: {x: 24, y: 16}
   backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundPadding: {x: 24, y: 16, z: 8, w: 8}
   keyHighlightColor: {r: 0.98823535, g: 0.48627454, b: 0.23529413, a: 0.11764706}
   fadeDuration: 0.4
   amplitude: 10
