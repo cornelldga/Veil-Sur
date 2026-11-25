@@ -40,32 +40,31 @@ public class TutorialManager : MonoBehaviour
         PlayerControls c = GameManager.Controls;
         switch (index)
         {
-            case 0: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon. <sprite index=0 tint=1> Try the PLANT!";
-
-            case 1: return $"Use {KeyName(c.PlayerMovement.Move)} to move.";
-            case 2: return $"Hold {KeyName(c.PlayerMovement.Sprint)} to sprint.";
-            case 3: return $"Hold {KeyName(c.PlayerMovement.Crouch)} to crouch.";
-            case 4: return $"Press {KeyName(c.PlayerMovement.AimCamera)} to aim your camera, and {KeyName(c.PlayerMovement.TakePicture)} to take a photo!";
-            case 5: return "Now take a photo of a PLANT in the room!";
-            case 6: return "Nice! Take three more photos of objects around the room! 0/3 done!";
-            case 7: return "Take three more photos of objects around the room! 1/3 done!";
-            case 8: return "Take three more photos of objects around the room! 2/3 done!";
-            case 9: return "Nice! Try to take one more photo, your storage is full!";
-            case 10: return $"Press {KeyName(c.General.Notebook)} to open your notebook.";
-            case 11: return "Double click on images in your notebook to look at them larger.";
-            case 12: return "Drag your plant photo onto its question to connect it.";
-            case 13: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
-            case 14: return "Close your notebook.";
-            case 16: return $"You can also look at a document and press {KeyName(c.PlayerMovement.Interact)} to read it.";
-            case 17: return $"Documents can't be photographed, they must be scanned. {KeyName(c.PlayerMovement.TakePicture)} while reading one to scan it into your notebook.";
-            case 18: return "Open your notebook again.";
-            case 19: return "You scanned the document! Drag it onto the document question to fill its answer slot.";
-            case 20: return "Click upload to check how many of your links are correct.";
-            case 21: return "New questions appeared! Click the arrow to turn to the next page of your notebook.";
-            case 22: return "Close your notebook.";
+            case 0: return $"Use {KeyName(c.PlayerMovement.Move)} to move.";
+            case 1: return $"Hold {KeyName(c.PlayerMovement.Sprint)} to sprint.";
+            case 2: return $"Hold {KeyName(c.PlayerMovement.Crouch)} to crouch.";
+            case 3: return $"Press {KeyName(c.PlayerMovement.AimCamera)} to aim your camera, and {KeyName(c.PlayerMovement.TakePicture)} to take a photo!";
+            case 4: return "Now take a photo of a PLANT in the room!";
+            case 5: return "Nice! Take three more photos of objects around the room! 0/3 done!";
+            case 6: return "Take three more photos of objects around the room! 1/3 done!";
+            case 7: return "Take three more photos of objects around the room! 2/3 done!";
+            case 8: return "Nice! Try to take one more photo, your storage is full!";
+            case 9: return $"Press {KeyName(c.General.Notebook)} to open your notebook.";
+            case 10: return "Double click on images in your notebook to look at them larger.";
+            case 11: return "Drag your plant photo onto its question to connect it.";
+            case 12: return "Drag a photo onto the trash icon to delete it. Now you can take more!";
+            case 13: return "Close your notebook.";
+            case 14: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon. <sprite index=0 tint=1> Try the PLANT!";
+            case 15: return $"You can also look at a document and press {KeyName(c.PlayerMovement.Interact)} to read it.";
+            case 16: return $"Documents can't be photographed, they must be scanned. {KeyName(c.PlayerMovement.TakePicture)} while reading one to scan it into your notebook.";
+            case 17: return "Open your notebook again.";
+            case 18: return "You scanned the document! Drag it onto the document question to fill its answer slot.";
+            case 19: return "Click upload to check how many of your links are correct.";
+            case 20: return "New questions appeared! Click the arrow to turn to the next page of your notebook.";
+            case 21: return "Close your notebook.";
             // Maybe in the above ^ prompt we'll include a picture of the interact icon.
             // Pause isn't an input action (GameManager reads the ESC key directly), so it can't be looked up like the others.
-            case 23: return $"You can always pause by pressing <mark={KeyMarkHex} padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
+            case 22: return $"You can always pause by pressing <mark={KeyMarkHex} padding=\"6,6,1,1\">ESC</mark> and change keybinds in settings.";
 
             default: return "";
         }
