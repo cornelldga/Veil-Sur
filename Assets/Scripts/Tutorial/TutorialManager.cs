@@ -40,7 +40,7 @@ public class TutorialManager : MonoBehaviour
         PlayerControls c = GameManager.Controls;
         switch (index)
         {
-            case 0: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon. <sprite index=0 tint=1> Try the PLANT!";
+            case 0: return $"Press {KeyName(c.PlayerMovement.Interact)} to interact with objects that have the interact icon. <rotate=30><sprite index=0 tint=1></rotate> Try the PLANT!";
 
             case 1: return $"Use {KeyName(c.PlayerMovement.Move)} to move.";
             case 2: return $"Hold {KeyName(c.PlayerMovement.Sprint)} to sprint.";
