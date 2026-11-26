@@ -59,6 +59,13 @@ public class EnemyMover : MonoBehaviour
 
     protected bool isCollidingPlayer = false;
 
+    private float cageDeadline;
+    private bool waitingInCage;
+    private UnityEngine.AI.ObstacleAvoidanceType cageOriginalAvoidance;
+
+    public bool IsVisitingCage { get; private set; }
+    public bool IsWaitingInCage => IsVisitingCage && waitingInCage;
+
     protected void Awake()
     {
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
@@ -82,6 +89,8 @@ public class EnemyMover : MonoBehaviour
         {
             GameManager.Instance.LoseGame(jumpscareFrames, jumpscareFps, jumpscareSound, gameObject);
         }
+
+        if (UpdateCageVisit()) return;
 
         EnemySearchlight.AlertState state = searchlight.CurrentState;
         // LookAround counts as patrolling here 
@@ -143,6 +152,64 @@ public class EnemyMover : MonoBehaviour
         }
 
         reachedDestination = !agent.pathPending && agent.remainingDistance <= waypointTolerance;
+    }
+
+    /// <summary>
+    /// Walks into a cage and waits there before going back to normal
+    /// </summary>
+    public bool VisitCage(Vector3 target)
+    {
+        if (IsVisitingCage || !agent.isActiveAndEnabled || !agent.isOnNavMesh) return false;
+        if (!UnityEngine.AI.NavMesh.SamplePosition(target, out var hit, 0.35f, agent.areaMask)) return false;
+
+        var path = new UnityEngine.AI.NavMeshPath();
+        if (!agent.CalculatePath(hit.position, path) ||
+            path.status != UnityEngine.AI.NavMeshPathStatus.PathComplete) return false;
+
+        if (!agent.SetPath(path)) return false;
+        cageOriginalAvoidance = agent.obstacleAvoidanceType;
+        agent.obstacleAvoidanceType = UnityEngine.AI.ObstacleAvoidanceType.NoObstacleAvoidance;
+        agent.autoBraking = true;
+        agent.isStopped = false;
+        IsVisitingCage = true;
+        reachedDestination = false;
+        isTurningToNotice = false;
+        noticePauseUntil = 0f;
+        waitingInCage = false;
+        cageDeadline = float.PositiveInfinity;
+        return true;
+    }
+
+    protected bool UpdateCageVisit()
+    {
+        if (!IsVisitingCage) return false;
+
+        if (Time.time >= cageDeadline)
+        {
+            IsVisitingCage = false;
+            agent.isStopped = false;
+            agent.obstacleAvoidanceType = cageOriginalAvoidance;
+            return false;
+        }
+
+        if (IsWaitingInCage) return true;
+
+        agent.speed = searchlight.CurrentState == EnemySearchlight.AlertState.Stun ? 0f : suspiciousSpeed;
+
+        if (!agent.pathPending && agent.hasPath &&
+            agent.pathStatus == UnityEngine.AI.NavMeshPathStatus.PathComplete &&
+            agent.remainingDistance <= Mathf.Max(agent.stoppingDistance, 0.1f))
+        {
+            waitingInCage = true;
+            agent.isStopped = true;
+        }
+
+        return true;
+    }
+
+    public void WaitInCage(float seconds)
+    {
+        if (IsWaitingInCage) cageDeadline = Time.time + seconds;
     }
 
     protected void Patrol()
