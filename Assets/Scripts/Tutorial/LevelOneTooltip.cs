@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using TMPro;
 
 /// <summary> Level one tooltip </summary>
 public class LevelOneTooltip : MonoBehaviour
@@ -15,6 +16,13 @@ public class LevelOneTooltip : MonoBehaviour
     {
         promptRect = GetComponent<RectTransform>();
         basePosition = promptRect.anchoredPosition;
+
+        TMP_Text promptText = GetComponent<TMP_Text>();
+        promptText.enabled = false;
+        // wait until dialogue manager done
+        yield return null;
+        yield return new WaitUntil(() => DialogueManager.Instance == null || !DialogueManager.Instance.IsDialogueActive);
+        promptText.enabled = true;
 
         yield return new WaitForSeconds(disappearAfterSeconds);
         gameObject.SetActive(false);
