@@ -18,7 +18,7 @@ public class CageBallLure : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         TennisBall ball = other.GetComponentInParent<TennisBall>();
-        if (ball == null || ball == lastBall || doorwayBlocker.activeSelf || luring) return;
+        if (ball == null || ball == lastBall || doorwayBlocker.activeSelf || luring || insideTargets.Length == 0) return;
         lastBall = ball;
         luring = true;
         StartCoroutine(LureDogs());
@@ -29,21 +29,20 @@ public class CageBallLure : MonoBehaviour
         var visitors = new List<EnemyMover>();
         foreach (EnemyMover dog in FindObjectsByType<EnemyMover>())
         {
-            if (visitors.Count >= insideTargets.Length) break;
             if (!dog.isActiveAndEnabled) continue;
             if (!dog.TryGetComponent<IdleDogStates>(out _) && !dog.TryGetComponent<DogSniff>(out _)) continue;
-            if (dog.VisitCage(insideTargets[visitors.Count].position))
+            if (dog.VisitCage(insideTargets[visitors.Count % insideTargets.Length].position))
                 visitors.Add(dog);
         }
 
-        // After second dog enters, then start timer
+        // Start the timer after all dogs show up
         while (visitors.Exists(dog => dog != null && dog.IsVisitingCage && !dog.IsWaitingInCage))
             yield return null;
 
-        foreach (EnemyMover dog in visitors)
-            if (dog != null) dog.WaitInCage(staySeconds);
-
         yield return new WaitForSeconds(staySeconds);
+        foreach (EnemyMover dog in visitors)
+            if (dog != null) dog.EndCageVisit();
+
         luring = false;
     }
 }

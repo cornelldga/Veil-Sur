@@ -59,7 +59,6 @@ public class EnemyMover : MonoBehaviour
 
     protected bool isCollidingPlayer = false;
 
-    private float cageDeadline;
     private bool waitingInCage;
     private UnityEngine.AI.ObstacleAvoidanceType cageOriginalAvoidance;
 
@@ -176,21 +175,12 @@ public class EnemyMover : MonoBehaviour
         isTurningToNotice = false;
         noticePauseUntil = 0f;
         waitingInCage = false;
-        cageDeadline = float.PositiveInfinity;
         return true;
     }
 
     protected bool UpdateCageVisit()
     {
         if (!IsVisitingCage) return false;
-
-        if (Time.time >= cageDeadline)
-        {
-            IsVisitingCage = false;
-            agent.isStopped = false;
-            agent.obstacleAvoidanceType = cageOriginalAvoidance;
-            return false;
-        }
 
         if (IsWaitingInCage) return true;
 
@@ -207,9 +197,11 @@ public class EnemyMover : MonoBehaviour
         return true;
     }
 
-    public void WaitInCage(float seconds)
+    public void EndCageVisit()
     {
-        if (IsWaitingInCage) cageDeadline = Time.time + seconds;
+        IsVisitingCage = false;
+        agent.isStopped = false;
+        agent.obstacleAvoidanceType = cageOriginalAvoidance;
     }
 
     protected void Patrol()

@@ -2046,7 +2046,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2184192572823106185, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3716497884301373093, guid: 3c74fd109825b42e7ab64751f6024aa3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -36011,6 +36011,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7144543875726941770, guid: 4b50be0318cc24e9d97e32dc23daf75a, type: 3}
   m_PrefabInstance: {fileID: 2073260186}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2098400000
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1048975942}
+    m_Modifications: []
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6869978d8326bd8448412fda382fe12d, type: 3}
+--- !u!4 &2098400001 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4243950153515991373, guid: 6869978d8326bd8448412fda382fe12d, type: 3}
+  m_PrefabInstance: {fileID: 2098400000}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &2104435604
 Mesh:
   m_ObjectHideFlags: 0
@@ -37865,24 +37883,6 @@ MonoBehaviour:
   - text: Ever since you've left OYO you've loved tennis balls.
     startTime: 3
     stopTime: 5.5
---- !u!1001 &2098400000
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1048975942}
-    m_Modifications: []
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6869978d8326bd8448412fda382fe12d, type: 3}
---- !u!4 &2098400001 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4243950153515991373, guid: 6869978d8326bd8448412fda382fe12d, type: 3}
-  m_PrefabInstance: {fileID: 2098400000}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
