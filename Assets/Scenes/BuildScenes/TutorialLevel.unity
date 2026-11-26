@@ -24378,7 +24378,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 558004538979084732, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
       propertyPath: subjectId
-      value: CorrectDate
+      value: FalseDate
       objectReference: {fileID: 0}
     - target: {fileID: 891557432999110899, guid: 2dd5e3abc43b846a9a0d11d2b3fa3252, type: 3}
       propertyPath: m_Mesh
@@ -28394,7 +28394,7 @@ PrefabInstance:
     - target: {fileID: 914365772190382192, guid: 809b2508d0bbd3e4f9f781fff6c1c38e, type: 3}
       propertyPath: m_spriteAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 8b5750d2d7d070b45bb9626da6a22e6d, type: 2}
+      objectReference: {fileID: 11400000, guid: 84c80257408fe844da5f98c18510f9a0, type: 2}
     - target: {fileID: 914365772190382192, guid: 809b2508d0bbd3e4f9f781fff6c1c38e, type: 3}
       propertyPath: m_fontSizeBase
       value: 30

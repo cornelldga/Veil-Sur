@@ -60,10 +60,10 @@ public class MutantBillboard : MonoBehaviour
         IsShowingFront = true ? direction == 0 : false;
 
         animator.SetFloat(DirectionParam, direction);
-        animator.SetBool(IsMovingParam, agent.velocity.magnitude > moveThreshold);
-        animator.SetBool(IsAlertParam, searchlight.CurrentState == EnemySearchlight.AlertState.Alert);
-        animator.SetBool(IsNoticingParam, mover.IsNoticePausing);
-        animator.SetBool(IsStunnedParam, 
+        if (agent) animator.SetBool(IsMovingParam, agent.velocity.magnitude > moveThreshold);
+        if (searchlight) animator.SetBool(IsAlertParam, searchlight.CurrentState == EnemySearchlight.AlertState.Alert);
+        if (mover) animator.SetBool(IsNoticingParam, mover.IsNoticePausing);
+        if (searchlight) animator.SetBool(IsStunnedParam, 
         (searchlight.CurrentState == EnemySearchlight.AlertState.Stun) 
         || (searchlight.CurrentState == EnemySearchlight.AlertState.Idle && agent.velocity.magnitude <= moveThreshold));
 
