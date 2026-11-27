@@ -140,7 +140,7 @@ MonoBehaviour:
   stunEffects: {fileID: 1733657104015836177}
   spotLight: {fileID: 0}
   soundSource: {fileID: 5306431972337956721}
-  idleSound: {fileID: 0}
+  idleSound: {fileID: 8300000, guid: 58bc504aa93206b48939334fd3242e2a, type: 3}
   alertSound: {fileID: 0}
   stunSound: {fileID: 0}
   showConeMesh: 1
