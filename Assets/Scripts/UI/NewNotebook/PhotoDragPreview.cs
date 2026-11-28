@@ -15,6 +15,7 @@ public class PhotoDragPreview
     private bool sourceWasEnabled;
     private RectTransform root;
     public Photo Photo { get; private set; }
+    public RectTransform PreviewRect => image != null ? image.rectTransform : null;
 
     /// <summary>Raised with true when any photo drag starts and false when it ends.</summary>
     public static event System.Action<bool> DraggingChanged;
