@@ -56,7 +56,15 @@ public class QuestionSlotScript : MonoBehaviour, IDropHandler, IBeginDragHandler
         drag.Begin(Photo, preview, eventData);
     }
     public void OnDrag(PointerEventData eventData) { drag.Drag(eventData); }
-    public void OnEndDrag(PointerEventData eventData) { drag.End(); }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        TrashCan trash = FindFirstObjectByType<TrashCan>();
+        if (trash != null && drag.Photo != null)
+        {
+            trash.TryDeleteIfOverlapping(drag.Photo, drag.PreviewRect);
+        }
+        drag.End();
+    }
     private void OnDisable() { drag.End(); }
 
     private void RefreshPreview()

@@ -84,6 +84,14 @@ public class PhotoSlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
     }
 
-    public void OnEndDrag(PointerEventData eventData) { drag.End(); }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        TrashCan trash = FindFirstObjectByType<TrashCan>();
+        if (trash != null && drag.Photo != null)
+        {
+            trash.TryDeleteIfOverlapping(drag.Photo, drag.PreviewRect);
+        }
+        drag.End();
+    }
     private void OnDisable() { drag.End(); }
 }

@@ -20,6 +20,8 @@ public class TrashCan : MonoBehaviour, IDropHandler
 
     private Image image;
 
+    private RectTransform trashRect;
+
     /// <summary>
     /// caches the Image component that shows the trash can sprite
     /// </summary>
@@ -27,6 +29,7 @@ public class TrashCan : MonoBehaviour, IDropHandler
     {
         //image = GetComponent<Image>();
         image = transform.Find("Trash").GetComponent<Image>();
+        trashRect = image.rectTransform;
     }
 
     /// <summary>
@@ -71,6 +74,40 @@ public class TrashCan : MonoBehaviour, IDropHandler
         {
             AudioManager.Instance.PlaySfxAtPosition(crumpleClip, Camera.main.transform.position, pitch: 1.5f, volume: 0.5f);
         }
+    }
+
+    /// <summary>
+    /// deletes the photo if the dragged preview overlaps the trash can icon
+    /// </summary>
+    /// <param name="photo">the photo being dragged.</param>
+    /// <param name="preview">the RectTransform of the dragged photo image.</param>
+    /// <returns>true if the photo was deleted.</returns>
+    public bool TryDeleteIfOverlapping(Photo photo, RectTransform preview)
+    {
+        if (photo == null || preview == null)
+        {
+            return false;
+        }
+
+        Vector3[] trashCorners = new Vector3[4];
+        Vector3[] previewCorners = new Vector3[4];
+        trashRect.GetWorldCorners(trashCorners);
+        preview.GetWorldCorners(previewCorners);
+
+        Rect trashArea = new Rect(trashCorners[0], trashCorners[2] - trashCorners[0]);
+        Rect previewArea = new Rect(previewCorners[0], previewCorners[2] - previewCorners[0]);
+
+        if (!trashArea.Overlaps(previewArea))
+        {
+            return false;
+        }
+
+        if (PhotoStorage.Instance.RemovePhoto(photo))
+        {
+            AudioManager.Instance.PlaySfxAtPosition(crumpleClip, Camera.main.transform.position, pitch: 1.5f, volume: 0.5f);
+            return true;
+        }
+        return false;
     }
 
     /// <summary>
